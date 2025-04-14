@@ -117,57 +117,75 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
       <div className="px-1.5 py-3 h-full flex flex-col">
         <nav className="space-y-2 flex-grow flex flex-col items-center pt-1.5">
           <NavItem 
-            href="/dashboard" 
-            icon={<LayoutDashboard className="h-4 w-4" />} 
-            isActive={location === '/dashboard'} 
-            collapsed={true}
-          >
-            Dashboard
-          </NavItem>
-          
-          <NavItem 
             href="/content" 
             icon={<FileTextIcon className="h-4 w-4" />} 
-            isActive={location === '/content'} 
+            isActive={location.startsWith('/content')} 
             collapsed={true}
           >
             Content
           </NavItem>
           
           <NavItem 
-            href="/analytics" 
-            icon={<BarChart3 className="h-4 w-4" />} 
-            isActive={location === '/analytics'} 
-            collapsed={true}
-          >
-            Analytics
-          </NavItem>
-          
-          <NavItem 
-            href="#" 
+            href="/people" 
             icon={<Users className="h-4 w-4" />} 
-            isActive={location === '/users'} 
+            isActive={location.startsWith('/people')} 
             collapsed={true}
           >
-            Users
+            People
           </NavItem>
           
           <NavItem 
-            href="#" 
-            icon={<ShoppingBag className="h-4 w-4" />} 
-            isActive={location === '/products'} 
+            href="/design-studio" 
+            icon={<Shapes className="h-4 w-4" />} 
+            isActive={location.startsWith('/design-studio')} 
             collapsed={true}
           >
-            Products
+            Design Studio
+          </NavItem>
+          
+          <NavItem 
+            href="/appearance" 
+            icon={<Layers className="h-4 w-4" />} 
+            isActive={location.startsWith('/appearance')} 
+            collapsed={true}
+          >
+            Appearance
           </NavItem>
           
           <NavItem 
             href="/settings" 
             icon={<Settings className="h-4 w-4" />} 
-            isActive={location.includes('/settings')} 
+            isActive={location.startsWith('/settings')} 
             collapsed={true}
           >
             Settings
+          </NavItem>
+          
+          <NavItem 
+            href="/billing" 
+            icon={<CreditCard className="h-4 w-4" />} 
+            isActive={location.startsWith('/billing')} 
+            collapsed={true}
+          >
+            Billing
+          </NavItem>
+          
+          <NavItem 
+            href="/reports" 
+            icon={<BarChart2 className="h-4 w-4" />} 
+            isActive={location.startsWith('/reports')} 
+            collapsed={true}
+          >
+            Reports
+          </NavItem>
+          
+          <NavItem 
+            href="/app-store" 
+            icon={<ShoppingBag className="h-4 w-4" />} 
+            isActive={location.startsWith('/app-store')} 
+            collapsed={true}
+          >
+            App Store
           </NavItem>
         </nav>
         

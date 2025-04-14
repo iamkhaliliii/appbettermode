@@ -13,7 +13,7 @@ function Router() {
 
   useEffect(() => {
     // Handle clicks on main-sidebar links
-    const handleClick = (e) => {
+    const handleClick = (e: MouseEvent) => {
       const link = e.target.closest('a');
       if (link && link.getAttribute('href').startsWith('/') && !link.getAttribute('href').includes('//')) {
         const href = link.getAttribute('href');
