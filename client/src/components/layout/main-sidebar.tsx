@@ -103,15 +103,6 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
           </NavItem>
           
           <NavItem 
-            href="/content" 
-            icon={<FileText className="h-4 w-4" />} 
-            isActive={location === '/content'} 
-            collapsed={true}
-          >
-            Content
-          </NavItem>
-          
-          <NavItem 
             href="/people" 
             icon={<Users className="h-4 w-4" />} 
             isActive={location === '/people'} 
