@@ -29,25 +29,25 @@ function SideNavItem({ href, icon, children, isActive, badge }: SideNavItemProps
       <Link href={href}>
         <div
           className={cn(
-            "flex items-center px-4 py-2.5 text-sm rounded-md cursor-pointer my-1 transition-colors duration-150",
+            "flex items-center px-3 py-2 text-sm rounded cursor-pointer my-0.5 transition-colors duration-100",
             isActive 
-              ? "bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 font-medium" 
-              : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200"
+              ? "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-medium" 
+              : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100"
           )}
         >
           {icon && (
             <span className={cn(
-              "flex-shrink-0 mr-3",
+              "flex-shrink-0 mr-2",
               isActive 
-                ? "text-primary-700 dark:text-primary-300" 
+                ? "text-gray-900 dark:text-gray-100" 
                 : "text-gray-500 dark:text-gray-400"
             )}>
               {icon}
             </span>
           )}
-          <span className="font-medium">{children}</span>
+          <span className={isActive ? "font-medium" : "font-normal"}>{children}</span>
           {badge && (
-            <span className="ml-auto bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-[10px] px-2 py-0.5 rounded-full">
+            <span className="ml-auto bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-[10px] px-1.5 py-0.5 rounded-full">
               {badge}
             </span>
           )}
@@ -120,9 +120,9 @@ export function SecondarySidebar() {
   );
 
   const renderContentSidebar = () => (
-    <div className="p-5">
-      <div className="mb-5">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Content</h2>
+    <div className="p-4">
+      <div className="mb-4">
+        <h2 className="text-base font-medium text-gray-900 dark:text-white">Content</h2>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Manage your content</p>
       </div>
       
@@ -170,9 +170,9 @@ export function SecondarySidebar() {
   );
 
   const renderPeopleSidebar = () => (
-    <div className="p-5">
-      <div className="mb-5">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">People</h2>
+    <div className="p-4">
+      <div className="mb-4">
+        <h2 className="text-base font-medium text-gray-900 dark:text-white">People</h2>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Manage users and permissions</p>
       </div>
       
@@ -216,10 +216,10 @@ export function SecondarySidebar() {
   );
 
   const renderSettingsSidebar = () => (
-    <div className="p-3">
-      <div className="mb-3">
+    <div className="p-4">
+      <div className="mb-4">
         <h2 className="text-base font-medium text-gray-900 dark:text-white">Settings</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Manage your account settings</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Manage your account settings</p>
       </div>
       
       <div className="space-y-1">
@@ -307,10 +307,10 @@ export function SecondarySidebar() {
   );
 
   const renderDesignStudioSidebar = () => (
-    <div className="p-3">
-      <div className="mb-3">
+    <div className="p-4">
+      <div className="mb-4">
         <h2 className="text-base font-medium text-gray-900 dark:text-white">Design Studio</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Customize your site design</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Customize your site design</p>
       </div>
       
       <div className="space-y-1">
@@ -332,10 +332,10 @@ export function SecondarySidebar() {
   );
   
   const renderAppearanceSidebar = () => (
-    <div className="p-3">
-      <div className="mb-3">
+    <div className="p-4">
+      <div className="mb-4">
         <h2 className="text-base font-medium text-gray-900 dark:text-white">Appearance</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Customize your site's appearance</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Customize your site's appearance</p>
       </div>
       
       <div className="space-y-1">
@@ -371,10 +371,10 @@ export function SecondarySidebar() {
   );
   
   const renderBillingSidebar = () => (
-    <div className="p-3">
-      <div className="mb-3">
+    <div className="p-4">
+      <div className="mb-4">
         <h2 className="text-base font-medium text-gray-900 dark:text-white">Billing</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Manage subscriptions and payments</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Manage subscriptions and payments</p>
       </div>
       
       <div className="space-y-1">

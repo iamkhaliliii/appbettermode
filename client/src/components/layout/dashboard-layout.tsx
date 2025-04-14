@@ -75,7 +75,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>}
         
         {/* Secondary Sidebar - hidden on mobile, always visible otherwise */}
-        {!isMobile && <div className="w-48 flex-shrink-0">
+        {!isMobile && <div className="w-64 flex-shrink-0">
           <SecondarySidebar />
         </div>}
         
