@@ -165,16 +165,16 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-2">
-            <Button variant="outline" size="sm" className="h-7 rounded-md text-xs">
-              <ExternalLink className="h-3 w-3 mr-1" />
+            <Button variant="secondary-gray" size="sm" className="text-xs">
+              <ExternalLink className="h-3 w-3" />
               View
             </Button>
 
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
-                <Button className="h-7 rounded-md text-xs">
+                <Button variant="default" size="sm" className="text-xs">
                   Publish
-                  <ChevronDown className="h-3 w-3 ml-1" />
+                  <ChevronDown className="h-3 w-3" />
                 </Button>
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
@@ -200,9 +200,9 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
             {/* Mobile Menu Button */}
             <div className="lg:hidden">
               <Button 
-                variant="ghost" 
+                variant="tertiary-gray" 
                 size="sm" 
-                className="h-7 w-7 flex items-center justify-center p-0 text-gray-500 hover:text-gray-700"
+                className="flex items-center justify-center p-0 text-gray-500 hover:text-gray-700"
                 onClick={onToggleMobileMenu}
               >
                 <Menu className="h-4 w-4" />
