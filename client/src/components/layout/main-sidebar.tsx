@@ -95,7 +95,7 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
         <nav className="space-y-2 flex-grow flex flex-col items-center pt-1.5">
           <NavItem 
             href="/content" 
-            icon={<PanelsLeftBottom className="h-4 w-4" />} 
+            icon={<Folders className="h-4 w-4" />} 
             isActive={location === '/content'} 
             collapsed={true}
           >
@@ -113,7 +113,7 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
           
           <NavItem 
             href="/design-studio" 
-            icon={<Brush className="h-4 w-4" />} 
+            icon={<PanelsLeftBottom className="h-4 w-4" />} 
             isActive={location === '/design-studio'} 
             collapsed={true}
           >
