@@ -55,8 +55,8 @@ export function SecondarySidebar() {
   const [location] = useLocation();
 
   const renderDashboardSidebar = () => (
-    <div className="p-4">
-      <div className="mb-4">
+    <div className="p-3">
+      <div className="mb-2">
         <h2 className="text-base font-medium text-gray-900 dark:text-white">Dashboard</h2>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Overview and quick actions</p>
       </div>
