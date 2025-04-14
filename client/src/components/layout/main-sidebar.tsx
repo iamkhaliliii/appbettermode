@@ -6,7 +6,7 @@ import {
   Folders,
   PanelsLeftBottom, 
   Users, 
-  Brush, 
+  Shapes, 
   Layers, 
   Settings,
   CreditCard,
@@ -123,7 +123,7 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
           
           <NavItem 
             href="/appearance" 
-            icon={<Layers className="h-4 w-4" />} 
+            icon={<Shapes className="h-4 w-4" />} 
             isActive={location === '/appearance'} 
             collapsed={true}
           >
