@@ -403,10 +403,10 @@ export function SecondarySidebar() {
   );
   
   const renderReportsSidebar = () => (
-    <div className="p-3">
-      <div className="mb-3">
+    <div className="p-4">
+      <div className="mb-4">
         <h2 className="text-base font-medium text-gray-900 dark:text-white">Reports</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">View analytics and logs</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">View analytics and logs</p>
       </div>
       
       <div className="space-y-1">
@@ -470,10 +470,10 @@ export function SecondarySidebar() {
   );
   
   const renderAppStoreSidebar = () => (
-    <div className="p-3">
-      <div className="mb-3">
+    <div className="p-4">
+      <div className="mb-4">
         <h2 className="text-base font-medium text-gray-900 dark:text-white">App Store</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Extend your site with apps</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Extend your site with apps</p>
       </div>
       
       <div className="space-y-1">
