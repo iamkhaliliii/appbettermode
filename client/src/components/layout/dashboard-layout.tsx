@@ -68,15 +68,19 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       )}
 
       {/* Main content area with 3-column layout */}
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-[auto,1fr] lg:grid-cols-[auto,auto,1fr]">
+      <div className="flex-1 flex flex-col md:flex-row">
         {/* Main Sidebar - hidden on mobile, always collapsed otherwise */}
-        {!isMobile && <MainSidebar collapsed={true} />}
+        {!isMobile && <div className="w-12 flex-shrink-0">
+          <MainSidebar collapsed={true} />
+        </div>}
         
         {/* Secondary Sidebar - hidden on mobile, always visible otherwise */}
-        {!isMobile && <SecondarySidebar />}
+        {!isMobile && <div className="w-64 flex-shrink-0">
+          <SecondarySidebar />
+        </div>}
         
         {/* Main Content */}
-        <main className="p-6 bg-gray-50 overflow-y-auto min-h-[calc(100vh-4rem)]">
+        <main className="flex-1 p-6 bg-gray-50 overflow-y-auto min-h-[calc(100vh-4rem)]">
           {children}
         </main>
       </div>
