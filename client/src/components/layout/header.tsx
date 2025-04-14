@@ -33,14 +33,14 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
                     <DropdownMenu.Trigger asChild>
                       <button
                         className={cn(
-                          "h-full px-5 flex items-center gap-0.5 justify-center border-b-2 relative",
+                          "h-full px-5 flex items-center gap-0.5 justify-center relative",
                           activeSection === "spaces" 
-                            ? "text-primary-700 border-primary-700" 
-                            : "text-gray-500 border-transparent hover:text-gray-800 hover:border-gray-300"
+                            ? "text-primary-600" 
+                            : "text-gray-500 hover:text-gray-800"
                         )}
                       >
-                        <FileText className="h-5 w-5" />
-                        <ChevronDown className="h-3 w-3 opacity-60 ml-0.5" />
+                        <FileText className="h-[22px] w-[22px]" />
+                        <ChevronDown className="h-3 w-3 opacity-40 ml-0.5" />
                       </button>
                     </DropdownMenu.Trigger>
                   </Tooltip.Trigger>
@@ -79,14 +79,14 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
                     <DropdownMenu.Trigger asChild>
                       <button
                         className={cn(
-                          "h-full px-5 flex items-center gap-0.5 justify-center border-b-2 relative",
+                          "h-full px-5 flex items-center gap-0.5 justify-center relative",
                           activeSection === "cms" 
-                            ? "text-primary-700 border-primary-700" 
-                            : "text-gray-500 border-transparent hover:text-gray-800 hover:border-gray-300"
+                            ? "text-primary-600" 
+                            : "text-gray-500 hover:text-gray-800"
                         )}
                       >
-                        <Database className="h-5 w-5" />
-                        <ChevronDown className="h-3 w-3 opacity-60 ml-0.5" />
+                        <Database className="h-[22px] w-[22px]" />
+                        <ChevronDown className="h-3 w-3 opacity-40 ml-0.5" />
                       </button>
                     </DropdownMenu.Trigger>
                   </Tooltip.Trigger>
@@ -125,14 +125,14 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
                     <DropdownMenu.Trigger asChild>
                       <button
                         className={cn(
-                          "h-full px-5 flex items-center gap-0.5 justify-center border-b-2 relative",
+                          "h-full px-5 flex items-center gap-0.5 justify-center relative",
                           activeSection === "insights" 
-                            ? "text-primary-700 border-primary-700" 
-                            : "text-gray-500 border-transparent hover:text-gray-800 hover:border-gray-300"
+                            ? "text-primary-600" 
+                            : "text-gray-500 hover:text-gray-800"
                         )}
                       >
-                        <BarChart2 className="h-5 w-5" />
-                        <ChevronDown className="h-3 w-3 opacity-60 ml-0.5" />
+                        <BarChart2 className="h-[22px] w-[22px]" />
+                        <ChevronDown className="h-3 w-3 opacity-40 ml-0.5" />
                       </button>
                     </DropdownMenu.Trigger>
                   </Tooltip.Trigger>
