@@ -29,7 +29,7 @@ function SideNavItem({ href, icon, children, isActive, badge }: SideNavItemProps
       <Link href={href}>
         <div
           className={cn(
-            "flex items-center px-2 py-1.5 text-xs rounded cursor-pointer my-0.5",
+            "flex items-center px-4 py-2.5 text-sm rounded-md cursor-pointer my-1 transition-colors duration-150",
             isActive 
               ? "bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 font-medium" 
               : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200"
@@ -37,7 +37,7 @@ function SideNavItem({ href, icon, children, isActive, badge }: SideNavItemProps
         >
           {icon && (
             <span className={cn(
-              "flex-shrink-0 mr-2",
+              "flex-shrink-0 mr-3",
               isActive 
                 ? "text-primary-700 dark:text-primary-300" 
                 : "text-gray-500 dark:text-gray-400"
@@ -45,9 +45,9 @@ function SideNavItem({ href, icon, children, isActive, badge }: SideNavItemProps
               {icon}
             </span>
           )}
-          <span>{children}</span>
+          <span className="font-medium">{children}</span>
           {badge && (
-            <span className="ml-auto bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-[10px] px-1.5 py-0.5 rounded-full">
+            <span className="ml-auto bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-[10px] px-2 py-0.5 rounded-full">
               {badge}
             </span>
           )}
@@ -120,10 +120,10 @@ export function SecondarySidebar() {
   );
 
   const renderContentSidebar = () => (
-    <div className="p-3">
-      <div className="mb-3">
-        <h2 className="text-base font-medium text-gray-900 dark:text-white">Content</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Manage your content</p>
+    <div className="p-5">
+      <div className="mb-5">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Content</h2>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Manage your content</p>
       </div>
       
       <div className="relative w-full mb-3">
@@ -170,10 +170,10 @@ export function SecondarySidebar() {
   );
 
   const renderPeopleSidebar = () => (
-    <div className="p-3">
-      <div className="mb-3">
-        <h2 className="text-base font-medium text-gray-900 dark:text-white">People</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Manage users and permissions</p>
+    <div className="p-5">
+      <div className="mb-5">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">People</h2>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Manage users and permissions</p>
       </div>
       
       <div className="space-y-1">
@@ -517,7 +517,7 @@ export function SecondarySidebar() {
   };
 
   return (
-    <aside className="secondary-sidebar bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-[calc(100vh-3rem)] overflow-y-auto sticky top-12 w-48">
+    <aside className="secondary-sidebar bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-[calc(100vh-3rem)] overflow-y-auto sticky top-12 w-64">
       {getSidebarForLocation()}
     </aside>
   );
