@@ -2,7 +2,8 @@ import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { 
   Home, 
-  FileText, 
+  FileText,
+  Folders, 
   Users, 
   Brush, 
   Layers, 
@@ -92,6 +93,15 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
     <aside className="bg-white border-r border-gray-200 h-[calc(100vh-3rem)] overflow-y-auto sticky top-12 w-12">
       <div className="px-1.5 py-3 h-full flex flex-col">
         <nav className="space-y-2 flex-grow flex flex-col items-center pt-1.5">
+          <NavItem 
+            href="/folders" 
+            icon={<Folders className="h-4 w-4" />} 
+            isActive={location === '/folders'} 
+            collapsed={true}
+          >
+            Folders
+          </NavItem>
+          
           <NavItem 
             href="/content" 
             icon={<FileText className="h-4 w-4" />} 
