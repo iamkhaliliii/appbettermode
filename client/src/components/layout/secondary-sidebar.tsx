@@ -117,7 +117,7 @@ export function SecondarySidebar() {
   const renderContentSidebar = () => (
     <div className="p-4">
       <div className="mb-3">
-        <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">Content</h2>
+        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500">content</h2>
       </div>
       
       <div className="space-y-1">
@@ -155,7 +155,7 @@ export function SecondarySidebar() {
   const renderPeopleSidebar = () => (
     <div className="p-4">
       <div className="mb-3">
-        <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">People</h2>
+        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500">people</h2>
       </div>
       
       <div className="space-y-1">
@@ -200,7 +200,7 @@ export function SecondarySidebar() {
   const renderSettingsSidebar = () => (
     <div className="p-4">
       <div className="mb-3">
-        <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">Settings</h2>
+        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500">settings</h2>
       </div>
       
       <div className="space-y-1">
@@ -259,7 +259,7 @@ export function SecondarySidebar() {
   const renderDesignStudioSidebar = () => (
     <div className="p-4">
       <div className="mb-3">
-        <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">Design Studio</h2>
+        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500">design studio</h2>
       </div>
       
       <div className="space-y-1">
@@ -283,7 +283,7 @@ export function SecondarySidebar() {
   const renderAppearanceSidebar = () => (
     <div className="p-4">
       <div className="mb-3">
-        <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">Appearance</h2>
+        <h2 className="text-xs font-normal text-gray-500 dark:text-gray-400 uppercase tracking-wider">Appearance</h2>
       </div>
       
       <div className="space-y-1">
@@ -321,7 +321,7 @@ export function SecondarySidebar() {
   const renderBillingSidebar = () => (
     <div className="p-4">
       <div className="mb-3">
-        <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">Billing</h2>
+        <h2 className="text-xs font-normal text-gray-500 dark:text-gray-400 uppercase tracking-wider">Billing</h2>
       </div>
       
       <div className="space-y-1">
