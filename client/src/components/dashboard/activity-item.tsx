@@ -23,11 +23,11 @@ export function ActivityItem({
             </div>
           </div>
           <div className="ml-4 flex-1">
-            <div className="text-sm font-medium text-gray-900">{title}</div>
-            <div className="text-sm text-gray-500">{description}</div>
+            <div className="text-sm font-medium text-gray-900 dark:text-white">{title}</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">{description}</div>
           </div>
           <div className="ml-4 flex-shrink-0">
-            <div className="text-sm text-gray-500">{time}</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">{time}</div>
           </div>
         </div>
       </div>

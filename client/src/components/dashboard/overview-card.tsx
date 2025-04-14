@@ -17,14 +17,14 @@ export function OverviewCard({ title, value, icon, bgColor }: OverviewCardProps)
             {icon}
           </div>
           <div className="ml-5 w-0 flex-1">
-            <div className="text-sm font-medium text-gray-500 truncate">{title}</div>
-            <div className="text-lg font-semibold text-gray-900">{value}</div>
+            <div className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{title}</div>
+            <div className="text-lg font-semibold text-gray-900 dark:text-white">{value}</div>
           </div>
         </div>
       </CardContent>
-      <CardFooter className="bg-gray-50 px-5 py-3">
+      <CardFooter className="bg-gray-50 dark:bg-gray-800 px-5 py-3">
         <div className="text-sm">
-          <Button variant="link" className="p-0 h-auto font-medium text-primary-700 hover:text-primary-900">
+          <Button variant="link-color" className="p-0 h-auto font-medium text-primary-700 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-300">
             View all
           </Button>
         </div>
