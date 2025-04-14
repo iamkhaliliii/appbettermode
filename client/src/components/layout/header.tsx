@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Bell, Menu, ChevronDown, ExternalLink, Database, BarChart2, Files, ChevronUp } from "lucide-react";
+import { Bell, Menu, ChevronDown, ExternalLink, Database, BarChart2, FileText, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import * as Tooltip from "@radix-ui/react-tooltip";
@@ -35,7 +35,7 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
                       <button
                         className="flex items-center gap-1 justify-center p-1.5 rounded-md border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
                       >
-                        <Files className="h-3.5 w-3.5" />
+                        <FileText className="h-3.5 w-3.5" />
                         <ChevronDown className="h-2.5 w-2.5 opacity-40" />
                       </button>
                     </DropdownMenu.Trigger>
