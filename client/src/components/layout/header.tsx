@@ -46,7 +46,7 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
                       side="bottom"
                       sideOffset={5}
                     >
-                      Content
+                      Pages
                       <Tooltip.Arrow className="fill-gray-900" />
                     </Tooltip.Content>
                   </Tooltip.Portal>
@@ -67,7 +67,7 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
                 </DropdownMenu.Root>
               </Tooltip.Root>
             </Tooltip.Provider>
-
+            
             <Tooltip.Provider delayDuration={200}>
               <Tooltip.Root>
                 <DropdownMenu.Root>
@@ -108,7 +108,7 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
                 </DropdownMenu.Root>
               </Tooltip.Root>
             </Tooltip.Provider>
-
+            
             <Tooltip.Provider delayDuration={200}>
               <Tooltip.Root>
                 <DropdownMenu.Root>
@@ -213,3 +213,5 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
     </header>
   );
 }
+
+
