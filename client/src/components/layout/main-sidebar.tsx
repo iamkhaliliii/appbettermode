@@ -86,65 +86,64 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
 
   return (
     <aside className="bg-white border-r border-gray-200 h-[calc(100vh-4rem)] overflow-y-auto sticky top-16 w-16">
-      <div className="px-2 py-6 h-full flex flex-col">
-        <nav className="space-y-4 flex-grow flex flex-col items-center">
+      <div className="px-2 py-5 h-full flex flex-col">
+        <nav className="space-y-3 flex-grow flex flex-col items-center pt-2">
           <NavItem 
             href="/" 
             icon={<Home className="h-5 w-5" />} 
             isActive={location === '/'} 
             collapsed={true}
           >
-            Dashboard
+            Home
           </NavItem>
           
           <NavItem 
-            href="/calendar" 
-            icon={<Calendar className="h-5 w-5" />} 
-            isActive={location === '/calendar'} 
+            href="/pages" 
+            icon={<svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 5C4 4.44772 4.44772 4 5 4H19C19.5523 4 20 4.44772 20 5V19C20 19.5523 19.5523 20 19 20H5C4.44772 20 4 19.5523 4 19V5Z" stroke="currentColor" strokeWidth="1.5"/>
+              <path d="M15 4V11C15 11.5523 14.5523 12 14 12H10C9.44772 12 9 11.5523 9 11V4" stroke="currentColor" strokeWidth="1.5"/>
+              <path d="M8 16H16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>} 
+            isActive={location === '/pages'} 
             collapsed={true}
           >
-            Calendar
+            Pages
           </NavItem>
           
           <NavItem 
-            href="/tasks" 
-            icon={<Clipboard className="h-5 w-5" />} 
-            isActive={location === '/tasks'} 
-            badge="10" 
+            href="/media" 
+            icon={<svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 10L20 15M20 15L15 20M20 15H10M8 15C8 16.6569 6.65685 18 5 18C3.34315 18 2 16.6569 2 15C2 13.3431 3.34315 12 5 12C6.65685 12 8 13.3431 8 15Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>} 
+            isActive={location === '/media'} 
             collapsed={true}
           >
-            Tasks
-          </NavItem>
-          
-          <NavItem 
-            href="/customers" 
-            icon={<Users className="h-5 w-5" />} 
-            isActive={location === '/customers'} 
-            collapsed={true}
-          >
-            Customers
-          </NavItem>
-          
-          <NavItem 
-            href="/reports" 
-            icon={<BarChart2 className="h-5 w-5" />} 
-            isActive={location === '/reports'} 
-            collapsed={true}
-          >
-            Reports
+            Media
           </NavItem>
           
           <NavItem 
             href="/settings" 
             icon={<Settings className="h-5 w-5" />} 
-            isActive={location === '/settings'} 
+            isActive={location.includes('/settings')} 
             collapsed={true}
           >
             Settings
           </NavItem>
+          
+          <NavItem 
+            href="/logs" 
+            icon={<svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17 13H13V17H11V13H7V11H11V7H13V11H17V13Z" fill="currentColor"/>
+              <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.5"/>
+            </svg>} 
+            isActive={location === '/logs'} 
+            collapsed={true}
+          >
+            Activity Logs
+          </NavItem>
         </nav>
         
-        <div className="mt-auto flex justify-center">
+        <div className="mt-auto flex justify-center pb-2">
           <Tooltip.Provider delayDuration={200}>
             <Tooltip.Root>
               <Tooltip.Trigger asChild>
