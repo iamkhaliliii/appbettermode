@@ -116,9 +116,8 @@ export function SecondarySidebar() {
 
   const renderContentSidebar = () => (
     <div className="p-4">
-      <div className="mb-4">
-        <h2 className="text-base font-medium text-gray-900 dark:text-white">Content</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Manage your content</p>
+      <div className="mb-3">
+        <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">Content</h2>
       </div>
       
       <div className="space-y-1">
@@ -155,9 +154,8 @@ export function SecondarySidebar() {
 
   const renderPeopleSidebar = () => (
     <div className="p-4">
-      <div className="mb-4">
-        <h2 className="text-base font-medium text-gray-900 dark:text-white">People</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Manage users and permissions</p>
+      <div className="mb-3">
+        <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">People</h2>
       </div>
       
       <div className="space-y-1">
@@ -201,9 +199,8 @@ export function SecondarySidebar() {
 
   const renderSettingsSidebar = () => (
     <div className="p-4">
-      <div className="mb-4">
-        <h2 className="text-base font-medium text-gray-900 dark:text-white">Settings</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Manage your account settings</p>
+      <div className="mb-3">
+        <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">Settings</h2>
       </div>
       
       <div className="space-y-1">
@@ -261,9 +258,8 @@ export function SecondarySidebar() {
 
   const renderDesignStudioSidebar = () => (
     <div className="p-4">
-      <div className="mb-4">
-        <h2 className="text-base font-medium text-gray-900 dark:text-white">Design Studio</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Customize your site design</p>
+      <div className="mb-3">
+        <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">Design Studio</h2>
       </div>
       
       <div className="space-y-1">
@@ -286,9 +282,8 @@ export function SecondarySidebar() {
   
   const renderAppearanceSidebar = () => (
     <div className="p-4">
-      <div className="mb-4">
-        <h2 className="text-base font-medium text-gray-900 dark:text-white">Appearance</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Customize your site's appearance</p>
+      <div className="mb-3">
+        <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">Appearance</h2>
       </div>
       
       <div className="space-y-1">
@@ -325,9 +320,8 @@ export function SecondarySidebar() {
   
   const renderBillingSidebar = () => (
     <div className="p-4">
-      <div className="mb-4">
-        <h2 className="text-base font-medium text-gray-900 dark:text-white">Billing</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Manage subscriptions and payments</p>
+      <div className="mb-3">
+        <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">Billing</h2>
       </div>
       
       <div className="space-y-1">
@@ -357,9 +351,8 @@ export function SecondarySidebar() {
   
   const renderReportsSidebar = () => (
     <div className="p-4">
-      <div className="mb-4">
-        <h2 className="text-base font-medium text-gray-900 dark:text-white">Reports</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">View analytics and logs</p>
+      <div className="mb-3">
+        <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">Reports</h2>
       </div>
       
       <div className="space-y-1">
@@ -424,9 +417,8 @@ export function SecondarySidebar() {
   
   const renderAppStoreSidebar = () => (
     <div className="p-4">
-      <div className="mb-4">
-        <h2 className="text-base font-medium text-gray-900 dark:text-white">App Store</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Extend your site with apps</p>
+      <div className="mb-3">
+        <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">App Store</h2>
       </div>
       
       <div className="space-y-1">
