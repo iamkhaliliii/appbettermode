@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { 
   Home, 
   FileText,
+  Folders,
   PanelsLeftBottom, 
   Users, 
   Brush, 
