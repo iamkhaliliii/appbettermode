@@ -19,9 +19,8 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
       <div className="h-12 flex items-center">
         {/* Logo Section - same width as sidebar */}
         <div className="w-12 h-full flex items-center justify-center border-r border-gray-200">
-          <svg className="h-9 w-9 text-primary-600" fill="currentColor" viewBox="0 0 58 58" xmlns="http://www.w3.org/2000/svg">
-            <path d="M28.9912 0C12.9792 0 0 12.9792 0 28.9912C0 45.0032 12.9792 57.9824 28.9912 57.9824C45.0032 57.9824 57.9824 45.0032 57.9824 28.9912C57.9824 12.9792 45.0032 0 28.9912 0ZM34.4282 38.051H23.5554C18.551 38.051 14.4967 33.9956 14.4967 28.9912C14.4967 23.9868 18.5521 19.9315 23.5554 19.9315H34.4282C39.4326 19.9315 43.4868 23.9868 43.4868 28.9912C43.4868 33.9956 39.4315 38.051 34.4282 38.051Z" />
-            <path d="M34.427 36.2389C38.4299 36.2389 41.6748 32.9939 41.6748 28.9911C41.6748 24.9882 38.4299 21.7433 34.427 21.7433C30.4242 21.7433 27.1792 24.9882 27.1792 28.9911C27.1792 32.9939 30.4242 36.2389 34.427 36.2389Z" />
+          <svg className="h-6 w-6 text-primary-600" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
           </svg>
         </div>
 
