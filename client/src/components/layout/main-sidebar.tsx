@@ -118,7 +118,7 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
         <nav className="space-y-2 flex-grow flex flex-col items-center pt-1.5">
           <NavItem 
             href="/content" 
-            icon={<FileTextIcon className="h-4 w-4" />} 
+            icon={<Folder className="h-4 w-4" />} 
             isActive={location.startsWith('/content')} 
             collapsed={true}
           >
@@ -136,7 +136,7 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
           
           <NavItem 
             href="/design-studio" 
-            icon={<Shapes className="h-4 w-4" />} 
+            icon={<PanelsLeftBottom className="h-4 w-4" />} 
             isActive={location.startsWith('/design-studio')} 
             collapsed={true}
           >
@@ -145,7 +145,7 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
           
           <NavItem 
             href="/appearance" 
-            icon={<Layers className="h-4 w-4" />} 
+            icon={<Shapes className="h-4 w-4" />} 
             isActive={location.startsWith('/appearance')} 
             collapsed={true}
           >
