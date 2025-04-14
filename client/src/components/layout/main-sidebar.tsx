@@ -9,6 +9,7 @@ import {
   Settings,
   LogOut
 } from "lucide-react";
+import * as Tooltip from "@radix-ui/react-tooltip";
 
 interface NavItemProps {
   href: string;
@@ -27,35 +28,68 @@ function NavItem({
   badge,
   collapsed = false 
 }: NavItemProps) {
-  return (
+  const navContent = (
+    <div
+      className={cn(
+        "flex items-center px-3 py-2 text-sm font-medium rounded-md w-full",
+        collapsed ? "justify-center" : "",
+        isActive 
+          ? "bg-primary-50 text-primary-700" 
+          : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+      )}
+    >
+      <span className={cn(
+        "flex-shrink-0",
+        !collapsed && "mr-3",
+        isActive 
+          ? "text-primary-700" 
+          : "text-gray-500"
+      )}>
+        {icon}
+      </span>
+      {!collapsed && (
+        <>
+          <span>{children}</span>
+          {badge && (
+            <span className="ml-auto bg-primary-50 text-primary-700 text-xs font-medium px-2 py-0.5 rounded-full">
+              {badge}
+            </span>
+          )}
+        </>
+      )}
+    </div>
+  );
+
+  return collapsed ? (
+    <Tooltip.Provider delayDuration={200}>
+      <Tooltip.Root>
+        <Tooltip.Trigger asChild>
+          <Link href={href}>
+            {navContent}
+          </Link>
+        </Tooltip.Trigger>
+        <Tooltip.Portal>
+          <Tooltip.Content
+            className="bg-gray-900 text-white px-2 py-1 rounded text-sm animate-in fade-in-50 data-[side=right]:slide-in-from-left-2"
+            side="right"
+            sideOffset={10}
+          >
+            <div className="flex items-center">
+              <span>{children}</span>
+              {badge && (
+                <span className="ml-2 bg-primary-50 text-primary-700 text-xs font-medium px-2 py-0.5 rounded-full">
+                  {badge}
+                </span>
+              )}
+            </div>
+            <Tooltip.Arrow className="fill-gray-900" />
+          </Tooltip.Content>
+        </Tooltip.Portal>
+      </Tooltip.Root>
+    </Tooltip.Provider>
+  ) : (
     <Link href={href}>
-      <a
-        className={cn(
-          "flex items-center px-3 py-2 text-sm font-medium rounded-md",
-          isActive 
-            ? "bg-primary-50 text-primary-700" 
-            : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-        )}
-      >
-        <span className={cn(
-          "flex-shrink-0 mr-3",
-          isActive 
-            ? "text-primary-700" 
-            : "text-gray-500"
-        )}>
-          {icon}
-        </span>
-        {!collapsed && (
-          <>
-            <span>{children}</span>
-            {badge && (
-              <span className="ml-auto bg-primary-50 text-primary-700 text-xs font-medium px-2 py-0.5 rounded-full">
-                {badge}
-              </span>
-            )}
-          </>
-        )}
-      </a>
+      {navContent}
     </Link>
   );
 }
@@ -152,9 +186,36 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
         collapsed ? "flex justify-center" : ""
       )}>
         {collapsed ? (
-          <button className="text-gray-400 hover:text-gray-500">
-            <LogOut className="h-5 w-5" />
-          </button>
+          <Tooltip.Provider delayDuration={200}>
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <button className="relative text-gray-400 hover:text-gray-500">
+                  <img 
+                    className="h-8 w-8 rounded-full border-2 border-gray-200" 
+                    src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
+                    alt="User profile" 
+                  />
+                </button>
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  className="bg-gray-900 text-white px-3 py-2 rounded text-sm animate-in fade-in-50 data-[side=right]:slide-in-from-left-2"
+                  side="right"
+                  sideOffset={10}
+                >
+                  <div className="flex flex-col space-y-1">
+                    <span className="font-medium">Olivia Rhye</span>
+                    <span className="text-gray-300 text-xs">olivia@untitledui.com</span>
+                    <div className="flex items-center mt-1 pt-1 border-t border-gray-700">
+                      <LogOut className="h-3 w-3 mr-1" />
+                      <span className="text-xs">Sign out</span>
+                    </div>
+                  </div>
+                  <Tooltip.Arrow className="fill-gray-900" />
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+          </Tooltip.Provider>
         ) : (
           <div className="flex items-center">
             <div className="flex-shrink-0">
