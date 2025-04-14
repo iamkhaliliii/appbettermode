@@ -11,11 +11,13 @@ import {
   Settings,
   CreditCard,
   BarChart2,
+  BarChart3,
   ShoppingBag,
   GraduationCap,
   LogOut,
   SunMedium,
-  Moon
+  Moon,
+  LayoutDashboard
 } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { useState, useEffect } from "react";
