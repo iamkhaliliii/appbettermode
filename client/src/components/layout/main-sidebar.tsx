@@ -31,36 +31,23 @@ function NavItem({
   const navContent = (
     <div
       className={cn(
-        "flex items-center px-3 py-2 text-sm font-medium rounded-md w-full",
-        collapsed ? "justify-center" : "",
+        "flex items-center justify-center p-2 w-10 h-10 rounded-full",
         isActive 
           ? "bg-primary-50 text-primary-700" 
           : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
       )}
     >
       <span className={cn(
-        "flex-shrink-0",
-        !collapsed && "mr-3",
         isActive 
           ? "text-primary-700" 
           : "text-gray-500"
       )}>
         {icon}
       </span>
-      {!collapsed && (
-        <>
-          <span>{children}</span>
-          {badge && (
-            <span className="ml-auto bg-primary-50 text-primary-700 text-xs font-medium px-2 py-0.5 rounded-full">
-              {badge}
-            </span>
-          )}
-        </>
-      )}
     </div>
   );
 
-  return collapsed ? (
+  return (
     <Tooltip.Provider delayDuration={200}>
       <Tooltip.Root>
         <Tooltip.Trigger asChild>
@@ -87,10 +74,6 @@ function NavItem({
         </Tooltip.Portal>
       </Tooltip.Root>
     </Tooltip.Provider>
-  ) : (
-    <Link href={href}>
-      {navContent}
-    </Link>
   );
 }
 
@@ -102,33 +85,14 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
   const [location] = useLocation();
 
   return (
-    <aside className={cn(
-      "bg-white border-r border-gray-200 h-[calc(100vh-4rem)] overflow-y-auto sticky top-16",
-      collapsed ? "w-16" : "w-64"
-    )}>
-      <div className="px-4 py-6">
-        <div className={cn(
-          "flex items-center mb-8",
-          collapsed ? "justify-center" : ""
-        )}>
-          <div className="flex-shrink-0">
-            <svg className="h-8 w-auto text-primary-600" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-            </svg>
-          </div>
-          {!collapsed && (
-            <div className="ml-3">
-              <h1 className="text-lg font-semibold text-gray-900">Untitled UI</h1>
-            </div>
-          )}
-        </div>
-        
-        <nav className="space-y-1">
+    <aside className="bg-white border-r border-gray-200 h-[calc(100vh-4rem)] overflow-y-auto sticky top-16 w-16">
+      <div className="px-2 py-6 h-full flex flex-col">
+        <nav className="space-y-4 flex-grow flex flex-col items-center">
           <NavItem 
             href="/" 
             icon={<Home className="h-5 w-5" />} 
             isActive={location === '/'} 
-            collapsed={collapsed}
+            collapsed={true}
           >
             Dashboard
           </NavItem>
@@ -137,7 +101,7 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
             href="/calendar" 
             icon={<Calendar className="h-5 w-5" />} 
             isActive={location === '/calendar'} 
-            collapsed={collapsed}
+            collapsed={true}
           >
             Calendar
           </NavItem>
@@ -147,7 +111,7 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
             icon={<Clipboard className="h-5 w-5" />} 
             isActive={location === '/tasks'} 
             badge="10" 
-            collapsed={collapsed}
+            collapsed={true}
           >
             Tasks
           </NavItem>
@@ -156,7 +120,7 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
             href="/customers" 
             icon={<Users className="h-5 w-5" />} 
             isActive={location === '/customers'} 
-            collapsed={collapsed}
+            collapsed={true}
           >
             Customers
           </NavItem>
@@ -165,7 +129,7 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
             href="/reports" 
             icon={<BarChart2 className="h-5 w-5" />} 
             isActive={location === '/reports'} 
-            collapsed={collapsed}
+            collapsed={true}
           >
             Reports
           </NavItem>
@@ -174,18 +138,13 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
             href="/settings" 
             icon={<Settings className="h-5 w-5" />} 
             isActive={location === '/settings'} 
-            collapsed={collapsed}
+            collapsed={true}
           >
             Settings
           </NavItem>
         </nav>
-      </div>
-      
-      <div className={cn(
-        "px-4 py-4 border-t border-gray-200 mt-6",
-        collapsed ? "flex justify-center" : ""
-      )}>
-        {collapsed ? (
+        
+        <div className="mt-auto flex justify-center">
           <Tooltip.Provider delayDuration={200}>
             <Tooltip.Root>
               <Tooltip.Trigger asChild>
@@ -195,6 +154,7 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
                     src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
                     alt="User profile" 
                   />
+                  <div className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-green-500 ring-1 ring-white"></div>
                 </button>
               </Tooltip.Trigger>
               <Tooltip.Portal>
@@ -216,27 +176,7 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
               </Tooltip.Portal>
             </Tooltip.Root>
           </Tooltip.Provider>
-        ) : (
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <img 
-                className="h-8 w-8 rounded-full" 
-                src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
-                alt="User profile" 
-              />
-            </div>
-            <div className="ml-3 min-w-0 flex-1">
-              <div className="text-sm font-medium text-gray-900 truncate">Olivia Rhye</div>
-              <div className="text-sm text-gray-500 truncate">olivia@untitledui.com</div>
-            </div>
-            <button 
-              type="button" 
-              className="ml-auto flex-shrink-0 text-gray-400 hover:text-gray-500"
-            >
-              <LogOut className="h-5 w-5" />
-            </button>
-          </div>
-        )}
+        </div>
       </div>
     </aside>
   );

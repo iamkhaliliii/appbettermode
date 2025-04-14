@@ -15,21 +15,6 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  
-  useEffect(() => {
-    const handleResize = () => {
-      const width = window.innerWidth;
-      setSidebarCollapsed(width < 1024 && width >= 768);
-      if (width >= 768) {
-        setMobileMenuOpen(false);
-      }
-    };
-    
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
   
   return (
     <div className="min-h-screen flex flex-col">
@@ -84,47 +69,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
       {/* Main content area with 3-column layout */}
       <div className="flex-1 grid grid-cols-1 md:grid-cols-[auto,1fr] lg:grid-cols-[auto,auto,1fr]">
-        {/* Main Sidebar - hidden on mobile */}
-        {!isMobile && (
-          <>
-            <MainSidebar collapsed={sidebarCollapsed} />
-            
-            {/* Sidebar toggle button */}
-            <div className="fixed bottom-4 left-4 z-40">
-              <Tooltip.Provider delayDuration={200}>
-                <Tooltip.Root>
-                  <Tooltip.Trigger asChild>
-                    <Button
-                      variant="secondary"
-                      size="icon"
-                      className="rounded-full shadow-lg h-10 w-10"
-                      onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                    >
-                      {sidebarCollapsed ? (
-                        <PanelLeft className="h-5 w-5" />
-                      ) : (
-                        <PanelRightClose className="h-5 w-5" />
-                      )}
-                    </Button>
-                  </Tooltip.Trigger>
-                  <Tooltip.Portal>
-                    <Tooltip.Content
-                      className="bg-gray-900 text-white px-2 py-1 rounded text-sm"
-                      side="right"
-                      sideOffset={5}
-                    >
-                      {sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-                      <Tooltip.Arrow className="fill-gray-900" />
-                    </Tooltip.Content>
-                  </Tooltip.Portal>
-                </Tooltip.Root>
-              </Tooltip.Provider>
-            </div>
-          </>
-        )}
+        {/* Main Sidebar - hidden on mobile, always collapsed otherwise */}
+        {!isMobile && <MainSidebar collapsed={true} />}
         
-        {/* Secondary Sidebar - hidden on tablet and mobile */}
-        {!isMobile && !sidebarCollapsed && <SecondarySidebar />}
+        {/* Secondary Sidebar - hidden on mobile, always visible otherwise */}
+        {!isMobile && <SecondarySidebar />}
         
         {/* Main Content */}
         <main className="p-6 bg-gray-50 overflow-y-auto min-h-[calc(100vh-4rem)]">
