@@ -123,15 +123,8 @@ export function SecondarySidebar() {
       
       <div className="space-y-1">
         <SideNavItem 
-          href="/content"
-          isActive={location === '/content'}
-        >
-          Content
-        </SideNavItem>
-        
-        <SideNavItem 
           href="/content/posts"
-          isActive={location === '/content/posts'}
+          isActive={location === '/content/posts' || location === '/content'}
         >
           Posts
         </SideNavItem>
@@ -141,6 +134,13 @@ export function SecondarySidebar() {
           isActive={location === '/content/spaces'}
         >
           Spaces
+        </SideNavItem>
+
+        <SideNavItem 
+          href="/content/comments"
+          isActive={location === '/content/comments'}
+        >
+          Comments
         </SideNavItem>
         
         <SideNavItem 

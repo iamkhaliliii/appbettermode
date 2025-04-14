@@ -187,15 +187,22 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
                 
                 {location.startsWith('/content') && (
                   <span>
-                    {/* Single level */}
-                    {location === '/content' && 
-                      <span className="font-medium text-gray-900 dark:text-white">Content</span>
-                    }
+                    {/* Always show Content with path for consistency */}
+                    <span>Content</span>
                     
-                    {/* Multi level */}
+                    {/* Default to posts for root content path */}
+                    {location === '/content' && (
+                      <>
+                        <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <span className="font-medium text-gray-900 dark:text-white">Posts</span>
+                      </>
+                    )}
+                    
+                    {/* Show specific section for subpaths */}
                     {location !== '/content' && (
                       <>
-                        <span>Content</span>
                         <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
