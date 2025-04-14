@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Bell, Menu, ChevronDown, ExternalLink, Globe, BarChart2, Layers, ChevronsUpDown } from "lucide-react";
+import { Bell, Menu, ChevronDown, ExternalLink, Database, BarChart2, Layers } from "lucide-react";
 import { useState } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import * as Tooltip from "@radix-ui/react-tooltip";
 import { cn } from "@/lib/utils";
 
 interface HeaderProps {
@@ -23,25 +24,25 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
         </div>
 
         {/* Middle Section - App Navigation */}
-        <div className="flex-shrink-0 h-full border-r border-gray-200">
-          <div className="flex h-full">
+        <div className="w-64 flex-shrink-0 h-full border-r border-gray-200">
+          <div className="flex h-full justify-center">
             <HeaderNavItem 
-              label="Spaces" 
+              tooltip="Spaces"
               isActive={activeSection === "spaces"} 
               onClick={() => setActiveSection("spaces")} 
-              icon={<Layers className="h-4 w-4 mr-1.5" />}
+              icon={<Layers className="h-5 w-5" />}
             />
             <HeaderNavItem 
-              label="CMS" 
+              tooltip="Database"
               isActive={activeSection === "cms"} 
               onClick={() => setActiveSection("cms")} 
-              icon={<Globe className="h-4 w-4 mr-1.5" />}
+              icon={<Database className="h-5 w-5" />}
             />
             <HeaderNavItem 
-              label="Insights" 
+              tooltip="Insights"
               isActive={activeSection === "insights"} 
               onClick={() => setActiveSection("insights")} 
-              icon={<BarChart2 className="h-4 w-4 mr-1.5" />}
+              icon={<BarChart2 className="h-5 w-5" />}
             />
           </div>
         </div>
@@ -110,28 +111,40 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
 }
 
 interface HeaderNavItemProps {
-  label: string;
+  tooltip: string;
   isActive: boolean;
   onClick: () => void;
-  icon?: React.ReactNode;
+  icon: React.ReactNode;
 }
 
-function HeaderNavItem({ label, isActive, onClick, icon }: HeaderNavItemProps) {
+function HeaderNavItem({ tooltip, isActive, onClick, icon }: HeaderNavItemProps) {
   return (
-    <button
-      onClick={onClick}
-      className={cn(
-        "h-full px-4 flex items-center border-b-2 text-sm font-medium relative",
-        isActive 
-          ? "text-primary-700 border-primary-700" 
-          : "text-gray-600 border-transparent hover:text-gray-900 hover:border-gray-300"
-      )}
-    >
-      <div className="flex items-center">
-        {icon}
-        {label}
-        <ChevronsUpDown className="h-3.5 w-3.5 ml-1 opacity-50" />
-      </div>
-    </button>
+    <Tooltip.Provider delayDuration={200}>
+      <Tooltip.Root>
+        <Tooltip.Trigger asChild>
+          <button
+            onClick={onClick}
+            className={cn(
+              "h-full px-5 flex items-center justify-center border-b-2",
+              isActive 
+                ? "text-primary-700 border-primary-700" 
+                : "text-gray-500 border-transparent hover:text-gray-900 hover:border-gray-300"
+            )}
+          >
+            {icon}
+          </button>
+        </Tooltip.Trigger>
+        <Tooltip.Portal>
+          <Tooltip.Content
+            className="bg-gray-900 text-white px-2 py-1 rounded text-xs"
+            side="bottom"
+            sideOffset={5}
+          >
+            {tooltip}
+            <Tooltip.Arrow className="fill-gray-900" />
+          </Tooltip.Content>
+        </Tooltip.Portal>
+      </Tooltip.Root>
+    </Tooltip.Provider>
   );
 }
