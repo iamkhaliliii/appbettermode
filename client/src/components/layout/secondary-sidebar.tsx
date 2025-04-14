@@ -38,14 +38,14 @@ function SideNavItem({ href, icon, children, isActive, badge }: SideNavItemProps
           <span className={cn(
             "flex-shrink-0 mr-2",
             isActive 
-              ? "text-primary-700" 
-              : "text-gray-500"
+              ? "text-primary-700 dark:text-primary-300" 
+              : "text-gray-500 dark:text-gray-400"
           )}>
             {icon}
           </span>
           <span>{children}</span>
           {badge && (
-            <span className="ml-auto bg-gray-100 text-gray-600 text-[10px] px-1.5 py-0.5 rounded-full">
+            <span className="ml-auto bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-[10px] px-1.5 py-0.5 rounded-full">
               {badge}
             </span>
           )}

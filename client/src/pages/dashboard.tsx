@@ -17,8 +17,8 @@ export default function Dashboard() {
     <DashboardLayout>
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Dashboard</h1>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Keep track of your business performance and analytics
           </p>
         </div>
@@ -57,19 +57,19 @@ export default function Dashboard() {
 
         {/* Recent Activity */}
         <div className="mb-8">
-          <div className="bg-white shadow overflow-hidden sm:rounded-lg border border-gray-200">
-            <div className="px-6 py-5 border-b border-gray-200">
+          <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg border border-gray-200 dark:border-gray-700">
+            <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-medium text-gray-900">Recent Activity</h3>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">Recent Activity</h3>
                 <div>
-                  <Button variant="outline" size="sm">
+                  <Button variant="secondary-gray" size="sm">
                     <Download className="mr-2 h-4 w-4" />
                     Export
                   </Button>
                 </div>
               </div>
             </div>
-            <ul className="divide-y divide-gray-200">
+            <ul className="divide-y divide-gray-200 dark:divide-gray-700">
               <ActivityItem
                 icon={<Users className="h-5 w-5 text-primary-600" />}
                 title="New customer registered"
@@ -96,12 +96,12 @@ export default function Dashboard() {
                 iconBgColor="bg-red-100"
               />
             </ul>
-            <div className="bg-gray-50 px-6 py-3 flex items-center justify-between border-t border-gray-200">
+            <div className="bg-gray-50 dark:bg-gray-800 px-6 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-700">
               <div className="flex-1 flex justify-between">
-                <Button variant="outline" size="sm">
+                <Button variant="secondary-gray" size="sm">
                   Previous
                 </Button>
-                <Button variant="outline" size="sm">
+                <Button variant="secondary-gray" size="sm">
                   Next
                 </Button>
               </div>
