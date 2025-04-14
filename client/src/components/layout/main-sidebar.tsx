@@ -12,10 +12,13 @@ import {
   CreditCard,
   BarChart2,
   ShoppingBag,
-  HelpCircle,
-  LogOut
+  GraduationCap,
+  LogOut,
+  SunMedium,
+  Moon
 } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
+import { useState, useEffect } from "react";
 
 interface NavItemProps {
   href: string;
@@ -89,9 +92,26 @@ interface MainSidebarProps {
 
 export function MainSidebar({ collapsed = false }: MainSidebarProps) {
   const [location] = useLocation();
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  
+  // Function to toggle dark mode
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+    if (!isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }
+  
+  // Check initial state on component mount
+  useEffect(() => {
+    const isDark = document.documentElement.classList.contains('dark');
+    setIsDarkMode(isDark);
+  }, []);
 
   return (
-    <aside className="bg-white border-r border-gray-200 h-[calc(100vh-3rem)] overflow-y-auto sticky top-12 w-12">
+    <aside className="bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-[calc(100vh-3rem)] overflow-y-auto sticky top-12 w-12">
       <div className="px-1.5 py-3 h-full flex flex-col">
         <nav className="space-y-2 flex-grow flex flex-col items-center pt-1.5">
           <NavItem 
@@ -168,11 +188,40 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
         </nav>
         
         <div className="mt-auto flex flex-col items-center gap-3 pb-2">
+          {/* Dark mode toggle button */}
+          <Tooltip.Provider delayDuration={200}>
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <button 
+                  className="text-gray-400 hover:text-gray-500 p-1.5"
+                  onClick={toggleDarkMode}
+                >
+                  {isDarkMode ? (
+                    <SunMedium className="h-4 w-4" />
+                  ) : (
+                    <Moon className="h-4 w-4" />
+                  )}
+                </button>
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  className="bg-gray-900 text-white px-2 py-1 rounded text-sm animate-in fade-in-50 data-[side=right]:slide-in-from-left-2"
+                  side="right"
+                  sideOffset={10}
+                >
+                  <span>{isDarkMode ? 'Light mode' : 'Dark mode'}</span>
+                  <Tooltip.Arrow className="fill-gray-900" />
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+          </Tooltip.Provider>
+          
+          {/* Onboarding button with GraduationCap icon */}
           <Tooltip.Provider delayDuration={200}>
             <Tooltip.Root>
               <Tooltip.Trigger asChild>
                 <button className="text-gray-400 hover:text-gray-500 p-1.5">
-                  <HelpCircle className="h-4 w-4" />
+                  <GraduationCap className="h-4 w-4" />
                 </button>
               </Tooltip.Trigger>
               <Tooltip.Portal>

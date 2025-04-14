@@ -80,7 +80,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>}
         
         {/* Main Content */}
-        <main className="flex-1 p-6 bg-gray-50 overflow-y-auto min-h-[calc(100vh-4rem)]">
+        <main className="flex-1 p-6 bg-gray-50 dark:bg-gray-900 overflow-y-auto min-h-[calc(100vh-4rem)]">
           {children}
         </main>
       </div>

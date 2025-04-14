@@ -58,7 +58,7 @@ export function SecondarySidebar() {
   const [location] = useLocation();
 
   return (
-    <aside className="secondary-sidebar bg-white border-r border-gray-200 h-[calc(100vh-3rem)] overflow-y-auto sticky top-12 w-48">
+    <aside className="secondary-sidebar bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-[calc(100vh-3rem)] overflow-y-auto sticky top-12 w-48">
       <div className="p-3">
         <div className="mb-3">
           <h2 className="text-base font-medium text-gray-900">Settings</h2>
