@@ -157,66 +157,138 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
         <div className="flex-1 flex items-center justify-between px-3">
           {/* Breadcrumbs */}
           <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
-            {location.startsWith('/dashboard') && (
-              <>
-                <span>Dashboard</span>
-                {location !== '/dashboard' && (
-                  <>
-                    <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    <span className="font-medium text-gray-900 dark:text-white">
-                      {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
-                    </span>
-                  </>
-                )}
-              </>
-            )}
+            <span className="font-medium text-gray-900 dark:text-white">Dashboard</span>
             
-            {location.startsWith('/content') && (
+            {location !== '/' && location !== '/dashboard' && (
               <>
-                <span>Content</span>
-                {location !== '/content' && (
-                  <>
-                    <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    <span className="font-medium text-gray-900 dark:text-white">
-                      {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
-                    </span>
-                  </>
+                <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                
+                {location.startsWith('/dashboard') && (
+                  <span>
+                    {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
+                  </span>
                 )}
-              </>
-            )}
-
-            {location.startsWith('/analytics') && (
-              <>
-                <span>Analytics</span>
-                {location !== '/analytics' && (
-                  <>
-                    <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    <span className="font-medium text-gray-900 dark:text-white">
-                      {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
-                    </span>
-                  </>
+                
+                {location.startsWith('/content') && (
+                  <span>
+                    Content{location !== '/content' && (
+                      <>
+                        <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <span>
+                          {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
+                        </span>
+                      </>
+                    )}
+                  </span>
                 )}
-              </>
-            )}
+                
+                {location.startsWith('/people') && (
+                  <span>
+                    People{location !== '/people' && (
+                      <>
+                        <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <span>
+                          {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
+                        </span>
+                      </>
+                    )}
+                  </span>
+                )}
+                
+                {location.startsWith('/design-studio') && (
+                  <span>
+                    Design Studio{location !== '/design-studio' && (
+                      <>
+                        <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <span>
+                          {location.split('/')[2].split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                        </span>
+                      </>
+                    )}
+                  </span>
+                )}
+                
+                {location.startsWith('/appearance') && (
+                  <span>
+                    Appearance{location !== '/appearance' && (
+                      <>
+                        <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <span>
+                          {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
+                        </span>
+                      </>
+                    )}
+                  </span>
+                )}
 
-            {location.startsWith('/settings') && (
-              <>
-                <span>Settings</span>
-                {location !== '/settings' && (
-                  <>
-                    <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    <span className="font-medium text-gray-900 dark:text-white">
-                      {location.split('/')[2].split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-                    </span>
-                  </>
+                {location.startsWith('/settings') && (
+                  <span>
+                    Settings{location !== '/settings' && (
+                      <>
+                        <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <span>
+                          {location.split('/')[2].split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                        </span>
+                      </>
+                    )}
+                  </span>
+                )}
+                
+                {location.startsWith('/billing') && (
+                  <span>
+                    Billing{location !== '/billing' && (
+                      <>
+                        <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <span>
+                          {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
+                        </span>
+                      </>
+                    )}
+                  </span>
+                )}
+                
+                {location.startsWith('/reports') && (
+                  <span>
+                    Reports{location !== '/reports' && (
+                      <>
+                        <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <span>
+                          {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
+                        </span>
+                      </>
+                    )}
+                  </span>
+                )}
+                
+                {location.startsWith('/app-store') && (
+                  <span>
+                    App Store{location !== '/app-store' && (
+                      <>
+                        <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        <span>
+                          {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
+                        </span>
+                      </>
+                    )}
+                  </span>
                 )}
               </>
             )}
