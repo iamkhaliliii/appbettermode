@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { 
   Home, 
   FileText as FileTextIcon,
-  FolderArchive,
+  Folder,
   PanelsLeftBottom, 
   Users, 
   Shapes, 
@@ -96,7 +96,7 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
         <nav className="space-y-2 flex-grow flex flex-col items-center pt-1.5">
           <NavItem 
             href="/content" 
-            icon={<FolderArchive className="h-4 w-4" />} 
+            icon={<Folder className="h-4 w-4" />} 
             isActive={location === '/content'} 
             collapsed={true}
           >
