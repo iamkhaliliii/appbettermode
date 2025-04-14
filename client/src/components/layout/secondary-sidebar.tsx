@@ -24,15 +24,15 @@ function SideNavItem({ href, icon, children, isActive, badge }: SideNavItemProps
       <Link href={href}>
         <div
           className={cn(
-            "flex items-center px-3 py-2 text-sm rounded cursor-pointer my-0.5 transition-colors duration-150",
+            "flex items-center px-3 py-1.5 text-sm rounded cursor-pointer my-0.5 transition-colors duration-150",
             isActive 
-              ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white font-medium shadow-sm" 
-              : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white font-medium"
+              ? "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white font-medium border-l-2 border-gray-400 dark:border-gray-500" 
+              : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-white font-medium"
           )}
         >
           {icon && (
             <span className={cn(
-              "flex-shrink-0 mr-2",
+              "flex-shrink-0 mr-2 text-[14px]",
               isActive 
                 ? "text-gray-900 dark:text-white" 
                 : "text-gray-600 dark:text-gray-400"
@@ -40,7 +40,7 @@ function SideNavItem({ href, icon, children, isActive, badge }: SideNavItemProps
               {icon}
             </span>
           )}
-          <span className={isActive ? "font-semibold" : "font-medium"}>{children}</span>
+          <span className={isActive ? "font-medium" : "font-normal"}>{children}</span>
           {badge && (
             <span className="ml-auto bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-[10px] px-1.5 py-0.5 rounded-full">
               {badge}
@@ -117,7 +117,7 @@ export function SecondarySidebar() {
   const renderContentSidebar = () => (
     <div className="p-4">
       <div className="mb-3">
-        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500">content</h2>
+        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Content</h2>
       </div>
       
       <div className="space-y-1">
@@ -155,7 +155,7 @@ export function SecondarySidebar() {
   const renderPeopleSidebar = () => (
     <div className="p-4">
       <div className="mb-3">
-        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500">people</h2>
+        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">People</h2>
       </div>
       
       <div className="space-y-1">
@@ -200,7 +200,7 @@ export function SecondarySidebar() {
   const renderSettingsSidebar = () => (
     <div className="p-4">
       <div className="mb-3">
-        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500">settings</h2>
+        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Settings</h2>
       </div>
       
       <div className="space-y-1">
@@ -259,7 +259,7 @@ export function SecondarySidebar() {
   const renderDesignStudioSidebar = () => (
     <div className="p-4">
       <div className="mb-3">
-        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500">design studio</h2>
+        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Design studio</h2>
       </div>
       
       <div className="space-y-1">
@@ -283,7 +283,7 @@ export function SecondarySidebar() {
   const renderAppearanceSidebar = () => (
     <div className="p-4">
       <div className="mb-3">
-        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500">appearance</h2>
+        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Appearance</h2>
       </div>
       
       <div className="space-y-1">
@@ -321,7 +321,7 @@ export function SecondarySidebar() {
   const renderBillingSidebar = () => (
     <div className="p-4">
       <div className="mb-3">
-        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500">billing</h2>
+        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Billing</h2>
       </div>
       
       <div className="space-y-1">
@@ -352,7 +352,7 @@ export function SecondarySidebar() {
   const renderReportsSidebar = () => (
     <div className="p-4">
       <div className="mb-3">
-        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500">reports</h2>
+        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Reports</h2>
       </div>
       
       <div className="space-y-1">
@@ -418,7 +418,7 @@ export function SecondarySidebar() {
   const renderAppStoreSidebar = () => (
     <div className="p-4">
       <div className="mb-3">
-        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500">app store</h2>
+        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">App store</h2>
       </div>
       
       <div className="space-y-1">
@@ -462,7 +462,7 @@ export function SecondarySidebar() {
   };
 
   return (
-    <aside className="secondary-sidebar bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-[calc(100vh-3rem)] overflow-y-auto sticky top-12 w-64">
+    <aside className="secondary-sidebar bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-[calc(100vh-3rem)] overflow-y-auto sticky top-12 w-56">
       {getSidebarForLocation()}
     </aside>
   );
