@@ -134,7 +134,7 @@ export function SecondarySidebar() {
           
           <SideNavItem 
             href="/settings/notifications" 
-            icon={<svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            icon={<svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M9 12H15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
               <path d="M9 15H15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
               <path d="M12 3V5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
@@ -150,7 +150,7 @@ export function SecondarySidebar() {
           
           <SideNavItem 
             href="/settings/integrations" 
-            icon={<svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            icon={<svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M9 6H7C5.89543 6 5 6.89543 5 8V10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
               <path d="M15 6H17C18.1046 6 19 6.89543 19 8V10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
               <path d="M5 14V16C5 17.1046 5.89543 18 7 18H9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
