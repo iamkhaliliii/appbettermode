@@ -18,7 +18,7 @@ import {
 
 interface SideNavItemProps {
   href: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   children: React.ReactNode;
   isActive?: boolean;
   badge?: string;
@@ -35,14 +35,16 @@ function SideNavItem({ href, icon, children, isActive, badge }: SideNavItemProps
               : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200"
           )}
         >
-          <span className={cn(
-            "flex-shrink-0 mr-2",
-            isActive 
-              ? "text-primary-700 dark:text-primary-300" 
-              : "text-gray-500 dark:text-gray-400"
-          )}>
-            {icon}
-          </span>
+          {icon && (
+            <span className={cn(
+              "flex-shrink-0 mr-2",
+              isActive 
+                ? "text-primary-700 dark:text-primary-300" 
+                : "text-gray-500 dark:text-gray-400"
+            )}>
+              {icon}
+            </span>
+          )}
           <span>{children}</span>
           {badge && (
             <span className="ml-auto bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-[10px] px-1.5 py-0.5 rounded-full">
