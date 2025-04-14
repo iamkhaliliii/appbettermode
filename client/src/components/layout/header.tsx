@@ -5,14 +5,14 @@ import { useState } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { cn } from "@/lib/utils";
+import { useLocation } from "wouter";
 
 interface HeaderProps {
   onToggleMobileMenu: () => void;
 }
 
 export function Header({ onToggleMobileMenu }: HeaderProps) {
-  // Set all sections inactive initially
-  const [activeSection, setActiveSection] = useState("");
+  const [location] = useLocation();
 
   return (
     <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
@@ -157,11 +157,69 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
         <div className="flex-1 flex items-center justify-between px-3">
           {/* Breadcrumbs */}
           <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
-            <span>Settings</span>
-            <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <span className="font-medium text-gray-900 dark:text-white">Profile</span>
+            {location.startsWith('/dashboard') && (
+              <>
+                <span>Dashboard</span>
+                {location !== '/dashboard' && (
+                  <>
+                    <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
+                    </span>
+                  </>
+                )}
+              </>
+            )}
+            
+            {location.startsWith('/content') && (
+              <>
+                <span>Content</span>
+                {location !== '/content' && (
+                  <>
+                    <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
+                    </span>
+                  </>
+                )}
+              </>
+            )}
+
+            {location.startsWith('/analytics') && (
+              <>
+                <span>Analytics</span>
+                {location !== '/analytics' && (
+                  <>
+                    <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
+                    </span>
+                  </>
+                )}
+              </>
+            )}
+
+            {location.startsWith('/settings') && (
+              <>
+                <span>Settings</span>
+                {location !== '/settings' && (
+                  <>
+                    <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {location.split('/')[2].split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                    </span>
+                  </>
+                )}
+              </>
+            )}
           </div>
 
           {/* Action Buttons */}

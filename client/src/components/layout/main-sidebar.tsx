@@ -117,8 +117,17 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
       <div className="px-1.5 py-3 h-full flex flex-col">
         <nav className="space-y-2 flex-grow flex flex-col items-center pt-1.5">
           <NavItem 
+            href="/dashboard" 
+            icon={<LayoutDashboard className="h-4 w-4" />} 
+            isActive={location === '/dashboard'} 
+            collapsed={true}
+          >
+            Dashboard
+          </NavItem>
+          
+          <NavItem 
             href="/content" 
-            icon={<Folder className="h-4 w-4" />} 
+            icon={<FileTextIcon className="h-4 w-4" />} 
             isActive={location === '/content'} 
             collapsed={true}
           >
@@ -126,30 +135,30 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
           </NavItem>
           
           <NavItem 
-            href="/people" 
+            href="/analytics" 
+            icon={<BarChart3 className="h-4 w-4" />} 
+            isActive={location === '/analytics'} 
+            collapsed={true}
+          >
+            Analytics
+          </NavItem>
+          
+          <NavItem 
+            href="#" 
             icon={<Users className="h-4 w-4" />} 
-            isActive={location === '/people'} 
+            isActive={location === '/users'} 
             collapsed={true}
           >
-            People
+            Users
           </NavItem>
           
           <NavItem 
-            href="/design-studio" 
-            icon={<PanelsLeftBottom className="h-4 w-4" />} 
-            isActive={location === '/design-studio'} 
+            href="#" 
+            icon={<ShoppingBag className="h-4 w-4" />} 
+            isActive={location === '/products'} 
             collapsed={true}
           >
-            Design Studio
-          </NavItem>
-          
-          <NavItem 
-            href="/appearance" 
-            icon={<Shapes className="h-4 w-4" />} 
-            isActive={location === '/appearance'} 
-            collapsed={true}
-          >
-            Appearance
+            Products
           </NavItem>
           
           <NavItem 
@@ -159,33 +168,6 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
             collapsed={true}
           >
             Settings
-          </NavItem>
-          
-          <NavItem 
-            href="/billing" 
-            icon={<CreditCard className="h-4 w-4" />} 
-            isActive={location === '/billing'} 
-            collapsed={true}
-          >
-            Billing
-          </NavItem>
-          
-          <NavItem 
-            href="/reports" 
-            icon={<BarChart2 className="h-4 w-4" />} 
-            isActive={location === '/reports'} 
-            collapsed={true}
-          >
-            Reports
-          </NavItem>
-          
-          <NavItem 
-            href="/app-store" 
-            icon={<ShoppingBag className="h-4 w-4" />} 
-            isActive={location === '/app-store'} 
-            collapsed={true}
-          >
-            App Store
           </NavItem>
         </nav>
         
