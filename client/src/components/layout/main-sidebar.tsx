@@ -188,6 +188,27 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
         </nav>
         
         <div className="mt-auto flex flex-col items-center gap-3 pb-2">
+          {/* Onboarding button with GraduationCap icon */}
+          <Tooltip.Provider delayDuration={200}>
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <button className="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-300 p-1.5">
+                  <GraduationCap className="h-4 w-4" />
+                </button>
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  className="bg-gray-900 text-white px-2 py-1 rounded text-sm animate-in fade-in-50 data-[side=right]:slide-in-from-left-2"
+                  side="right"
+                  sideOffset={10}
+                >
+                  <span>Onboarding</span>
+                  <Tooltip.Arrow className="fill-gray-900" />
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+          </Tooltip.Provider>
+          
           {/* Dark mode toggle button */}
           <Tooltip.Provider delayDuration={200}>
             <Tooltip.Root>
@@ -210,27 +231,6 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
                   sideOffset={10}
                 >
                   <span>{isDarkMode ? 'Light mode' : 'Dark mode'}</span>
-                  <Tooltip.Arrow className="fill-gray-900" />
-                </Tooltip.Content>
-              </Tooltip.Portal>
-            </Tooltip.Root>
-          </Tooltip.Provider>
-          
-          {/* Onboarding button with GraduationCap icon */}
-          <Tooltip.Provider delayDuration={200}>
-            <Tooltip.Root>
-              <Tooltip.Trigger asChild>
-                <button className="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-300 p-1.5">
-                  <GraduationCap className="h-4 w-4" />
-                </button>
-              </Tooltip.Trigger>
-              <Tooltip.Portal>
-                <Tooltip.Content
-                  className="bg-gray-900 text-white px-2 py-1 rounded text-sm animate-in fade-in-50 data-[side=right]:slide-in-from-left-2"
-                  side="right"
-                  sideOffset={10}
-                >
-                  <span>Onboarding</span>
                   <Tooltip.Arrow className="fill-gray-900" />
                 </Tooltip.Content>
               </Tooltip.Portal>
