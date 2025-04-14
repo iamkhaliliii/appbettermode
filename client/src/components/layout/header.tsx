@@ -166,8 +166,8 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-2">
-            <Button variant="secondary-gray" size="sm">
-              <ExternalLink />
+            <Button variant="secondary-gray" size="sm" className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300">
+              <ExternalLink className="h-4 w-4 mr-1" />
               View
             </Button>
 
