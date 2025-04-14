@@ -2,8 +2,8 @@ import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { 
   Home, 
-  FileText,
-  Folders,
+  FileText as FileTextIcon,
+  FolderArchive,
   PanelsLeftBottom, 
   Users, 
   Shapes, 
@@ -96,7 +96,7 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
         <nav className="space-y-2 flex-grow flex flex-col items-center pt-1.5">
           <NavItem 
             href="/content" 
-            icon={<Folders className="h-4 w-4" />} 
+            icon={<FolderArchive className="h-4 w-4" />} 
             isActive={location === '/content'} 
             collapsed={true}
           >
