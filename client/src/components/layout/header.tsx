@@ -5,6 +5,7 @@ import { useState } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { cn } from "@/lib/utils";
+import logoSvg from "@/assets/logo.svg";
 
 interface HeaderProps {
   onToggleMobileMenu: () => void;
@@ -19,9 +20,7 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
       <div className="h-12 flex items-center">
         {/* Logo Section - same width as sidebar */}
         <div className="w-12 h-full flex items-center justify-center border-r border-gray-200">
-          <svg className="h-6 w-6 text-primary-600" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-          </svg>
+          <img src={logoSvg} alt="Logo" className="h-6 w-6" />
         </div>
 
         {/* Middle Section - App Navigation */}
