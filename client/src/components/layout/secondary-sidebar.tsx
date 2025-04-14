@@ -139,138 +139,77 @@ export function SecondarySidebar() {
       
       <div className="space-y-1">
         <SideNavItem 
-          href="/content/pages" 
-          icon={<svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5 7.8C5 6.11984 5 5.27976 5.32698 4.63803C5.6146 4.07354 6.07354 3.6146 6.63803 3.32698C7.27976 3 8.11984 3 9.8 3H14.2C15.8802 3 16.7202 3 17.362 3.32698C17.9265 3.6146 18.3854 4.07354 18.673 4.63803C19 5.27976 19 6.11984 19 7.8V16.2C19 17.8802 19 18.7202 18.673 19.362C18.3854 19.9265 17.9265 20.3854 17.362 20.673C16.7202 21 15.8802 21 14.2 21H9.8C8.11984 21 7.27976 21 6.63803 20.673C6.07354 20.3854 5.6146 19.9265 5.32698 19.362C5 18.7202 5 17.8802 5 16.2V7.8Z" stroke="currentColor" strokeWidth="1.5"/>
-            <path d="M9 17H15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M9 12H15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M9 7H15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-          </svg>} 
-          isActive={location === '/content/pages'}
+          href="/content"
+          isActive={location === '/content'}
         >
-          Pages
+          Content
         </SideNavItem>
         
         <SideNavItem 
-          href="/content/articles" 
-          icon={<svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 9H15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M9 12H15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M9 15H12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M19.5 3H4.5C3.67157 3 3 3.67157 3 4.5V19.5C3 20.3284 3.67157 21 4.5 21H19.5C20.3284 21 21 20.3284 21 19.5V4.5C21 3.67157 20.3284 3 19.5 3Z" stroke="currentColor" strokeWidth="1.5"/>
-          </svg>} 
-          isActive={location === '/content/articles'}
-          badge="3"
+          href="/content/posts"
+          isActive={location === '/content/posts'}
         >
-          Articles
+          Posts
         </SideNavItem>
         
         <SideNavItem 
-          href="/content/media" 
-          icon={<svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 14L14.5 10.5L11.5 13.5L9 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M7 14C8.10457 14 9 13.1046 9 12C9 10.8954 8.10457 10 7 10C5.89543 10 5 10.8954 5 12C5 13.1046 5.89543 14 7 14Z" stroke="currentColor" strokeWidth="1.5"/>
-            <rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-          </svg>} 
-          isActive={location === '/content/media'}
+          href="/content/spaces"
+          isActive={location === '/content/spaces'}
         >
-          Media
+          Spaces
         </SideNavItem>
         
         <SideNavItem 
-          href="/content/forms" 
-          icon={<svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-            <path d="M16 10H8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M16 14H8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-          </svg>} 
-          isActive={location === '/content/forms'}
+          href="/content/tags"
+          isActive={location === '/content/tags'}
         >
-          Forms
-        </SideNavItem>
-        
-        <SideNavItem 
-          href="/content/templates" 
-          icon={<svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 9L13 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M20 12H13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M20 15H13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M4 9H7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M4 12H7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M4 15H7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M10 22L10 2" stroke="currentColor" strokeWidth="1.5"/>
-            <path d="M4 4L20 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M4 20L20 20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-          </svg>} 
-          isActive={location === '/content/templates'}
-        >
-          Templates
+          Tags
         </SideNavItem>
       </div>
     </div>
   );
 
-  const renderAnalyticsSidebar = () => (
+  const renderPeopleSidebar = () => (
     <div className="p-3">
       <div className="mb-3">
-        <h2 className="text-base font-medium text-gray-900 dark:text-white">Analytics</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">View and analyze data</p>
+        <h2 className="text-base font-medium text-gray-900 dark:text-white">People</h2>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Manage users and permissions</p>
       </div>
       
       <div className="space-y-1">
         <SideNavItem 
-          href="/analytics/overview" 
-          icon={<BarChart className="h-4 w-4" />} 
-          isActive={location === '/analytics/overview' || location === '/analytics'}
+          href="/people/members"
+          isActive={location === '/people/members' || location === '/people'}
         >
-          Overview
+          Members
         </SideNavItem>
         
         <SideNavItem 
-          href="/analytics/traffic" 
-          icon={<TrendingUp className="h-4 w-4" />} 
-          isActive={location === '/analytics/traffic'}
-          badge="Live"
+          href="/people/staff"
+          isActive={location === '/people/staff'}
         >
-          Traffic
+          Staff
         </SideNavItem>
         
         <SideNavItem 
-          href="/analytics/engagement" 
-          icon={<Users className="h-4 w-4" />} 
-          isActive={location === '/analytics/engagement'}
+          href="/people/invitations"
+          isActive={location === '/people/invitations'}
         >
-          Engagement
+          Invitations
         </SideNavItem>
         
         <SideNavItem 
-          href="/analytics/conversions" 
-          icon={<DollarSign className="h-4 w-4" />} 
-          isActive={location === '/analytics/conversions'}
+          href="/people/profile-fields"
+          isActive={location === '/people/profile-fields'}
         >
-          Conversions
+          Profile fields
         </SideNavItem>
         
         <SideNavItem 
-          href="/analytics/campaigns" 
-          icon={<svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 21L12 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M15.5 5.5C15.5 7.433 13.933 9 12 9C10.067 9 8.5 7.433 8.5 5.5C8.5 3.567 10.067 2 12 2C13.933 2 15.5 3.567 15.5 5.5Z" stroke="currentColor" strokeWidth="1.5"/>
-            <path d="M5 10V16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M19 10V16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M5 16C5 18.7614 8.13401 21 12 21C15.866 21 19 18.7614 19 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-          </svg>} 
-          isActive={location === '/analytics/campaigns'}
+          href="/people/badges"
+          isActive={location === '/people/badges'}
         >
-          Campaigns
-        </SideNavItem>
-        
-        <SideNavItem 
-          href="/analytics/reports" 
-          icon={<ClipboardList className="h-4 w-4" />} 
-          isActive={location === '/analytics/reports'}
-        >
-          Reports
+          Badges
         </SideNavItem>
       </div>
     </div>
@@ -367,18 +306,214 @@ export function SecondarySidebar() {
     </div>
   );
 
+  const renderDesignStudioSidebar = () => (
+    <div className="p-3">
+      <div className="mb-3">
+        <h2 className="text-base font-medium text-gray-900 dark:text-white">Design Studio</h2>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Customize your site design</p>
+      </div>
+      
+      <div className="space-y-1">
+        <SideNavItem 
+          href="/design-studio/collections"
+          isActive={location === '/design-studio/collections' || location === '/design-studio'}
+        >
+          Collections and spaces
+        </SideNavItem>
+        
+        <SideNavItem 
+          href="/design-studio/header"
+          isActive={location === '/design-studio/header'}
+        >
+          Header and sidebar
+        </SideNavItem>
+      </div>
+    </div>
+  );
+  
+  const renderAppearanceSidebar = () => (
+    <div className="p-3">
+      <div className="mb-3">
+        <h2 className="text-base font-medium text-gray-900 dark:text-white">Appearance</h2>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Customize your site's appearance</p>
+      </div>
+      
+      <div className="space-y-1">
+        <SideNavItem 
+          href="/appearance/logos"
+          isActive={location === '/appearance/logos' || location === '/appearance'}
+        >
+          Logos
+        </SideNavItem>
+        
+        <SideNavItem 
+          href="/appearance/themes"
+          isActive={location === '/appearance/themes'}
+        >
+          Themes
+        </SideNavItem>
+        
+        <SideNavItem 
+          href="/appearance/typographies"
+          isActive={location === '/appearance/typographies'}
+        >
+          Typographies
+        </SideNavItem>
+        
+        <SideNavItem 
+          href="/appearance/styles"
+          isActive={location === '/appearance/styles'}
+        >
+          Styles
+        </SideNavItem>
+      </div>
+    </div>
+  );
+  
+  const renderBillingSidebar = () => (
+    <div className="p-3">
+      <div className="mb-3">
+        <h2 className="text-base font-medium text-gray-900 dark:text-white">Billing</h2>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Manage subscriptions and payments</p>
+      </div>
+      
+      <div className="space-y-1">
+        <SideNavItem 
+          href="/billing/summary"
+          isActive={location === '/billing/summary' || location === '/billing'}
+        >
+          Summary
+        </SideNavItem>
+        
+        <SideNavItem 
+          href="/billing/subscription"
+          isActive={location === '/billing/subscription'}
+        >
+          Subscription plans
+        </SideNavItem>
+        
+        <SideNavItem 
+          href="/billing/usage"
+          isActive={location === '/billing/usage'}
+        >
+          Service usage
+        </SideNavItem>
+      </div>
+    </div>
+  );
+  
+  const renderReportsSidebar = () => (
+    <div className="p-3">
+      <div className="mb-3">
+        <h2 className="text-base font-medium text-gray-900 dark:text-white">Reports</h2>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">View analytics and logs</p>
+      </div>
+      
+      <div className="space-y-1">
+        <SideNavItem 
+          href="/reports/overview"
+          isActive={location === '/reports/overview' || location === '/reports'}
+        >
+          Overview
+        </SideNavItem>
+        
+        <SideNavItem 
+          href="/reports/engagement"
+          isActive={location === '/reports/engagement'}
+        >
+          Reach & Engagement
+        </SideNavItem>
+        
+        <SideNavItem 
+          href="/reports/people"
+          isActive={location === '/reports/people'}
+        >
+          People
+        </SideNavItem>
+        
+        <SideNavItem 
+          href="/reports/posts"
+          isActive={location === '/reports/posts'}
+        >
+          Posts
+        </SideNavItem>
+        
+        <SideNavItem 
+          href="/reports/spaces"
+          isActive={location === '/reports/spaces'}
+        >
+          Spaces
+        </SideNavItem>
+        
+        <SideNavItem 
+          href="/reports/messages"
+          isActive={location === '/reports/messages'}
+        >
+          Messages
+        </SideNavItem>
+        
+        <SideNavItem 
+          href="/reports/audit-logs"
+          isActive={location === '/reports/audit-logs'}
+        >
+          Audit logs
+        </SideNavItem>
+        
+        <SideNavItem 
+          href="/reports/email-logs"
+          isActive={location === '/reports/email-logs'}
+        >
+          Email logs
+        </SideNavItem>
+      </div>
+    </div>
+  );
+  
+  const renderAppStoreSidebar = () => (
+    <div className="p-3">
+      <div className="mb-3">
+        <h2 className="text-base font-medium text-gray-900 dark:text-white">App Store</h2>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Extend your site with apps</p>
+      </div>
+      
+      <div className="space-y-1">
+        <SideNavItem 
+          href="/app-store/integrations"
+          isActive={location === '/app-store/integrations' || location === '/app-store'}
+        >
+          Apps & Integrations
+        </SideNavItem>
+        
+        <SideNavItem 
+          href="/app-store/addons"
+          isActive={location === '/app-store/addons'}
+        >
+          Add-ons
+        </SideNavItem>
+      </div>
+    </div>
+  );
+
   const getSidebarForLocation = () => {
-    if (location.startsWith('/dashboard')) {
-      return renderDashboardSidebar();
-    } else if (location.startsWith('/content')) {
+    if (location.startsWith('/content')) {
       return renderContentSidebar();
-    } else if (location.startsWith('/analytics')) {
-      return renderAnalyticsSidebar();
+    } else if (location.startsWith('/people')) {
+      return renderPeopleSidebar();
+    } else if (location.startsWith('/design-studio')) {
+      return renderDesignStudioSidebar();
+    } else if (location.startsWith('/appearance')) {
+      return renderAppearanceSidebar();
     } else if (location.startsWith('/settings')) {
       return renderSettingsSidebar();
+    } else if (location.startsWith('/billing')) {
+      return renderBillingSidebar();
+    } else if (location.startsWith('/reports')) {
+      return renderReportsSidebar();
+    } else if (location.startsWith('/app-store')) {
+      return renderAppStoreSidebar();
     }
-    // Default to dashboard sidebar
-    return renderDashboardSidebar();
+    // Default to content sidebar
+    return renderContentSidebar();
   };
 
   return (
