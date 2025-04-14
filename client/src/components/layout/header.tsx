@@ -15,7 +15,7 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
   const [activeSection, setActiveSection] = useState("");
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
+    <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
       <div className="h-12 flex items-center">
         {/* Logo Section - same width as sidebar */}
         <div className="w-12 h-full flex items-center justify-center border-r border-gray-200">
@@ -34,7 +34,7 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
                   <Tooltip.Trigger asChild>
                     <DropdownMenu.Trigger asChild>
                       <button
-                        className="flex items-center gap-1 justify-center p-1.5 rounded-md border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                        className="flex items-center gap-1 justify-center p-1.5 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
                       >
                         <Files className="h-3.5 w-3.5" />
                         <ChevronDown className="h-2.5 w-2.5 opacity-40" />
@@ -52,16 +52,16 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
                     </Tooltip.Content>
                   </Tooltip.Portal>
                   <DropdownMenu.Content 
-                    className="bg-white rounded-md shadow-sm border border-gray-200 py-1 w-48 mt-1"
+                    className="bg-white dark:bg-gray-800 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 py-1 w-48 mt-1"
                     sideOffset={5}
                   >
-                    <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 cursor-pointer">
+                    <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
                       Home Page
                     </DropdownMenu.Item>
-                    <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 cursor-pointer">
+                    <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
                       About Us
                     </DropdownMenu.Item>
-                    <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 cursor-pointer">
+                    <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
                       Services
                     </DropdownMenu.Item>
                   </DropdownMenu.Content>
@@ -75,7 +75,7 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
                   <Tooltip.Trigger asChild>
                     <DropdownMenu.Trigger asChild>
                       <button
-                        className="flex items-center gap-1 justify-center p-1.5 rounded-md border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                        className="flex items-center gap-1 justify-center p-1.5 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
                       >
                         <Database className="h-3.5 w-3.5" />
                         <ChevronDown className="h-2.5 w-2.5 opacity-40" />
@@ -93,16 +93,16 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
                     </Tooltip.Content>
                   </Tooltip.Portal>
                   <DropdownMenu.Content 
-                    className="bg-white rounded-md shadow-sm border border-gray-200 py-1 w-48 mt-1"
+                    className="bg-white dark:bg-gray-800 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 py-1 w-48 mt-1"
                     sideOffset={5}
                   >
-                    <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 cursor-pointer">
+                    <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
                       Users
                     </DropdownMenu.Item>
-                    <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 cursor-pointer">
+                    <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
                       Products
                     </DropdownMenu.Item>
-                    <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 cursor-pointer">
+                    <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
                       Categories
                     </DropdownMenu.Item>
                   </DropdownMenu.Content>
@@ -116,7 +116,7 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
                   <Tooltip.Trigger asChild>
                     <DropdownMenu.Trigger asChild>
                       <button
-                        className="flex items-center gap-1 justify-center p-1.5 rounded-md border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                        className="flex items-center gap-1 justify-center p-1.5 rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
                       >
                         <BarChart2 className="h-3.5 w-3.5" />
                         <ChevronDown className="h-2.5 w-2.5 opacity-40" />
@@ -134,16 +134,16 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
                     </Tooltip.Content>
                   </Tooltip.Portal>
                   <DropdownMenu.Content 
-                    className="bg-white rounded-md shadow-sm border border-gray-200 py-1 w-48 mt-1"
+                    className="bg-white dark:bg-gray-800 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 py-1 w-48 mt-1"
                     sideOffset={5}
                   >
-                    <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 cursor-pointer">
+                    <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
                       Analytics
                     </DropdownMenu.Item>
-                    <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 cursor-pointer">
+                    <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
                       Conversions
                     </DropdownMenu.Item>
-                    <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 cursor-pointer">
+                    <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
                       Traffic
                     </DropdownMenu.Item>
                   </DropdownMenu.Content>
@@ -180,18 +180,18 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
                 <DropdownMenu.Content 
-                  className="bg-white rounded-md shadow-sm border border-gray-200 py-1 w-48 mt-1"
+                  className="bg-white dark:bg-gray-800 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 py-1 w-48 mt-1"
                   sideOffset={5}
                   align="end"
                 >
-                  <DropdownMenu.Item className="px-3 py-1 text-xs hover:bg-gray-50 cursor-pointer flex items-center">
+                  <DropdownMenu.Item className="px-3 py-1 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer flex items-center text-gray-700 dark:text-gray-300">
                     Publish Now
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item className="px-3 py-1 text-xs hover:bg-gray-50 cursor-pointer flex items-center">
+                  <DropdownMenu.Item className="px-3 py-1 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer flex items-center text-gray-700 dark:text-gray-300">
                     Schedule Publish
                   </DropdownMenu.Item>
-                  <DropdownMenu.Separator className="h-px bg-gray-200 my-1" />
-                  <DropdownMenu.Item className="px-3 py-1 text-xs hover:bg-gray-50 cursor-pointer flex items-center text-red-600">
+                  <DropdownMenu.Separator className="h-px bg-gray-200 dark:bg-gray-700 my-1" />
+                  <DropdownMenu.Item className="px-3 py-1 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer flex items-center text-red-600 dark:text-red-400">
                     Unpublish
                   </DropdownMenu.Item>
                 </DropdownMenu.Content>
