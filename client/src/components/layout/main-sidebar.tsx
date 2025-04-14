@@ -44,16 +44,16 @@ function NavItem({
       className={cn(
         "flex items-center justify-center p-1.5 w-8 h-8 rounded-md relative",
         isActive 
-          ? "bg-primary-200 dark:bg-primary-800 text-primary-800 dark:text-primary-200 shadow-md border border-primary-300 dark:border-primary-700" 
+          ? "bg-primary-200 dark:bg-primary-700 text-primary-800 dark:text-primary-100 shadow-md border border-primary-300 dark:border-primary-500" 
           : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200"
       )}
     >
       {isActive && (
-        <span className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1.5 h-6 bg-primary-600 dark:bg-primary-400 rounded-r-sm"></span>
+        <span className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1.5 h-6 bg-primary-600 dark:bg-primary-300 rounded-r-sm"></span>
       )}
       <span className={cn(
         isActive 
-          ? "text-primary-800 dark:text-primary-200 font-bold" 
+          ? "text-primary-800 dark:text-primary-100 font-bold" 
           : "text-gray-500 dark:text-gray-400"
       )}>
         {icon}
