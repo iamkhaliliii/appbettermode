@@ -42,12 +42,15 @@ function NavItem({
   const navContent = (
     <div
       className={cn(
-        "flex items-center justify-center p-1.5 w-8 h-8 rounded-md",
+        "flex items-center justify-center p-1.5 w-8 h-8 rounded-md relative",
         isActive 
-          ? "bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300" 
+          ? "bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 shadow-sm" 
           : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200"
       )}
     >
+      {isActive && (
+        <span className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-5 bg-primary-600 dark:bg-primary-400 rounded-r"></span>
+      )}
       <span className={cn(
         isActive 
           ? "text-primary-700 dark:text-primary-300" 
