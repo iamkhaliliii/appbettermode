@@ -2,11 +2,15 @@ import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { 
   Home, 
-  Calendar, 
-  Clipboard, 
+  FileText, 
   Users, 
-  BarChart2, 
+  Brush, 
+  Layers, 
   Settings,
+  CreditCard,
+  BarChart2,
+  ShoppingBag,
+  HelpCircle,
   LogOut
 } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
@@ -89,36 +93,39 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
       <div className="px-1.5 py-3 h-full flex flex-col">
         <nav className="space-y-2 flex-grow flex flex-col items-center pt-1.5">
           <NavItem 
-            href="/" 
-            icon={<Home className="h-4 w-4" />} 
-            isActive={location === '/'} 
+            href="/content" 
+            icon={<FileText className="h-4 w-4" />} 
+            isActive={location === '/content'} 
             collapsed={true}
           >
-            Home
+            Content
           </NavItem>
           
           <NavItem 
-            href="/pages" 
-            icon={<svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 5C4 4.44772 4.44772 4 5 4H19C19.5523 4 20 4.44772 20 5V19C20 19.5523 19.5523 20 19 20H5C4.44772 20 4 19.5523 4 19V5Z" stroke="currentColor" strokeWidth="1.5"/>
-              <path d="M15 4V11C15 11.5523 14.5523 12 14 12H10C9.44772 12 9 11.5523 9 11V4" stroke="currentColor" strokeWidth="1.5"/>
-              <path d="M8 16H16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-            </svg>} 
-            isActive={location === '/pages'} 
+            href="/people" 
+            icon={<Users className="h-4 w-4" />} 
+            isActive={location === '/people'} 
             collapsed={true}
           >
-            Pages
+            People
           </NavItem>
           
           <NavItem 
-            href="/media" 
-            icon={<svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 10L20 15M20 15L15 20M20 15H10M8 15C8 16.6569 6.65685 18 5 18C3.34315 18 2 16.6569 2 15C2 13.3431 3.34315 12 5 12C6.65685 12 8 13.3431 8 15Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>} 
-            isActive={location === '/media'} 
+            href="/design-studio" 
+            icon={<Brush className="h-4 w-4" />} 
+            isActive={location === '/design-studio'} 
             collapsed={true}
           >
-            Media
+            Design Studio
+          </NavItem>
+          
+          <NavItem 
+            href="/appearance" 
+            icon={<Layers className="h-4 w-4" />} 
+            isActive={location === '/appearance'} 
+            collapsed={true}
+          >
+            Appearance
           </NavItem>
           
           <NavItem 
@@ -131,19 +138,54 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
           </NavItem>
           
           <NavItem 
-            href="/logs" 
-            icon={<svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M17 13H13V17H11V13H7V11H11V7H13V11H17V13Z" fill="currentColor"/>
-              <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.5"/>
-            </svg>} 
-            isActive={location === '/logs'} 
+            href="/billing" 
+            icon={<CreditCard className="h-4 w-4" />} 
+            isActive={location === '/billing'} 
             collapsed={true}
           >
-            Activity Logs
+            Billing
+          </NavItem>
+          
+          <NavItem 
+            href="/reports" 
+            icon={<BarChart2 className="h-4 w-4" />} 
+            isActive={location === '/reports'} 
+            collapsed={true}
+          >
+            Reports
+          </NavItem>
+          
+          <NavItem 
+            href="/app-store" 
+            icon={<ShoppingBag className="h-4 w-4" />} 
+            isActive={location === '/app-store'} 
+            collapsed={true}
+          >
+            App Store
           </NavItem>
         </nav>
         
-        <div className="mt-auto flex justify-center pb-2">
+        <div className="mt-auto flex flex-col items-center gap-3 pb-2">
+          <Tooltip.Provider delayDuration={200}>
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <button className="text-gray-400 hover:text-gray-500 p-1.5">
+                  <HelpCircle className="h-4 w-4" />
+                </button>
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  className="bg-gray-900 text-white px-2 py-1 rounded text-sm animate-in fade-in-50 data-[side=right]:slide-in-from-left-2"
+                  side="right"
+                  sideOffset={10}
+                >
+                  <span>Onboarding</span>
+                  <Tooltip.Arrow className="fill-gray-900" />
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+          </Tooltip.Provider>
+          
           <Tooltip.Provider delayDuration={200}>
             <Tooltip.Root>
               <Tooltip.Trigger asChild>
