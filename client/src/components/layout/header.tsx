@@ -26,17 +26,17 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
 
         {/* Middle Section - App Navigation */}
         <div className="w-64 flex-shrink-0 h-full border-r border-gray-200">
-          <div className="flex h-full items-center justify-center gap-1 px-1">
+          <div className="flex h-full items-center justify-center gap-2 px-2">
             <Tooltip.Provider delayDuration={200}>
               <Tooltip.Root>
                 <DropdownMenu.Root>
                   <Tooltip.Trigger asChild>
                     <DropdownMenu.Trigger asChild>
                       <button
-                        className="flex items-center gap-0.5 justify-center p-1 rounded-sm border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                        className="flex items-center gap-1 justify-center p-1.5 rounded-md border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
                       >
-                        <FileText className="h-3 w-3" />
-                        <ChevronDown className="h-2 w-2 opacity-40" />
+                        <FileText className="h-3.5 w-3.5" />
+                        <ChevronDown className="h-2.5 w-2.5 opacity-40" />
                       </button>
                     </DropdownMenu.Trigger>
                   </Tooltip.Trigger>
@@ -74,10 +74,10 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
                   <Tooltip.Trigger asChild>
                     <DropdownMenu.Trigger asChild>
                       <button
-                        className="flex items-center gap-0.5 justify-center p-1 rounded-sm border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                        className="flex items-center gap-1 justify-center p-1.5 rounded-md border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
                       >
-                        <Database className="h-3 w-3" />
-                        <ChevronDown className="h-2 w-2 opacity-40" />
+                        <Database className="h-3.5 w-3.5" />
+                        <ChevronDown className="h-2.5 w-2.5 opacity-40" />
                       </button>
                     </DropdownMenu.Trigger>
                   </Tooltip.Trigger>
@@ -115,10 +115,10 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
                   <Tooltip.Trigger asChild>
                     <DropdownMenu.Trigger asChild>
                       <button
-                        className="flex items-center gap-0.5 justify-center p-1 rounded-sm border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                        className="flex items-center gap-1 justify-center p-1.5 rounded-md border border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
                       >
-                        <BarChart2 className="h-3 w-3" />
-                        <ChevronDown className="h-2 w-2 opacity-40" />
+                        <BarChart2 className="h-3.5 w-3.5" />
+                        <ChevronDown className="h-2.5 w-2.5 opacity-40" />
                       </button>
                     </DropdownMenu.Trigger>
                   </Tooltip.Trigger>
