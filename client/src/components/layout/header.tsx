@@ -18,7 +18,7 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
     <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30">
       <div className="h-12 flex items-center">
         {/* Logo Section - same width as sidebar */}
-        <div className="w-12 h-full flex items-center justify-center border-r border-gray-200">
+        <div className="w-12 h-full flex items-center justify-center border-r border-gray-200 dark:border-gray-700">
           <svg width="24" height="24" viewBox="0 0 58 58" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M28.9912 0C12.9792 0 0 12.9792 0 28.9912C0 45.0032 12.9792 57.9824 28.9912 57.9824C45.0032 57.9824 57.9824 45.0032 57.9824 28.9912C57.9824 12.9792 45.0032 0 28.9912 0ZM34.4282 38.051H23.5554C18.551 38.051 14.4967 33.9956 14.4967 28.9912C14.4967 23.9868 18.5521 19.9315 23.5554 19.9315H34.4282C39.4326 19.9315 43.4868 23.9868 43.4868 28.9912C43.4868 33.9956 39.4315 38.051 34.4282 38.051Z" fill="currentColor"/>
             <path d="M34.427 36.2389C38.4299 36.2389 41.6748 32.9939 41.6748 28.9911C41.6748 24.9882 38.4299 21.7433 34.427 21.7433C30.4242 21.7433 27.1792 24.9882 27.1792 28.9911C27.1792 32.9939 30.4242 36.2389 34.427 36.2389Z" fill="currentColor"/>
@@ -26,7 +26,7 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
         </div>
 
         {/* Middle Section - App Navigation */}
-        <div className="w-48 flex-shrink-0 h-full border-r border-gray-200">
+        <div className="w-48 flex-shrink-0 h-full border-r border-gray-200 dark:border-gray-700">
           <div className="flex h-full items-center justify-center gap-2 px-2">
             <Tooltip.Provider delayDuration={200}>
               <Tooltip.Root>
@@ -156,12 +156,12 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
         {/* Right Section - Breadcrumbs and Actions */}
         <div className="flex-1 flex items-center justify-between px-3">
           {/* Breadcrumbs */}
-          <div className="flex items-center text-xs text-gray-500">
+          <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
             <span>Settings</span>
             <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            <span className="font-medium text-gray-900">Profile</span>
+            <span className="font-medium text-gray-900 dark:text-white">Profile</span>
           </div>
 
           {/* Action Buttons */}
