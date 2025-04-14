@@ -1,11 +1,6 @@
 import { Link, useLocation } from "wouter";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { 
-  Search, 
-  Plus, 
-  MoreVertical, 
   BarChart, 
   TrendingUp, 
   Users, 
@@ -60,10 +55,10 @@ export function SecondarySidebar() {
   const [location] = useLocation();
 
   const renderDashboardSidebar = () => (
-    <div className="p-3">
-      <div className="mb-3">
+    <div className="p-4">
+      <div className="mb-4">
         <h2 className="text-base font-medium text-gray-900 dark:text-white">Dashboard</h2>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Overview and quick actions</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Overview and quick actions</p>
       </div>
       
       <div className="space-y-1">
@@ -124,17 +119,6 @@ export function SecondarySidebar() {
       <div className="mb-4">
         <h2 className="text-base font-medium text-gray-900 dark:text-white">Content</h2>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Manage your content</p>
-      </div>
-      
-      <div className="relative w-full mb-3">
-        <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
-        <Input placeholder="Search content..." className="pl-7 h-8 text-xs" />
-      </div>
-      
-      <div className="mb-3">
-        <Button variant="default" size="sm" className="w-full text-xs">
-          <Plus className="h-3.5 w-3.5 mr-1" /> Add New Content
-        </Button>
       </div>
       
       <div className="space-y-1">
