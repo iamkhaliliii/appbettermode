@@ -44,7 +44,7 @@ function NavItem({
       className={cn(
         "flex items-center justify-center p-1.5 w-8 h-8 rounded-md relative",
         isActive 
-          ? "bg-primary-200 dark:bg-primary-700 text-primary-800 dark:text-primary-100 shadow-md border border-primary-300 dark:border-primary-500" 
+          ? "bg-primary-200 dark:bg-primary-700 text-primary-800 dark:text-primary-100 shadow-md dark:shadow-primary-900/50 border border-primary-300 dark:border-primary-400" 
           : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200"
       )}
     >
