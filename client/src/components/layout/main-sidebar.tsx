@@ -42,14 +42,14 @@ function NavItem({
       className={cn(
         "flex items-center justify-center p-1.5 w-8 h-8 rounded-md",
         isActive 
-          ? "bg-primary-50 text-primary-700" 
-          : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+          ? "bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300" 
+          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200"
       )}
     >
       <span className={cn(
         isActive 
-          ? "text-primary-700" 
-          : "text-gray-500"
+          ? "text-primary-700 dark:text-primary-300" 
+          : "text-gray-500 dark:text-gray-400"
       )}>
         {icon}
       </span>
@@ -193,7 +193,7 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
             <Tooltip.Root>
               <Tooltip.Trigger asChild>
                 <button 
-                  className="text-gray-400 hover:text-gray-500 p-1.5"
+                  className="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-300 p-1.5"
                   onClick={toggleDarkMode}
                 >
                   {isDarkMode ? (
@@ -220,7 +220,7 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
           <Tooltip.Provider delayDuration={200}>
             <Tooltip.Root>
               <Tooltip.Trigger asChild>
-                <button className="text-gray-400 hover:text-gray-500 p-1.5">
+                <button className="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-300 p-1.5">
                   <GraduationCap className="h-4 w-4" />
                 </button>
               </Tooltip.Trigger>
@@ -240,13 +240,13 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
           <Tooltip.Provider delayDuration={200}>
             <Tooltip.Root>
               <Tooltip.Trigger asChild>
-                <button className="relative text-gray-400 hover:text-gray-500">
+                <button className="relative text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-300">
                   <img 
-                    className="h-6 w-6 rounded-full border border-gray-200" 
+                    className="h-6 w-6 rounded-full border border-gray-200 dark:border-gray-700" 
                     src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
                     alt="User profile" 
                   />
-                  <div className="absolute bottom-0 right-0 h-1.5 w-1.5 rounded-full bg-green-500 ring-1 ring-white"></div>
+                  <div className="absolute bottom-0 right-0 h-1.5 w-1.5 rounded-full bg-green-500 ring-1 ring-white dark:ring-gray-800"></div>
                 </button>
               </Tooltip.Trigger>
               <Tooltip.Portal>

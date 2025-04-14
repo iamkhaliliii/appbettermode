@@ -31,8 +31,8 @@ function SideNavItem({ href, icon, children, isActive, badge }: SideNavItemProps
           className={cn(
             "flex items-center px-2 py-1.5 text-xs rounded cursor-pointer my-0.5",
             isActive 
-              ? "bg-primary-50 text-primary-700 font-medium" 
-              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+              ? "bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 font-medium" 
+              : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200"
           )}
         >
           <span className={cn(
@@ -61,8 +61,8 @@ export function SecondarySidebar() {
     <aside className="secondary-sidebar bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-[calc(100vh-3rem)] overflow-y-auto sticky top-12 w-48">
       <div className="p-3">
         <div className="mb-3">
-          <h2 className="text-base font-medium text-gray-900">Settings</h2>
-          <p className="text-xs text-gray-500 mt-0.5">Manage your account settings</p>
+          <h2 className="text-base font-medium text-gray-900 dark:text-white">Settings</h2>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Manage your account settings</p>
         </div>
         
         <div className="space-y-1">
