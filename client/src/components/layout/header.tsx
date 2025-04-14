@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Bell, Menu, ChevronDown, ExternalLink, Database, BarChart2, Layers } from "lucide-react";
+import { Bell, Menu, ChevronDown, ExternalLink, Database, BarChart2, FileText, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import * as Tooltip from "@radix-ui/react-tooltip";
@@ -26,24 +26,143 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
         {/* Middle Section - App Navigation */}
         <div className="w-64 flex-shrink-0 h-full border-r border-gray-200">
           <div className="flex h-full justify-center">
-            <HeaderNavItem 
-              tooltip="Spaces"
-              isActive={activeSection === "spaces"} 
-              onClick={() => setActiveSection("spaces")} 
-              icon={<Layers className="h-5 w-5" />}
-            />
-            <HeaderNavItem 
-              tooltip="Database"
-              isActive={activeSection === "cms"} 
-              onClick={() => setActiveSection("cms")} 
-              icon={<Database className="h-5 w-5" />}
-            />
-            <HeaderNavItem 
-              tooltip="Insights"
-              isActive={activeSection === "insights"} 
-              onClick={() => setActiveSection("insights")} 
-              icon={<BarChart2 className="h-5 w-5" />}
-            />
+            <Tooltip.Provider delayDuration={200}>
+              <Tooltip.Root>
+                <DropdownMenu.Root>
+                  <Tooltip.Trigger asChild>
+                    <DropdownMenu.Trigger asChild>
+                      <button
+                        className={cn(
+                          "h-full px-5 flex items-center gap-0.5 justify-center border-b-2 relative",
+                          activeSection === "spaces" 
+                            ? "text-primary-700 border-primary-700" 
+                            : "text-gray-500 border-transparent hover:text-gray-800 hover:border-gray-300"
+                        )}
+                      >
+                        <FileText className="h-5 w-5" />
+                        <ChevronDown className="h-3 w-3 opacity-60 ml-0.5" />
+                      </button>
+                    </DropdownMenu.Trigger>
+                  </Tooltip.Trigger>
+                  <Tooltip.Portal>
+                    <Tooltip.Content
+                      className="bg-gray-900 text-white px-2 py-1 rounded text-xs"
+                      side="bottom"
+                      sideOffset={5}
+                    >
+                      Pages
+                      <Tooltip.Arrow className="fill-gray-900" />
+                    </Tooltip.Content>
+                  </Tooltip.Portal>
+                  <DropdownMenu.Content 
+                    className="bg-white rounded-md shadow-sm border border-gray-200 py-1 w-48 mt-1"
+                    sideOffset={5}
+                  >
+                    <DropdownMenu.Item className="px-3 py-1.5 text-sm hover:bg-gray-50 cursor-pointer">
+                      Home Page
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item className="px-3 py-1.5 text-sm hover:bg-gray-50 cursor-pointer">
+                      About Us
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item className="px-3 py-1.5 text-sm hover:bg-gray-50 cursor-pointer">
+                      Services
+                    </DropdownMenu.Item>
+                  </DropdownMenu.Content>
+                </DropdownMenu.Root>
+              </Tooltip.Root>
+            </Tooltip.Provider>
+            
+            <Tooltip.Provider delayDuration={200}>
+              <Tooltip.Root>
+                <DropdownMenu.Root>
+                  <Tooltip.Trigger asChild>
+                    <DropdownMenu.Trigger asChild>
+                      <button
+                        className={cn(
+                          "h-full px-5 flex items-center gap-0.5 justify-center border-b-2 relative",
+                          activeSection === "cms" 
+                            ? "text-primary-700 border-primary-700" 
+                            : "text-gray-500 border-transparent hover:text-gray-800 hover:border-gray-300"
+                        )}
+                      >
+                        <Database className="h-5 w-5" />
+                        <ChevronDown className="h-3 w-3 opacity-60 ml-0.5" />
+                      </button>
+                    </DropdownMenu.Trigger>
+                  </Tooltip.Trigger>
+                  <Tooltip.Portal>
+                    <Tooltip.Content
+                      className="bg-gray-900 text-white px-2 py-1 rounded text-xs"
+                      side="bottom"
+                      sideOffset={5}
+                    >
+                      Database
+                      <Tooltip.Arrow className="fill-gray-900" />
+                    </Tooltip.Content>
+                  </Tooltip.Portal>
+                  <DropdownMenu.Content 
+                    className="bg-white rounded-md shadow-sm border border-gray-200 py-1 w-48 mt-1"
+                    sideOffset={5}
+                  >
+                    <DropdownMenu.Item className="px-3 py-1.5 text-sm hover:bg-gray-50 cursor-pointer">
+                      Users
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item className="px-3 py-1.5 text-sm hover:bg-gray-50 cursor-pointer">
+                      Products
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item className="px-3 py-1.5 text-sm hover:bg-gray-50 cursor-pointer">
+                      Categories
+                    </DropdownMenu.Item>
+                  </DropdownMenu.Content>
+                </DropdownMenu.Root>
+              </Tooltip.Root>
+            </Tooltip.Provider>
+            
+            <Tooltip.Provider delayDuration={200}>
+              <Tooltip.Root>
+                <DropdownMenu.Root>
+                  <Tooltip.Trigger asChild>
+                    <DropdownMenu.Trigger asChild>
+                      <button
+                        className={cn(
+                          "h-full px-5 flex items-center gap-0.5 justify-center border-b-2 relative",
+                          activeSection === "insights" 
+                            ? "text-primary-700 border-primary-700" 
+                            : "text-gray-500 border-transparent hover:text-gray-800 hover:border-gray-300"
+                        )}
+                      >
+                        <BarChart2 className="h-5 w-5" />
+                        <ChevronDown className="h-3 w-3 opacity-60 ml-0.5" />
+                      </button>
+                    </DropdownMenu.Trigger>
+                  </Tooltip.Trigger>
+                  <Tooltip.Portal>
+                    <Tooltip.Content
+                      className="bg-gray-900 text-white px-2 py-1 rounded text-xs"
+                      side="bottom"
+                      sideOffset={5}
+                    >
+                      Insights
+                      <Tooltip.Arrow className="fill-gray-900" />
+                    </Tooltip.Content>
+                  </Tooltip.Portal>
+                  <DropdownMenu.Content 
+                    className="bg-white rounded-md shadow-sm border border-gray-200 py-1 w-48 mt-1"
+                    sideOffset={5}
+                  >
+                    <DropdownMenu.Item className="px-3 py-1.5 text-sm hover:bg-gray-50 cursor-pointer">
+                      Analytics
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item className="px-3 py-1.5 text-sm hover:bg-gray-50 cursor-pointer">
+                      Conversions
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Item className="px-3 py-1.5 text-sm hover:bg-gray-50 cursor-pointer">
+                      Traffic
+                    </DropdownMenu.Item>
+                  </DropdownMenu.Content>
+                </DropdownMenu.Root>
+              </Tooltip.Root>
+            </Tooltip.Provider>
           </div>
         </div>
 
@@ -60,32 +179,32 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-3">
-            <Button variant="outline" size="sm" className="h-9">
+            <Button variant="outline" size="sm" className="h-9 rounded-md text-sm">
               <ExternalLink className="h-4 w-4 mr-1.5" />
               View Site
             </Button>
 
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
-                <Button className="h-9">
+                <Button className="h-9 rounded-md text-sm">
                   Publish
                   <ChevronDown className="h-4 w-4 ml-1.5" />
                 </Button>
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
                 <DropdownMenu.Content 
-                  className="bg-white rounded-md shadow-lg border border-gray-200 py-1 w-56 mt-1"
+                  className="bg-white rounded-md shadow-md border border-gray-200 py-1 w-56 mt-1"
                   sideOffset={5}
                   align="end"
                 >
-                  <DropdownMenu.Item className="px-2 py-1.5 text-sm hover:bg-gray-50 cursor-pointer flex items-center">
+                  <DropdownMenu.Item className="px-3 py-1.5 text-sm hover:bg-gray-50 cursor-pointer flex items-center">
                     Publish Now
                   </DropdownMenu.Item>
-                  <DropdownMenu.Item className="px-2 py-1.5 text-sm hover:bg-gray-50 cursor-pointer flex items-center">
+                  <DropdownMenu.Item className="px-3 py-1.5 text-sm hover:bg-gray-50 cursor-pointer flex items-center">
                     Schedule Publish
                   </DropdownMenu.Item>
                   <DropdownMenu.Separator className="h-px bg-gray-200 my-1" />
-                  <DropdownMenu.Item className="px-2 py-1.5 text-sm hover:bg-gray-50 cursor-pointer flex items-center text-red-600">
+                  <DropdownMenu.Item className="px-3 py-1.5 text-sm hover:bg-gray-50 cursor-pointer flex items-center text-red-600">
                     Unpublish
                   </DropdownMenu.Item>
                 </DropdownMenu.Content>
@@ -110,41 +229,4 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
   );
 }
 
-interface HeaderNavItemProps {
-  tooltip: string;
-  isActive: boolean;
-  onClick: () => void;
-  icon: React.ReactNode;
-}
 
-function HeaderNavItem({ tooltip, isActive, onClick, icon }: HeaderNavItemProps) {
-  return (
-    <Tooltip.Provider delayDuration={200}>
-      <Tooltip.Root>
-        <Tooltip.Trigger asChild>
-          <button
-            onClick={onClick}
-            className={cn(
-              "h-full px-5 flex items-center justify-center border-b-2",
-              isActive 
-                ? "text-primary-700 border-primary-700" 
-                : "text-gray-500 border-transparent hover:text-gray-900 hover:border-gray-300"
-            )}
-          >
-            {icon}
-          </button>
-        </Tooltip.Trigger>
-        <Tooltip.Portal>
-          <Tooltip.Content
-            className="bg-gray-900 text-white px-2 py-1 rounded text-xs"
-            side="bottom"
-            sideOffset={5}
-          >
-            {tooltip}
-            <Tooltip.Arrow className="fill-gray-900" />
-          </Tooltip.Content>
-        </Tooltip.Portal>
-      </Tooltip.Root>
-    </Tooltip.Provider>
-  );
-}
