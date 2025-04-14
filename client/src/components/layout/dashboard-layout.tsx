@@ -14,11 +14,12 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(true); // Set to true by default
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
+      setSidebarCollapsed(width < 1024 && width >= 768);
       if (width >= 768) {
         setMobileMenuOpen(false);
       }

@@ -29,20 +29,16 @@ function NavItem({
 }: NavItemProps) {
   return (
     <Link href={href}>
-      <div
+      <a
         className={cn(
-          "flex items-center justify-center relative text-sm font-medium cursor-pointer hover:bg-gray-100 transition-colors",
-          collapsed 
-            ? "w-10 h-10 mx-auto my-3 rounded-lg" 
-            : "px-3 py-2 rounded-md",
+          "flex items-center px-3 py-2 text-sm font-medium rounded-md",
           isActive 
             ? "bg-primary-50 text-primary-700" 
-            : "text-gray-700 hover:text-gray-900"
+            : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
         )}
       >
         <span className={cn(
-          "flex-shrink-0",
-          !collapsed && "mr-3",
+          "flex-shrink-0 mr-3",
           isActive 
             ? "text-primary-700" 
             : "text-gray-500"
@@ -50,18 +46,16 @@ function NavItem({
           {icon}
         </span>
         {!collapsed && (
-          <span className="flex-1">{children}</span>
+          <>
+            <span>{children}</span>
+            {badge && (
+              <span className="ml-auto bg-primary-50 text-primary-700 text-xs font-medium px-2 py-0.5 rounded-full">
+                {badge}
+              </span>
+            )}
+          </>
         )}
-        
-        {badge && (
-          <span className={cn(
-            "flex-shrink-0 text-xs font-medium bg-primary-600 text-white rounded-full flex items-center justify-center",
-            collapsed ? "absolute -top-1 -right-1 h-4 w-4" : "ml-auto px-2 py-0.5"
-          )}>
-            {badge}
-          </span>
-        )}
-      </div>
+      </a>
     </Link>
   );
 }
@@ -75,97 +69,90 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
 
   return (
     <aside className={cn(
-      "bg-white border-r border-gray-200 h-[calc(100vh-4rem)] overflow-y-auto sticky top-16 flex flex-col items-center py-6",
+      "bg-white border-r border-gray-200 h-[calc(100vh-4rem)] overflow-y-auto sticky top-16",
       collapsed ? "w-16" : "w-64"
     )}>
-      {/* Logo */}
-      {collapsed ? (
-        <div className="mb-8">
-          <svg className="h-8 w-auto text-primary-600" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-          </svg>
-        </div>
-      ) : (
-        <div className="flex items-center mb-8 px-4 w-full">
+      <div className="px-4 py-6">
+        <div className={cn(
+          "flex items-center mb-8",
+          collapsed ? "justify-center" : ""
+        )}>
           <div className="flex-shrink-0">
             <svg className="h-8 w-auto text-primary-600" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
             </svg>
           </div>
-          <div className="ml-3">
-            <h1 className="text-lg font-semibold text-gray-900">Untitled UI</h1>
-          </div>
+          {!collapsed && (
+            <div className="ml-3">
+              <h1 className="text-lg font-semibold text-gray-900">Untitled UI</h1>
+            </div>
+          )}
         </div>
-      )}
+        
+        <nav className="space-y-1">
+          <NavItem 
+            href="/" 
+            icon={<Home className="h-5 w-5" />} 
+            isActive={location === '/'} 
+            collapsed={collapsed}
+          >
+            Dashboard
+          </NavItem>
+          
+          <NavItem 
+            href="/calendar" 
+            icon={<Calendar className="h-5 w-5" />} 
+            isActive={location === '/calendar'} 
+            collapsed={collapsed}
+          >
+            Calendar
+          </NavItem>
+          
+          <NavItem 
+            href="/tasks" 
+            icon={<Clipboard className="h-5 w-5" />} 
+            isActive={location === '/tasks'} 
+            badge="10" 
+            collapsed={collapsed}
+          >
+            Tasks
+          </NavItem>
+          
+          <NavItem 
+            href="/customers" 
+            icon={<Users className="h-5 w-5" />} 
+            isActive={location === '/customers'} 
+            collapsed={collapsed}
+          >
+            Customers
+          </NavItem>
+          
+          <NavItem 
+            href="/reports" 
+            icon={<BarChart2 className="h-5 w-5" />} 
+            isActive={location === '/reports'} 
+            collapsed={collapsed}
+          >
+            Reports
+          </NavItem>
+          
+          <NavItem 
+            href="/settings" 
+            icon={<Settings className="h-5 w-5" />} 
+            isActive={location === '/settings'} 
+            collapsed={collapsed}
+          >
+            Settings
+          </NavItem>
+        </nav>
+      </div>
       
-      {/* Navigation */}
-      <nav className={cn(
-        "flex flex-col",
-        collapsed ? "items-center space-y-1" : "w-full px-4 space-y-1"
-      )}>
-        <NavItem 
-          href="/" 
-          icon={<Home className="h-5 w-5" />} 
-          isActive={location === '/'} 
-          collapsed={collapsed}
-        >
-          Dashboard
-        </NavItem>
-        
-        <NavItem 
-          href="/calendar" 
-          icon={<Calendar className="h-5 w-5" />} 
-          isActive={location === '/calendar'} 
-          collapsed={collapsed}
-        >
-          Calendar
-        </NavItem>
-        
-        <NavItem 
-          href="/tasks" 
-          icon={<Clipboard className="h-5 w-5" />} 
-          isActive={location === '/tasks'} 
-          badge="10" 
-          collapsed={collapsed}
-        >
-          Tasks
-        </NavItem>
-        
-        <NavItem 
-          href="/customers" 
-          icon={<Users className="h-5 w-5" />} 
-          isActive={location === '/customers'} 
-          collapsed={collapsed}
-        >
-          Customers
-        </NavItem>
-        
-        <NavItem 
-          href="/reports" 
-          icon={<BarChart2 className="h-5 w-5" />} 
-          isActive={location === '/reports'} 
-          collapsed={collapsed}
-        >
-          Reports
-        </NavItem>
-        
-        <NavItem 
-          href="/settings" 
-          icon={<Settings className="h-5 w-5" />} 
-          isActive={location === '/settings'} 
-          collapsed={collapsed}
-        >
-          Settings
-        </NavItem>
-      </nav>
-      
-      {/* User profile */}
       <div className={cn(
-        "border-t border-gray-200 mt-auto pt-4",
-        collapsed ? "w-full flex justify-center" : "w-full px-4"
+        "px-4 py-4 border-t border-gray-200 mt-6",
+        collapsed ? "flex justify-center" : ""
       )}>
         {collapsed ? (
-          <button className="w-10 h-10 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-500 hover:bg-gray-100">
+          <button className="text-gray-400 hover:text-gray-500">
             <LogOut className="h-5 w-5" />
           </button>
         ) : (
