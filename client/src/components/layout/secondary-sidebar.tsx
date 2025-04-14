@@ -283,7 +283,7 @@ export function SecondarySidebar() {
   const renderAppearanceSidebar = () => (
     <div className="p-4">
       <div className="mb-3">
-        <h2 className="text-xs font-normal text-gray-500 dark:text-gray-400 uppercase tracking-wider">Appearance</h2>
+        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500">appearance</h2>
       </div>
       
       <div className="space-y-1">
@@ -321,7 +321,7 @@ export function SecondarySidebar() {
   const renderBillingSidebar = () => (
     <div className="p-4">
       <div className="mb-3">
-        <h2 className="text-xs font-normal text-gray-500 dark:text-gray-400 uppercase tracking-wider">Billing</h2>
+        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500">billing</h2>
       </div>
       
       <div className="space-y-1">
@@ -352,7 +352,7 @@ export function SecondarySidebar() {
   const renderReportsSidebar = () => (
     <div className="p-4">
       <div className="mb-3">
-        <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">Reports</h2>
+        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500">reports</h2>
       </div>
       
       <div className="space-y-1">
@@ -418,7 +418,7 @@ export function SecondarySidebar() {
   const renderAppStoreSidebar = () => (
     <div className="p-4">
       <div className="mb-3">
-        <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">App Store</h2>
+        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500">app store</h2>
       </div>
       
       <div className="space-y-1">
