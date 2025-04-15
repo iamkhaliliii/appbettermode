@@ -26,15 +26,15 @@ function SideNavItem({ href, icon, children, isActive, badge }: SideNavItemProps
           className={cn(
             "flex items-center px-3 py-1.5 text-sm rounded cursor-pointer my-0.5 transition-colors duration-150",
             isActive 
-              ? "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white font-medium" 
-              : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-white font-medium"
+              ? "bg-primary-50 dark:bg-primary-900/30 text-primary-800 dark:text-primary-50 font-medium" 
+              : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-50 font-medium"
           )}
         >
           {icon && (
             <span className={cn(
               "flex-shrink-0 mr-2 text-[14px]",
               isActive 
-                ? "text-gray-900 dark:text-white" 
+                ? "text-primary-800 dark:text-primary-200" 
                 : "text-gray-600 dark:text-gray-400"
             )}>
               {icon}
@@ -42,7 +42,12 @@ function SideNavItem({ href, icon, children, isActive, badge }: SideNavItemProps
           )}
           <span className={isActive ? "font-medium" : "font-normal"}>{children}</span>
           {badge && (
-            <span className="ml-auto bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-[10px] px-1.5 py-0.5 rounded-full">
+            <span className={cn(
+              "ml-auto text-[10px] px-1.5 py-0.5 rounded-full",
+              isActive
+                ? "bg-primary-100 dark:bg-primary-900/30 text-primary-800 dark:text-primary-200"
+                : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+            )}>
               {badge}
             </span>
           )}
