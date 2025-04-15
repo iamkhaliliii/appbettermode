@@ -1060,12 +1060,11 @@ export function SecondarySidebar() {
                     className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
                   >
                     <div className="flex items-center gap-1.5">
-                      <Layout className="h-2.5 w-2.5 text-gray-500" />
-                      <span className="text-[9px] text-gray-600 dark:text-gray-300">Header</span>
+                      <Layout className="h-3.5 w-3.5 text-gray-600" />
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Header</span>
                     </div>
                     <Switch 
-                      id="header-toggle" 
-                      className="h-2.5 w-4 data-[state=checked]:bg-gray-500"
+                      id="header-toggle"
                       onCheckedChange={(checked) => {
                         // Toggle visibility of options
                         const options = document.getElementById('header-options');
@@ -1101,12 +1100,11 @@ export function SecondarySidebar() {
                     className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
                   >
                     <div className="flex items-center gap-1.5">
-                      <PanelTop className="h-2.5 w-2.5 text-gray-500 transform rotate-90" />
-                      <span className="text-[9px] text-gray-600 dark:text-gray-300">Right Sidebar</span>
+                      <PanelTop className="h-3.5 w-3.5 text-gray-600 transform rotate-90" />
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Right Sidebar</span>
                     </div>
                     <Switch 
-                      id="right-sidebar-toggle" 
-                      className="h-2.5 w-4 data-[state=checked]:bg-gray-500"
+                      id="right-sidebar-toggle"
                       onCheckedChange={(checked) => {
                         // Using only community elements with animation  
                         // Also change the community right sidebar with animation
@@ -1140,12 +1138,11 @@ export function SecondarySidebar() {
                     className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
                   >
                     <div className="flex items-center gap-1.5">
-                      <PanelLeft className="h-2.5 w-2.5 text-gray-500" />
-                      <span className="text-[9px] text-gray-600 dark:text-gray-300">Left Sidebar</span>
+                      <PanelLeft className="h-3.5 w-3.5 text-gray-600" />
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Left Sidebar</span>
                     </div>
                     <Switch 
-                      id="left-sidebar-toggle" 
-                      className="h-2.5 w-4 data-[state=checked]:bg-gray-500"
+                      id="left-sidebar-toggle"
                       onCheckedChange={(checked) => {
                         // Using only community elements with animation
                         // Also change the community left sidebar with animation
@@ -1175,12 +1172,11 @@ export function SecondarySidebar() {
                     className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
                   >
                     <div className="flex items-center gap-1.5">
-                      <Columns className="h-2.5 w-2.5 text-gray-500" />
-                      <span className="text-[9px] text-gray-600 dark:text-gray-300">Footer</span>
+                      <Columns className="h-3.5 w-3.5 text-gray-600" />
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Footer</span>
                     </div>
                     <Switch 
-                      id="footer-toggle" 
-                      className="h-2.5 w-4 data-[state=checked]:bg-gray-500"
+                      id="footer-toggle"
                       onCheckedChange={(checked) => {
                         // Using only community elements with animation
                         // Also change the community footer with animation
@@ -1215,7 +1211,7 @@ export function SecondarySidebar() {
               <div className="pt-1 pb-0 px-1">
                 <div className="relative">
                   <button
-                    className="flex items-center justify-between w-full py-1 px-2 text-[9px] border border-gray-200 dark:border-gray-700 rounded-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-100"
+                    className="flex items-center justify-between w-full py-1.5 px-2 text-xs border border-gray-200 dark:border-gray-700 rounded-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-100"
                     onClick={() => {
                       const dropdown = document.getElementById('blocks-dropdown');
                       if (dropdown) {
@@ -1224,33 +1220,33 @@ export function SecondarySidebar() {
                     }}
                   >
                     <div className="flex items-center">
-                      <Plus className="h-2.5 w-2.5 mr-1 text-gray-500" />
+                      <Plus className="h-3.5 w-3.5 mr-1.5 text-gray-600" />
                       <span>Add Block</span>
                     </div>
-                    <ChevronDown className="h-2.5 w-2.5 text-gray-500" />
+                    <ChevronDown className="h-3.5 w-3.5 text-gray-600" />
                   </button>
                   
                   {/* Dropdown for block options - Minimalist version */}
                   <div id="blocks-dropdown" className="absolute left-0 right-0 z-10 mt-1 hidden rounded-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
-                    <div className="py-0.5">
-                      <div className="flex items-center gap-1.5 px-2 py-1 text-[9px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
-                        <File className="h-2 w-2 text-gray-500" />
+                    <div className="py-1">
+                      <div className="flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
+                        <File className="h-3.5 w-3.5 text-gray-600" />
                         <span>Text</span>
                       </div>
-                      <div className="flex items-center gap-1.5 px-2 py-1 text-[9px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
-                        <Eye className="h-2 w-2 text-gray-500" />
+                      <div className="flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
+                        <Eye className="h-3.5 w-3.5 text-gray-600" />
                         <span>Image</span>
                       </div>
-                      <div className="flex items-center gap-1.5 px-2 py-1 text-[9px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
-                        <Pencil className="h-2 w-2 text-gray-500" />
+                      <div className="flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
+                        <Pencil className="h-3.5 w-3.5 text-gray-600" />
                         <span>Video</span>
                       </div>
-                      <div className="flex items-center gap-1.5 px-2 py-1 text-[9px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
-                        <FileBox className="h-2 w-2 text-gray-500" />
+                      <div className="flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
+                        <FileBox className="h-3.5 w-3.5 text-gray-600" />
                         <span>Button</span>
                       </div>
-                      <div className="flex items-center gap-1.5 px-2 py-1 text-[9px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
-                        <FileCog className="h-2 w-2 text-gray-500" />
+                      <div className="flex items-center gap-2 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
+                        <FileCog className="h-3.5 w-3.5 text-gray-600" />
                         <span>Form</span>
                       </div>
                     </div>
