@@ -1013,7 +1013,7 @@ export function SecondarySidebar() {
     return (
       <div className="p-2">
         {/* Two line header layout - ultra minimalist */}
-        <div className="sticky top-0 bg-white dark:bg-gray-800 z-10 border-b border-gray-100 dark:border-gray-800 pb-1">
+        <div className="sticky top-0 bg-white dark:bg-gray-800 z-10 pb-1">
           {/* First line - only back button */}
           <div className="flex items-center py-1">
             <button 
@@ -1045,17 +1045,16 @@ export function SecondarySidebar() {
         
         {/* Sections and Blocks - ultra minimal design */}
         <div>
-          <div className="px-0.5 mb-4">
-
+          <div className="mt-2">
             
             {/* Navigation Section with Toggles - Ultra minimal version */}
-            <div className="mb-5">
+            <div className="mb-2">
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="layout-components" className="border-0">
-                  <AccordionTrigger className="py-1 hover:no-underline">
+                  <AccordionTrigger className="py-0 px-1 hover:no-underline">
                     <h4 className="text-[11px] uppercase tracking-wide font-medium text-gray-500 dark:text-gray-400">Layout Components</h4>
                   </AccordionTrigger>
-                  <AccordionContent className="pt-2 pb-1 px-0">
+                  <AccordionContent className="pt-1 pb-0 px-0">
                     <div className="space-y-1">
                       {/* Header Navigation Row */}
                       <div 
@@ -1216,10 +1215,10 @@ export function SecondarySidebar() {
             <div className="mt-0">
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="content-blocks" className="border-0">
-                  <AccordionTrigger className="py-1 hover:no-underline">
+                  <AccordionTrigger className="py-0 px-1 hover:no-underline">
                     <h4 className="text-[11px] uppercase tracking-wide font-medium text-gray-500 dark:text-gray-400">Content Blocks</h4>
                   </AccordionTrigger>
-                  <AccordionContent className="py-2 px-0">
+                  <AccordionContent className="pt-1 pb-0 px-0">
                     <div className="relative">
                       <button
                         className="flex items-center justify-between w-full py-1.5 px-2 text-[10px] border border-gray-200 dark:border-gray-700 rounded text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-100"
