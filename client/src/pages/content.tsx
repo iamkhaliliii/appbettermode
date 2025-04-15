@@ -820,8 +820,8 @@ export default function Content() {
                   <FileOutput className="h-3 w-3" />
                 </button>
                 
-                <button className="inline-flex items-center justify-center h-6 px-2.5 rounded shadow-sm text-xs font-medium gap-1 whitespace-nowrap bg-[#7F56D9] text-white border border-[#7F56D9] hover:bg-[#7F56D9]/90 transition-colors">
-                  <Plus className="h-3 w-3" />
+                <button className="inline-flex items-center justify-center h-6 px-2.5 rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 shadow-sm text-xs font-medium gap-1 whitespace-nowrap hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                  <Plus className="h-3 w-3 mr-0.5" />
                   <span>New</span>
                 </button>
               </div>
