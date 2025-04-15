@@ -281,7 +281,7 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
           <div className="flex items-center cursor-default">
             <Folder className="h-3.5 w-3.5 mr-1 text-gray-400" />
             <Link href={path}>
-              <span className="font-medium">{name}</span>
+              <span className="font-medium text-gray-500">{name}</span>
             </Link>
           </div>
           <div 
