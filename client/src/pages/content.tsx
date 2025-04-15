@@ -822,7 +822,7 @@ export default function Content() {
           </div>
 
           {/* Main table - Full width with no padding */}
-          <div className="bg-white dark:bg-gray-800 border border-gray-200/80 dark:border-gray-700/80 shadow-sm backdrop-blur-sm overflow-auto" style={{ scrollbarWidth: 'thin' }}>
+          <div className="bg-white dark:bg-gray-800 border border-gray-200/80 dark:border-gray-700/80 shadow-sm backdrop-blur-sm overflow-auto -mt-4" style={{ scrollbarWidth: 'thin' }}>
             <Table className="w-full">
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
