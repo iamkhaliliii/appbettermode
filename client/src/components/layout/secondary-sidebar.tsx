@@ -47,41 +47,40 @@ interface SideNavItemProps {
 }
 
 function SideNavItem({ href, icon, children, isActive = false, badge }: SideNavItemProps) {
-  // Debug the active state
-  // console.log(`Item ${href} is active: ${isActive}`);
   return (
-      <Link href={href}>
-        <div
-          className={cn(
-            "flex items-center px-2 py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
+    <Link href={href}>
+      <div
+        className={cn(
+          "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
+          isActive 
+            ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-md" 
+            : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded"
+        )}
+        style={{paddingLeft: "10px", paddingRight: "10px"}}
+      >
+        {icon && (
+          <span className={cn(
+            "flex-shrink-0 mr-2 text-[14px]",
             isActive 
-              ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-md" 
-              : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded"
-          )}
-        >
-          {icon && (
-            <span className={cn(
-              "flex-shrink-0 mr-2 text-[14px]",
-              isActive 
-                ? "text-gray-900 dark:text-white" 
-                : "text-gray-600 dark:text-gray-400"
-            )}>
-              {icon}
-            </span>
-          )}
-          <span className="font-medium">{children}</span>
-          {badge && (
-            <span className={cn(
-              "ml-auto text-[10px] px-1.5 py-0.5 rounded-full",
-              isActive
-                ? "bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200"
-                : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
-            )}>
-              {badge}
-            </span>
-          )}
-        </div>
-      </Link>
+              ? "text-gray-900 dark:text-white" 
+              : "text-gray-600 dark:text-gray-400"
+          )}>
+            {icon}
+          </span>
+        )}
+        <span className="font-medium">{children}</span>
+        {badge && (
+          <span className={cn(
+            "ml-auto text-[10px] px-1.5 py-0.5 rounded-full",
+            isActive
+              ? "bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200"
+              : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+          )}>
+            {badge}
+          </span>
+        )}
+      </div>
+    </Link>
   );
 }
 
