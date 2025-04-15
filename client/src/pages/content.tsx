@@ -649,81 +649,66 @@ export default function Content() {
     return (
       <DashboardLayout>
         <div className="max-w-7xl mx-auto p-6 sm:p-8">
-          <div className="mb-6 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            <div>
-              <h1 className="text-xl font-medium text-gray-900 dark:text-white">
+          <div className="mb-4 flex flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <h1 className="text-base font-medium text-gray-900 dark:text-white">
                 All Posts
-                <span className="ml-2 text-sm text-gray-500 dark:text-gray-400 font-normal">14 items</span>
               </h1>
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                Manage all your content from a single interface
-              </p>
+              <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">14 items</span>
             </div>
             <div className="flex items-center gap-2">
-              <button className="inline-flex items-center px-2.5 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-                <FileOutput className="h-3.5 w-3.5 mr-1.5" />
-                Export
+              <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <FileOutput className="h-3 w-3" />
               </button>
-              <button className="inline-flex items-center px-2.5 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
-                <Plus className="h-3.5 w-3.5 mr-1.5" />
-                Create Post
+              <button className="inline-flex items-center justify-center h-6 w-6 rounded bg-blue-500 text-white hover:bg-blue-400 transition-colors">
+                <Plus className="h-3 w-3" />
               </button>
             </div>
           </div>
 
           {/* Filter tabs */}
-          <div className="mb-6 border-b border-gray-100 dark:border-gray-800">
-            <div className="flex flex-wrap -mb-px">
-              <button className="inline-flex items-center px-3 py-2 text-xs font-medium text-gray-900 dark:text-white border-b-2 border-gray-900 dark:border-white relative">
-                All <span className="ml-1.5 text-xs text-gray-500 dark:text-gray-400">14</span>
+          <div className="mb-3 border-b border-gray-100 dark:border-gray-800">
+            <div className="flex -mb-px">
+              <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-900 dark:text-white border-b border-gray-900 dark:border-white">
+                All <span className="ml-1 text-[10px] text-gray-500 dark:text-gray-400">14</span>
               </button>
-              <button className="inline-flex items-center px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-                Published <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-500">6</span>
+              <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                Published <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">6</span>
               </button>
-              <button className="inline-flex items-center px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-                Scheduled <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-500">3</span>
+              <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                Scheduled <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">3</span>
               </button>
-              <button className="inline-flex items-center px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-                Drafts <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-500">0</span>
+              <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                Drafts <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">0</span>
               </button>
-              <button className="inline-flex items-center px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-                Pending <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-500">0</span>
-              </button>
-              <button className="inline-flex items-center px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-                Reported <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-500">0</span>
+              <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                Pending <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">0</span>
               </button>
             </div>
           </div>
 
           {/* Table toolbar */}
-          <div className="mb-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-center gap-2 flex-wrap">
-              <button className="inline-flex items-center px-2.5 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-                <Filter className="h-3.5 w-3.5 mr-1.5" />
-                Filter
-              </button>
-              
-              <button className="inline-flex items-center px-2.5 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-                <ArrowUpDown className="h-3.5 w-3.5 mr-1.5" />
-                Sort
-              </button>
-              
-              <button className="inline-flex items-center px-2.5 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-                <Columns className="h-3.5 w-3.5 mr-1.5" />
-                Columns
-              </button>
+          <div className="mb-4 flex items-center justify-end gap-1.5">
+            <div className="relative w-full md:w-48 mr-auto">
+              <input
+                type="text"
+                placeholder="Search..."
+                className="w-full py-1 pl-7 pr-3 text-xs border-none bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md focus:outline-none focus:ring-0 transition-colors"
+              />
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400" />
             </div>
             
-            <div className="flex items-center gap-2">
-              <div className="relative w-full md:w-60">
-                <input
-                  type="text"
-                  placeholder="Search content..."
-                  className="w-full py-1 pl-8 pr-3 text-xs border-none bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md focus:outline-none focus:ring-0 transition-colors"
-                />
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
-              </div>
-            </div>
+            <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+              <Filter className="h-3 w-3" />
+            </button>
+            
+            <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+              <ArrowUpDown className="h-3 w-3" />
+            </button>
+            
+            <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+              <Columns className="h-3 w-3" />
+            </button>
           </div>
 
           {/* Main table */}
@@ -784,27 +769,20 @@ export default function Content() {
           </div>
           
           {/* Pagination controls */}
-          <div className="flex items-center justify-between gap-4 pt-4 pb-2 mt-2">
-            <div className="flex items-center gap-2">
-              <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+          <div className="flex items-center justify-between gap-2 pt-3 pb-2 mt-2">
+            <div>
+              <div className="text-xs text-gray-500 dark:text-gray-400">
                 {table.getFilteredSelectedRowModel().rows.length > 0 ? (
                   <span className="flex items-center">
                     <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400 text-xs font-semibold mr-1">
                       {table.getFilteredSelectedRowModel().rows.length}
                     </span>
-                    {table.getFilteredSelectedRowModel().rows.length === 1 ? 'item' : 'items'} selected
+                    selected
                   </span>
                 ) : (
-                  <span>No items selected</span>
+                  <span className="text-[10px]">No items selected</span>
                 )}
               </div>
-              
-              {table.getFilteredSelectedRowModel().rows.length > 0 && (
-                <button className="inline-flex items-center px-2.5 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-                  <FileOutput className="h-3.5 w-3.5 mr-1.5" />
-                  Export selected
-                </button>
-              )}
             </div>
             
             <div className="flex items-center gap-4 lg:gap-5">
