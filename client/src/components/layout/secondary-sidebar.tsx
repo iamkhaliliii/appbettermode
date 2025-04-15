@@ -1060,12 +1060,12 @@ export function SecondarySidebar() {
                     className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
                   >
                     <div className="flex items-center gap-1.5">
-                      <Layout className="h-3 w-3 text-blue-400" />
-                      <span className="text-[10px] text-gray-600 dark:text-gray-300">Header</span>
+                      <Layout className="h-2.5 w-2.5 text-gray-500" />
+                      <span className="text-[9px] text-gray-600 dark:text-gray-300">Header</span>
                     </div>
                     <Switch 
                       id="header-toggle" 
-                      className="h-3 w-5 data-[state=checked]:bg-blue-400"
+                      className="h-2.5 w-4 data-[state=checked]:bg-gray-500"
                       onCheckedChange={(checked) => {
                         // Toggle visibility of options
                         const options = document.getElementById('header-options');
@@ -1081,7 +1081,7 @@ export function SecondarySidebar() {
                             communityHeader.style.display = "flex";
                             communityHeader.style.opacity = "1";
                             communityHeader.style.transform = "translateY(0)";
-                            communityHeader.style.backgroundColor = 'rgba(219, 234, 254, 0.1)';
+                            communityHeader.style.backgroundColor = 'rgba(229, 231, 235, 0.1)';
                             communityHeader.style.borderBottom = '1px solid var(--border)';
                           } else {
                             setTimeout(() => {
@@ -1101,12 +1101,12 @@ export function SecondarySidebar() {
                     className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
                   >
                     <div className="flex items-center gap-1.5">
-                      <PanelRight className="h-3 w-3 text-red-400" />
-                      <span className="text-[10px] text-gray-600 dark:text-gray-300">Right Sidebar</span>
+                      <PanelTop className="h-2.5 w-2.5 text-gray-500 transform rotate-90" />
+                      <span className="text-[9px] text-gray-600 dark:text-gray-300">Right Sidebar</span>
                     </div>
                     <Switch 
                       id="right-sidebar-toggle" 
-                      className="h-3 w-5 data-[state=checked]:bg-red-400"
+                      className="h-2.5 w-4 data-[state=checked]:bg-gray-500"
                       onCheckedChange={(checked) => {
                         // Using only community elements with animation  
                         // Also change the community right sidebar with animation
@@ -1118,7 +1118,7 @@ export function SecondarySidebar() {
                             communityRightSidebar.style.opacity = "1";
                             communityRightSidebar.style.width = '9rem';
                             communityRightSidebar.style.borderLeft = '1px solid var(--border)';
-                            communityRightSidebar.style.backgroundColor = 'rgba(254, 226, 226, 0.1)';
+                            communityRightSidebar.style.backgroundColor = 'rgba(229, 231, 235, 0.1)';
                           } else {
                             setTimeout(() => {
                               communityRightSidebar.style.display = "none";
@@ -1140,12 +1140,12 @@ export function SecondarySidebar() {
                     className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
                   >
                     <div className="flex items-center gap-1.5">
-                      <PanelLeft className="h-3 w-3 text-green-400" />
-                      <span className="text-[10px] text-gray-600 dark:text-gray-300">Left Sidebar</span>
+                      <PanelLeft className="h-2.5 w-2.5 text-gray-500" />
+                      <span className="text-[9px] text-gray-600 dark:text-gray-300">Left Sidebar</span>
                     </div>
                     <Switch 
                       id="left-sidebar-toggle" 
-                      className="h-3 w-5 data-[state=checked]:bg-green-400"
+                      className="h-2.5 w-4 data-[state=checked]:bg-gray-500"
                       onCheckedChange={(checked) => {
                         // Using only community elements with animation
                         // Also change the community left sidebar with animation
@@ -1154,7 +1154,7 @@ export function SecondarySidebar() {
                           if (checked) {
                             communityLeftSidebar.style.transform = "translateX(0)";
                             communityLeftSidebar.style.opacity = "1";
-                            communityLeftSidebar.style.backgroundColor = 'rgba(220, 252, 231, 0.1)'; 
+                            communityLeftSidebar.style.backgroundColor = 'rgba(229, 231, 235, 0.1)'; 
                             communityLeftSidebar.style.borderRight = '1px solid var(--border)';
                             communityLeftSidebar.style.width = '9rem';
                           } else {
@@ -1175,12 +1175,12 @@ export function SecondarySidebar() {
                     className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
                   >
                     <div className="flex items-center gap-1.5">
-                      <Columns className="h-3 w-3 text-yellow-400" />
-                      <span className="text-[10px] text-gray-600 dark:text-gray-300">Footer</span>
+                      <Columns className="h-2.5 w-2.5 text-gray-500" />
+                      <span className="text-[9px] text-gray-600 dark:text-gray-300">Footer</span>
                     </div>
                     <Switch 
                       id="footer-toggle" 
-                      className="h-3 w-5 data-[state=checked]:bg-yellow-400"
+                      className="h-2.5 w-4 data-[state=checked]:bg-gray-500"
                       onCheckedChange={(checked) => {
                         // Using only community elements with animation
                         // Also change the community footer with animation
@@ -1190,7 +1190,7 @@ export function SecondarySidebar() {
                             communityFooter.style.display = "flex";
                             communityFooter.style.opacity = "1";
                             communityFooter.style.transform = "translateY(0)";
-                            communityFooter.style.backgroundColor = 'rgba(254, 240, 138, 0.1)'; 
+                            communityFooter.style.backgroundColor = 'rgba(229, 231, 235, 0.1)'; 
                             communityFooter.style.borderTop = '1px solid var(--border)';
                           } else {
                             setTimeout(() => {
@@ -1215,7 +1215,7 @@ export function SecondarySidebar() {
               <div className="pt-1 pb-0 px-1">
                 <div className="relative">
                   <button
-                    className="flex items-center justify-between w-full py-1.5 px-2 text-[10px] border border-gray-200 dark:border-gray-700 rounded text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-100"
+                    className="flex items-center justify-between w-full py-1 px-2 text-[9px] border border-gray-200 dark:border-gray-700 rounded-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-100"
                     onClick={() => {
                       const dropdown = document.getElementById('blocks-dropdown');
                       if (dropdown) {
@@ -1224,33 +1224,33 @@ export function SecondarySidebar() {
                     }}
                   >
                     <div className="flex items-center">
-                      <Plus className="h-3 w-3 mr-1.5 text-gray-500" />
+                      <Plus className="h-2.5 w-2.5 mr-1 text-gray-500" />
                       <span>Add Block</span>
                     </div>
-                    <ChevronDown className="h-3 w-3 text-gray-500" />
+                    <ChevronDown className="h-2.5 w-2.5 text-gray-500" />
                   </button>
                   
                   {/* Dropdown for block options - Minimalist version */}
-                  <div id="blocks-dropdown" className="absolute left-0 right-0 z-10 mt-1 hidden rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
-                    <div className="py-1">
-                      <div className="flex items-center gap-2 px-2 py-1.5 text-[10px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
-                        <File className="h-2.5 w-2.5 text-gray-500" />
+                  <div id="blocks-dropdown" className="absolute left-0 right-0 z-10 mt-1 hidden rounded-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
+                    <div className="py-0.5">
+                      <div className="flex items-center gap-1.5 px-2 py-1 text-[9px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
+                        <File className="h-2 w-2 text-gray-500" />
                         <span>Text</span>
                       </div>
-                      <div className="flex items-center gap-2 px-2 py-1.5 text-[10px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
-                        <Eye className="h-2.5 w-2.5 text-gray-500" />
+                      <div className="flex items-center gap-1.5 px-2 py-1 text-[9px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
+                        <Eye className="h-2 w-2 text-gray-500" />
                         <span>Image</span>
                       </div>
-                      <div className="flex items-center gap-2 px-2 py-1.5 text-[10px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
-                        <Pencil className="h-2.5 w-2.5 text-gray-500" />
+                      <div className="flex items-center gap-1.5 px-2 py-1 text-[9px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
+                        <Pencil className="h-2 w-2 text-gray-500" />
                         <span>Video</span>
                       </div>
-                      <div className="flex items-center gap-2 px-2 py-1.5 text-[10px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
-                        <FileBox className="h-2.5 w-2.5 text-gray-500" />
+                      <div className="flex items-center gap-1.5 px-2 py-1 text-[9px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
+                        <FileBox className="h-2 w-2 text-gray-500" />
                         <span>Button</span>
                       </div>
-                      <div className="flex items-center gap-2 px-2 py-1.5 text-[10px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
-                        <FileCog className="h-2.5 w-2.5 text-gray-500" />
+                      <div className="flex items-center gap-1.5 px-2 py-1 text-[9px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
+                        <FileCog className="h-2 w-2 text-gray-500" />
                         <span>Form</span>
                       </div>
                     </div>
