@@ -1011,14 +1011,14 @@ export function SecondarySidebar() {
   
   const renderDesignStudioSpacesFeedSidebar = () => {
     return (
-      <div className="p-3">
+      <div className="p-2">
         {/* Two line header layout - ultra minimalist */}
-        <div className="sticky top-0 bg-white dark:bg-gray-800 z-10 border-b border-gray-100 dark:border-gray-800 pb-2">
+        <div className="sticky top-0 bg-white dark:bg-gray-800 z-10 border-b border-gray-100 dark:border-gray-800 pb-1">
           {/* First line - only back button */}
-          <div className="flex items-center py-1.5">
+          <div className="flex items-center py-1">
             <button 
               onClick={() => window.history.back()}
-              className="p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded transition-colors"
+              className="p-0.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded transition-colors"
               aria-label="Go back"
             >
               <ArrowLeft className="h-3 w-3" />
@@ -1026,16 +1026,16 @@ export function SecondarySidebar() {
           </div>
           
           {/* Second line - icon/title on left, settings on right */}
-          <div className="flex items-center justify-between py-2">
-            <div className="flex items-center gap-2">
-              <div className="bg-purple-50 dark:bg-purple-900/20 p-2 rounded">
+          <div className="flex items-center justify-between py-1">
+            <div className="flex items-center gap-1">
+              <div className="bg-purple-50 dark:bg-purple-900/20 p-1.5 rounded">
                 <MessageSquare className="h-5 w-5 text-purple-500" />
               </div>
               <span className="text-lg font-bold text-gray-700 dark:text-gray-300 tracking-wide">Feed</span>
             </div>
             
             <button 
-              className="p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded transition-colors"
+              className="p-0.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded transition-colors"
               aria-label="Settings"
             >
               <Settings className="h-4 w-4" />
