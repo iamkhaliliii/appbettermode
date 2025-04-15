@@ -153,7 +153,7 @@ export default function DesignStudio() {
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-medium text-gray-900 dark:text-white">{getTitle()}</h2>
             <div className="flex space-x-2">
-              <Button size="sm" variant="outline">
+              <Button size="sm" variant="secondary-gray">
                 <FolderPlus className="mr-2 h-4 w-4" />
                 New Folder
               </Button>

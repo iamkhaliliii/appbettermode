@@ -17,7 +17,9 @@ import {
   Layers2,
   FilePlus,
   Folder,
-  FolderPlus
+  FolderPlus,
+  Search,
+  Plus
 } from "lucide-react";
 import { 
   Accordion,
@@ -344,8 +346,18 @@ export function SecondarySidebar() {
   
     return (
       <div className="p-3">
-        <div className="mb-2">
-          <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Design studio</h2>
+        <div className="mb-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Design studio</h2>
+            <div className="flex items-center space-x-2">
+              <button className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                <Search className="h-3.5 w-3.5 text-gray-500" />
+              </button>
+              <button className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                <Plus className="h-3.5 w-3.5 text-gray-500" />
+              </button>
+            </div>
+          </div>
         </div>
         
         <Accordion type="single" collapsible defaultValue={defaultExpanded} className="space-y-1">
