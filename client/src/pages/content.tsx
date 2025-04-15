@@ -226,15 +226,15 @@ const columns: ColumnDef<Post>[] = [
     cell: ({ row }) => {
       const author = row.getValue("author") as { name: string; avatar: string }
       return (
-        <div className="flex items-center group">
-          <div className="flex-shrink-0 h-6 w-6 rounded-full overflow-hidden ring-2 ring-primary-100 dark:ring-primary-800/30 ring-offset-1 ring-offset-white dark:ring-offset-gray-950 transition-all duration-200 group-hover:ring-primary-200 dark:group-hover:ring-primary-700/40 shadow-sm">
+        <div className="flex items-center">
+          <div className="flex-shrink-0 h-5 w-5 rounded-full overflow-hidden border border-gray-200 dark:border-gray-700">
             <img 
-              className="h-full w-full object-cover rounded-full" 
+              className="h-full w-full object-cover" 
               src={author.avatar} 
               alt={author.name}
             />
           </div>
-          <div className="ml-2.5 font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200">
+          <div className="ml-2 text-sm text-gray-700 dark:text-gray-300">
             {author.name}
           </div>
         </div>
