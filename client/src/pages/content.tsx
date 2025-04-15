@@ -306,30 +306,25 @@ const columns: ColumnDef<Post>[] = [
       const modelConfig: Record<string, { bgClass: string; textClass: string; }> = {
         "Discussion": { 
           bgClass: "bg-purple-50/60 dark:bg-purple-900/10", 
-          textClass: "text-purple-600 dark:text-purple-400",
-          borderClass: "border border-purple-200/70 dark:border-purple-700/30",
+          textClass: "text-purple-600 dark:text-purple-400"
         },
         "Wishlist": { 
           bgClass: "bg-amber-50/60 dark:bg-amber-900/10", 
-          textClass: "text-amber-600 dark:text-amber-400",
-          borderClass: "border border-amber-200/70 dark:border-amber-700/30",
+          textClass: "text-amber-600 dark:text-amber-400"
         },
         "Article": { 
           bgClass: "bg-blue-50/60 dark:bg-blue-900/10", 
-          textClass: "text-blue-600 dark:text-blue-400",
-          borderClass: "border border-blue-200/70 dark:border-blue-700/30",
+          textClass: "text-blue-600 dark:text-blue-400"
         },
         "Page": { 
           bgClass: "bg-emerald-50/60 dark:bg-emerald-900/10", 
-          textClass: "text-emerald-600 dark:text-emerald-400",
-          borderClass: "border border-emerald-200/70 dark:border-emerald-700/30",
+          textClass: "text-emerald-600 dark:text-emerald-400"
         },
       }
       
       const config = modelConfig[model] || {
         bgClass: "bg-gray-50/60 dark:bg-gray-800/30", 
-        textClass: "text-gray-600 dark:text-gray-400",
-        borderClass: "border border-gray-200/70 dark:border-gray-700/30",
+        textClass: "text-gray-600 dark:text-gray-400"
       }
       
       return (
@@ -394,48 +389,40 @@ const columns: ColumnDef<Post>[] = [
       const tags = row.getValue("tags") as string[]
       if (!tags || tags.length === 0) return null
       
-      const tagConfig: Record<string, { bgClass: string; textClass: string; borderClass: string; }> = {
+      const tagConfig: Record<string, { bgClass: string; textClass: string; }> = {
         "Discussion": { 
           bgClass: "bg-purple-50/60 dark:bg-purple-900/10", 
-          textClass: "text-purple-600 dark:text-purple-400",
-          borderClass: "border border-purple-200/70 dark:border-purple-700/30",
+          textClass: "text-purple-600 dark:text-purple-400"
         },
         "new": { 
           bgClass: "bg-blue-50/60 dark:bg-blue-900/10", 
-          textClass: "text-blue-600 dark:text-blue-400",
-          borderClass: "border border-blue-200/70 dark:border-blue-700/30",
+          textClass: "text-blue-600 dark:text-blue-400"
         },
         "me_too": { 
           bgClass: "bg-emerald-50/60 dark:bg-emerald-900/10", 
-          textClass: "text-emerald-600 dark:text-emerald-400",
-          borderClass: "border border-emerald-200/70 dark:border-emerald-700/30",
+          textClass: "text-emerald-600 dark:text-emerald-400"
         },
         "question": { 
           bgClass: "bg-amber-50/60 dark:bg-amber-900/10", 
-          textClass: "text-amber-600 dark:text-amber-400",
-          borderClass: "border border-amber-200/70 dark:border-amber-700/30",
+          textClass: "text-amber-600 dark:text-amber-400"
         },
         "bug": { 
           bgClass: "bg-red-50/60 dark:bg-red-900/10", 
-          textClass: "text-red-600 dark:text-red-400",
-          borderClass: "border border-red-200/70 dark:border-red-700/30",
+          textClass: "text-red-600 dark:text-red-400"
         },
         "community": { 
           bgClass: "bg-indigo-50/60 dark:bg-indigo-900/10", 
-          textClass: "text-indigo-600 dark:text-indigo-400",
-          borderClass: "border border-indigo-200/70 dark:border-indigo-700/30",
+          textClass: "text-indigo-600 dark:text-indigo-400"
         },
         "featured": { 
           bgClass: "bg-fuchsia-50/60 dark:bg-fuchsia-900/10", 
-          textClass: "text-fuchsia-600 dark:text-fuchsia-400",
-          borderClass: "border border-fuchsia-200/70 dark:border-fuchsia-700/30",
+          textClass: "text-fuchsia-600 dark:text-fuchsia-400"
         },
       }
       
       const defaultConfig = {
         bgClass: "bg-gray-50/60 dark:bg-gray-800/30", 
-        textClass: "text-gray-600 dark:text-gray-400",
-        borderClass: "border border-gray-200/70 dark:border-gray-700/30",
+        textClass: "text-gray-600 dark:text-gray-400"
       }
       
       return (
