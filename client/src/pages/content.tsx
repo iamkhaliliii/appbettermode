@@ -130,7 +130,7 @@ const columns: ColumnDef<Post>[] = [
     },
     cell: ({ row }) => {
       const status = row.getValue("status") as string
-      const statusConfig = {
+      const statusConfig: Record<string, { bgClass: string; icon: null }> = {
         "Published": { bgClass: "bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300", icon: null },
         "Draft": { bgClass: "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300", icon: null },
         "Schedule": { bgClass: "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300", icon: null },
@@ -232,6 +232,9 @@ const columns: ColumnDef<Post>[] = [
         </div>
       )
     },
+    cell: ({ row }) => {
+      return <div>{row.getValue("publishedAt")}</div>
+    }
   },
   {
     accessorKey: "cmsModel",
@@ -253,7 +256,7 @@ const columns: ColumnDef<Post>[] = [
     },
     cell: ({ row }) => {
       const model = row.getValue("cmsModel") as string
-      const modelColorMap = {
+      const modelColorMap: Record<string, string> = {
         "Discussion": "violet",
         "Wishlist": "yellow",
         "Article": "blue",
@@ -313,7 +316,7 @@ const columns: ColumnDef<Post>[] = [
       const tags = row.getValue("tags") as string[]
       if (!tags || tags.length === 0) return null
       
-      const tagColors = {
+      const tagColors: Record<string, string> = {
         "Discussion": "violet",
         "new": "blue",
         "me_too": "green",
@@ -514,10 +517,6 @@ export default function Content() {
     },
   });
 
-  // No automatic redirect from /content to /content/CMS anymore
-  
-  // Content page will have its own view
-  
   // Show appropriate content based on section
   const getTitle = () => {
     switch(section) {
@@ -647,522 +646,126 @@ export default function Content() {
 
           {/* Main table */}
           <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead>
-                <tr className="bg-gray-50 dark:bg-gray-800/80">
-                  <th scope="col" className="relative w-10 px-4 py-3.5">
-                    <div className="absolute inset-y-0 left-2 flex items-center">
-                      <input
-                        type="checkbox"
-                        className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-primary-500 focus:ring-primary-500 focus:ring-offset-1"
-                      />
-                    </div>
-                  </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    <div className="flex items-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
-                      <span>Title</span>
-                      <svg className="ml-1 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    <div className="flex items-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
-                      <span>Status</span>
-                      <svg className="ml-1 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    <div className="flex items-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
-                      <span>Author</span>
-                      <svg className="ml-1 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    <div className="flex items-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
-                      <span>Space</span>
-                      <svg className="ml-1 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    <div className="flex items-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
-                      <span>Published at</span>
-                      <svg className="ml-1 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    <div className="flex items-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
-                      <span>CMS model</span>
-                      <svg className="ml-1 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    <div className="flex items-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
-                      <span>ID</span>
-                      <svg className="ml-1 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    <div className="flex items-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
-                      <span>Tags</span>
-                      <svg className="ml-1 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  </th>
-                  <th scope="col" className="px-3 py-3.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    <div className="flex items-center justify-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
-                      <span>Locked</span>
-                      <svg className="ml-1 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  </th>
-                  <th scope="col" className="relative px-3 py-3.5">
-                    <span className="sr-only">Actions</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                <tr className="hover:bg-gray-50 dark:hover:bg-gray-750">
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <input
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-primary-500"
-                    />
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                    Level Up Your Community
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                        <circle cx="12" cy="12" r="10" />
-                        <polyline points="12 6 12 12 16 14" />
-                      </svg>
-                      Schedule
-                    </span>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-6 w-6">
-                        <img className="h-6 w-6 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
-                      </div>
-                      <div className="ml-2">John Doe</div>
-                    </div>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-4 w-4 bg-indigo-500 rounded-full mr-2"></div>
-                      <div>Discussions</div>
-                    </div>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    Jan 13, 2025
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <span className="px-2 py-0.5 rounded-full text-xs bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-300">
-                      Discussion
-                    </span>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    dOUwwAq3Lc9vmA
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <div className="flex gap-1">
-                      <span className="px-2 py-0.5 rounded-full text-xs bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-300">
-                        Discussion
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
-                        new
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                        me_too
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-center text-sm text-gray-700 dark:text-gray-300">
-                    <span className="text-gray-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                      </svg>
-                    </span>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-right text-sm font-medium">
-                    <button className="text-gray-400 hover:text-gray-500">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="1" />
-                        <circle cx="12" cy="5" r="1" />
-                        <circle cx="12" cy="19" r="1" />
-                      </svg>
-                    </button>
-                  </td>
-                </tr>
-
-                <tr className="hover:bg-gray-50 dark:hover:bg-gray-750">
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <input
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-primary-500"
-                    />
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                    Community Building Strategies
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                        <line x1="12" y1="9" x2="12" y2="13" />
-                        <line x1="12" y1="17" x2="12.01" y2="17" />
-                      </svg>
-                      Pending review
-                    </span>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-6 w-6">
-                        <img className="h-6 w-6 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
-                      </div>
-                      <div className="ml-2">John Doe</div>
-                    </div>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-4 w-4 bg-yellow-500 rounded-full mr-2"></div>
-                      <div>Wishlist</div>
-                    </div>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    Jan 13, 2025
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <span className="px-2 py-0.5 rounded-full text-xs bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300">
-                      Wishlist
-                    </span>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    9fXYxHmWxwvcf15
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <div className="flex gap-1">
-                      <span className="px-2 py-0.5 rounded-full text-xs bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-300">
-                        Discussion
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
-                        new
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                        me_too
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-center text-sm text-gray-700 dark:text-gray-300">
-                    <span className="text-yellow-500">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                      </svg>
-                    </span>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-right text-sm font-medium">
-                    <button className="text-gray-400 hover:text-gray-500">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="1" />
-                        <circle cx="12" cy="5" r="1" />
-                        <circle cx="12" cy="19" r="1" />
-                      </svg>
-                    </button>
-                  </td>
-                </tr>
-
-                <tr className="hover:bg-gray-50 dark:hover:bg-gray-750">
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <input
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-primary-500"
-                    />
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                    Engaging Your Online Community
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                        <line x1="12" y1="9" x2="12" y2="13" />
-                        <line x1="12" y1="17" x2="12.01" y2="17" />
-                      </svg>
-                      Pending review
-                    </span>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-6 w-6">
-                        <img className="h-6 w-6 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
-                      </div>
-                      <div className="ml-2">John Doe</div>
-                    </div>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-4 w-4 bg-indigo-500 rounded-full mr-2"></div>
-                      <div>Discussions</div>
-                    </div>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    Jan 13, 2025
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <span className="px-2 py-0.5 rounded-full text-xs bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-300">
-                      Discussion
-                    </span>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    qbJgwG9RtWsJW5d
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <div className="flex gap-1">
-                      <span className="px-2 py-0.5 rounded-full text-xs bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-300">
-                        Discussion
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
-                        new
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                        me_too
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-center text-sm text-gray-700 dark:text-gray-300">
-                    <span className="text-gray-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                      </svg>
-                    </span>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-right text-sm font-medium">
-                    <button className="text-gray-400 hover:text-gray-500">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="1" />
-                        <circle cx="12" cy="5" r="1" />
-                        <circle cx="12" cy="19" r="1" />
-                      </svg>
-                    </button>
-                  </td>
-                </tr>
-
-                <tr className="hover:bg-gray-50 dark:hover:bg-gray-750">
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <input
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-primary-500"
-                    />
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                    Community Management Insights
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="15" y1="9" x2="9" y2="15" />
-                        <line x1="9" y1="9" x2="15" y2="15" />
-                      </svg>
-                      Reported
-                    </span>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-6 w-6">
-                        <img className="h-6 w-6 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
-                      </div>
-                      <div className="ml-2">John Doe</div>
-                    </div>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-4 w-4 bg-indigo-500 rounded-full mr-2"></div>
-                      <div>Discussions</div>
-                    </div>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    Jan 13, 2025
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <span className="px-2 py-0.5 rounded-full text-xs bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-300">
-                      Discussion
-                    </span>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    dOUwwAq3Lc9vmA
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <div className="flex gap-1">
-                      <span className="px-2 py-0.5 rounded-full text-xs bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-300">
-                        Discussion
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
-                        new
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                        me_too
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-center text-sm text-gray-700 dark:text-gray-300">
-                    <span className="text-gray-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                      </svg>
-                    </span>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-right text-sm font-medium">
-                    <button className="text-gray-400 hover:text-gray-500">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="1" />
-                        <circle cx="12" cy="5" r="1" />
-                        <circle cx="12" cy="19" r="1" />
-                      </svg>
-                    </button>
-                  </td>
-                </tr>
-
-                <tr className="hover:bg-gray-50 dark:hover:bg-gray-750">
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <input
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-primary-500"
-                    />
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                    Growing Your Member Base
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                        <polyline points="22 4 12 14.01 9 11.01" />
-                      </svg>
-                      Published
-                    </span>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-6 w-6">
-                        <img className="h-6 w-6 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
-                      </div>
-                      <div className="ml-2">John Doe</div>
-                    </div>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-4 w-4 bg-indigo-500 rounded-full mr-2"></div>
-                      <div>Discussions</div>
-                    </div>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    Jan 12, 2025
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <span className="px-2 py-0.5 rounded-full text-xs bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-300">
-                      Discussion
-                    </span>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    GmDrEOHJMQU3Pd
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                    <div className="flex gap-1">
-                      <span className="px-2 py-0.5 rounded-full text-xs bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-300">
-                        Discussion
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
-                        new
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                        me_too
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-center text-sm text-gray-700 dark:text-gray-300">
-                    <span className="text-gray-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                      </svg>
-                    </span>
-                  </td>
-                  <td className="px-3 py-3 whitespace-nowrap text-right text-sm font-medium">
-                    <button className="text-gray-400 hover:text-gray-500">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="1" />
-                        <circle cx="12" cy="5" r="1" />
-                        <circle cx="12" cy="19" r="1" />
-                      </svg>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <Table>
+              <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id} className="bg-gray-50 dark:bg-gray-800/80">
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <TableHead key={header.id} className="px-3 py-3.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </TableHead>
+                      )
+                    })}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && "selected"}
+                      className="hover:bg-gray-50 dark:hover:bg-gray-750"
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id} className="px-3 py-3 whitespace-nowrap text-sm">
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                      No results.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
           </div>
-
-          {/* Pagination */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mt-6 px-2">
-            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-              <span className="text-gray-600 dark:text-gray-300 font-medium">Items per page:</span>
-              <div className="relative ml-2">
-                <select className="appearance-none bg-white dark:bg-gray-750 border border-gray-200 dark:border-gray-700 rounded-md pl-3 pr-8 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
-                  <option>10</option>
-                  <option>25</option>
-                  <option>50</option>
-                  <option>100</option>
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                  <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              </div>
-              
-              <span className="ml-6 text-gray-600 dark:text-gray-300 font-medium">Showing</span>
-              <span className="mx-1 font-semibold text-gray-800 dark:text-gray-200">1-5</span>
-              <span className="text-gray-600 dark:text-gray-300 font-medium">of</span>
-              <span className="mx-1 font-semibold text-gray-800 dark:text-gray-200">14</span>
-              <span className="text-gray-600 dark:text-gray-300 font-medium">results</span>
+          
+          {/* Pagination controls */}
+          <div className="flex items-center justify-between space-x-6 py-4">
+            <div className="flex-1 text-sm text-muted-foreground">
+              {table.getFilteredSelectedRowModel().rows.length} of{" "}
+              {table.getFilteredRowModel().rows.length} row(s) selected.
             </div>
-            
-            <div className="inline-flex items-center border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden">
-              <button className="flex items-center justify-center h-9 w-9 bg-white dark:bg-gray-750 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-primary-600 dark:hover:text-primary-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-              </button>
-              
-              <button className="h-9 w-9 bg-primary-50 dark:bg-primary-900/20 border-x border-gray-200 dark:border-gray-700 text-primary-600 dark:text-primary-400 font-medium hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors">1</button>
-              <button className="h-9 w-9 bg-white dark:bg-gray-750 border-r border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">2</button>
-              <button className="h-9 w-9 bg-white dark:bg-gray-750 border-r border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">3</button>
-              
-              <button className="flex items-center justify-center h-9 w-9 bg-white dark:bg-gray-750 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                </svg>
-              </button>
+            <div className="flex items-center space-x-6 lg:space-x-8">
+              <div className="flex items-center space-x-2">
+                <p className="text-sm font-medium">Rows per page</p>
+                <select
+                  value={table.getState().pagination.pageSize}
+                  onChange={(e) => {
+                    table.setPageSize(Number(e.target.value))
+                  }}
+                  className="h-8 w-[70px] rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-750 text-gray-600 dark:text-gray-200"
+                >
+                  {[5, 10, 20, 30, 40, 50].map((pageSize) => (
+                    <option key={pageSize} value={pageSize}>
+                      {pageSize}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+                Page {table.getState().pagination.pageIndex + 1} of{" "}
+                {table.getPageCount()}
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  className="hidden h-8 w-8 p-0 lg:flex"
+                  onClick={() => table.setPageIndex(0)}
+                  disabled={!table.getCanPreviousPage()}
+                >
+                  <span className="sr-only">Go to first page</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="11 17 6 12 11 7"></polyline>
+                    <polyline points="18 17 13 12 18 7"></polyline>
+                  </svg>
+                </Button>
+                <Button
+                  variant="outline"
+                  className="h-8 w-8 p-0"
+                  onClick={() => table.previousPage()}
+                  disabled={!table.getCanPreviousPage()}
+                >
+                  <span className="sr-only">Go to previous page</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                </Button>
+                <Button
+                  variant="outline"
+                  className="h-8 w-8 p-0"
+                  onClick={() => table.nextPage()}
+                  disabled={!table.getCanNextPage()}
+                >
+                  <span className="sr-only">Go to next page</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </Button>
+                <Button
+                  variant="outline"
+                  className="hidden h-8 w-8 p-0 lg:flex"
+                  onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                  disabled={!table.getCanNextPage()}
+                >
+                  <span className="sr-only">Go to last page</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="13 17 18 12 13 7"></polyline>
+                    <polyline points="6 17 11 12 6 7"></polyline>
+                  </svg>
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -1206,7 +809,6 @@ export default function Content() {
               </div>
             </div>
           </div>
-
         </div>
       </DashboardLayout>
     );
