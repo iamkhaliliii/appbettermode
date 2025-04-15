@@ -828,14 +828,14 @@ export default function Content() {
           </div>
 
           {/* Main table - Full width with no padding */}
-          <div className="bg-white dark:bg-gray-800 border border-gray-200/80 dark:border-gray-700/80 shadow-sm backdrop-blur-sm overflow-auto -mt-4" style={{ scrollbarWidth: 'thin' }}>
+          <div className="bg-white dark:bg-gray-800 border-y border-gray-200/80 dark:border-gray-700/80 shadow-sm backdrop-blur-sm overflow-auto -mt-4" style={{ scrollbarWidth: 'thin' }}>
             <Table className="w-full">
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id} className="bg-transparent border-b border-gray-200/70 dark:border-gray-700/70">
                     {headerGroup.headers.map((header) => {
                       return (
-                        <TableHead key={header.id} className="px-2 py-1 text-left text-xs font-medium text-gray-400 dark:text-gray-500 tracking-wide sticky top-0 bg-white dark:bg-gray-800">
+                        <TableHead key={header.id} className="px-2 py-0.5 h-5 text-left text-xs font-medium text-gray-400 dark:text-gray-500 tracking-wide sticky top-0 bg-white dark:bg-gray-800">
                           {header.isPlaceholder
                             ? null
                             : flexRender(
