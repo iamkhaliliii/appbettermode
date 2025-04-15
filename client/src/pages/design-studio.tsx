@@ -31,8 +31,8 @@ export default function DesignStudio() {
   
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-6">
+      <div className="max-w-7xl mx-auto p-8">
+        <div className="mb-8">
           <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Design Studio</h1>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Preview and customize community platform design
@@ -40,7 +40,7 @@ export default function DesignStudio() {
         </div>
 
         {/* Browser mockup */}
-        <div className="bg-white dark:bg-gray-800 shadow-sm rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 shadow-sm rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 max-h-[700px]">
           {/* Browser chrome */}
           <div className="bg-gray-100 dark:bg-gray-850 px-4 py-2 border-b border-gray-200 dark:border-gray-700 flex items-center">
             {/* Traffic lights */}
@@ -102,8 +102,8 @@ export default function DesignStudio() {
             </div>
           </div>
           
-          {/* Community Platform UI */}
-          <div className="bg-gray-50 dark:bg-gray-900 min-h-[600px]">
+          {/* Community Platform UI - with internal scrolling */}
+          <div className="bg-gray-50 dark:bg-gray-900 overflow-y-auto h-[600px] pointer-events-none">
             {/* Community platform header */}
             <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-3 flex items-center justify-between">
               <div className="flex items-center space-x-4">
@@ -142,7 +142,7 @@ export default function DesignStudio() {
             </div>
             
             {/* Main content area */}
-            <div className="flex min-h-[570px]">
+            <div className="flex min-h-[800px]">
               {/* Left sidebar */}
               <div className="w-56 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4">
                 <nav className="space-y-1">
@@ -341,7 +341,12 @@ export default function DesignStudio() {
         </div>
         
         <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-          <p>This is a non-functional preview of a community platform interface.</p>
+          <p>This is a non-functional preview of a community platform interface. All elements are for display only.</p>
+          <p className="mt-2">
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+              Preview Mode
+            </span>
+          </p>
         </div>
       </div>
     </DashboardLayout>
