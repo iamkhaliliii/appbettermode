@@ -187,7 +187,10 @@ const columns: ColumnDef<Post>[] = [
       const config = statusConfig[status] || statusConfig["Draft"]
       
       return (
-        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs whitespace-nowrap ${config.bgClass} ${config.textClass}`}>
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${config.bgClass} ${config.textClass}`}>
+          <svg className={`mr-1 h-2 w-2 ${config.dotColor}`} fill="currentColor" viewBox="0 0 8 8">
+            <circle cx="4" cy="4" r="3" />
+          </svg>
           {status}
         </span>
       )
@@ -276,7 +279,7 @@ const columns: ColumnDef<Post>[] = [
       
       return (
         <div className="flex items-center">
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs whitespace-nowrap bg-gray-100 dark:bg-gray-800/40 text-gray-700 dark:text-gray-300">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300">
             {getIconForSpace(space.name)}
             {space.name}
           </span>
@@ -355,7 +358,10 @@ const columns: ColumnDef<Post>[] = [
       }
       
       return (
-        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs whitespace-nowrap ${neutralConfig.bgClass} ${neutralConfig.textClass}`}>
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${config.bgClass} ${config.textClass}`}>
+          <svg className="mr-1 h-2 w-2 text-indigo-500 dark:text-indigo-400" fill="currentColor" viewBox="0 0 8 8">
+            <circle cx="4" cy="4" r="3" />
+          </svg>
           {model}
         </span>
       )
@@ -442,15 +448,15 @@ const columns: ColumnDef<Post>[] = [
             return (
               <span 
                 key={i} 
-                className={`inline-flex items-center px-2 py-0.5 rounded text-xs whitespace-nowrap
-                ${config.bgClass} ${config.textClass}`}
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs whitespace-nowrap border
+                ${config.bgClass} ${config.textClass} border-gray-200 dark:border-gray-700`}
               >
                 {tag}
               </span>
             )
           })}
           {tags.length > 2 && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-gray-100 dark:bg-gray-800/40 text-gray-700 dark:text-gray-300 whitespace-nowrap">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-gray-800/40 text-gray-700 dark:text-gray-300 whitespace-nowrap border border-gray-200 dark:border-gray-700">
               +{tags.length - 2}
             </span>
           )}
