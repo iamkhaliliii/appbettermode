@@ -1,241 +1,347 @@
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
-import { useLocation, useRoute } from "wouter";
-import { useEffect, useState } from "react";
-import { FolderPlus, Edit, Trash2, Plus, Layout, Search, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useLocation } from "wouter";
+import { useState } from "react";
 import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger 
-} from "@/components/ui/dropdown-menu";
+  RefreshCw, 
+  ArrowLeft, 
+  ArrowRight, 
+  Plus, 
+  Home, 
+  Search, 
+  Moon, 
+  ChevronDown,
+  X,
+  Settings,
+  Bell,
+  User,
+  Moon as MoonIcon,
+  FileText,
+  Users,
+  MessageSquare,
+  Calendar
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { Avatar } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function DesignStudio() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [location, setLocation] = useLocation();
-  const [isSpaces] = useRoute('/design-studio/spaces/:path*');
-  const [isTemplates] = useRoute('/design-studio/templates/:type');
-  const [isCollections] = useRoute('/design-studio/collections/:collection');
-  const [isUtility] = useRoute('/design-studio/utility/:page');
-  const [isHeader] = useRoute('/design-studio/header');
-  const [, params] = useRoute('/design-studio/:section');
-  const section = params?.section;
-
-  // Redirect to the spaces tab if we're at the root design-studio route
-  useEffect(() => {
-    if (location === '/design-studio') {
-      setLocation('/design-studio/spaces');
-    }
-  }, [location, setLocation]);
-
-  // If we're at the root design-studio URL, show a loading state until the redirect happens
-  if (location === '/design-studio') {
-    return <DashboardLayout><div className="p-8">Loading design studio...</div></DashboardLayout>;
-  }
-
-  // Helper to extract meaningful title from the URL
-  const getTitle = () => {
-    if (isSpaces) {
-      const path = location.replace('/design-studio/spaces/', '');
-      if (path === '') return 'All Spaces';
-      
-      const segments = path.split('/');
-      // Handle deeper levels by showing breadcrumb-like title
-      if (segments.length > 1) {
-        const lastSegment = segments[segments.length - 1];
-        return lastSegment.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
-      }
-      
-      return segments[0].split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
-    }
-    
-    if (isTemplates) {
-      const type = location.split('/').pop() || '';
-      return type.charAt(0).toUpperCase() + type.slice(1) + ' Templates';
-    }
-    
-    if (isCollections) {
-      const collection = location.split('/').pop() || '';
-      return collection.charAt(0).toUpperCase() + collection.slice(1) + ' Collection';
-    }
-    
-    if (isUtility) {
-      const page = location.split('/').pop() || '';
-      return page.charAt(0).toUpperCase() + page.slice(1) + ' Page';
-    }
-    
-    if (isHeader) {
-      return 'Header & Sidebar';
-    }
-    
-    // Fallback
-    return section ? section.charAt(0).toUpperCase() + section.slice(1) : 'Design Studio';
-  };
-
-  // Add dropdown options based on section
-  const getAddMenuOptions = () => {
-    if (isSpaces) {
-      return [
-        { label: 'Add a new space', action: () => console.log('Add space') },
-        { label: 'Add a new folder', action: () => console.log('Add folder') },
-        { label: 'Add a new page', action: () => console.log('Add page') }
-      ];
-    }
-    
-    if (isTemplates) {
-      return [
-        { label: 'Add a new template', action: () => console.log('Add template') },
-        { label: 'Import template', action: () => console.log('Import template') }
-      ];
-    }
-    
-    if (isCollections) {
-      return [
-        { label: 'Add a new CMS collection', action: () => console.log('Add collection') },
-        { label: 'Add a new item', action: () => console.log('Add item') }
-      ];
-    }
-    
-    if (isUtility) {
-      return [
-        { label: 'Add a new utility page', action: () => console.log('Add utility page') }
-      ];
-    }
-    
-    return [
-      { label: 'Add a new item', action: () => console.log('Add generic item') }
-    ];
-  };
-
-  // Render different content based on the route
-  const renderContent = () => {
-    // Search bar and Add button that should appear at the top of every page
-    const topBar = (
-      <div className="flex justify-between items-center mb-6">
-        <div className="relative w-64">
-          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <Search className="w-4 h-4 text-gray-500" />
-          </div>
-          <Input
-            type="search"
-            placeholder="Search..."
-            className="pl-10 pr-4 py-2 text-sm"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-        
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button size="sm" variant="default">
-              <Plus className="mr-2 h-4 w-4" />
-              Add
-              <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {getAddMenuOptions().map((option, index) => (
-              <DropdownMenuItem key={index} onClick={option.action}>
-                {option.label}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    );
-    
-    if (isSpaces) {
-      return (
-        <div className="space-y-4">
-          {topBar}
-          
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-medium text-gray-900 dark:text-white">{getTitle()}</h2>
-            <div className="flex space-x-2">
-              <Button size="sm" variant="secondary-gray">
-                <FolderPlus className="mr-2 h-4 w-4" />
-                New Folder
-              </Button>
-              <Button size="sm">
-                <Plus className="mr-2 h-4 w-4" />
-                New Page
-              </Button>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[1, 2, 3, 4, 5, 6].map((item) => (
-              <div key={item} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-3">
-                <div className="h-32 bg-gray-100 dark:bg-gray-700 rounded-md flex items-center justify-center">
-                  <Layout className="h-10 w-10 text-gray-400 dark:text-gray-500" />
-                </div>
-                <div className="flex justify-between items-center">
-                  <h3 className="text-sm font-medium">Page {item}</h3>
-                  <div className="flex space-x-1">
-                    <button className="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                      <Edit className="h-4 w-4" />
-                    </button>
-                    <button className="p-1 text-gray-500 hover:text-red-600 dark:hover:text-red-400">
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    }
-    
-    if (isTemplates || isCollections || isUtility || isHeader) {
-      return (
-        <div className="space-y-4">
-          {topBar}
-          
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-medium text-gray-900 dark:text-white">{getTitle()}</h2>
-            <Button size="sm">
-              <Plus className="mr-2 h-4 w-4" />
-              New {isTemplates ? 'Template' : isCollections ? 'Item' : 'Page'}
-            </Button>
-          </div>
-          
-          <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-8 text-center">
-            <p className="text-gray-500 dark:text-gray-400">
-              This is a placeholder for the {getTitle()} section.
-            </p>
-          </div>
-        </div>
-      );
-    }
-    
-    // Fallback content
-    return (
-      <div>
-        {topBar}
-        <div className="text-center py-12">
-          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Design Studio</h2>
-          <p className="text-gray-500 dark:text-gray-400 mb-4">
-            {section && <span>Currently viewing: {section?.charAt(0).toUpperCase() + section?.slice(1)}</span>}
-          </p>
-        </div>
-      </div>
-    );
-  };
-
+  const [, setLocation] = useLocation();
+  
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto p-4">
+      <div className="max-w-7xl mx-auto">
         <div className="mb-6">
           <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Design Studio</h1>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Customize your design and layout preferences
+            Preview and customize community platform design
           </p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 shadow-sm rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-          {renderContent()}
+        {/* Browser mockup */}
+        <div className="bg-white dark:bg-gray-800 shadow-sm rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+          {/* Browser chrome */}
+          <div className="bg-gray-100 dark:bg-gray-850 px-4 py-2 border-b border-gray-200 dark:border-gray-700 flex items-center">
+            {/* Traffic lights */}
+            <div className="flex space-x-2 mr-4">
+              <div className="w-3 h-3 rounded-full bg-red-500"></div>
+              <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+              <div className="w-3 h-3 rounded-full bg-green-500"></div>
+            </div>
+            
+            {/* Navigation buttons */}
+            <div className="flex space-x-2 mr-4">
+              <button className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                <ArrowLeft className="h-4 w-4" />
+              </button>
+              <button className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                <ArrowRight className="h-4 w-4" />
+              </button>
+              <button className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                <RefreshCw className="h-4 w-4" />
+              </button>
+            </div>
+            
+            {/* Address bar */}
+            <div className="flex-1 mx-2">
+              <div className="bg-white dark:bg-gray-800 px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 flex items-center justify-center text-xs text-gray-500 dark:text-gray-400">
+                <span className="opacity-50 mr-1">https://</span>community.bettermode.io
+              </div>
+            </div>
+            
+            {/* Browser controls */}
+            <div className="flex space-x-3">
+              <button className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+                </svg>
+              </button>
+              <button className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+              </button>
+              <button className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                </svg>
+              </button>
+              <button className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clipRule="evenodd" />
+                </svg>
+              </button>
+              <div className="flex items-center">
+                <span className="text-xs text-gray-500 dark:text-gray-400 mr-1">EN</span>
+                <ChevronDown className="h-3 w-3 text-gray-500" />
+              </div>
+              <button className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                <MoonIcon className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+          
+          {/* Community Platform UI */}
+          <div className="bg-gray-50 dark:bg-gray-900 min-h-[600px]">
+            {/* Community platform header */}
+            <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-3 flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center">
+                  <div className="bg-gray-900 dark:bg-gray-700 p-1.5 rounded">
+                    <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                    </svg>
+                  </div>
+                  <span className="ml-2 font-semibold text-gray-900 dark:text-white">LaunchSimple</span>
+                </div>
+                
+                <div className="relative hidden sm:block w-64">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <Search className="h-4 w-4 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search for topics and discussions"
+                    className="w-full pl-10 pr-4 py-1.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-gray-900 dark:text-gray-100"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-3">
+                <button className="text-gray-500 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <Plus className="h-5 w-5" />
+                </button>
+                <button className="text-gray-500 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <Moon className="h-5 w-5" />
+                </button>
+                <Avatar className="h-8 w-8">
+                  <img src="https://github.com/shadcn.png" alt="Avatar" />
+                </Avatar>
+              </div>
+            </div>
+            
+            {/* Main content area */}
+            <div className="flex min-h-[570px]">
+              {/* Left sidebar */}
+              <div className="w-56 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4">
+                <nav className="space-y-1">
+                  <a 
+                    href="#" 
+                    className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <Home className="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" />
+                    Explore
+                  </a>
+                  
+                  <a 
+                    href="#" 
+                    className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <MessageSquare className="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" />
+                    Feed
+                  </a>
+                  
+                  <a 
+                    href="#" 
+                    className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <Bell className="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" />
+                    Notifications
+                  </a>
+                  
+                  <a 
+                    href="#" 
+                    className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <Users className="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" />
+                    Members
+                  </a>
+                  
+                  <a 
+                    href="#" 
+                    className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <User className="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" />
+                    My profile
+                  </a>
+                  
+                  <Separator className="my-2" />
+                  
+                  <a 
+                    href="#" 
+                    className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <MessageSquare className="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" />
+                    Discussions
+                  </a>
+                  
+                  <a 
+                    href="#" 
+                    className="flex items-center px-3 py-2 text-sm font-medium rounded-md bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
+                  >
+                    <FileText className="h-5 w-5 mr-3 text-gray-700 dark:text-gray-300" />
+                    Articles
+                  </a>
+                  
+                  <a 
+                    href="#" 
+                    className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <Calendar className="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" />
+                    Events
+                  </a>
+                </nav>
+              </div>
+              
+              {/* Main content */}
+              <div className="flex-1 p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Articles</h1>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Advice and answers from the Tribe Team
+                    </p>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <button className="text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded">
+                      <Bell className="h-5 w-5" />
+                    </button>
+                    
+                    <div className="ml-2">
+                      <button className="text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                <Tabs defaultValue="all" className="mb-6">
+                  <TabsList className="bg-gray-100 dark:bg-gray-800">
+                    <TabsTrigger value="all" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">View all</TabsTrigger>
+                    <TabsTrigger value="design" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Design</TabsTrigger>
+                    <TabsTrigger value="product" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Product</TabsTrigger>
+                    <TabsTrigger value="development" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Software Development</TabsTrigger>
+                    <TabsTrigger value="success" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Customer Success</TabsTrigger>
+                  </TabsList>
+                </Tabs>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Article Card 1 */}
+                  <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div className="h-48 bg-purple-100 flex items-center justify-center overflow-hidden">
+                      <svg className="w-full h-full object-cover" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0,100 C150,200 250,0 400,100 L400,200 L0,200 Z" fill="#8B5CF6" />
+                        <path d="M0,100 C150,0 250,200 400,100 L400,200 L0,200 Z" fill="#A78BFA" opacity="0.7" />
+                      </svg>
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-center mb-2">
+                        <Badge variant="outline" className="bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400">Design</Badge>
+                      </div>
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-lg mb-1">UX review presentations</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                        How do you create compelling presentations that wow your colleagues and impress your managers
+                      </p>
+                      <div className="flex items-center mt-4">
+                        <Avatar className="h-8 w-8 mr-2">
+                          <img src="https://github.com/shadcn.png" alt="Olivia Rhye" />
+                        </Avatar>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          <div>Olivia Rhye</div>
+                          <div>20 Jan 2024</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Article Card 2 */}
+                  <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div className="h-48 overflow-hidden">
+                      <img 
+                        src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80" 
+                        alt="People discussing work" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-center mb-2">
+                        <Badge variant="outline" className="bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400">Design</Badge>
+                      </div>
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-lg mb-1">Migrating to Linear 101</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                        Linear helps streamline software projects, sprints, tasks, and bug tracking. Here's how to get started.
+                      </p>
+                      <div className="flex items-center mt-4">
+                        <Avatar className="h-8 w-8 mr-2">
+                          <img src="https://github.com/shadcn.png" alt="Olivia Rhye" />
+                        </Avatar>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          <div>Olivia Rhye</div>
+                          <div>20 Jan 2024</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Article Card 3 */}
+                  <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div className="h-48 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-32 h-32 text-gray-400">
+                        <path fill="currentColor" d="M 100 20 L 120 80 L 180 80 L 130 110 L 150 170 L 100 140 L 50 170 L 70 110 L 20 80 L 80 80 Z" />
+                        <path fill="currentColor" d="M 100 40 L 120 100 L 180 100 L 130 130 L 150 190 L 100 160 L 50 190 L 70 130 L 20 100 L 80 100 Z" opacity="0.5" transform="rotate(15)" />
+                      </svg>
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-center mb-2">
+                        <Badge variant="outline" className="bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400">Design</Badge>
+                      </div>
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-lg mb-1">Building your API stack</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                        The rise of RESTful APIs has been met by a rise in tools for creating, testing, and managing them.
+                      </p>
+                      <div className="flex items-center mt-4">
+                        <Avatar className="h-8 w-8 mr-2">
+                          <img src="https://github.com/shadcn.png" alt="Olivia Rhye" />
+                        </Avatar>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          <div>Olivia Rhye</div>
+                          <div>20 Jan 2024</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+          <p>This is a non-functional preview of a community platform interface.</p>
         </div>
       </div>
     </DashboardLayout>
