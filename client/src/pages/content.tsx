@@ -714,6 +714,11 @@ export default function Content() {
   const [, params] = useRoute('/content/:section');
   const section = params?.section;
   
+  // UI state
+  const [activeTab, setActiveTab] = useState<string>("all");
+  const [showPublishedOnly, setShowPublishedOnly] = useState<boolean>(false);
+  const [showStatusFilter, setShowStatusFilter] = useState<boolean>(false);
+  
   // Table state
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -775,19 +780,54 @@ export default function Content() {
             {/* Filter tabs */}
             <div className="mb-3 border-b border-gray-100 dark:border-gray-800">
               <div className="flex -mb-px">
-                <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-900 dark:text-white border-b border-gray-900 dark:border-white">
+                <button 
+                  className={`inline-flex items-center px-2 py-1.5 text-xs font-medium ${activeTab === 'all' ? 'text-gray-900 dark:text-white border-b border-gray-900 dark:border-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'} transition-colors`}
+                  onClick={() => {
+                    setActiveTab('all');
+                    setShowPublishedOnly(false);
+                    setShowStatusFilter(false);
+                  }}
+                >
                   All <span className="ml-1 text-[10px] text-gray-500 dark:text-gray-400">14</span>
                 </button>
-                <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                <button 
+                  className={`inline-flex items-center px-2 py-1.5 text-xs font-medium ${activeTab === 'published' ? 'text-gray-900 dark:text-white border-b border-gray-900 dark:border-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'} transition-colors`}
+                  onClick={() => {
+                    setActiveTab('published');
+                    setShowPublishedOnly(true);
+                    setShowStatusFilter(true);
+                  }}
+                >
                   Published <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">6</span>
                 </button>
-                <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                <button 
+                  className={`inline-flex items-center px-2 py-1.5 text-xs font-medium ${activeTab === 'scheduled' ? 'text-gray-900 dark:text-white border-b border-gray-900 dark:border-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'} transition-colors`}
+                  onClick={() => {
+                    setActiveTab('scheduled');
+                    setShowPublishedOnly(false);
+                    setShowStatusFilter(false);
+                  }}
+                >
                   Scheduled <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">3</span>
                 </button>
-                <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                <button 
+                  className={`inline-flex items-center px-2 py-1.5 text-xs font-medium ${activeTab === 'drafts' ? 'text-gray-900 dark:text-white border-b border-gray-900 dark:border-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'} transition-colors`}
+                  onClick={() => {
+                    setActiveTab('drafts');
+                    setShowPublishedOnly(false);
+                    setShowStatusFilter(false);
+                  }}
+                >
                   Drafts <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">0</span>
                 </button>
-                <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                <button 
+                  className={`inline-flex items-center px-2 py-1.5 text-xs font-medium ${activeTab === 'pending' ? 'text-gray-900 dark:text-white border-b border-gray-900 dark:border-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'} transition-colors`}
+                  onClick={() => {
+                    setActiveTab('pending');
+                    setShowPublishedOnly(false);
+                    setShowStatusFilter(false);
+                  }}
+                >
                   Pending <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">0</span>
                 </button>
               </div>
@@ -797,9 +837,18 @@ export default function Content() {
             <div className="mb-0 flex items-center justify-between gap-1.5">
               {/* Left side - Filter, Sort, Column buttons */}
               <div className="flex items-center gap-1.5">
-                <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                  <Filter className="h-3 w-3" />
-                </button>
+                {showStatusFilter ? (
+                  <button 
+                    className="inline-flex items-center justify-center h-6 px-2 rounded text-blue-500 dark:text-blue-400 border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/20 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors text-xs font-medium"
+                  >
+                    <Filter className="h-3 w-3 mr-1" />
+                    Status: Published
+                  </button>
+                ) : (
+                  <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <Filter className="h-3 w-3" />
+                  </button>
+                )}
                 
                 <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                   <ArrowUpDown className="h-3 w-3" />
