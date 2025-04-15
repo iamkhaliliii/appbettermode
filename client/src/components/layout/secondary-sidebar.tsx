@@ -748,29 +748,29 @@ export function SecondarySidebar() {
             <AccordionContent className="pt-1 pb-1">
               <div className="space-y-1">
                 <MinimalItem 
-                  name="Blog Home" 
+                  name="Event" 
+                  path="/design-studio/collections/event"
+                  icon={<FileBox className="h-3.5 w-3.5" />}
+                  iconColor="text-[#A694FF]"
+                  level={1}
+                />
+                <MinimalItem 
+                  name="Discussion" 
+                  path="/design-studio/collections/discussion"
+                  icon={<FileBox className="h-3.5 w-3.5" />}
+                  iconColor="text-[#A694FF]"
+                  level={1}
+                />
+                <MinimalItem 
+                  name="Blog" 
                   path="/design-studio/collections/blog"
                   icon={<FileBox className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
                   level={1}
                 />
                 <MinimalItem 
-                  name="Products Page" 
-                  path="/design-studio/collections/products"
-                  icon={<FileBox className="h-3.5 w-3.5" />}
-                  iconColor="text-[#A694FF]"
-                  level={1}
-                />
-                <MinimalItem 
-                  name="Category Listing" 
-                  path="/design-studio/collections/categories"
-                  icon={<FileBox className="h-3.5 w-3.5" />}
-                  iconColor="text-[#A694FF]"
-                  level={1}
-                />
-                <MinimalItem 
-                  name="Authors Directory" 
-                  path="/design-studio/collections/authors"
+                  name="Job List" 
+                  path="/design-studio/collections/jobs"
                   icon={<FileBox className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
                   level={1}
