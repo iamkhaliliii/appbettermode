@@ -168,35 +168,35 @@ export function SecondarySidebar() {
       <div className="space-y-1">
         <SideNavItem 
           href="/people/members"
-          isActive={location === '/people/members' || location === '/people'}
+          isActive={isActiveUrl('/people/members') || location === '/people'}
         >
           Members
         </SideNavItem>
         
         <SideNavItem 
           href="/people/staff"
-          isActive={location === '/people/staff'}
+          isActive={isActiveUrl('/people/staff')}
         >
           Staff
         </SideNavItem>
         
         <SideNavItem 
           href="/people/invitations"
-          isActive={location === '/people/invitations'}
+          isActive={isActiveUrl('/people/invitations')}
         >
           Invitations
         </SideNavItem>
         
         <SideNavItem 
           href="/people/profile-fields"
-          isActive={location === '/people/profile-fields'}
+          isActive={isActiveUrl('/people/profile-fields')}
         >
           Profile fields
         </SideNavItem>
         
         <SideNavItem 
           href="/people/badges"
-          isActive={location === '/people/badges'}
+          isActive={isActiveUrl('/people/badges')}
         >
           Badges
         </SideNavItem>
@@ -213,49 +213,49 @@ export function SecondarySidebar() {
       <div className="space-y-1">
         <SideNavItem 
           href="/settings/my-details" 
-          isActive={location === '/settings/my-details' || location === '/settings'} 
+          isActive={isActiveUrl('/settings/my-details') || location === '/settings'} 
         >
           My details
         </SideNavItem>
         
         <SideNavItem 
           href="/settings/profile" 
-          isActive={location === '/settings/profile'} 
+          isActive={isActiveUrl('/settings/profile')} 
         >
           Profile
         </SideNavItem>
         
         <SideNavItem 
           href="/settings/password" 
-          isActive={location === '/settings/password'} 
+          isActive={isActiveUrl('/settings/password')} 
         >
           Password
         </SideNavItem>
         
         <SideNavItem 
           href="/settings/team" 
-          isActive={location === '/settings/team'} 
+          isActive={isActiveUrl('/settings/team')} 
         >
           Team
         </SideNavItem>
         
         <SideNavItem 
           href="/settings/billing" 
-          isActive={location === '/settings/billing'} 
+          isActive={isActiveUrl('/settings/billing')} 
         >
           Billing
         </SideNavItem>
         
         <SideNavItem 
           href="/settings/notifications" 
-          isActive={location === '/settings/notifications'} 
+          isActive={isActiveUrl('/settings/notifications')} 
         >
           Notifications
         </SideNavItem>
         
         <SideNavItem 
           href="/settings/integrations" 
-          isActive={location === '/settings/integrations'} 
+          isActive={isActiveUrl('/settings/integrations')} 
         >
           Integrations
         </SideNavItem>
@@ -296,28 +296,28 @@ export function SecondarySidebar() {
       <div className="space-y-1">
         <SideNavItem 
           href="/appearance/logos"
-          isActive={location === '/appearance/logos' || location === '/appearance'}
+          isActive={isActiveUrl('/appearance/logos') || location === '/appearance'}
         >
           Logos
         </SideNavItem>
         
         <SideNavItem 
           href="/appearance/themes"
-          isActive={location === '/appearance/themes'}
+          isActive={isActiveUrl('/appearance/themes')}
         >
           Themes
         </SideNavItem>
         
         <SideNavItem 
           href="/appearance/typographies"
-          isActive={location === '/appearance/typographies'}
+          isActive={isActiveUrl('/appearance/typographies')}
         >
           Typographies
         </SideNavItem>
         
         <SideNavItem 
           href="/appearance/styles"
-          isActive={location === '/appearance/styles'}
+          isActive={isActiveUrl('/appearance/styles')}
         >
           Styles
         </SideNavItem>
@@ -334,21 +334,21 @@ export function SecondarySidebar() {
       <div className="space-y-1">
         <SideNavItem 
           href="/billing/summary"
-          isActive={location === '/billing/summary' || location === '/billing'}
+          isActive={isActiveUrl('/billing/summary') || location === '/billing'}
         >
           Summary
         </SideNavItem>
         
         <SideNavItem 
           href="/billing/subscription"
-          isActive={location === '/billing/subscription'}
+          isActive={isActiveUrl('/billing/subscription')}
         >
           Subscription plans
         </SideNavItem>
         
         <SideNavItem 
           href="/billing/usage"
-          isActive={location === '/billing/usage'}
+          isActive={isActiveUrl('/billing/usage')}
         >
           Service usage
         </SideNavItem>
@@ -365,56 +365,56 @@ export function SecondarySidebar() {
       <div className="space-y-1">
         <SideNavItem 
           href="/reports/overview"
-          isActive={location === '/reports/overview' || location === '/reports'}
+          isActive={isActiveUrl('/reports/overview') || location === '/reports'}
         >
           Overview
         </SideNavItem>
         
         <SideNavItem 
           href="/reports/engagement"
-          isActive={location === '/reports/engagement'}
+          isActive={isActiveUrl('/reports/engagement')}
         >
           Reach & Engagement
         </SideNavItem>
         
         <SideNavItem 
           href="/reports/people"
-          isActive={location === '/reports/people'}
+          isActive={isActiveUrl('/reports/people')}
         >
           People
         </SideNavItem>
         
         <SideNavItem 
           href="/reports/posts"
-          isActive={location === '/reports/posts'}
+          isActive={isActiveUrl('/reports/posts')}
         >
           Posts
         </SideNavItem>
         
         <SideNavItem 
           href="/reports/spaces"
-          isActive={location === '/reports/spaces'}
+          isActive={isActiveUrl('/reports/spaces')}
         >
           Spaces
         </SideNavItem>
         
         <SideNavItem 
           href="/reports/messages"
-          isActive={location === '/reports/messages'}
+          isActive={isActiveUrl('/reports/messages')}
         >
           Messages
         </SideNavItem>
         
         <SideNavItem 
           href="/reports/audit-logs"
-          isActive={location === '/reports/audit-logs'}
+          isActive={isActiveUrl('/reports/audit-logs')}
         >
           Audit logs
         </SideNavItem>
         
         <SideNavItem 
           href="/reports/email-logs"
-          isActive={location === '/reports/email-logs'}
+          isActive={isActiveUrl('/reports/email-logs')}
         >
           Email logs
         </SideNavItem>
@@ -431,14 +431,14 @@ export function SecondarySidebar() {
       <div className="space-y-1">
         <SideNavItem 
           href="/app-store/integrations"
-          isActive={location === '/app-store/integrations' || location === '/app-store'}
+          isActive={isActiveUrl('/app-store/integrations') || location === '/app-store'}
         >
           Apps & Integrations
         </SideNavItem>
         
         <SideNavItem 
           href="/app-store/addons"
-          isActive={location === '/app-store/addons'}
+          isActive={isActiveUrl('/app-store/addons')}
         >
           Add-ons
         </SideNavItem>
@@ -458,8 +458,8 @@ export function SecondarySidebar() {
     return false;
   };
   
-  // Log current location to help debugging
-  console.log("Current location:", location);
+  // Uncomment for debugging
+  // console.log("Current location:", location);
   
   const getSidebarForLocation = () => {
     if (location.startsWith('/content')) {
