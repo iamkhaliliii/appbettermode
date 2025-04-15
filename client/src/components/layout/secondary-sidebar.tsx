@@ -859,15 +859,7 @@ export function SecondarySidebar() {
           </AccordionItem>
         </Accordion>
         
-        <div className="mt-4 space-y-1">
-          <SideNavItem 
-            href="/design-studio/header"
-            isActive={isActiveUrl('/design-studio/header')}
-            icon={<Layout className="h-4 w-4" />}
-          >
-            Header and Sidebar
-          </SideNavItem>
-        </div>
+
       </div>
     );
   };
