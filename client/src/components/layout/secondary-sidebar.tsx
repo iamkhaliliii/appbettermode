@@ -1046,10 +1046,7 @@ export function SecondarySidebar() {
         {/* Sections and Blocks - ultra minimal design */}
         <div>
           <div className="px-0.5 mb-4">
-            <div className="flex items-center justify-between py-1 mb-2 border-b border-gray-100 dark:border-gray-800">
-              <h3 className="text-[11px] uppercase tracking-wide font-semibold text-gray-500 dark:text-gray-400 letter-spacing-[0.05em]">Page Builder</h3>
-              <Settings className="h-3 w-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer" />
-            </div>
+
             
             {/* Navigation Section with Toggles - Ultra minimal version */}
             <div className="mb-5">
