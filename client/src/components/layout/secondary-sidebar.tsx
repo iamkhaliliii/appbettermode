@@ -1079,19 +1079,7 @@ export function SecondarySidebar() {
                           options.classList.toggle('hidden', !checked);
                         }
                         
-                        // Show/hide header in mockups
-                        const header = document.getElementById('mockup-header');
-                        if (header) {
-                          if (checked) {
-                            header.style.display = "flex";
-                            header.classList.add('bg-blue-50/30');
-                            header.classList.add('dark:bg-blue-900/5');
-                          } else {
-                            header.style.display = "none";
-                            header.classList.remove('bg-blue-50/30');
-                            header.classList.remove('dark:bg-blue-900/5');
-                          }
-                        }
+                        // Using only community elements now
                         
                         // Also change the community header with animation
                         const communityHeader = document.getElementById('community-header');
@@ -1142,21 +1130,7 @@ export function SecondarySidebar() {
                           options.classList.toggle('hidden', !checked);
                         }
                         
-                        // Show/hide right sidebar in mockup
-                        const rightSidebar = document.getElementById('mockup-right-sidebar');
-                        if (rightSidebar) {
-                          if (checked) {
-                            rightSidebar.style.display = "block";
-                            rightSidebar.classList.add('border-red-500');
-                            rightSidebar.classList.add('bg-red-50/30');
-                            rightSidebar.classList.add('dark:bg-red-900/5');
-                          } else {
-                            rightSidebar.style.display = "none";
-                            rightSidebar.classList.remove('border-red-500');
-                            rightSidebar.classList.remove('bg-red-50/30');
-                            rightSidebar.classList.remove('dark:bg-red-900/5');
-                          }
-                        }
+                        // Using only community elements with animation
                         
                         // Also change the community right sidebar with animation
                         const communityRightSidebar = document.getElementById('community-right-sidebar');
@@ -1211,21 +1185,7 @@ export function SecondarySidebar() {
                           options.classList.toggle('hidden', !checked);
                         }
                         
-                        // Show/hide left sidebar in mockup
-                        const leftSidebar = document.getElementById('mockup-left-sidebar');
-                        if (leftSidebar) {
-                          if (checked) {
-                            leftSidebar.style.display = "block";
-                            leftSidebar.classList.add('border-green-500');
-                            leftSidebar.classList.add('bg-green-50/30');
-                            leftSidebar.classList.add('dark:bg-green-900/5');
-                          } else {
-                            leftSidebar.style.display = "none";
-                            leftSidebar.classList.remove('border-green-500');
-                            leftSidebar.classList.remove('bg-green-50/30');
-                            leftSidebar.classList.remove('dark:bg-green-900/5');
-                          }
-                        }
+                        // Using only community elements with animation
                         
                         // Also change the community left sidebar with animation
                         const communityLeftSidebar = document.getElementById('community-left-sidebar');
@@ -1276,19 +1236,7 @@ export function SecondarySidebar() {
                           options.classList.toggle('hidden', !checked);
                         }
                         
-                        // Show/hide footer in mockups
-                        const footer = document.getElementById('mockup-footer');
-                        if (footer) {
-                          if (checked) {
-                            footer.style.display = "flex";
-                            footer.classList.add('bg-yellow-50/30');
-                            footer.classList.add('dark:bg-yellow-900/5');
-                          } else {
-                            footer.style.display = "none";
-                            footer.classList.remove('bg-yellow-50/30');
-                            footer.classList.remove('dark:bg-yellow-900/5');
-                          }
-                        }
+                        // Using only community elements with animation
                         
                         // Also change the community footer with animation
                         const communityFooter = document.getElementById('community-footer');
@@ -1320,28 +1268,6 @@ export function SecondarySidebar() {
                     <div className="flex items-center py-1 text-xs cursor-pointer">
                       <input type="radio" name="footer-choice" id="footer-custom" className="mr-2 h-3 w-3" />
                       <label htmlFor="footer-custom" className="text-gray-600 dark:text-gray-400 cursor-pointer">Customize</label>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Visual mockup elements (hidden by default) */}
-                <div className="mt-4 border border-gray-200 dark:border-gray-700 rounded-md p-3 relative">
-                  <div className="h-28 bg-gray-50 dark:bg-gray-800/70 rounded-sm overflow-hidden relative">
-                    {/* Header mockup */}
-                    <div id="mockup-header" className="w-full h-5 absolute top-0 left-0 bg-gray-900 dark:bg-gray-200 hidden" />
-                    
-                    {/* Left sidebar mockup */}
-                    <div id="mockup-left-sidebar" className="w-5 h-full absolute top-0 left-0 bg-gray-900 dark:bg-gray-200 hidden" />
-                    
-                    {/* Right sidebar mockup */}
-                    <div id="mockup-right-sidebar" className="w-5 h-full absolute top-0 right-0 bg-gray-900 dark:bg-gray-200 hidden" />
-                    
-                    {/* Footer mockup */}
-                    <div id="mockup-footer" className="w-full h-5 absolute bottom-0 left-0 bg-gray-900 dark:bg-gray-200 hidden" />
-                    
-                    {/* Center label */}
-                    <div className="absolute inset-0 flex items-center justify-center text-xs text-gray-400 dark:text-gray-500">
-                      Layout Preview
                     </div>
                   </div>
                 </div>
