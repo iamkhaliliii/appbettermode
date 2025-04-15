@@ -6,7 +6,7 @@ import NotFound from "@/pages/not-found";
 import Content from "@/pages/content";
 import Settings from "@/pages/settings";
 import People from "@/pages/people";
-import DesignStudio from "@/pages/design-studio";
+import DesignStudio from "@/pages/design-studio-simple";
 import Appearance from "@/pages/appearance";
 import Billing from "@/pages/billing";
 import Reports from "@/pages/reports";
