@@ -39,13 +39,13 @@ import {
   Check
 } from "lucide-react";
 // Custom MiniToggle component replaces Switch
-import { 
+import { Separator } from "@/components/ui/separator";
+import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionTrigger 
+  AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 
 // Minimal Toggle Switch Component
@@ -357,6 +357,18 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
 export function SecondarySidebar() {
   const [location] = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // Helper function to check if a URL is active
+  const isActiveUrl = (url: string): boolean => {
+    if (location === url) return true;
+    if (url.includes("/") && location.startsWith(url)) return true;
+    
+    // Special case for root menu items
+    const mainSection = url.split("/")[1]; // e.g. "content" from "/content/posts"
+    if (location === `/${mainSection}`) return true;
+    
+    return false;
+  };
 
   const renderDashboardSidebar = () => (
     <div className="p-3">
@@ -1072,9 +1084,26 @@ export function SecondarySidebar() {
             {/* Navigation Section with Toggles - Ultra minimal version */}
             <div className="mb-2">
               <div className="pb-1 pt-1 px-2">
-                <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400 capitalize">Layout Components</h4>
+                <button 
+                  className="flex items-center justify-between w-full text-xs font-medium text-gray-500 dark:text-gray-400 capitalize"
+                  onClick={() => {
+                    const content = document.getElementById('layout-components-content');
+                    if (content) {
+                      const isHidden = content.classList.contains('hidden');
+                      content.classList.toggle('hidden', !isHidden);
+                      const chevron = document.getElementById('layout-components-chevron');
+                      if (chevron) {
+                        chevron.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
+                      }
+                    }
+                  }}
+                >
+                  <span>Layout Components</span>
+                  <ChevronRight id="layout-components-chevron" className="h-3.5 w-3.5 text-gray-400 transform transition-transform" />
+                </button>
               </div>
-              <div className="pt-1 pb-0 px-1">
+              
+              <div id="layout-components-content" className="pt-1 pb-0 px-1 hidden">
                 <div className="space-y-1">
                   {/* Header Navigation Row */}
                   <div 
@@ -1318,18 +1347,6 @@ export function SecondarySidebar() {
     </div>
   );
 
-  // Helper function to check if a URL is active
-  const isActiveUrl = (url: string): boolean => {
-    if (location === url) return true;
-    if (url.includes("/") && location.startsWith(url)) return true;
-    
-    // Special case for root menu items
-    const mainSection = url.split("/")[1]; // e.g. "content" from "/content/posts"
-    if (location === `/${mainSection}`) return true;
-    
-    return false;
-  };
-  
   // Uncomment for debugging
   // console.log("Current location:", location);
   
