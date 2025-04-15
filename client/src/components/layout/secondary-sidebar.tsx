@@ -434,49 +434,89 @@ export function SecondarySidebar() {
     </div>
   );
 
-  const renderContentSidebar = () => (
-    <div className="p-3">
-      <div className="mb-2">
-        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Content</h2>
-      </div>
-      
-      <div className="space-y-1">
-        <Link href="/content/CMS">
-          <div
-            className={cn(
-              "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
-              (isActiveUrl('/content/CMS') || location === '/content')
-                ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-md" 
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded"
-            )}
-            style={{paddingLeft: "10px", paddingRight: "10px"}}
-          >
-            <span className="font-medium">CMS Collections</span>
-            <span className="ml-auto">
-              <ChevronRight className="h-4 w-4 text-gray-400" />
-            </span>
-          </div>
-        </Link>
+  const renderContentSidebar = () => {
+    // If we're on the CMS page, show post types
+    if (isActiveUrl('/content/CMS') || location === '/content') {
+      return (
+        <div className="p-3">
+          <div className="space-y-3">
+            {/* Post type navigation links */}
+            <div className="flex items-center justify-between py-3 px-3 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
+              <span className="text-base font-medium text-gray-800 dark:text-gray-200">All Post types</span>
+              <span className="text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 rounded-full px-2 py-1 text-sm">10</span>
+            </div>
+            
+            <div className="flex items-center justify-between py-3 px-3 rounded-md bg-gray-100 dark:bg-gray-700 cursor-pointer">
+              <span className="text-base font-medium text-gray-800 dark:text-gray-200">Discussions</span>
+              <span className="text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-600 rounded-full px-2 py-1 text-sm">14</span>
+            </div>
+            
+            <div className="flex items-center justify-between py-3 px-3 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
+              <span className="text-base font-medium text-gray-800 dark:text-gray-200">Wishlist</span>
+              <span className="text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 rounded-full px-2 py-1 text-sm">5</span>
+            </div>
+            
+            <div className="flex items-center justify-between py-3 px-3 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
+              <span className="text-base font-medium text-gray-800 dark:text-gray-200">Jobs</span>
+              <span className="text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 rounded-full px-2 py-1 text-sm">324</span>
+            </div>
 
-        <Link href="/content/activity">
-          <div
-            className={cn(
-              "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
-              isActiveUrl('/content/activity')
-                ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-md" 
-                : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded"
-            )}
-            style={{paddingLeft: "10px", paddingRight: "10px"}}
-          >
-            <span className="font-medium">Activity Hub</span>
-            <span className="ml-auto">
-              <ChevronRight className="h-4 w-4 text-gray-400" />
-            </span>
+            <div className="border-t border-gray-200 dark:border-gray-700 my-4"></div>
+            
+            <button className="flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 px-3 py-2 w-full text-left">
+              <Plus className="h-5 w-5 mr-2" />
+              <span className="text-sm">Add custom view</span>
+            </button>
           </div>
-        </Link>
+        </div>
+      );
+    }
+    
+    // Default content sidebar for other content sections
+    return (
+      <div className="p-3">
+        <div className="mb-2">
+          <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Content</h2>
+        </div>
+        
+        <div className="space-y-1">
+          <Link href="/content/CMS">
+            <div
+              className={cn(
+                "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
+                (isActiveUrl('/content/CMS') || location === '/content')
+                  ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-md" 
+                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded"
+              )}
+              style={{paddingLeft: "10px", paddingRight: "10px"}}
+            >
+              <span className="font-medium">CMS Collections</span>
+              <span className="ml-auto">
+                <ChevronRight className="h-4 w-4 text-gray-400" />
+              </span>
+            </div>
+          </Link>
+
+          <Link href="/content/activity">
+            <div
+              className={cn(
+                "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
+                isActiveUrl('/content/activity')
+                  ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-md" 
+                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded"
+              )}
+              style={{paddingLeft: "10px", paddingRight: "10px"}}
+            >
+              <span className="font-medium">Activity Hub</span>
+              <span className="ml-auto">
+                <ChevronRight className="h-4 w-4 text-gray-400" />
+              </span>
+            </div>
+          </Link>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderPeopleSidebar = () => (
     <div className="p-3">

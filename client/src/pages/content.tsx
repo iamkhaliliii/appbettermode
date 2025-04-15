@@ -35,14 +35,30 @@ export default function Content() {
     }
   };
   
+  // For the CMS section, we want to have an empty main content area
+  if (section === 'CMS') {
+    return (
+      <DashboardLayout>
+        <div className="max-w-7xl mx-auto p-8">
+          {/* Empty content area by design */}
+          <div className="flex items-center justify-center h-[calc(100vh-14rem)]">
+            <div className="text-center">
+              <h2 className="text-xl font-semibold text-gray-400 dark:text-gray-500">Select a post type to view content</h2>
+            </div>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // For other content sections, show the regular content view
   return (
     <DashboardLayout>
       <div className="max-w-7xl mx-auto p-4">
         <div className="mb-8">
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">{getTitle()}</h1>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            {section === 'CMS' ? 'Manage content collections and templates' : 
-             section === 'activity' ? 'Track user activities and engagement' : 
+            {section === 'activity' ? 'Track user activities and engagement' : 
              'Manage all your content in one place'}
           </p>
         </div>
