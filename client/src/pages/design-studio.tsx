@@ -1,8 +1,15 @@
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { useLocation, useRoute } from "wouter";
-import { useEffect } from "react";
-import { FolderPlus, Edit, Trash2, Plus, Layout } from "lucide-react";
+import { useEffect, useState } from "react";
+import { FolderPlus, Edit, Trash2, Plus, Layout, Search, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 
 export default function DesignStudio() {
   const [location, setLocation] = useLocation();
@@ -43,18 +50,18 @@ export default function DesignStudio() {
     }
     
     if (isTemplates) {
-      const type = location.split('/').pop();
-      return type?.charAt(0).toUpperCase() + type?.slice(1) + ' Templates';
+      const type = location.split('/').pop() || '';
+      return type.charAt(0).toUpperCase() + type.slice(1) + ' Templates';
     }
     
     if (isCollections) {
-      const collection = location.split('/').pop();
-      return collection?.charAt(0).toUpperCase() + collection?.slice(1) + ' Collection';
+      const collection = location.split('/').pop() || '';
+      return collection.charAt(0).toUpperCase() + collection.slice(1) + ' Collection';
     }
     
     if (isUtility) {
-      const page = location.split('/').pop();
-      return page?.charAt(0).toUpperCase() + page?.slice(1) + ' Page';
+      const page = location.split('/').pop() || '';
+      return page.charAt(0).toUpperCase() + page.slice(1) + ' Page';
     }
     
     if (isHeader) {
@@ -65,15 +72,89 @@ export default function DesignStudio() {
     return section ? section.charAt(0).toUpperCase() + section.slice(1) : 'Design Studio';
   };
 
+  // Add dropdown options based on section
+  const getAddMenuOptions = () => {
+    if (isSpaces) {
+      return [
+        { label: 'Add a new space', action: () => console.log('Add space') },
+        { label: 'Add a new folder', action: () => console.log('Add folder') },
+        { label: 'Add a new page', action: () => console.log('Add page') }
+      ];
+    }
+    
+    if (isTemplates) {
+      return [
+        { label: 'Add a new template', action: () => console.log('Add template') },
+        { label: 'Import template', action: () => console.log('Import template') }
+      ];
+    }
+    
+    if (isCollections) {
+      return [
+        { label: 'Add a new CMS collection', action: () => console.log('Add collection') },
+        { label: 'Add a new item', action: () => console.log('Add item') }
+      ];
+    }
+    
+    if (isUtility) {
+      return [
+        { label: 'Add a new utility page', action: () => console.log('Add utility page') }
+      ];
+    }
+    
+    return [
+      { label: 'Add a new item', action: () => console.log('Add generic item') }
+    ];
+  };
+
   // Render different content based on the route
   const renderContent = () => {
+    const [searchQuery, setSearchQuery] = useState('');
+    
+    // Search bar and Add button that should appear at the top of every page
+    const topBar = (
+      <div className="flex justify-between items-center mb-6">
+        <div className="relative w-64">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <Search className="w-4 h-4 text-gray-500" />
+          </div>
+          <Input
+            type="search"
+            placeholder="Search..."
+            className="pl-10 pr-4 py-2 text-sm"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="sm" variant="default">
+              <Plus className="mr-2 h-4 w-4" />
+              Add
+              <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            {getAddMenuOptions().map((option, index) => (
+              <DropdownMenuItem key={index} onClick={option.action}>
+                {option.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    );
+    
     if (isSpaces) {
       return (
-        <div className="space-y-6">
+        <div className="space-y-4">
+          {topBar}
+          
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-medium text-gray-900 dark:text-white">{getTitle()}</h2>
             <div className="flex space-x-2">
-              <Button size="sm" variant="outline">
+              <Button size="sm" variant="secondary">
                 <FolderPlus className="mr-2 h-4 w-4" />
                 New Folder
               </Button>
@@ -110,7 +191,9 @@ export default function DesignStudio() {
     
     if (isTemplates || isCollections || isUtility || isHeader) {
       return (
-        <div className="space-y-6">
+        <div className="space-y-4">
+          {topBar}
+          
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-medium text-gray-900 dark:text-white">{getTitle()}</h2>
             <Button size="sm">
@@ -130,11 +213,14 @@ export default function DesignStudio() {
     
     // Fallback content
     return (
-      <div className="text-center py-12">
-        <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Design Studio</h2>
-        <p className="text-gray-500 dark:text-gray-400 mb-4">
-          {section && <span>Currently viewing: {section.charAt(0).toUpperCase() + section.slice(1)}</span>}
-        </p>
+      <div>
+        {topBar}
+        <div className="text-center py-12">
+          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Design Studio</h2>
+          <p className="text-gray-500 dark:text-gray-400 mb-4">
+            {section && <span>Currently viewing: {section?.charAt(0).toUpperCase() + section?.slice(1)}</span>}
+          </p>
+        </div>
       </div>
     );
   };

@@ -10,10 +10,11 @@ import {
   Settings, 
   Lock,
   ChevronDown,
-  FolderTree,
+  Files,
   Layout,
-  Newspaper,
-  FileText,
+  Database,
+  PanelTop,
+  Layers2,
   FilePlus,
   Folder,
   FolderPlus
@@ -351,7 +352,7 @@ export function SecondarySidebar() {
           <AccordionItem value="spaces" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
               <div className="flex items-center">
-                <FolderTree className="h-4 w-4 mr-2 text-gray-500" />
+                <Files className="h-4 w-4 mr-2 text-gray-500" />
                 <span className="font-medium text-sm">Spaces</span>
               </div>
             </AccordionTrigger>
@@ -408,7 +409,7 @@ export function SecondarySidebar() {
           <AccordionItem value="templates" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
               <div className="flex items-center">
-                <Layout className="h-4 w-4 mr-2 text-gray-500" />
+                <Layers2 className="h-4 w-4 mr-2 text-gray-500" />
                 <span className="font-medium text-sm">Templates</span>
               </div>
             </AccordionTrigger>
@@ -439,7 +440,7 @@ export function SecondarySidebar() {
           <AccordionItem value="collections" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
               <div className="flex items-center">
-                <Newspaper className="h-4 w-4 mr-2 text-gray-500" />
+                <Database className="h-4 w-4 mr-2 text-gray-500" />
                 <span className="font-medium text-sm">CMS Collections</span>
               </div>
             </AccordionTrigger>
@@ -476,7 +477,7 @@ export function SecondarySidebar() {
           <AccordionItem value="utility" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
               <div className="flex items-center">
-                <FileText className="h-4 w-4 mr-2 text-gray-500" />
+                <PanelTop className="h-4 w-4 mr-2 text-gray-500" />
                 <span className="font-medium text-sm">Utility Pages</span>
               </div>
             </AccordionTrigger>
