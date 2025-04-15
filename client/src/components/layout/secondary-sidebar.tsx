@@ -19,7 +19,9 @@ interface SideNavItemProps {
   badge?: string;
 }
 
-function SideNavItem({ href, icon, children, isActive, badge }: SideNavItemProps) {
+function SideNavItem({ href, icon, children, isActive = false, badge }: SideNavItemProps) {
+  // Debug the active state
+  // console.log(`Item ${href} is active: ${isActive}`);
   return (
       <Link href={href}>
         <div
@@ -128,28 +130,28 @@ export function SecondarySidebar() {
       <div className="space-y-1">
         <SideNavItem 
           href="/content/posts"
-          isActive={location === '/content/posts' || location === '/content'}
+          isActive={isActiveUrl('/content/posts') || location === '/content'}
         >
           Posts
         </SideNavItem>
         
         <SideNavItem 
           href="/content/spaces"
-          isActive={location === '/content/spaces'}
+          isActive={isActiveUrl('/content/spaces')}
         >
           Spaces
         </SideNavItem>
 
         <SideNavItem 
           href="/content/comments"
-          isActive={location === '/content/comments'}
+          isActive={isActiveUrl('/content/comments')}
         >
           Comments
         </SideNavItem>
         
         <SideNavItem 
           href="/content/tags"
-          isActive={location === '/content/tags'}
+          isActive={isActiveUrl('/content/tags')}
         >
           Tags
         </SideNavItem>
@@ -270,14 +272,14 @@ export function SecondarySidebar() {
       <div className="space-y-1">
         <SideNavItem 
           href="/design-studio/collections"
-          isActive={location === '/design-studio/collections' || location === '/design-studio'}
+          isActive={isActiveUrl('/design-studio/collections') || location === '/design-studio'}
         >
           Collections and spaces
         </SideNavItem>
         
         <SideNavItem 
           href="/design-studio/header"
-          isActive={location === '/design-studio/header'}
+          isActive={isActiveUrl('/design-studio/header')}
         >
           Header and sidebar
         </SideNavItem>
@@ -444,6 +446,21 @@ export function SecondarySidebar() {
     </div>
   );
 
+  // Helper function to check if a URL is active
+  const isActiveUrl = (url: string): boolean => {
+    if (location === url) return true;
+    if (url.includes("/") && location.startsWith(url)) return true;
+    
+    // Special case for root menu items
+    const mainSection = url.split("/")[1]; // e.g. "content" from "/content/posts"
+    if (location === `/${mainSection}`) return true;
+    
+    return false;
+  };
+  
+  // Log current location to help debugging
+  console.log("Current location:", location);
+  
   const getSidebarForLocation = () => {
     if (location.startsWith('/content')) {
       return renderContentSidebar();
