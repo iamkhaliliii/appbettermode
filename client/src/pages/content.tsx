@@ -1156,7 +1156,7 @@ export default function Content() {
           </div>
           
           <div className="flex items-center gap-3 w-full md:w-auto">
-            <Button variant="secondary" size="sm" className="bg-secondary dark:bg-secondary border-border dark:border-border text-foreground dark:text-foreground">
+            <Button variant="secondary-gray" size="sm" className="bg-secondary dark:bg-secondary border-border dark:border-border text-foreground dark:text-foreground">
               <Filter className="h-4 w-4 mr-1" />
               Filter
               <ChevronDown className="h-3 w-3 ml-1 opacity-60" />
@@ -1188,10 +1188,10 @@ export default function Content() {
             Showing <span className="font-medium text-foreground dark:text-foreground">1-6</span> of <span className="font-medium text-foreground dark:text-foreground">24</span> items
           </div>
           <div className="flex gap-2">
-            <Button variant="secondary" size="sm" className="bg-secondary dark:bg-secondary border-border dark:border-border">
+            <Button variant="secondary-gray" size="sm" className="bg-secondary dark:bg-secondary border-border dark:border-border">
               Previous
             </Button>
-            <Button variant="secondary" size="sm" className="bg-secondary dark:bg-secondary border-border dark:border-border">
+            <Button variant="secondary-gray" size="sm" className="bg-secondary dark:bg-secondary border-border dark:border-border">
               Next
             </Button>
           </div>
