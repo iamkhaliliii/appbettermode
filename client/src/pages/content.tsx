@@ -763,7 +763,7 @@ export default function Content() {
       <DashboardLayout>
         <div className="max-w-7xl mx-auto">
           {/* Content container with padding */}
-          <div className="p-4 sm:p-6">
+          <div className="px-2 py-3 sm:px-3 sm:py-4">
             <div className="mb-3 flex flex-row items-center justify-between gap-3">
               <div>
                 <h1 className="text-xl font-medium text-gray-900 dark:text-white">
@@ -885,7 +885,7 @@ export default function Content() {
           </div>
           
           {/* Pagination controls - container with padding */}
-          <div className="p-4 sm:p-6">
+          <div className="px-2 py-3 sm:px-3 sm:py-4">
             <div className="flex items-center justify-between gap-2">
               <div>
                 <div className="text-xs text-gray-500 dark:text-gray-400">
@@ -978,7 +978,7 @@ export default function Content() {
           </div>
 
           {/* Action menu - Floating action button */}
-          <div className="p-4 sm:p-6">
+          <div className="px-2 py-3 sm:px-3 sm:py-4">
             <div className="fixed bottom-5 right-5 z-20">
               <div className="relative group">
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-primary-400 rounded-full blur opacity-20 group-hover:opacity-30 transition duration-1000 group-hover:duration-200"></div>
