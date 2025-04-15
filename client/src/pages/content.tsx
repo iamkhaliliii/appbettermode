@@ -755,70 +755,73 @@ export default function Content() {
   if (section === 'CMS') {
     return (
       <DashboardLayout>
-        <div className="max-w-7xl mx-auto p-4 sm:p-6">
-          <div className="mb-3 flex flex-row items-center justify-between gap-3">
-            <div>
-              <h1 className="text-xl font-medium text-gray-900 dark:text-white">
-                All Posts <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">14 items</span>
-              </h1>
+        <div className="max-w-7xl mx-auto">
+          {/* Content container with padding */}
+          <div className="p-4 sm:p-6">
+            <div className="mb-3 flex flex-row items-center justify-between gap-3">
+              <div>
+                <h1 className="text-xl font-medium text-gray-900 dark:text-white">
+                  All Posts <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">14 items</span>
+                </h1>
+              </div>
+            </div>
+
+            {/* Filter tabs */}
+            <div className="mb-3 border-b border-gray-100 dark:border-gray-800">
+              <div className="flex -mb-px">
+                <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-900 dark:text-white border-b border-gray-900 dark:border-white">
+                  All <span className="ml-1 text-[10px] text-gray-500 dark:text-gray-400">14</span>
+                </button>
+                <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                  Published <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">6</span>
+                </button>
+                <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                  Scheduled <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">3</span>
+                </button>
+                <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                  Drafts <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">0</span>
+                </button>
+                <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                  Pending <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">0</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Table toolbar */}
+            <div className="mb-2 flex items-center justify-between gap-1.5">
+              {/* Left side - Filter, Sort, Column buttons */}
+              <div className="flex items-center gap-1.5">
+                <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                  <Filter className="h-3 w-3" />
+                </button>
+                
+                <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                  <ArrowUpDown className="h-3 w-3" />
+                </button>
+                
+                <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                  <Columns className="h-3 w-3" />
+                </button>
+              </div>
+              
+              {/* Right side - Action buttons (Search, Export, Add) */}
+              <div className="flex items-center gap-1.5">
+                <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                  <Search className="h-3 w-3" />
+                </button>
+                
+                <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                  <FileOutput className="h-3 w-3" />
+                </button>
+                
+                <button className="inline-flex items-center justify-center h-6 w-6 rounded bg-blue-500 text-white hover:bg-blue-400 transition-colors">
+                  <Plus className="h-3 w-3" />
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Filter tabs */}
-          <div className="mb-3 border-b border-gray-100 dark:border-gray-800">
-            <div className="flex -mb-px">
-              <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-900 dark:text-white border-b border-gray-900 dark:border-white">
-                All <span className="ml-1 text-[10px] text-gray-500 dark:text-gray-400">14</span>
-              </button>
-              <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-                Published <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">6</span>
-              </button>
-              <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-                Scheduled <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">3</span>
-              </button>
-              <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-                Drafts <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">0</span>
-              </button>
-              <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
-                Pending <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">0</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Table toolbar */}
-          <div className="mb-2 flex items-center justify-between gap-1.5">
-            {/* Left side - Filter, Sort, Column buttons */}
-            <div className="flex items-center gap-1.5">
-              <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                <Filter className="h-3 w-3" />
-              </button>
-              
-              <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                <ArrowUpDown className="h-3 w-3" />
-              </button>
-              
-              <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                <Columns className="h-3 w-3" />
-              </button>
-            </div>
-            
-            {/* Right side - Action buttons (Search, Export, Add) */}
-            <div className="flex items-center gap-1.5">
-              <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                <Search className="h-3 w-3" />
-              </button>
-              
-              <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                <FileOutput className="h-3 w-3" />
-              </button>
-              
-              <button className="inline-flex items-center justify-center h-6 w-6 rounded bg-blue-500 text-white hover:bg-blue-400 transition-colors">
-                <Plus className="h-3 w-3" />
-              </button>
-            </div>
-          </div>
-
-          {/* Main table */}
+          {/* Main table - Full width with no padding */}
           <div className="bg-white dark:bg-gray-800 border border-gray-200/80 dark:border-gray-700/80 shadow-sm backdrop-blur-sm overflow-auto" style={{ scrollbarWidth: 'thin' }}>
             <Table className="w-full">
               <TableHeader>
@@ -875,157 +878,161 @@ export default function Content() {
             </Table>
           </div>
           
-          {/* Pagination controls */}
-          <div className="flex items-center justify-between gap-2 pt-3 pb-2 mt-2">
-            <div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">
-                {table.getFilteredSelectedRowModel().rows.length > 0 ? (
-                  <span className="flex items-center">
-                    <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400 text-xs font-semibold mr-1">
-                      {table.getFilteredSelectedRowModel().rows.length}
+          {/* Pagination controls - container with padding */}
+          <div className="p-4 sm:p-6">
+            <div className="flex items-center justify-between gap-2">
+              <div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  {table.getFilteredSelectedRowModel().rows.length > 0 ? (
+                    <span className="flex items-center">
+                      <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400 text-xs font-semibold mr-1">
+                        {table.getFilteredSelectedRowModel().rows.length}
+                      </span>
+                      selected
                     </span>
-                    selected
-                  </span>
-                ) : (
-                  <span className="text-[10px]">No items selected</span>
-                )}
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-4 lg:gap-5">
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs text-gray-500 dark:text-gray-400">Rows</span>
-                <select
-                  value={table.getState().pagination.pageSize}
-                  onChange={(e) => {
-                    table.setPageSize(Number(e.target.value))
-                  }}
-                  className="h-6 w-14 rounded-md border-none bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs"
-                >
-                  {[5, 10, 20, 30, 40, 50].map((pageSize) => (
-                    <option key={pageSize} value={pageSize}>
-                      {pageSize}
-                    </option>
-                  ))}
-                </select>
+                  ) : (
+                    <span className="text-[10px]">No items selected</span>
+                  )}
+                </div>
               </div>
               
-              <div className="flex items-center gap-1">
-                <button
-                  className="h-6 w-6 flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
-                  onClick={() => table.setPageIndex(0)}
-                  disabled={!table.getCanPreviousPage()}
-                >
-                  <span className="sr-only">Go to first page</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="11 17 6 12 11 7"></polyline>
-                    <polyline points="18 17 13 12 18 7"></polyline>
-                  </svg>
-                </button>
-                
-                <button
-                  className="h-6 w-6 flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
-                  onClick={() => table.previousPage()}
-                  disabled={!table.getCanPreviousPage()}
-                >
-                  <span className="sr-only">Go to previous page</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="15 18 9 12 15 6"></polyline>
-                  </svg>
-                </button>
-                
-                <div className="flex items-center justify-center min-w-[50px] px-1 h-6 text-xs text-gray-500 dark:text-gray-400">
-                  <span className="font-medium text-gray-700 dark:text-gray-300">{table.getState().pagination.pageIndex + 1}</span>
-                  <span className="mx-0.5 text-gray-400 dark:text-gray-600">/</span>
-                  <span>{table.getPageCount() || 1}</span>
+              <div className="flex items-center gap-4 lg:gap-5">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs text-gray-500 dark:text-gray-400">Rows</span>
+                  <select
+                    value={table.getState().pagination.pageSize}
+                    onChange={(e) => {
+                      table.setPageSize(Number(e.target.value))
+                    }}
+                    className="h-6 w-14 rounded-md border-none bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs"
+                  >
+                    {[5, 10, 20, 30, 40, 50].map((pageSize) => (
+                      <option key={pageSize} value={pageSize}>
+                        {pageSize}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 
-                <button
-                  className="h-6 w-6 flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
-                  onClick={() => table.nextPage()}
-                  disabled={!table.getCanNextPage()}
-                >
-                  <span className="sr-only">Go to next page</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                  </svg>
-                </button>
-                
-                <button
-                  className="h-6 w-6 flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
-                  onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                  disabled={!table.getCanNextPage()}
-                >
-                  <span className="sr-only">Go to last page</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="13 17 18 12 13 7"></polyline>
-                    <polyline points="6 17 11 12 6 7"></polyline>
-                  </svg>
-                </button>
+                <div className="flex items-center gap-1">
+                  <button
+                    className="h-6 w-6 flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
+                    onClick={() => table.setPageIndex(0)}
+                    disabled={!table.getCanPreviousPage()}
+                  >
+                    <span className="sr-only">Go to first page</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="11 17 6 12 11 7"></polyline>
+                      <polyline points="18 17 13 12 18 7"></polyline>
+                    </svg>
+                  </button>
+                  
+                  <button
+                    className="h-6 w-6 flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
+                    onClick={() => table.previousPage()}
+                    disabled={!table.getCanPreviousPage()}
+                  >
+                    <span className="sr-only">Go to previous page</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                  </button>
+                  
+                  <div className="flex items-center justify-center min-w-[50px] px-1 h-6 text-xs text-gray-500 dark:text-gray-400">
+                    <span className="font-medium text-gray-700 dark:text-gray-300">{table.getState().pagination.pageIndex + 1}</span>
+                    <span className="mx-0.5 text-gray-400 dark:text-gray-600">/</span>
+                    <span>{table.getPageCount() || 1}</span>
+                  </div>
+                  
+                  <button
+                    className="h-6 w-6 flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
+                    onClick={() => table.nextPage()}
+                    disabled={!table.getCanNextPage()}
+                  >
+                    <span className="sr-only">Go to next page</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                  </button>
+                  
+                  <button
+                    className="h-6 w-6 flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
+                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                    disabled={!table.getCanNextPage()}
+                  >
+                    <span className="sr-only">Go to last page</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="13 17 18 12 13 7"></polyline>
+                      <polyline points="6 17 11 12 6 7"></polyline>
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Action menu - Floating action button */}
-          <div className="fixed bottom-5 right-5 z-20">
-            <div className="relative group">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-primary-400 rounded-full blur opacity-20 group-hover:opacity-30 transition duration-1000 group-hover:duration-200"></div>
-              <button className="relative bg-primary-500 hover:bg-primary-400 text-white p-3 rounded-full shadow-md flex items-center justify-center transition-all duration-200 focus:outline-none">
-                <Plus className="h-5 w-5" />
-              </button>
-              
-              {/* Action menu dropdown */}
-              <div className="absolute right-0 bottom-full mb-2 w-48 overflow-hidden rounded-lg bg-white/98 dark:bg-gray-800/98 shadow-md border border-gray-200 dark:border-gray-700 backdrop-blur-sm origin-bottom-right scale-0 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-200">
-                <div className="py-1">
-                  <div className="px-3 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                    Create New
+          <div className="p-4 sm:p-6">
+            <div className="fixed bottom-5 right-5 z-20">
+              <div className="relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-primary-400 rounded-full blur opacity-20 group-hover:opacity-30 transition duration-1000 group-hover:duration-200"></div>
+                <button className="relative bg-primary-500 hover:bg-primary-400 text-white p-2.5 rounded-full shadow-md flex items-center justify-center transition-all duration-200 focus:outline-none">
+                  <Plus className="h-4 w-4" />
+                </button>
+                
+                {/* Action menu dropdown */}
+                <div className="absolute right-0 bottom-full mb-2 w-48 overflow-hidden rounded-lg bg-white/98 dark:bg-gray-800/98 shadow-md border border-gray-200 dark:border-gray-700 backdrop-blur-sm origin-bottom-right scale-0 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-200">
+                  <div className="py-1">
+                    <div className="px-3 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                      Create New
+                    </div>
+                    <button className="flex w-full items-center px-3 py-2 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                      <span className="flex-shrink-0 mr-2.5 h-5 w-5 rounded-full bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      </span>
+                      <div>
+                        <div className="font-medium">Create Post</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Add new content</div>
+                      </div>
+                    </button>
+                    <button className="flex w-full items-center px-3 py-2 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                      <span className="flex-shrink-0 mr-2.5 h-5 w-5 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </span>
+                      <div>
+                        <div className="font-medium">New Collection</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Create structure</div>
+                      </div>
+                    </button>
+                    <button className="flex w-full items-center px-3 py-2 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                      <span className="flex-shrink-0 mr-2.5 h-5 w-5 rounded-full bg-green-50 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+                        </svg>
+                      </span>
+                      <div>
+                        <div className="font-medium">Import Content</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Bulk import</div>
+                      </div>
+                    </button>
+                    <div className="border-t border-gray-200 dark:border-gray-700 my-0.5"></div>
+                    <button className="flex w-full items-center px-3 py-2 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                      <span className="flex-shrink-0 mr-2.5 h-5 w-5 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                      </span>
+                      <div>
+                        <div className="font-medium">Settings</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">CMS config</div>
+                      </div>
+                    </button>
                   </div>
-                  <button className="flex w-full items-center px-3 py-2 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                    <span className="flex-shrink-0 mr-2.5 h-5 w-5 rounded-full bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                      </svg>
-                    </span>
-                    <div>
-                      <div className="font-medium">Create Post</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Add new content</div>
-                    </div>
-                  </button>
-                  <button className="flex w-full items-center px-3 py-2 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                    <span className="flex-shrink-0 mr-2.5 h-5 w-5 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                    </span>
-                    <div>
-                      <div className="font-medium">New Collection</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Create structure</div>
-                    </div>
-                  </button>
-                  <button className="flex w-full items-center px-3 py-2 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                    <span className="flex-shrink-0 mr-2.5 h-5 w-5 rounded-full bg-green-50 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
-                      </svg>
-                    </span>
-                    <div>
-                      <div className="font-medium">Import Content</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Bulk import</div>
-                    </div>
-                  </button>
-                  <div className="border-t border-gray-200 dark:border-gray-700 my-0.5"></div>
-                  <button className="flex w-full items-center px-3 py-2 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                    <span className="flex-shrink-0 mr-2.5 h-5 w-5 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-400">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                    </span>
-                    <div>
-                      <div className="font-medium">Settings</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">CMS config</div>
-                    </div>
-                  </button>
                 </div>
               </div>
             </div>
