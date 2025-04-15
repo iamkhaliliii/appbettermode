@@ -278,7 +278,7 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
               )}
             />
           </span>
-          <div className="flex items-center cursor-default">
+          <div className="flex items-center cursor-pointer" onClick={handleToggle}>
             <Folder className="h-3.5 w-3.5 mr-1 text-gray-400" />
             <span className="font-medium text-gray-500">{name}</span>
           </div>
