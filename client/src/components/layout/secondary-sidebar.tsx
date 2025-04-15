@@ -1012,36 +1012,28 @@ export function SecondarySidebar() {
   const renderDesignStudioSpacesFeedSidebar = () => {
     return (
       <div className="p-3">
-        {/* Top nav with combined title, buttons in a single row - ultra minimalist */}
-        <div className="flex items-center justify-between py-2 mb-3 sticky top-0 bg-white dark:bg-gray-800 z-10 border-b border-gray-100 dark:border-gray-800">
-          <div className="flex items-center gap-2">
+        {/* Top nav with back button and settings in a single row - ultra minimalist */}
+        <div className="sticky top-0 bg-white dark:bg-gray-800 z-10 border-b border-gray-100 dark:border-gray-800 pb-2">
+          <div className="flex items-center justify-between py-2">
             <button 
               onClick={() => window.history.back()}
               className="p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded transition-colors"
               aria-label="Go back"
             >
-              <ArrowLeft className="h-3 w-3" />
+              <ArrowLeft className="h-3.5 w-3.5" />
             </button>
             
-            <div className="flex items-center gap-1.5">
-              <MessageSquare className="h-3.5 w-3.5 text-purple-500" />
-              <span className="text-xs font-medium text-gray-700 dark:text-gray-300 tracking-wide">Feed</span>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-1">
-            <button 
-              className="p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded transition-colors"
-              aria-label="Search"
-            >
-              <Search className="h-3 w-3" />
-            </button>
             <button 
               className="p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded transition-colors"
               aria-label="Settings"
             >
-              <Settings className="h-3 w-3" />
+              <Settings className="h-3.5 w-3.5" />
             </button>
+          </div>
+          
+          <div className="flex flex-col items-center justify-center pt-1 pb-2">
+            <MessageSquare className="h-5 w-5 text-purple-500 mb-1" />
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 tracking-wide">Feed</span>
           </div>
         </div>
         
