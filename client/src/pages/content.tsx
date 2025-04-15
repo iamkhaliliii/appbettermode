@@ -235,11 +235,13 @@ const columns: ColumnDef<Post>[] = [
       const space = row.getValue("space") as { name: string; color: string }
       return (
         <div className="flex items-center">
-          <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs whitespace-nowrap`} 
-               style={{ 
-                 backgroundColor: `${space.color}15`, 
-                 color: space.color
-               }}>
+          <span 
+            className="inline-flex items-center px-1.5 py-0.5 rounded text-xs whitespace-nowrap"
+            style={{ 
+              backgroundColor: `${space.color}15`, 
+              color: space.color
+            }}
+          >
             {space.name}
           </span>
         </div>
