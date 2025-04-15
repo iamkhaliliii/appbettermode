@@ -806,22 +806,15 @@ export function SecondarySidebar() {
             <AccordionContent className="pt-1 pb-1">
               <div className="space-y-1">
                 <MinimalItem 
-                  name="Page Templates" 
-                  path="/design-studio/templates/page"
+                  name="General template" 
+                  path="/design-studio/templates/general"
                   icon={<FileCog className="h-3.5 w-3.5" />}
                   iconColor="text-[#57ABFF]"
                   level={1}
                 />
                 <MinimalItem 
-                  name="Email Templates" 
-                  path="/design-studio/templates/email"
-                  icon={<FileCog className="h-3.5 w-3.5" />}
-                  iconColor="text-[#57ABFF]"
-                  level={1}
-                />
-                <MinimalItem 
-                  name="Popup Templates" 
-                  path="/design-studio/templates/popup"
+                  name="Product" 
+                  path="/design-studio/templates/product"
                   icon={<FileCog className="h-3.5 w-3.5" />}
                   iconColor="text-[#57ABFF]"
                   level={1}
