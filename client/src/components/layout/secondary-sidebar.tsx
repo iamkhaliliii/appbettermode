@@ -28,6 +28,9 @@ import {
   Trash2,
   Pencil,
   Eye,
+  PanelLeft,
+  PanelRight,
+  Columns,
   EyeOff,
   ArrowLeft,
   ChevronRight,
@@ -1059,227 +1062,170 @@ export function SecondarySidebar() {
             
             {/* Navigation Section with Toggles - Ultra minimal version */}
             <div className="mb-5">
-              <h4 className="text-xs text-gray-500 dark:text-gray-400 mb-3">Navigations</h4>
-              <div className="space-y-1">
-                {/* Section list with toggles */}
-                <div className="border-b border-gray-100 dark:border-gray-700/30 pb-4 space-y-2">
-                  {/* Header Navigation Row */}
-                  <div 
-                    id="header-section" 
-                    className="flex items-center justify-between py-1"
-                  >
-                    <span className="text-xs text-gray-600 dark:text-gray-400">Header</span>
-                    <Switch 
-                      id="header-toggle" 
-                      className="data-[state=checked]:scale-105 data-[state=checked]:bg-gray-900 dark:data-[state=checked]:bg-gray-100"
-                      onCheckedChange={(checked) => {
-                        // Toggle visibility of options
-                        const options = document.getElementById('header-options');
-                        if (options) {
-                          options.classList.toggle('hidden', !checked);
-                        }
-                        
-                        // Using only community elements now
-                        
-                        // Also change the community header with animation
-                        const communityHeader = document.getElementById('community-header');
-                        if (communityHeader) {
-                          if (checked) {
-                            communityHeader.style.display = "flex";
-                            communityHeader.style.opacity = "1";
-                            communityHeader.style.transform = "translateY(0)";
-                            communityHeader.style.backgroundColor = 'rgba(219, 234, 254, 0.1)';
-                            communityHeader.style.borderBottom = '2px solid var(--border)';
-                          } else {
-                            setTimeout(() => {
-                              communityHeader.style.display = "none";
-                            }, 300);
-                            communityHeader.style.opacity = "0";
-                            communityHeader.style.transform = "translateY(-20px)";
-                          }
-                        }
-                      }} 
-                    />
+              <div className="flex items-center mb-2">
+                <h4 className="text-xs font-medium text-gray-700 dark:text-gray-300">Layout Components</h4>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {/* Header Navigation Card */}
+                <div 
+                  id="header-section" 
+                  className="p-2 border border-gray-100 dark:border-gray-800 rounded-md flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-150"
+                >
+                  <div className="flex items-center space-x-1">
+                    <Layout className="h-3 w-3 text-blue-500" />
+                    <span className="text-[10px] text-gray-700 dark:text-gray-300 font-medium">Header</span>
                   </div>
-                  
-                  {/* Header options (initially hidden) */}
-                  <div id="header-options" className="pl-5 hidden space-y-1.5">
-                    <div className="flex items-center py-1 text-xs cursor-pointer">
-                      <input type="radio" name="header-choice" id="header-default" className="mr-2 h-3 w-3" defaultChecked />
-                      <label htmlFor="header-default" className="text-gray-600 dark:text-gray-400 cursor-pointer">Use Default</label>
-                    </div>
-                    <div className="flex items-center py-1 text-xs cursor-pointer">
-                      <input type="radio" name="header-choice" id="header-custom" className="mr-2 h-3 w-3" />
-                      <label htmlFor="header-custom" className="text-gray-600 dark:text-gray-400 cursor-pointer">Customize</label>
-                    </div>
-                  </div>
-                  
-                  {/* Right Sidebar Navigation Row */}
-                  <div 
-                    id="right-sidebar-section" 
-                    className="flex items-center justify-between py-1"
-                  >
-                    <span className="text-xs text-gray-600 dark:text-gray-400">Right Sidebar</span>
-                    <Switch 
-                      id="right-sidebar-toggle" 
-                      className="data-[state=checked]:scale-105 data-[state=checked]:bg-gray-900 dark:data-[state=checked]:bg-gray-100"
-                      onCheckedChange={(checked) => {
-                        // Toggle visibility of options
-                        const options = document.getElementById('right-sidebar-options');
-                        if (options) {
-                          options.classList.toggle('hidden', !checked);
+                  <Switch 
+                    id="header-toggle" 
+                    className="h-3 w-6 data-[state=checked]:bg-blue-500"
+                    onCheckedChange={(checked) => {
+                      // Toggle visibility of options
+                      const options = document.getElementById('header-options');
+                      if (options) {
+                        options.classList.toggle('hidden', !checked);
+                      }
+                      
+                      // Using only community elements now
+                      // Also change the community header with animation
+                      const communityHeader = document.getElementById('community-header');
+                      if (communityHeader) {
+                        if (checked) {
+                          communityHeader.style.display = "flex";
+                          communityHeader.style.opacity = "1";
+                          communityHeader.style.transform = "translateY(0)";
+                          communityHeader.style.backgroundColor = 'rgba(219, 234, 254, 0.1)';
+                          communityHeader.style.borderBottom = '2px solid var(--border)';
+                        } else {
+                          setTimeout(() => {
+                            communityHeader.style.display = "none";
+                          }, 300);
+                          communityHeader.style.opacity = "0";
+                          communityHeader.style.transform = "translateY(-20px)";
                         }
-                        
-                        // Using only community elements with animation
-                        
-                        // Also change the community right sidebar with animation
-                        const communityRightSidebar = document.getElementById('community-right-sidebar');
-                        if (communityRightSidebar) {
-                          if (checked) {
-                            communityRightSidebar.style.display = "block";
-                            communityRightSidebar.style.transform = "translateX(0)";
-                            communityRightSidebar.style.opacity = "1";
-                            communityRightSidebar.style.width = '9rem';
-                            communityRightSidebar.style.borderLeft = '2px solid var(--border)';
-                            communityRightSidebar.style.backgroundColor = 'rgba(254, 226, 226, 0.1)';
-                          } else {
-                            setTimeout(() => {
-                              communityRightSidebar.style.display = "none";
-                            }, 300);
-                            communityRightSidebar.style.transform = "translateX(20px)";
-                            communityRightSidebar.style.opacity = "0";
-                            communityRightSidebar.style.width = '0';
-                            communityRightSidebar.style.padding = '0';
-                            communityRightSidebar.style.overflow = "hidden";
-                          }
+                      }
+                    }} 
+                  />
+                </div>
+                
+                {/* Right Sidebar Card */}
+                <div 
+                  id="right-sidebar-section" 
+                  className="p-2 border border-gray-100 dark:border-gray-800 rounded-md flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-150"
+                >
+                  <div className="flex items-center space-x-1">
+                    <PanelRight className="h-3 w-3 text-red-500" />
+                    <span className="text-[10px] text-gray-700 dark:text-gray-300 font-medium">Right Bar</span>
+                  </div>
+                  <Switch 
+                    id="right-sidebar-toggle" 
+                    className="h-3 w-6 data-[state=checked]:bg-red-500"
+                    onCheckedChange={(checked) => {
+                      // Using only community elements with animation  
+                      // Also change the community right sidebar with animation
+                      const communityRightSidebar = document.getElementById('community-right-sidebar');
+                      if (communityRightSidebar) {
+                        if (checked) {
+                          communityRightSidebar.style.display = "block";
+                          communityRightSidebar.style.transform = "translateX(0)";
+                          communityRightSidebar.style.opacity = "1";
+                          communityRightSidebar.style.width = '9rem';
+                          communityRightSidebar.style.borderLeft = '2px solid var(--border)';
+                          communityRightSidebar.style.backgroundColor = 'rgba(254, 226, 226, 0.1)';
+                        } else {
+                          setTimeout(() => {
+                            communityRightSidebar.style.display = "none";
+                          }, 300);
+                          communityRightSidebar.style.transform = "translateX(20px)";
+                          communityRightSidebar.style.opacity = "0";
+                          communityRightSidebar.style.width = '0';
+                          communityRightSidebar.style.padding = '0';
+                          communityRightSidebar.style.overflow = "hidden";
                         }
-                      }} 
-                    />
+                      }
+                    }} 
+                  />
+                </div>
+                
+                {/* Left Sidebar Card */}
+                <div 
+                  id="left-sidebar-section" 
+                  className="p-2 border border-gray-100 dark:border-gray-800 rounded-md flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-150"
+                >
+                  <div className="flex items-center space-x-1">
+                    <PanelLeft className="h-3 w-3 text-green-500" />
+                    <span className="text-[10px] text-gray-700 dark:text-gray-300 font-medium">Left Bar</span>
                   </div>
-                  
-                  {/* Right Sidebar options (initially hidden) */}
-                  <div id="right-sidebar-options" className="pl-5 hidden space-y-1.5">
-                    <div className="flex items-center py-1 text-xs cursor-pointer">
-                      <input type="radio" name="right-sidebar-choice" id="right-sidebar-default" className="mr-2 h-3 w-3" defaultChecked />
-                      <label htmlFor="right-sidebar-default" className="text-gray-600 dark:text-gray-400 cursor-pointer">Use Default</label>
-                    </div>
-                    <div className="flex items-center py-1 text-xs cursor-pointer">
-                      <input type="radio" name="right-sidebar-choice" id="right-sidebar-custom" className="mr-2 h-3 w-3" />
-                      <label htmlFor="right-sidebar-custom" className="text-gray-600 dark:text-gray-400 cursor-pointer">Customize</label>
-                    </div>
-                  </div>
-                  
-                  {/* Left Sidebar Navigation Row */}
-                  <div 
-                    id="left-sidebar-section" 
-                    className="flex items-center justify-between py-1"
-                  >
-                    <span className="text-xs text-gray-600 dark:text-gray-400">Left Sidebar</span>
-                    <Switch 
-                      id="left-sidebar-toggle" 
-                      className="data-[state=checked]:scale-105 data-[state=checked]:bg-gray-900 dark:data-[state=checked]:bg-gray-100"
-                      onCheckedChange={(checked) => {
-                        // Toggle visibility of options
-                        const options = document.getElementById('left-sidebar-options');
-                        if (options) {
-                          options.classList.toggle('hidden', !checked);
+                  <Switch 
+                    id="left-sidebar-toggle" 
+                    className="h-3 w-6 data-[state=checked]:bg-green-500"
+                    onCheckedChange={(checked) => {
+                      // Using only community elements with animation
+                      // Also change the community left sidebar with animation
+                      const communityLeftSidebar = document.getElementById('community-left-sidebar');
+                      if (communityLeftSidebar) {
+                        if (checked) {
+                          communityLeftSidebar.style.transform = "translateX(0)";
+                          communityLeftSidebar.style.opacity = "1";
+                          communityLeftSidebar.style.backgroundColor = 'rgba(220, 252, 231, 0.1)'; 
+                          communityLeftSidebar.style.borderRight = '2px solid var(--border)';
+                          communityLeftSidebar.style.width = '9rem';
+                        } else {
+                          communityLeftSidebar.style.transform = "translateX(-20px)";
+                          communityLeftSidebar.style.width = '0';
+                          communityLeftSidebar.style.padding = '0';
+                          communityLeftSidebar.style.opacity = "0";
+                          communityLeftSidebar.style.overflow = "hidden";
                         }
-                        
-                        // Using only community elements with animation
-                        
-                        // Also change the community left sidebar with animation
-                        const communityLeftSidebar = document.getElementById('community-left-sidebar');
-                        if (communityLeftSidebar) {
-                          if (checked) {
-                            communityLeftSidebar.style.transform = "translateX(0)";
-                            communityLeftSidebar.style.opacity = "1";
-                            communityLeftSidebar.style.backgroundColor = 'rgba(220, 252, 231, 0.1)'; 
-                            communityLeftSidebar.style.borderRight = '2px solid var(--border)';
-                            communityLeftSidebar.style.width = '9rem';
-                          } else {
-                            communityLeftSidebar.style.transform = "translateX(-20px)";
-                            communityLeftSidebar.style.width = '0';
-                            communityLeftSidebar.style.padding = '0';
-                            communityLeftSidebar.style.opacity = "0";
-                            communityLeftSidebar.style.overflow = "hidden";
-                          }
+                      }
+                    }} 
+                  />
+                </div>
+                
+                {/* Footer Card */}
+                <div 
+                  id="footer-section" 
+                  className="p-2 border border-gray-100 dark:border-gray-800 rounded-md flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-150"
+                >
+                  <div className="flex items-center space-x-1">
+                    <Columns className="h-3 w-3 text-yellow-500" />
+                    <span className="text-[10px] text-gray-700 dark:text-gray-300 font-medium">Footer</span>
+                  </div>
+                  <Switch 
+                    id="footer-toggle" 
+                    className="h-3 w-6 data-[state=checked]:bg-yellow-500"
+                    onCheckedChange={(checked) => {
+                      // Using only community elements with animation
+                      // Also change the community footer with animation
+                      const communityFooter = document.getElementById('community-footer');
+                      if (communityFooter) {
+                        if (checked) {
+                          communityFooter.style.display = "flex";
+                          communityFooter.style.opacity = "1";
+                          communityFooter.style.transform = "translateY(0)";
+                          communityFooter.style.backgroundColor = 'rgba(254, 240, 138, 0.1)'; 
+                          communityFooter.style.borderTop = '2px solid var(--border)';
+                        } else {
+                          setTimeout(() => {
+                            communityFooter.style.display = "none";
+                          }, 300);
+                          communityFooter.style.opacity = "0";
+                          communityFooter.style.transform = "translateY(20px)";
                         }
-                      }} 
-                    />
-                  </div>
-                  
-                  {/* Left Sidebar options (initially hidden) */}
-                  <div id="left-sidebar-options" className="pl-5 hidden space-y-1.5">
-                    <div className="flex items-center py-1 text-xs cursor-pointer">
-                      <input type="radio" name="left-sidebar-choice" id="left-sidebar-default" className="mr-2 h-3 w-3" defaultChecked />
-                      <label htmlFor="left-sidebar-default" className="text-gray-600 dark:text-gray-400 cursor-pointer">Use Default</label>
-                    </div>
-                    <div className="flex items-center py-1 text-xs cursor-pointer">
-                      <input type="radio" name="left-sidebar-choice" id="left-sidebar-custom" className="mr-2 h-3 w-3" />
-                      <label htmlFor="left-sidebar-custom" className="text-gray-600 dark:text-gray-400 cursor-pointer">Customize</label>
-                    </div>
-                  </div>
-                  
-                  {/* Footer Navigation Row */}
-                  <div 
-                    id="footer-section" 
-                    className="flex items-center justify-between py-1"
-                  >
-                    <span className="text-xs text-gray-600 dark:text-gray-400">Footer</span>
-                    <Switch 
-                      id="footer-toggle" 
-                      className="data-[state=checked]:scale-105 data-[state=checked]:bg-gray-900 dark:data-[state=checked]:bg-gray-100"
-                      onCheckedChange={(checked) => {
-                        // Toggle visibility of options
-                        const options = document.getElementById('footer-options');
-                        if (options) {
-                          options.classList.toggle('hidden', !checked);
-                        }
-                        
-                        // Using only community elements with animation
-                        
-                        // Also change the community footer with animation
-                        const communityFooter = document.getElementById('community-footer');
-                        if (communityFooter) {
-                          if (checked) {
-                            communityFooter.style.display = "flex";
-                            communityFooter.style.opacity = "1";
-                            communityFooter.style.transform = "translateY(0)";
-                            communityFooter.style.backgroundColor = 'rgba(254, 240, 138, 0.1)'; 
-                            communityFooter.style.borderTop = '2px solid var(--border)';
-                          } else {
-                            setTimeout(() => {
-                              communityFooter.style.display = "none";
-                            }, 300);
-                            communityFooter.style.opacity = "0";
-                            communityFooter.style.transform = "translateY(20px)";
-                          }
-                        }
-                      }} 
-                    />
-                  </div>
-                  
-                  {/* Footer options (initially hidden) */}
-                  <div id="footer-options" className="pl-5 hidden space-y-1.5">
-                    <div className="flex items-center py-1 text-xs cursor-pointer">
-                      <input type="radio" name="footer-choice" id="footer-default" className="mr-2 h-3 w-3" defaultChecked />
-                      <label htmlFor="footer-default" className="text-gray-600 dark:text-gray-400 cursor-pointer">Use Default</label>
-                    </div>
-                    <div className="flex items-center py-1 text-xs cursor-pointer">
-                      <input type="radio" name="footer-choice" id="footer-custom" className="mr-2 h-3 w-3" />
-                      <label htmlFor="footer-custom" className="text-gray-600 dark:text-gray-400 cursor-pointer">Customize</label>
-                    </div>
-                  </div>
+                      }
+                    }} 
+                  />
                 </div>
               </div>
             </div>
             
             {/* Main Section with minimal dropdown block selector */}
             <div className="mt-5">
-              <h4 className="text-xs text-gray-500 dark:text-gray-400 mb-3">Main Section</h4>
+              <div className="flex items-center mb-2">
+                <h4 className="text-xs font-medium text-gray-700 dark:text-gray-300">Content Blocks</h4>
+              </div>
               <div className="relative">
                 <button
-                  className="flex items-center justify-between w-full py-1.5 text-xs border-b border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                  className="flex items-center justify-between w-full py-2.5 px-3 text-xs font-medium border border-gray-200 dark:border-gray-800 rounded-md text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-150 shadow-sm"
                   onClick={() => {
                     const dropdown = document.getElementById('blocks-dropdown');
                     if (dropdown) {
@@ -1288,28 +1234,33 @@ export function SecondarySidebar() {
                   }}
                 >
                   <div className="flex items-center">
-                    <Plus className="h-3 w-3 mr-1.5 text-gray-500" />
+                    <Plus className="h-3.5 w-3.5 mr-2 text-gray-600 dark:text-gray-400" />
                     <span>Add Block</span>
                   </div>
-                  <ChevronDown className="h-3 w-3 text-gray-500" />
+                  <ChevronDown className="h-3.5 w-3.5 text-gray-600 dark:text-gray-400" />
                 </button>
                 
                 {/* Dropdown for block options - Minimalist version */}
-                <div id="blocks-dropdown" className="absolute left-0 right-0 z-10 mt-1 hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
-                  <div className="py-1.5">
-                    <div className="flex items-center px-2 py-1 text-xs hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-600 dark:text-gray-400">
+                <div id="blocks-dropdown" className="absolute left-0 right-0 z-10 mt-1 hidden rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-md">
+                  <div className="py-1">
+                    <div className="flex items-center gap-3 px-3 py-2 text-xs hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <File className="h-3 w-3 text-gray-500" />
                       <span>Text Block</span>
                     </div>
-                    <div className="flex items-center px-2 py-1 text-xs hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center gap-3 px-3 py-2 text-xs hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <Eye className="h-3 w-3 text-gray-500" />
                       <span>Image Block</span>
                     </div>
-                    <div className="flex items-center px-2 py-1 text-xs hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center gap-3 px-3 py-2 text-xs hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <Pencil className="h-3 w-3 text-gray-500" />
                       <span>Video Block</span>
                     </div>
-                    <div className="flex items-center px-2 py-1 text-xs hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center gap-3 px-3 py-2 text-xs hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <FileBox className="h-3 w-3 text-gray-500" />
                       <span>Button Block</span>
                     </div>
-                    <div className="flex items-center px-2 py-1 text-xs hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center gap-3 px-3 py-2 text-xs hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <FileCog className="h-3 w-3 text-gray-500" />
                       <span>Form Block</span>
                     </div>
                   </div>
