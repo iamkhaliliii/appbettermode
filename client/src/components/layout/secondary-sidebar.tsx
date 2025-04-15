@@ -743,7 +743,7 @@ export function SecondarySidebar() {
                     <div className="py-1">
                       <a href="#" className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                         <FileBox className="h-3 w-3 mr-2 text-[#A694FF]" />
-                        <span>Add CMS Page</span>
+                        <span>Add a New CMS</span>
                       </a>
                     </div>
                   </div>
