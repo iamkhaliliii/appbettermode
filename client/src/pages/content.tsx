@@ -305,7 +305,7 @@ const columns: ColumnDef<Post>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="flex items-center space-x-1 group text-left focus:outline-none"
         >
-          <span className="text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200 font-medium transition-colors">Model</span>
+          <span className="text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200 font-medium transition-colors">CMS</span>
           {column.getIsSorted() ? (
             <div className={`transition-colors ${column.getIsSorted() === "asc" ? "text-primary-500" : "text-primary-500"}`}>
               {column.getIsSorted() === "asc" ? (
@@ -322,28 +322,11 @@ const columns: ColumnDef<Post>[] = [
     },
     cell: ({ row }) => {
       const model = row.getValue("cmsModel") as string
-      const modelConfig: Record<string, { bgClass: string; textClass: string; }> = {
-        "Discussion": { 
-          bgClass: "bg-purple-50/60 dark:bg-purple-900/10", 
-          textClass: "text-purple-600 dark:text-purple-400"
-        },
-        "Wishlist": { 
-          bgClass: "bg-amber-50/60 dark:bg-amber-900/10", 
-          textClass: "text-amber-600 dark:text-amber-400"
-        },
-        "Article": { 
-          bgClass: "bg-blue-50/60 dark:bg-blue-900/10", 
-          textClass: "text-blue-600 dark:text-blue-400"
-        },
-        "Page": { 
-          bgClass: "bg-emerald-50/60 dark:bg-emerald-900/10", 
-          textClass: "text-emerald-600 dark:text-emerald-400"
-        },
-      }
       
-      const config = modelConfig[model] || {
-        bgClass: "bg-gray-50/60 dark:bg-gray-800/30", 
-        textClass: "text-gray-600 dark:text-gray-400"
+      // استفاده از رنگ بنفش برای همه‌ی مدل‌ها
+      const config = {
+        bgClass: "bg-purple-50/60 dark:bg-purple-900/10", 
+        textClass: "text-purple-600 dark:text-purple-400"
       }
       
       return (
