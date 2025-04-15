@@ -19,7 +19,16 @@ import {
   Folder,
   FolderPlus,
   Search,
-  Plus
+  Plus,
+  FileBox,
+  FileCog,
+  File,
+  FileCode2,
+  MoreHorizontal,
+  Trash2,
+  Pencil,
+  Eye,
+  EyeOff
 } from "lucide-react";
 import { 
   Accordion,
@@ -76,6 +85,75 @@ function SideNavItem({ href, icon, children, isActive = false, badge }: SideNavI
   );
 }
 
+// Minimal menu item component with action dropdown
+interface MinimalItemProps {
+  name: string;
+  path: string;
+  icon: React.ReactNode;
+  iconColor?: string;
+  level?: number;
+}
+
+function MinimalItem({ name, path, icon, iconColor = "text-gray-500", level = 0 }: MinimalItemProps) {
+  const [location] = useLocation();
+  const [showDropdown, setShowDropdown] = useState(false);
+  const isActive = location === path;
+  
+  return (
+    <div className="relative group" onMouseLeave={() => setShowDropdown(false)}>
+      <div
+        className={cn(
+          "flex items-center px-2.5 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded",
+          isActive 
+            ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white" 
+            : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+        )}
+        style={{ paddingLeft: `${(level * 12) + 10}px` }}
+      >
+        <span className={cn("flex-shrink-0 mr-1.5", iconColor)}>
+          {icon}
+        </span>
+        <Link href={path}>
+          <span className={cn("font-medium", iconColor)}>{name}</span>
+        </Link>
+        <div 
+          className="ml-auto opacity-0 group-hover:opacity-100"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowDropdown(!showDropdown);
+          }}
+        >
+          <MoreHorizontal className="h-3 w-3 text-gray-400" />
+        </div>
+      </div>
+      
+      {showDropdown && (
+        <div className="absolute right-0 mt-1 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
+          <div className="py-1 text-xs">
+            <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+              <Eye className="mr-2 h-3 w-3" />
+              <span>Hide/Unhide</span>
+            </a>
+            <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+              <Pencil className="mr-2 h-3 w-3" />
+              <span>Rename</span>
+            </a>
+            <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+              <Pencil className="mr-2 h-3 w-3" />
+              <span>Edit</span>
+            </a>
+            <a href="#" className="flex items-center px-3 py-1 text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700">
+              <Trash2 className="mr-2 h-3 w-3" />
+              <span>Delete</span>
+            </a>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Tree view folder component
 interface TreeFolderProps {
   name: string;
@@ -88,6 +166,7 @@ interface TreeFolderProps {
 function TreeFolder({ name, path, level = 0, isExpanded = false, children }: TreeFolderProps) {
   const [expanded, setExpanded] = useState(isExpanded);
   const [location] = useLocation();
+  const [showDropdown, setShowDropdown] = useState(false);
   const isActive = location === path;
   
   const handleToggle = (e: React.MouseEvent) => {
@@ -97,30 +176,65 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
   
   return (
     <div className="folder-tree-item">
-      <div
-        className={cn(
-          "flex items-center px-2.5 py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
-          isActive 
-            ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-md" 
-            : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded"
-        )}
-        style={{ paddingLeft: `${(level * 12) + 10}px` }}
-      >
-        <span 
-          className="w-4 h-4 mr-2 flex-shrink-0 flex items-center justify-center"
-          onClick={handleToggle}
+      <div className="relative group" onMouseLeave={() => setShowDropdown(false)}>
+        <div
+          className={cn(
+            "flex items-center px-2.5 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded",
+            isActive 
+              ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white" 
+              : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+          )}
+          style={{ paddingLeft: `${(level * 12) + 10}px` }}
         >
-          <ChevronDown
-            className={cn(
-              "h-3.5 w-3.5 text-gray-500 transition-transform",
-              expanded ? "transform rotate-0" : "transform -rotate-90"
-            )}
-          />
-        </span>
-        <Folder className="h-4 w-4 mr-2 text-gray-500" />
-        <Link href={path}>
-          <span className="font-medium">{name}</span>
-        </Link>
+          <span 
+            className="w-4 h-4 mr-1.5 flex-shrink-0 flex items-center justify-center"
+            onClick={handleToggle}
+          >
+            <ChevronDown
+              className={cn(
+                "h-3 w-3 text-gray-500 transition-transform",
+                expanded ? "transform rotate-0" : "transform -rotate-90"
+              )}
+            />
+          </span>
+          <Folder className="h-3.5 w-3.5 mr-1.5 text-gray-500" />
+          <Link href={path}>
+            <span className="font-medium">{name}</span>
+          </Link>
+          <div 
+            className="ml-auto opacity-0 group-hover:opacity-100"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowDropdown(!showDropdown);
+            }}
+          >
+            <MoreHorizontal className="h-3 w-3 text-gray-400" />
+          </div>
+        </div>
+        
+        {showDropdown && (
+          <div className="absolute right-0 mt-1 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
+            <div className="py-1 text-xs">
+              <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                <Eye className="mr-2 h-3 w-3" />
+                <span>Hide/Unhide</span>
+              </a>
+              <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                <Pencil className="mr-2 h-3 w-3" />
+                <span>Rename</span>
+              </a>
+              <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                <Pencil className="mr-2 h-3 w-3" />
+                <span>Edit</span>
+              </a>
+              <a href="#" className="flex items-center px-3 py-1 text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700">
+                <Trash2 className="mr-2 h-3 w-3" />
+                <span>Delete</span>
+              </a>
+            </div>
+          </div>
+        )}
       </div>
       
       {expanded && children && (
@@ -407,21 +521,73 @@ export function SecondarySidebar() {
                   path="/design-studio/spaces/main-website" 
                   isExpanded={location.startsWith('/design-studio/spaces/main-website')}
                 >
+                  <MinimalItem 
+                    name="index.tsx" 
+                    path="/design-studio/spaces/main-website/index"
+                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    iconColor="text-purple-500"
+                    level={1}
+                  />
                   <TreeFolder 
                     name="Home" 
                     path="/design-studio/spaces/main-website/home" 
                     level={1}
-                  />
+                  >
+                    <MinimalItem 
+                      name="home.tsx" 
+                      path="/design-studio/spaces/main-website/home/home"
+                      icon={<FileCode2 className="h-3.5 w-3.5" />}
+                      iconColor="text-purple-500"
+                      level={2}
+                    />
+                    <MinimalItem 
+                      name="hero.tsx" 
+                      path="/design-studio/spaces/main-website/home/hero"
+                      icon={<File className="h-3.5 w-3.5" />}
+                      iconColor="text-gray-500"
+                      level={2}
+                    />
+                  </TreeFolder>
                   <TreeFolder 
                     name="About" 
                     path="/design-studio/spaces/main-website/about" 
                     level={1}
-                  />
+                  >
+                    <MinimalItem 
+                      name="about.tsx" 
+                      path="/design-studio/spaces/main-website/about/about"
+                      icon={<FileCode2 className="h-3.5 w-3.5" />}
+                      iconColor="text-purple-500"
+                      level={2}
+                    />
+                    <MinimalItem 
+                      name="team.tsx" 
+                      path="/design-studio/spaces/main-website/about/team"
+                      icon={<File className="h-3.5 w-3.5" />}
+                      iconColor="text-gray-500"
+                      level={2}
+                    />
+                  </TreeFolder>
                   <TreeFolder 
                     name="Blog" 
                     path="/design-studio/spaces/main-website/blog" 
                     level={1}
-                  />
+                  >
+                    <MinimalItem 
+                      name="blog.tsx" 
+                      path="/design-studio/spaces/main-website/blog/blog"
+                      icon={<FileCode2 className="h-3.5 w-3.5" />}
+                      iconColor="text-purple-500"
+                      level={2}
+                    />
+                    <MinimalItem 
+                      name="post.tsx" 
+                      path="/design-studio/spaces/main-website/blog/post"
+                      icon={<File className="h-3.5 w-3.5" />}
+                      iconColor="text-gray-500"
+                      level={2}
+                    />
+                  </TreeFolder>
                 </TreeFolder>
                 
                 <TreeFolder 
@@ -429,20 +595,43 @@ export function SecondarySidebar() {
                   path="/design-studio/spaces/members" 
                   isExpanded={location.startsWith('/design-studio/spaces/members')}
                 >
+                  <MinimalItem 
+                    name="auth.tsx" 
+                    path="/design-studio/spaces/members/auth"
+                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    iconColor="text-purple-500"
+                    level={1}
+                  />
                   <TreeFolder 
                     name="Dashboard" 
                     path="/design-studio/spaces/members/dashboard" 
                     level={1}
-                  />
+                  >
+                    <MinimalItem 
+                      name="dashboard.tsx" 
+                      path="/design-studio/spaces/members/dashboard/dashboard"
+                      icon={<FileCode2 className="h-3.5 w-3.5" />}
+                      iconColor="text-purple-500"
+                      level={2}
+                    />
+                  </TreeFolder>
                   <TreeFolder 
                     name="Profile" 
                     path="/design-studio/spaces/members/profile" 
                     level={1}
-                  />
+                  >
+                    <MinimalItem 
+                      name="profile.tsx" 
+                      path="/design-studio/spaces/members/profile/profile"
+                      icon={<File className="h-3.5 w-3.5" />}
+                      iconColor="text-gray-500"
+                      level={2}
+                    />
+                  </TreeFolder>
                 </TreeFolder>
                 
-                <div className="flex items-center py-1.5 px-2.5 text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded cursor-pointer">
-                  <FolderPlus className="h-4 w-4 mr-2 text-gray-500" />
+                <div className="flex items-center py-1.5 px-2.5 text-xs text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded cursor-pointer">
+                  <FolderPlus className="h-3.5 w-3.5 mr-1.5 text-gray-500" />
                   <span>Create new space</span>
                 </div>
               </div>
@@ -455,35 +644,35 @@ export function SecondarySidebar() {
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
               <div className="flex items-center">
                 <Database className="h-4 w-4 mr-2 text-gray-500" />
-                <span className="font-medium text-sm">CMS Collections</span>
+                <span className="font-medium text-sm">CMS Pages</span>
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-1 pb-1">
               <div className="space-y-1 pl-6">
-                <SideNavItem 
-                  href="/design-studio/collections/blog"
-                  isActive={isActiveUrl('/design-studio/collections/blog')}
-                >
-                  Blog posts
-                </SideNavItem>
-                <SideNavItem 
-                  href="/design-studio/collections/products"
-                  isActive={isActiveUrl('/design-studio/collections/products')}
-                >
-                  Products
-                </SideNavItem>
-                <SideNavItem 
-                  href="/design-studio/collections/categories"
-                  isActive={isActiveUrl('/design-studio/collections/categories')}
-                >
-                  Categories
-                </SideNavItem>
-                <SideNavItem 
-                  href="/design-studio/collections/authors"
-                  isActive={isActiveUrl('/design-studio/collections/authors')}
-                >
-                  Authors
-                </SideNavItem>
+                <MinimalItem 
+                  name="Blog Home" 
+                  path="/design-studio/collections/blog"
+                  icon={<FileBox className="h-3.5 w-3.5" />}
+                  iconColor="text-purple-500"
+                />
+                <MinimalItem 
+                  name="Products Page" 
+                  path="/design-studio/collections/products"
+                  icon={<FileBox className="h-3.5 w-3.5" />}
+                  iconColor="text-purple-500"
+                />
+                <MinimalItem 
+                  name="Category Listing" 
+                  path="/design-studio/collections/categories"
+                  icon={<FileBox className="h-3.5 w-3.5" />}
+                  iconColor="text-purple-500"
+                />
+                <MinimalItem 
+                  name="Authors Directory" 
+                  path="/design-studio/collections/authors"
+                  icon={<FileBox className="h-3.5 w-3.5" />}
+                  iconColor="text-purple-500"
+                />
               </div>
             </AccordionContent>
           </AccordionItem>
@@ -499,24 +688,24 @@ export function SecondarySidebar() {
             </AccordionTrigger>
             <AccordionContent className="pt-1 pb-1">
               <div className="space-y-1 pl-6">
-                <SideNavItem 
-                  href="/design-studio/templates/page"
-                  isActive={isActiveUrl('/design-studio/templates/page')}
-                >
-                  Page templates
-                </SideNavItem>
-                <SideNavItem 
-                  href="/design-studio/templates/email"
-                  isActive={isActiveUrl('/design-studio/templates/email')}
-                >
-                  Email templates
-                </SideNavItem>
-                <SideNavItem 
-                  href="/design-studio/templates/popup"
-                  isActive={isActiveUrl('/design-studio/templates/popup')}
-                >
-                  Popup templates
-                </SideNavItem>
+                <MinimalItem 
+                  name="Page Templates" 
+                  path="/design-studio/templates/page"
+                  icon={<FileCog className="h-3.5 w-3.5" />}
+                  iconColor="text-blue-500"
+                />
+                <MinimalItem 
+                  name="Email Templates" 
+                  path="/design-studio/templates/email"
+                  icon={<FileCog className="h-3.5 w-3.5" />}
+                  iconColor="text-blue-500"
+                />
+                <MinimalItem 
+                  name="Popup Templates" 
+                  path="/design-studio/templates/popup"
+                  icon={<FileCog className="h-3.5 w-3.5" />}
+                  iconColor="text-blue-500"
+                />
               </div>
             </AccordionContent>
           </AccordionItem>
@@ -532,24 +721,24 @@ export function SecondarySidebar() {
             </AccordionTrigger>
             <AccordionContent className="pt-1 pb-1">
               <div className="space-y-1 pl-6">
-                <SideNavItem 
-                  href="/design-studio/utility/404"
-                  isActive={isActiveUrl('/design-studio/utility/404')}
-                >
-                  404 Page
-                </SideNavItem>
-                <SideNavItem 
-                  href="/design-studio/utility/password"
-                  isActive={isActiveUrl('/design-studio/utility/password')}
-                >
-                  Password Protected
-                </SideNavItem>
-                <SideNavItem 
-                  href="/design-studio/utility/search"
-                  isActive={isActiveUrl('/design-studio/utility/search')}
-                >
-                  Search Results
-                </SideNavItem>
+                <MinimalItem 
+                  name="404 Page" 
+                  path="/design-studio/utility/404"
+                  icon={<File className="h-3.5 w-3.5" />}
+                  iconColor="text-gray-500"
+                />
+                <MinimalItem 
+                  name="Password Protected" 
+                  path="/design-studio/utility/password"
+                  icon={<File className="h-3.5 w-3.5" />}
+                  iconColor="text-gray-500"
+                />
+                <MinimalItem 
+                  name="Search Results" 
+                  path="/design-studio/utility/search"
+                  icon={<File className="h-3.5 w-3.5" />}
+                  iconColor="text-gray-500"
+                />
               </div>
             </AccordionContent>
           </AccordionItem>
