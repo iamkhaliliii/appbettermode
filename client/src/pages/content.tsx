@@ -987,14 +987,14 @@ export default function Content() {
           </div>
 
           {/* Main table - Full width with no padding */}
-          <div className="bg-background dark:bg-background border-y border-border dark:border-border shadow-sm backdrop-blur-sm overflow-auto mt-[1px] scrollbar-minimal">
+          <div className="bg-background dark:bg-background border-y border-border/30 dark:border-border/30 overflow-auto mt-[1px] scrollbar-minimal">
             <Table className="w-full">
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id} className="bg-transparent border-b border-border/70 dark:border-border/70 h-6">
+                  <TableRow key={headerGroup.id} className="bg-transparent border-b border-border/20 dark:border-border/20 h-8">
                     {headerGroup.headers.map((header) => {
                       return (
-                        <TableHead key={header.id} className="px-4 py-1 h-6 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground tracking-wide sticky top-0 bg-background dark:bg-background">
+                        <TableHead key={header.id} className="px-4 py-2.5 h-9 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground tracking-wide sticky top-0 bg-background dark:bg-background">
                           {header.isPlaceholder
                             ? null
                             : flexRender(
@@ -1021,7 +1021,7 @@ export default function Content() {
                       `}
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id} className="px-4 py-1 whitespace-nowrap text-xs border-b border-border/50 dark:border-border/50">
+                        <TableCell key={cell.id} className="px-4 py-1 whitespace-nowrap text-xs border-b border-border/15 dark:border-border/15">
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </TableCell>
                       ))}
