@@ -234,13 +234,11 @@ export default function DesignStudio() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto p-4">
+      <div className="w-full p-4">
         {/* Browser mockup - with shadow */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 max-h-[600px] shadow-3xl" 
+        <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-3xl w-full h-[calc(100vh-120px)]" 
             style={{ 
-              boxShadow: '0px 32px 64px -12px rgba(16, 24, 40, 0.14)',
-              maxWidth: '900px',
-              margin: '0 auto'
+              boxShadow: '0px 32px 64px -12px rgba(16, 24, 40, 0.14)'
             }}>
           
           {/* Browser chrome - Balanced minimal */}
@@ -323,7 +321,7 @@ export default function DesignStudio() {
           </div>
           
           {/* Browser content */}
-          <div className="h-[530px] overflow-hidden flex flex-col bg-gray-50/50 dark:bg-gray-900/50">
+          <div className="flex-1 overflow-auto flex flex-col bg-gray-50/50 dark:bg-gray-900/50">
             {/* Community header */}
             <div className="bg-white dark:bg-gray-800 px-3 py-2 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
               <div className="flex items-center">
@@ -347,7 +345,7 @@ export default function DesignStudio() {
             </div>
             
             {/* Main content area - Ultra minimal */}
-            <div className="flex min-h-[550px]">
+            <div className="flex flex-1 overflow-auto">
               {/* Left sidebar - Ultra minimal - No background */}
               <div className="w-36 p-1.5 border-r border-gray-200/50 dark:border-gray-700/50 bg-transparent">
                 <nav className="space-y-0">
