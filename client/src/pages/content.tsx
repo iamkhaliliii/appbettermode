@@ -161,34 +161,38 @@ const columns: ColumnDef<Post>[] = [
     },
     cell: ({ row }) => {
       const status = row.getValue("status") as string
-      const statusConfig: Record<string, { bgClass: string; textClass: string; dotColor: string }> = {
+      const statusConfig: Record<string, { bgClass: string; textClass: string; dotColor: string; borderClass: string }> = {
         "Published": { 
-          bgClass: "bg-blue-50 dark:bg-blue-900/30", 
+          bgClass: "bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-800/20", 
           textClass: "text-blue-700 dark:text-blue-300",
-          dotColor: "text-blue-500 dark:text-blue-400"
+          dotColor: "text-blue-500 dark:text-blue-400",
+          borderClass: "border border-blue-200/50 dark:border-blue-700/30"
         },
         "Draft": { 
-          bgClass: "bg-slate-100 dark:bg-slate-800/50", 
+          bgClass: "bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800/40 dark:to-slate-700/30", 
           textClass: "text-slate-700 dark:text-slate-300",
-          dotColor: "text-slate-500 dark:text-slate-400"
+          dotColor: "text-slate-500 dark:text-slate-400",
+          borderClass: "border border-slate-200/50 dark:border-slate-600/30"
         },
         "Schedule": { 
-          bgClass: "bg-purple-50 dark:bg-purple-900/30", 
+          bgClass: "bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/20", 
           textClass: "text-purple-700 dark:text-purple-300",
-          dotColor: "text-purple-500 dark:text-purple-400"
+          dotColor: "text-purple-500 dark:text-purple-400",
+          borderClass: "border border-purple-200/50 dark:border-purple-700/30"
         },
         "Pending review": { 
-          bgClass: "bg-amber-50 dark:bg-amber-900/30", 
+          bgClass: "bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-900/30 dark:to-amber-800/20", 
           textClass: "text-amber-700 dark:text-amber-300",
-          dotColor: "text-amber-500 dark:text-amber-400"
+          dotColor: "text-amber-500 dark:text-amber-400",
+          borderClass: "border border-amber-200/50 dark:border-amber-700/30"
         },
       }
       
       const config = statusConfig[status] || statusConfig["Draft"]
       
       return (
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${config.bgClass} ${config.textClass}`}>
-          <svg className={`mr-1 h-2 w-2 ${config.dotColor}`} fill="currentColor" viewBox="0 0 8 8">
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${config.bgClass} ${config.textClass} ${config.borderClass} shadow-sm`}>
+          <svg className={`mr-1.5 h-2 w-2 ${config.dotColor}`} fill="currentColor" viewBox="0 0 8 8">
             <circle cx="4" cy="4" r="3" />
           </svg>
           {status}
