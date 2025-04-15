@@ -11,17 +11,9 @@ export default function Content() {
   const [, params] = useRoute('/content/:section');
   const section = params?.section;
 
-  // Redirect to the first tab (CMS) if we're at the root content route
-  useEffect(() => {
-    if (location === '/content') {
-      setLocation('/content/CMS');
-    }
-  }, [location, setLocation]);
-
-  // If we're at the root content URL, show a loading state until the redirect happens
-  if (location === '/content') {
-    return <DashboardLayout><div className="p-8">Loading content...</div></DashboardLayout>;
-  }
+  // No automatic redirect from /content to /content/CMS anymore
+  
+  // Content page will have its own view
   
   // Show appropriate content based on section
   const getTitle = () => {

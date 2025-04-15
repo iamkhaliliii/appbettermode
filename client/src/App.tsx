@@ -20,9 +20,8 @@ function Router() {
       <Route path="/content" component={Content} />
       <Route path="/content/:section" component={Content} />
       {/* Compatibility redirects for old routes */}
-      <Route path="/content/posts" component={() => <Redirect to="/content/CMS" />} />
       <Route path="/content/comments" component={() => <Redirect to="/content/activity" />} />
-      <Route path="/content/tags" component={() => <Redirect to="/content/CMS" />} />
+      <Route path="/content/tags" component={() => <Redirect to="/content" />} />
       {/* End compatibility redirects */}
       <Route path="/people" component={People} />
       <Route path="/people/:section" component={People} />

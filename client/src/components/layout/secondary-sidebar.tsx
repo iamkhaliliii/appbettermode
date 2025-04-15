@@ -368,7 +368,7 @@ export function SecondarySidebar() {
     if (location === `/${mainSection}`) return true;
     
     // Special case for our renamed routes
-    if (url === '/content/CMS' && (location === '/content/posts' || location === '/content')) return true;
+    if (url === '/content/CMS' && location === '/content/posts') return true;
     if (url === '/content/activity' && location === '/content/comments') return true;
     
     return false;
@@ -436,7 +436,7 @@ export function SecondarySidebar() {
 
   const renderContentSidebar = () => {
     // If we're on the CMS page, show post types
-    if (isActiveUrl('/content/CMS') || location === '/content') {
+    if (isActiveUrl('/content/CMS')) {
       return (
         <div className="p-3">
           <div className="mb-4">
