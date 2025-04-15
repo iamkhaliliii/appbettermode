@@ -94,18 +94,23 @@ const columns: ColumnDef<Post>[] = [
     accessorKey: "title",
     header: ({ column }) => {
       return (
-        <div className="flex items-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
-          <span>Title</span>
-          <div className="ml-1">
-            {column.getIsSorted() === "asc" ? (
-              <ChevronUp className="h-4 w-4" />
-            ) : column.getIsSorted() === "desc" ? (
-              <ChevronDown className="h-4 w-4" />
-            ) : (
-              <ChevronDown className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" />
-            )}
-          </div>
-        </div>
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center space-x-1 group text-left focus:outline-none"
+        >
+          <span className="text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200 font-medium transition-colors">Title</span>
+          {column.getIsSorted() ? (
+            <div className={`transition-colors ${column.getIsSorted() === "asc" ? "text-primary-500" : "text-primary-500"}`}>
+              {column.getIsSorted() === "asc" ? (
+                <ChevronUp className="h-3.5 w-3.5" />
+              ) : (
+                <ChevronDown className="h-3.5 w-3.5" />
+              )}
+            </div>
+          ) : (
+            <ChevronDown className="h-3.5 w-3.5 opacity-0 group-hover:opacity-70 text-gray-400 transition-opacity" />
+          )}
+        </button>
       )
     },
     cell: ({ row }) => <div className="font-medium">{row.getValue("title")}</div>,
@@ -114,33 +119,63 @@ const columns: ColumnDef<Post>[] = [
     accessorKey: "status",
     header: ({ column }) => {
       return (
-        <div className="flex items-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
-          <span>Status</span>
-          <div className="ml-1">
-            {column.getIsSorted() === "asc" ? (
-              <ChevronUp className="h-4 w-4" />
-            ) : column.getIsSorted() === "desc" ? (
-              <ChevronDown className="h-4 w-4" />
-            ) : (
-              <ChevronDown className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" />
-            )}
-          </div>
-        </div>
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center space-x-1 group text-left focus:outline-none"
+        >
+          <span className="text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200 font-medium transition-colors">Status</span>
+          {column.getIsSorted() ? (
+            <div className={`transition-colors ${column.getIsSorted() === "asc" ? "text-primary-500" : "text-primary-500"}`}>
+              {column.getIsSorted() === "asc" ? (
+                <ChevronUp className="h-3.5 w-3.5" />
+              ) : (
+                <ChevronDown className="h-3.5 w-3.5" />
+              )}
+            </div>
+          ) : (
+            <ChevronDown className="h-3.5 w-3.5 opacity-0 group-hover:opacity-70 text-gray-400 transition-opacity" />
+          )}
+        </button>
       )
     },
     cell: ({ row }) => {
       const status = row.getValue("status") as string
-      const statusConfig: Record<string, { bgClass: string; icon: null }> = {
-        "Published": { bgClass: "bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300", icon: null },
-        "Draft": { bgClass: "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300", icon: null },
-        "Schedule": { bgClass: "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300", icon: null },
-        "Pending review": { bgClass: "bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300", icon: null },
+      const statusConfig: Record<string, { bgClass: string; textClass: string; borderClass: string; dotClass: string; icon: null }> = {
+        "Published": { 
+          bgClass: "bg-green-50/60 dark:bg-green-900/10", 
+          textClass: "text-green-600 dark:text-green-400",
+          borderClass: "border border-green-200/70 dark:border-green-700/30",
+          dotClass: "bg-green-500 dark:bg-green-400",
+          icon: null 
+        },
+        "Draft": { 
+          bgClass: "bg-gray-50/60 dark:bg-gray-800/30", 
+          textClass: "text-gray-600 dark:text-gray-400",
+          borderClass: "border border-gray-200/70 dark:border-gray-700/30",
+          dotClass: "bg-gray-400 dark:bg-gray-500",
+          icon: null 
+        },
+        "Schedule": { 
+          bgClass: "bg-blue-50/60 dark:bg-blue-900/10", 
+          textClass: "text-blue-600 dark:text-blue-400",
+          borderClass: "border border-blue-200/70 dark:border-blue-700/30",
+          dotClass: "bg-blue-500 dark:bg-blue-400",
+          icon: null 
+        },
+        "Pending review": { 
+          bgClass: "bg-amber-50/60 dark:bg-amber-900/10", 
+          textClass: "text-amber-600 dark:text-amber-400",
+          borderClass: "border border-amber-200/70 dark:border-amber-700/30",
+          dotClass: "bg-amber-500 dark:bg-amber-400",
+          icon: null 
+        },
       }
       
       const config = statusConfig[status] || statusConfig["Draft"]
       
       return (
-        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${config.bgClass}`}>
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.bgClass} ${config.textClass} ${config.borderClass} backdrop-blur-sm`}>
+          <span className={`w-1.5 h-1.5 rounded-full ${config.dotClass} mr-1.5 flex-shrink-0`}></span>
           {status}
         </span>
       )
@@ -256,16 +291,37 @@ const columns: ColumnDef<Post>[] = [
     },
     cell: ({ row }) => {
       const model = row.getValue("cmsModel") as string
-      const modelColorMap: Record<string, string> = {
-        "Discussion": "violet",
-        "Wishlist": "yellow",
-        "Article": "blue",
-        "Page": "green",
+      const modelConfig: Record<string, { bgClass: string; textClass: string; borderClass: string; }> = {
+        "Discussion": { 
+          bgClass: "bg-purple-50/60 dark:bg-purple-900/10", 
+          textClass: "text-purple-600 dark:text-purple-400",
+          borderClass: "border border-purple-200/70 dark:border-purple-700/30",
+        },
+        "Wishlist": { 
+          bgClass: "bg-amber-50/60 dark:bg-amber-900/10", 
+          textClass: "text-amber-600 dark:text-amber-400",
+          borderClass: "border border-amber-200/70 dark:border-amber-700/30",
+        },
+        "Article": { 
+          bgClass: "bg-blue-50/60 dark:bg-blue-900/10", 
+          textClass: "text-blue-600 dark:text-blue-400",
+          borderClass: "border border-blue-200/70 dark:border-blue-700/30",
+        },
+        "Page": { 
+          bgClass: "bg-emerald-50/60 dark:bg-emerald-900/10", 
+          textClass: "text-emerald-600 dark:text-emerald-400",
+          borderClass: "border border-emerald-200/70 dark:border-emerald-700/30",
+        },
       }
-      const color = modelColorMap[model] || "gray"
+      
+      const config = modelConfig[model] || {
+        bgClass: "bg-gray-50/60 dark:bg-gray-800/30", 
+        textClass: "text-gray-600 dark:text-gray-400",
+        borderClass: "border border-gray-200/70 dark:border-gray-700/30",
+      }
       
       return (
-        <span className={`px-2 py-0.5 rounded-full text-xs bg-${color}-100 text-${color}-700 dark:bg-${color}-900 dark:text-${color}-300`}>
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.bgClass} ${config.textClass} ${config.borderClass} backdrop-blur-sm`}>
           {model}
         </span>
       )
@@ -316,26 +372,66 @@ const columns: ColumnDef<Post>[] = [
       const tags = row.getValue("tags") as string[]
       if (!tags || tags.length === 0) return null
       
-      const tagColors: Record<string, string> = {
-        "Discussion": "violet",
-        "new": "blue",
-        "me_too": "green",
-        "question": "yellow",
-        "bug": "red",
+      const tagConfig: Record<string, { bgClass: string; textClass: string; borderClass: string; }> = {
+        "Discussion": { 
+          bgClass: "bg-purple-50/60 dark:bg-purple-900/10", 
+          textClass: "text-purple-600 dark:text-purple-400",
+          borderClass: "border border-purple-200/70 dark:border-purple-700/30",
+        },
+        "new": { 
+          bgClass: "bg-blue-50/60 dark:bg-blue-900/10", 
+          textClass: "text-blue-600 dark:text-blue-400",
+          borderClass: "border border-blue-200/70 dark:border-blue-700/30",
+        },
+        "me_too": { 
+          bgClass: "bg-emerald-50/60 dark:bg-emerald-900/10", 
+          textClass: "text-emerald-600 dark:text-emerald-400",
+          borderClass: "border border-emerald-200/70 dark:border-emerald-700/30",
+        },
+        "question": { 
+          bgClass: "bg-amber-50/60 dark:bg-amber-900/10", 
+          textClass: "text-amber-600 dark:text-amber-400",
+          borderClass: "border border-amber-200/70 dark:border-amber-700/30",
+        },
+        "bug": { 
+          bgClass: "bg-red-50/60 dark:bg-red-900/10", 
+          textClass: "text-red-600 dark:text-red-400",
+          borderClass: "border border-red-200/70 dark:border-red-700/30",
+        },
+        "community": { 
+          bgClass: "bg-indigo-50/60 dark:bg-indigo-900/10", 
+          textClass: "text-indigo-600 dark:text-indigo-400",
+          borderClass: "border border-indigo-200/70 dark:border-indigo-700/30",
+        },
+        "featured": { 
+          bgClass: "bg-fuchsia-50/60 dark:bg-fuchsia-900/10", 
+          textClass: "text-fuchsia-600 dark:text-fuchsia-400",
+          borderClass: "border border-fuchsia-200/70 dark:border-fuchsia-700/30",
+        },
+      }
+      
+      const defaultConfig = {
+        bgClass: "bg-gray-50/60 dark:bg-gray-800/30", 
+        textClass: "text-gray-600 dark:text-gray-400",
+        borderClass: "border border-gray-200/70 dark:border-gray-700/30",
       }
       
       return (
-        <div className="flex gap-1">
+        <div className="flex flex-wrap gap-1.5">
           {tags.slice(0, 3).map((tag, i) => {
-            const color = tagColors[tag] || "gray"
+            const config = tagConfig[tag] || defaultConfig
             return (
-              <span key={i} className={`px-2 py-0.5 rounded-full text-xs bg-${color}-100 text-${color}-700 dark:bg-${color}-900 dark:text-${color}-300`}>
+              <span 
+                key={i} 
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs 
+                ${config.bgClass} ${config.textClass} ${config.borderClass} backdrop-blur-sm`}
+              >
                 {tag}
               </span>
             )
           })}
           {tags.length > 3 && (
-            <span className="px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-gray-50/60 dark:bg-gray-800/30 text-gray-600 dark:text-gray-400 border border-gray-200/70 dark:border-gray-700/30 backdrop-blur-sm">
               +{tags.length - 3}
             </span>
           )}
@@ -646,14 +742,14 @@ export default function Content() {
           </div>
 
           {/* Main table */}
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm">
+          <div className="bg-white dark:bg-gray-800 border border-gray-200/80 dark:border-gray-700/80 rounded-xl overflow-hidden shadow-sm backdrop-blur-sm">
             <Table className="w-full">
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id} className="bg-gray-50/80 dark:bg-gray-800/80 border-b border-gray-200 dark:border-gray-700">
+                  <TableRow key={headerGroup.id} className="bg-transparent border-b border-gray-200/70 dark:border-gray-700/70">
                     {headerGroup.headers.map((header) => {
                       return (
-                        <TableHead key={header.id} className="px-4 py-3.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        <TableHead key={header.id} className="px-4 py-3 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                           {header.isPlaceholder
                             ? null
                             : flexRender(
@@ -673,14 +769,14 @@ export default function Content() {
                       key={row.id}
                       data-state={row.getIsSelected() && "selected"}
                       className={`
-                        hover:bg-gray-50/80 dark:hover:bg-gray-750/80
-                        ${row.getIsSelected() ? 'bg-primary-50/40 dark:bg-primary-900/10' : ''}
-                        ${i % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50/50 dark:bg-gray-800/50'}
+                        hover:bg-gray-50/40 dark:hover:bg-gray-750/40
+                        ${row.getIsSelected() ? 'bg-primary-50/20 dark:bg-primary-900/5' : ''}
+                        ${i % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50/30 dark:bg-gray-800/30'}
                         transition-colors
                       `}
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id} className="px-4 py-3.5 whitespace-nowrap text-sm border-t border-gray-100 dark:border-gray-800">
+                        <TableCell key={cell.id} className="px-4 py-3 whitespace-nowrap text-sm border-b border-gray-100/50 dark:border-gray-800/50">
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </TableCell>
                       ))}
