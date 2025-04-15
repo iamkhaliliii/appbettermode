@@ -36,7 +36,7 @@ import {
   AccordionItem,
   AccordionTrigger 
 } from "@/components/ui/accordion";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 interface SideNavItemProps {
   href: string;
@@ -111,6 +111,7 @@ function MinimalItem({
   const [showDropdown, setShowDropdown] = useState(false);
   const [hidden, setHidden] = useState(isHidden);
   const isActive = location === path;
+  const dropdownRef = useRef<HTMLDivElement>(null);
   
   // Format the name to remove file extension
   const displayName = name.includes('.') ? name.split('.')[0] : name;
@@ -125,8 +126,20 @@ function MinimalItem({
     setShowDropdown(false);
   };
   
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  
   if (hidden && !showDropdown) return (
-    <div className="relative group" onMouseLeave={() => setShowDropdown(false)}>
+    <div className="relative group">
       <div
         className={cn(
           "flex items-center px-2 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded opacity-50",
@@ -151,26 +164,34 @@ function MinimalItem({
       </div>
       
       {showDropdown && (
-        <div className="absolute right-0 mt-1 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-[100]">
+        <div 
+          ref={dropdownRef}
+          className="fixed mt-1 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-[9999]"
+          style={{ 
+            right: '0', 
+            top: '100%',
+            transform: 'translateY(-90%)'
+          }}
+        >
           <div className="py-1 text-xs">
             {showHideOption && (
-              <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={toggleHidden}>
+              <button className="w-full text-left flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={toggleHidden}>
                 <Eye className="mr-2 h-3 w-3" />
                 <span>Unhide</span>
-              </a>
+              </button>
             )}
-            <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <button className="w-full text-left flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
               <Pencil className="mr-2 h-3 w-3" />
               <span>Rename</span>
-            </a>
-            <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+            </button>
+            <button className="w-full text-left flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
               <Pencil className="mr-2 h-3 w-3" />
               <span>Edit</span>
-            </a>
-            <a href="#" className="flex items-center px-3 py-1 text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700">
+            </button>
+            <button className="w-full text-left flex items-center px-3 py-1 text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700">
               <Trash2 className="mr-2 h-3 w-3" />
               <span>Delete</span>
-            </a>
+            </button>
           </div>
         </div>
       )}
@@ -178,7 +199,7 @@ function MinimalItem({
   );
   
   return (
-    <div className="relative group" onMouseLeave={() => setShowDropdown(false)}>
+    <div className="relative group">
       <div
         className={cn(
           "flex items-center px-2 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded",
@@ -207,26 +228,34 @@ function MinimalItem({
       </div>
       
       {showDropdown && (
-        <div className="absolute right-0 mt-1 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-[100]">
+        <div 
+          ref={dropdownRef}
+          className="fixed mt-1 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-[9999]"
+          style={{ 
+            right: '0', 
+            top: '100%',
+            transform: 'translateY(-90%)'
+          }}
+        >
           <div className="py-1 text-xs">
             {showHideOption && (
-              <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={toggleHidden}>
+              <button className="w-full text-left flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={toggleHidden}>
                 <EyeOff className="mr-2 h-3 w-3" />
                 <span>Hide</span>
-              </a>
+              </button>
             )}
-            <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <button className="w-full text-left flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
               <Pencil className="mr-2 h-3 w-3" />
               <span>Rename</span>
-            </a>
-            <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+            </button>
+            <button className="w-full text-left flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
               <Pencil className="mr-2 h-3 w-3" />
               <span>Edit</span>
-            </a>
-            <a href="#" className="flex items-center px-3 py-1 text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700">
+            </button>
+            <button className="w-full text-left flex items-center px-3 py-1 text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700">
               <Trash2 className="mr-2 h-3 w-3" />
               <span>Delete</span>
-            </a>
+            </button>
           </div>
         </div>
       )}
@@ -248,6 +277,7 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
   const [location] = useLocation();
   const [showDropdown, setShowDropdown] = useState(false);
   const isActive = location === path;
+  const dropdownRef = useRef<HTMLDivElement>(null);
   
   const handleToggle = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -255,20 +285,38 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
     setExpanded(!expanded);
   };
   
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setExpanded(!expanded);
+  };
+  
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  
   return (
     <div className="folder-tree-item">
-      <div className="relative group" onMouseLeave={() => setShowDropdown(false)}>
+      <div className="relative group">
         <div
           className={cn(
-            "flex items-center px-2 py-1 text-xs my-0.5 transition-colors duration-150 rounded",
+            "flex items-center px-2 py-1 text-xs my-0.5 transition-colors duration-150 rounded cursor-pointer",
             isActive 
               ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white" 
               : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
           )}
           style={{ paddingLeft: `${(level * 10) + 4}px` }}
+          onClick={handleClick}
         >
           <span 
-            className="w-4 h-4 mr-1 flex-shrink-0 flex items-center justify-center cursor-pointer"
+            className="w-4 h-4 mr-1 flex-shrink-0 flex items-center justify-center"
             onClick={handleToggle}
           >
             <ChevronDown
@@ -278,11 +326,9 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
               )}
             />
           </span>
-          <div className="flex items-center cursor-default">
+          <div className="flex items-center">
             <Folder className="h-3.5 w-3.5 mr-1 text-gray-500" />
-            <Link href={path}>
-              <span className="font-medium">{name}</span>
-            </Link>
+            <span className="font-medium">{name}</span>
           </div>
           <div 
             className="ml-auto opacity-0 group-hover:opacity-100"
@@ -297,20 +343,28 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
         </div>
         
         {showDropdown && (
-          <div className="absolute right-0 mt-1 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-[100]">
+          <div 
+            ref={dropdownRef}
+            className="fixed mt-1 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-[9999]"
+            style={{ 
+              right: '0', 
+              top: '100%',
+              transform: 'translateY(-90%)'
+            }}
+          >
             <div className="py-1 text-xs">
-              <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+              <button className="w-full text-left flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                 <Pencil className="mr-2 h-3 w-3" />
                 <span>Rename</span>
-              </a>
-              <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+              </button>
+              <button className="w-full text-left flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                 <Pencil className="mr-2 h-3 w-3" />
                 <span>Edit</span>
-              </a>
-              <a href="#" className="flex items-center px-3 py-1 text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700">
+              </button>
+              <button className="w-full text-left flex items-center px-3 py-1 text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700">
                 <Trash2 className="mr-2 h-3 w-3" />
                 <span>Delete</span>
-              </a>
+              </button>
             </div>
           </div>
         )}
