@@ -457,12 +457,14 @@ const columns: ColumnDef<Post>[] = [
                 className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs whitespace-nowrap
                 ${config.bgClass} ${config.textClass} ${config.borderClass} backdrop-blur-sm`}
               >
+                <span className={`w-1.5 h-1.5 rounded-full ${config.textClass.replace('text-', 'bg-')} mr-1.5 flex-shrink-0`}></span>
                 {tag}
               </span>
             )
           })}
           {tags.length > 2 && (
             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-gray-50/60 dark:bg-gray-800/30 text-gray-600 dark:text-gray-400 border border-gray-200/70 dark:border-gray-700/30 backdrop-blur-sm whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500 mr-1.5 flex-shrink-0"></span>
               +{tags.length - 2} more
             </span>
           )}
@@ -474,18 +476,23 @@ const columns: ColumnDef<Post>[] = [
     accessorKey: "locked",
     header: ({ column }) => {
       return (
-        <div className="flex items-center justify-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
-          <span>Locked</span>
-          <div className="ml-1">
-            {column.getIsSorted() === "asc" ? (
-              <ChevronUp className="h-4 w-4" />
-            ) : column.getIsSorted() === "desc" ? (
-              <ChevronDown className="h-4 w-4" />
-            ) : (
-              <ChevronDown className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" />
-            )}
-          </div>
-        </div>
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center justify-center space-x-1 group text-center focus:outline-none"
+        >
+          <span className="text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200 font-medium transition-colors">Locked</span>
+          {column.getIsSorted() ? (
+            <div className={`transition-colors ${column.getIsSorted() === "asc" ? "text-primary-500" : "text-primary-500"}`}>
+              {column.getIsSorted() === "asc" ? (
+                <ChevronUp className="h-3.5 w-3.5" />
+              ) : (
+                <ChevronDown className="h-3.5 w-3.5" />
+              )}
+            </div>
+          ) : (
+            <ChevronDown className="h-3.5 w-3.5 opacity-0 group-hover:opacity-70 text-gray-400 transition-opacity" />
+          )}
+        </button>
       )
     },
     cell: ({ row }) => {
