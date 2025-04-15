@@ -408,7 +408,7 @@ export default function DesignStudioSpacesFeed() {
             {/* Main content area with header/footer indicators */}
             <div className="flex-1 flex flex-col">
               {/* Header - initially hidden, shown when header toggle is activated */}
-              <div id="mockup-header" className="h-8 border-b border-gray-200 dark:border-gray-700" style={{display: 'none', background: 'var(--background)'}}>
+              <div id="community-header" className="h-8 border-b border-gray-200 dark:border-gray-700" style={{display: 'none', background: 'var(--background)'}}>
                 <div className="h-full flex items-center px-4">
                   <div className="w-24 h-3 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
                   <div className="ml-auto flex space-x-3">
@@ -429,7 +429,7 @@ export default function DesignStudioSpacesFeed() {
                 </div>
                 
                 {/* Right sidebar - initially hidden, shown when right sidebar toggle is activated */}
-                <div id="mockup-right-sidebar" className="w-36 p-1.5 border-l border-gray-200/50 dark:border-gray-700/50" style={{display: 'none'}}>
+                <div id="community-right-sidebar" className="w-36 p-1.5 border-l border-gray-200/50 dark:border-gray-700/50" style={{display: 'none'}}>
                   <div className="space-y-2">
                     <div className="w-full h-8 bg-gray-100 dark:bg-gray-800 rounded"></div>
                     <div className="w-full h-8 bg-gray-100 dark:bg-gray-800 rounded"></div>
@@ -439,7 +439,7 @@ export default function DesignStudioSpacesFeed() {
               </div>
               
               {/* Footer - initially hidden, shown when footer toggle is activated */}
-              <div id="mockup-footer" className="h-8 border-t border-gray-200 dark:border-gray-700" style={{display: 'none', background: 'var(--background)'}}>
+              <div id="community-footer" className="h-8 border-t border-gray-200 dark:border-gray-700" style={{display: 'none', background: 'var(--background)'}}>
                 <div className="h-full flex items-center justify-center">
                   <div className="flex space-x-4">
                     <div className="w-16 h-2 bg-gray-200 dark:bg-gray-700 rounded-full"></div>

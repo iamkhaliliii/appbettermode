@@ -1079,7 +1079,7 @@ export function SecondarySidebar() {
                           options.classList.toggle('hidden', !checked);
                         }
                         
-                        // Show/hide header in mockup
+                        // Show/hide header in mockups
                         const header = document.getElementById('mockup-header');
                         if (header) {
                           if (checked) {
@@ -1090,6 +1090,18 @@ export function SecondarySidebar() {
                             header.style.display = "none";
                             header.classList.remove('bg-blue-50/30');
                             header.classList.remove('dark:bg-blue-900/5');
+                          }
+                        }
+                        
+                        // Also change the community header
+                        const communityHeader = document.getElementById('community-header');
+                        if (communityHeader) {
+                          if (checked) {
+                            communityHeader.style.display = "flex";
+                            communityHeader.style.backgroundColor = 'rgba(219, 234, 254, 0.1)';
+                            communityHeader.style.borderBottom = '2px solid var(--border)';
+                          } else {
+                            communityHeader.style.display = "none";
                           }
                         }
                       }} 
@@ -1137,6 +1149,18 @@ export function SecondarySidebar() {
                             rightSidebar.classList.remove('border-red-500');
                             rightSidebar.classList.remove('bg-red-50/30');
                             rightSidebar.classList.remove('dark:bg-red-900/5');
+                          }
+                        }
+                        
+                        // Also change the community right sidebar
+                        const communityRightSidebar = document.getElementById('community-right-sidebar');
+                        if (communityRightSidebar) {
+                          if (checked) {
+                            communityRightSidebar.style.display = "block";
+                            communityRightSidebar.style.borderLeft = '2px solid var(--border)';
+                            communityRightSidebar.style.backgroundColor = 'rgba(254, 226, 226, 0.1)';
+                          } else {
+                            communityRightSidebar.style.display = "none";
                           }
                         }
                       }} 
@@ -1217,7 +1241,7 @@ export function SecondarySidebar() {
                           options.classList.toggle('hidden', !checked);
                         }
                         
-                        // Show/hide footer in mockup
+                        // Show/hide footer in mockups
                         const footer = document.getElementById('mockup-footer');
                         if (footer) {
                           if (checked) {
@@ -1228,6 +1252,18 @@ export function SecondarySidebar() {
                             footer.style.display = "none";
                             footer.classList.remove('bg-yellow-50/30');
                             footer.classList.remove('dark:bg-yellow-900/5');
+                          }
+                        }
+                        
+                        // Also change the community footer
+                        const communityFooter = document.getElementById('community-footer');
+                        if (communityFooter) {
+                          if (checked) {
+                            communityFooter.style.display = "flex";
+                            communityFooter.style.backgroundColor = 'rgba(254, 240, 138, 0.1)'; 
+                            communityFooter.style.borderTop = '2px solid var(--border)';
+                          } else {
+                            communityFooter.style.display = "none";
                           }
                         }
                       }} 
