@@ -399,39 +399,52 @@ const columns: ColumnDef<Post>[] = [
       const tags = row.getValue("tags") as string[]
       if (!tags || tags.length === 0) return null
       
-      // Get icon based on tag name
-      const getIconForTag = (tagName: string) => {
-        switch(tagName.toLowerCase()) {
-          case 'discussion':
-            return '💬';
-          case 'new':
-            return '🆕';
-          case 'me_too':
-            return '👍';
-          case 'question':
-            return '❓';
-          case 'bug':
-            return '🐞';
-          case 'community':
-            return '👥';
-          case 'featured':
-            return '⭐';
-          default:
-            return '#';
-        }
-      };
+      const tagConfig: Record<string, { bgClass: string; textClass: string; }> = {
+        "Discussion": { 
+          bgClass: "bg-purple-50/60 dark:bg-purple-900/10", 
+          textClass: "text-purple-600 dark:text-purple-400"
+        },
+        "new": { 
+          bgClass: "bg-blue-50/60 dark:bg-blue-900/10", 
+          textClass: "text-blue-600 dark:text-blue-400"
+        },
+        "me_too": { 
+          bgClass: "bg-emerald-50/60 dark:bg-emerald-900/10", 
+          textClass: "text-emerald-600 dark:text-emerald-400"
+        },
+        "question": { 
+          bgClass: "bg-amber-50/60 dark:bg-amber-900/10", 
+          textClass: "text-amber-600 dark:text-amber-400"
+        },
+        "bug": { 
+          bgClass: "bg-red-50/60 dark:bg-red-900/10", 
+          textClass: "text-red-600 dark:text-red-400"
+        },
+        "community": { 
+          bgClass: "bg-indigo-50/60 dark:bg-indigo-900/10", 
+          textClass: "text-indigo-600 dark:text-indigo-400"
+        },
+        "featured": { 
+          bgClass: "bg-fuchsia-50/60 dark:bg-fuchsia-900/10", 
+          textClass: "text-fuchsia-600 dark:text-fuchsia-400"
+        },
+      }
+      
+      const defaultConfig = {
+        bgClass: "bg-gray-50/60 dark:bg-gray-800/30", 
+        textClass: "text-gray-600 dark:text-gray-400"
+      }
       
       return (
         <div className="flex items-center gap-1 overflow-hidden max-w-xs">
           {tags.slice(0, 2).map((tag, i) => {
+            const config = tagConfig[tag] || defaultConfig
             return (
               <span 
                 key={i} 
-                className="inline-flex items-center px-1.5 py-0.5 rounded text-xs whitespace-nowrap bg-gray-50/60 dark:bg-gray-800/30 text-gray-600 dark:text-gray-400"
+                className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs whitespace-nowrap
+                ${config.bgClass} ${config.textClass}`}
               >
-                <span className="w-3 h-3 mr-1 inline-flex items-center justify-center">
-                  {getIconForTag(tag)}
-                </span>
                 {tag}
               </span>
             )
