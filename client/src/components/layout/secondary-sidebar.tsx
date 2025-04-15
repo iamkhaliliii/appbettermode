@@ -328,7 +328,6 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
 export function SecondarySidebar() {
   const [location] = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
-  const [showSearch, setShowSearch] = useState(false);
 
   const renderDashboardSidebar = () => (
     <div className="p-3">
@@ -543,44 +542,22 @@ export function SecondarySidebar() {
       <div className="p-3">
         <div className="mb-3">
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-2">
               <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Design studio</h2>
-              <div className="flex items-center space-x-2">
-                <button 
-                  className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700" 
-                  onClick={() => setShowSearch(!showSearch)}
-                >
-                  <Search className="h-3.5 w-3.5 text-gray-500" />
-                </button>
-                <div className="relative group">
-                  <button className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
-                    <Plus className="h-3.5 w-3.5 text-gray-500" />
-                  </button>
-                  <div className="absolute right-0 mt-1 w-40 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                    <div className="py-1">
-                      <a href="#" className="block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Add new space</a>
-                      <a href="#" className="block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Add new folder</a>
-                      <a href="#" className="block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Add new page</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
             
-            {showSearch && (
-              <div className="relative w-full">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
-                  <Search className="w-3.5 h-3.5 text-gray-500" />
-                </div>
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="w-full py-1 pl-7 pr-2 text-xs rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-1 focus:ring-gray-300 focus:outline-none"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
+            <div className="relative w-full mb-2">
+              <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+                <Search className="w-3.5 h-3.5 text-gray-500" />
               </div>
-            )}
+              <input
+                type="text"
+                placeholder="Search..."
+                className="w-full py-1 pl-7 pr-2 text-xs rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-1 focus:ring-gray-300 focus:outline-none"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
           </div>
         </div>
         
