@@ -799,7 +799,7 @@ export default function Content() {
                   All <span className="ml-1 text-[10px] text-gray-500 dark:text-gray-400">14</span>
                 </button>
                 <button 
-                  className={`inline-flex items-center px-2 py-1.5 text-xs font-medium ${activeTab === 'published' ? 'text-blue-600 dark:text-blue-400 border-b border-blue-600 dark:border-blue-400' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'} transition-colors`}
+                  className={`inline-flex items-center px-2 py-1.5 text-xs font-medium ${activeTab === 'published' ? 'text-gray-900 dark:text-white border-b border-gray-900 dark:border-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'} transition-colors`}
                   onClick={() => {
                     setActiveTab('published');
                     setShowPublishedOnly(true);
