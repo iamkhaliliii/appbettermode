@@ -7,6 +7,7 @@ import Content from "@/pages/content";
 import Settings from "@/pages/settings";
 import People from "@/pages/people";
 import DesignStudio from "@/pages/design-studio-simple";
+import DesignStudioSpacesFeed from "@/pages/design-studio-spaces-feed";
 import Appearance from "@/pages/appearance";
 import Billing from "@/pages/billing";
 import Reports from "@/pages/reports";
@@ -21,6 +22,7 @@ function Router() {
       <Route path="/people" component={People} />
       <Route path="/people/:section" component={People} />
       <Route path="/design-studio" component={DesignStudio} />
+      <Route path="/design-studio/spaces/feed" component={DesignStudioSpacesFeed} />
       <Route path="/design-studio/:section" component={DesignStudio} />
       <Route path="/design-studio/:section/:subsection" component={DesignStudio} />
       <Route path="/appearance" component={Appearance} />
