@@ -1006,113 +1006,157 @@ export function SecondarySidebar() {
   const renderDesignStudioSpacesFeedSidebar = () => {
     return (
       <div className="p-3">
-        <div className="mb-2">
-          {/* Minimal back button on top */}
-          <div className="px-1 mb-2">
-            <button 
-              onClick={() => window.history.back()}
-              className="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 p-1 rounded transition-colors"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-            </button>
-          </div>
+        {/* Back button in top corner */}
+        <div className="flex justify-between items-center mb-4">
+          <button 
+            onClick={() => window.history.back()}
+            className="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 p-1 rounded-full transition-colors"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+          </button>
           
-          {/* Title with Space icon and settings button */}
-          <div className="flex items-center justify-between px-1">
-            <div className="flex items-center">
-              <MessageSquare className="h-5 w-5 mr-2 text-gray-700 dark:text-gray-300" />
-              <h2 className="text-base font-medium text-gray-900 dark:text-white">Feed</h2>
-            </div>
-            <button className="text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 p-1 rounded transition-colors">
-              <Settings className="h-4 w-4" />
-            </button>
+          <button 
+            className="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 p-1 rounded-full transition-colors"
+            aria-label="Settings"
+          >
+            <Settings className="h-3.5 w-3.5" />
+          </button>
+        </div>
+        
+        {/* Feed title with icon - made larger */}
+        <div className="flex items-center mb-4 px-1">
+          <div className="bg-purple-100 dark:bg-purple-900/30 p-2 rounded-lg mr-3">
+            <MessageSquare className="h-5 w-5 text-purple-700 dark:text-purple-400" />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Feed</h2>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Manage your space feed</p>
           </div>
         </div>
         
-        {/* Actions Accordion */}
-        <div className="px-1 py-2">
-          <Accordion type="single" collapsible defaultValue="actions" className="space-y-1">
-            {/* Actions Accordion */}
-            <AccordionItem value="actions" className="border-0">
-              <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
-                <div className="flex items-center justify-between w-full">
-                  <div className="flex items-center">
-                    <FileCode2 className="h-4 w-4 mr-2 text-gray-500" />
-                    <span className="font-medium text-sm">Actions</span>
+        {/* Search filter - optional addition */}
+        <div className="relative mb-4">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <Search className="h-3.5 w-3.5 text-gray-400" />
+          </div>
+          <input
+            type="text"
+            className="block w-full pl-9 pr-3 py-1.5 text-xs border border-gray-200 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-purple-500"
+            placeholder="Filter items..."
+          />
+        </div>
+        
+        {/* Actions Section */}
+        <div className="mt-3">
+          <div className="flex items-center justify-between mb-2 px-1">
+            <h3 className="text-xs font-medium text-gray-400">Quick Actions</h3>
+          </div>
+          
+          {/* Quick action buttons */}
+          <div className="grid grid-cols-2 gap-2 mb-4">
+            <button className="flex items-center justify-center p-2 bg-gray-50 dark:bg-gray-700/50 text-xs font-medium rounded-md border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+              <Plus className="h-3.5 w-3.5 mr-1.5 text-purple-500" />
+              <span>New Post</span>
+            </button>
+            <button className="flex items-center justify-center p-2 bg-gray-50 dark:bg-gray-700/50 text-xs font-medium rounded-md border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+              <MessageSquare className="h-3.5 w-3.5 mr-1.5 text-purple-500" />
+              <span>New Thread</span>
+            </button>
+          </div>
+          
+          {/* Accordion sections with enhanced styling */}
+          <div className="px-1">
+            <Accordion type="single" collapsible defaultValue="actions" className="space-y-2">
+              {/* Actions Accordion */}
+              <AccordionItem value="actions" className="border-0 bg-gray-50 dark:bg-gray-800/50 rounded-lg overflow-hidden">
+                <AccordionTrigger className="flex items-center py-2 px-3 rounded-t text-gray-700 dark:text-gray-300 hover:no-underline hover:bg-gray-100 dark:hover:bg-gray-700/50">
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center">
+                      <FileCode2 className="h-4 w-4 mr-2 text-purple-500" />
+                      <span className="font-medium text-sm">Content Actions</span>
+                    </div>
                   </div>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="pt-1 pb-1">
-                <div className="ml-6 space-y-1">
-                  <div className="flex items-center px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer text-gray-700 dark:text-gray-300">
-                    <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
-                    <span>Create Post</span>
+                </AccordionTrigger>
+                <AccordionContent className="pt-1 pb-2 bg-white dark:bg-gray-800 px-1">
+                  <div className="space-y-1">
+                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
+                      <span>Create Post</span>
+                    </div>
+                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
+                      <span>New Thread</span>
+                    </div>
+                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
+                      <span>Import Content</span>
+                    </div>
                   </div>
-                  <div className="flex items-center px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer text-gray-700 dark:text-gray-300">
-                    <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
-                    <span>New Thread</span>
+                </AccordionContent>
+              </AccordionItem>
+              
+              {/* Layout Templates Accordion */}
+              <AccordionItem value="templates" className="border-0 bg-gray-50 dark:bg-gray-800/50 rounded-lg overflow-hidden">
+                <AccordionTrigger className="flex items-center py-2 px-3 rounded-t text-gray-700 dark:text-gray-300 hover:no-underline hover:bg-gray-100 dark:hover:bg-gray-700/50">
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center">
+                      <Layout className="h-4 w-4 mr-2 text-purple-500" />
+                      <span className="font-medium text-sm">Layout Templates</span>
+                    </div>
                   </div>
-                  <div className="flex items-center px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer text-gray-700 dark:text-gray-300">
-                    <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
-                    <span>Import Content</span>
+                </AccordionTrigger>
+                <AccordionContent className="pt-1 pb-2 bg-white dark:bg-gray-800 px-1">
+                  <div className="space-y-1">
+                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                      <span>Default Layout</span>
+                    </div>
+                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                      <span>Compact View</span>
+                    </div>
+                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <div className="w-2 h-2 bg-amber-500 rounded-full mr-2"></div>
+                      <span>Grid Layout</span>
+                    </div>
                   </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-            
-            {/* Layout Templates Accordion */}
-            <AccordionItem value="templates" className="border-0">
-              <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
-                <div className="flex items-center justify-between w-full">
-                  <div className="flex items-center">
-                    <Layout className="h-4 w-4 mr-2 text-gray-500" />
-                    <span className="font-medium text-sm">Layout Templates</span>
+                </AccordionContent>
+              </AccordionItem>
+              
+              {/* Sections and Blocks Accordion */}
+              <AccordionItem value="sections" className="border-0 bg-gray-50 dark:bg-gray-800/50 rounded-lg overflow-hidden">
+                <AccordionTrigger className="flex items-center py-2 px-3 rounded-t text-gray-700 dark:text-gray-300 hover:no-underline hover:bg-gray-100 dark:hover:bg-gray-700/50">
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center">
+                      <Layers2 className="h-4 w-4 mr-2 text-purple-500" />
+                      <span className="font-medium text-sm">Sections and Blocks</span>
+                    </div>
                   </div>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="pt-1 pb-1">
-                <div className="ml-6 space-y-1">
-                  <div className="flex items-center px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer text-gray-700 dark:text-gray-300">
-                    <span>Default Layout</span>
+                </AccordionTrigger>
+                <AccordionContent className="pt-1 pb-2 bg-white dark:bg-gray-800 px-1">
+                  <div className="space-y-1">
+                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+                      <span>Header Section</span>
+                    </div>
+                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+                      <span>Content Block</span>
+                    </div>
+                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+                      <span>Media Gallery</span>
+                    </div>
+                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+                      <span>Comments Section</span>
+                    </div>
                   </div>
-                  <div className="flex items-center px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer text-gray-700 dark:text-gray-300">
-                    <span>Compact View</span>
-                  </div>
-                  <div className="flex items-center px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer text-gray-700 dark:text-gray-300">
-                    <span>Grid Layout</span>
-                  </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-            
-            {/* Sections and Blocks Accordion */}
-            <AccordionItem value="sections" className="border-0">
-              <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
-                <div className="flex items-center justify-between w-full">
-                  <div className="flex items-center">
-                    <Layers2 className="h-4 w-4 mr-2 text-gray-500" />
-                    <span className="font-medium text-sm">Sections and Blocks</span>
-                  </div>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="pt-1 pb-1">
-                <div className="ml-6 space-y-1">
-                  <div className="flex items-center px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer text-gray-700 dark:text-gray-300">
-                    <span>Header Section</span>
-                  </div>
-                  <div className="flex items-center px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer text-gray-700 dark:text-gray-300">
-                    <span>Content Block</span>
-                  </div>
-                  <div className="flex items-center px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer text-gray-700 dark:text-gray-300">
-                    <span>Media Gallery</span>
-                  </div>
-                  <div className="flex items-center px-2 py-1 text-xs rounded hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer text-gray-700 dark:text-gray-300">
-                    <span>Comments Section</span>
-                  </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
         </div>
       </div>
     );
