@@ -391,7 +391,7 @@ export function SecondarySidebar() {
           </div>
         </div>
         
-        <Accordion type="single" collapsible defaultValue={defaultExpanded} className="space-y-3">
+        <Accordion type="single" collapsible defaultValue={defaultExpanded} className="space-y-1">
           <AccordionItem value="spaces" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
               <div className="flex items-center">
