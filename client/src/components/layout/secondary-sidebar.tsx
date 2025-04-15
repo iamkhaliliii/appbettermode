@@ -1049,222 +1049,214 @@ export function SecondarySidebar() {
             
             {/* Navigation Section with Toggles - Ultra minimal version */}
             <div className="mb-2">
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="layout-components" className="border-0">
-                  <AccordionTrigger className="py-0 px-1 hover:no-underline">
-                    <h4 className="text-[11px] uppercase tracking-wide font-medium text-gray-500 dark:text-gray-400">Layout Components</h4>
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-1 pb-0 px-0">
-                    <div className="space-y-1">
-                      {/* Header Navigation Row */}
-                      <div 
-                        id="header-section" 
-                        className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
-                      >
-                        <div className="flex items-center gap-1.5">
-                          <Layout className="h-3 w-3 text-blue-400" />
-                          <span className="text-[10px] text-gray-600 dark:text-gray-300">Header</span>
-                        </div>
-                        <Switch 
-                          id="header-toggle" 
-                          className="h-3 w-5 data-[state=checked]:bg-blue-400"
-                          onCheckedChange={(checked) => {
-                            // Toggle visibility of options
-                            const options = document.getElementById('header-options');
-                            if (options) {
-                              options.classList.toggle('hidden', !checked);
-                            }
-                            
-                            // Using only community elements now
-                            // Also change the community header with animation
-                            const communityHeader = document.getElementById('community-header');
-                            if (communityHeader) {
-                              if (checked) {
-                                communityHeader.style.display = "flex";
-                                communityHeader.style.opacity = "1";
-                                communityHeader.style.transform = "translateY(0)";
-                                communityHeader.style.backgroundColor = 'rgba(219, 234, 254, 0.1)';
-                                communityHeader.style.borderBottom = '1px solid var(--border)';
-                              } else {
-                                setTimeout(() => {
-                                  communityHeader.style.display = "none";
-                                }, 300);
-                                communityHeader.style.opacity = "0";
-                                communityHeader.style.transform = "translateY(-20px)";
-                              }
-                            }
-                          }} 
-                        />
-                      </div>
-                      
-                      {/* Right Sidebar Navigation Row */}
-                      <div 
-                        id="right-sidebar-section" 
-                        className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
-                      >
-                        <div className="flex items-center gap-1.5">
-                          <PanelRight className="h-3 w-3 text-red-400" />
-                          <span className="text-[10px] text-gray-600 dark:text-gray-300">Right Sidebar</span>
-                        </div>
-                        <Switch 
-                          id="right-sidebar-toggle" 
-                          className="h-3 w-5 data-[state=checked]:bg-red-400"
-                          onCheckedChange={(checked) => {
-                            // Using only community elements with animation  
-                            // Also change the community right sidebar with animation
-                            const communityRightSidebar = document.getElementById('community-right-sidebar');
-                            if (communityRightSidebar) {
-                              if (checked) {
-                                communityRightSidebar.style.display = "block";
-                                communityRightSidebar.style.transform = "translateX(0)";
-                                communityRightSidebar.style.opacity = "1";
-                                communityRightSidebar.style.width = '9rem';
-                                communityRightSidebar.style.borderLeft = '1px solid var(--border)';
-                                communityRightSidebar.style.backgroundColor = 'rgba(254, 226, 226, 0.1)';
-                              } else {
-                                setTimeout(() => {
-                                  communityRightSidebar.style.display = "none";
-                                }, 300);
-                                communityRightSidebar.style.transform = "translateX(20px)";
-                                communityRightSidebar.style.opacity = "0";
-                                communityRightSidebar.style.width = '0';
-                                communityRightSidebar.style.padding = '0';
-                                communityRightSidebar.style.overflow = "hidden";
-                              }
-                            }
-                          }} 
-                        />
-                      </div>
-                      
-                      {/* Left Sidebar Navigation Row */}
-                      <div 
-                        id="left-sidebar-section" 
-                        className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
-                      >
-                        <div className="flex items-center gap-1.5">
-                          <PanelLeft className="h-3 w-3 text-green-400" />
-                          <span className="text-[10px] text-gray-600 dark:text-gray-300">Left Sidebar</span>
-                        </div>
-                        <Switch 
-                          id="left-sidebar-toggle" 
-                          className="h-3 w-5 data-[state=checked]:bg-green-400"
-                          onCheckedChange={(checked) => {
-                            // Using only community elements with animation
-                            // Also change the community left sidebar with animation
-                            const communityLeftSidebar = document.getElementById('community-left-sidebar');
-                            if (communityLeftSidebar) {
-                              if (checked) {
-                                communityLeftSidebar.style.transform = "translateX(0)";
-                                communityLeftSidebar.style.opacity = "1";
-                                communityLeftSidebar.style.backgroundColor = 'rgba(220, 252, 231, 0.1)'; 
-                                communityLeftSidebar.style.borderRight = '1px solid var(--border)';
-                                communityLeftSidebar.style.width = '9rem';
-                              } else {
-                                communityLeftSidebar.style.transform = "translateX(-20px)";
-                                communityLeftSidebar.style.width = '0';
-                                communityLeftSidebar.style.padding = '0';
-                                communityLeftSidebar.style.opacity = "0";
-                                communityLeftSidebar.style.overflow = "hidden";
-                              }
-                            }
-                          }} 
-                        />
-                      </div>
-                      
-                      {/* Footer Navigation Row */}
-                      <div 
-                        id="footer-section" 
-                        className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
-                      >
-                        <div className="flex items-center gap-1.5">
-                          <Columns className="h-3 w-3 text-yellow-400" />
-                          <span className="text-[10px] text-gray-600 dark:text-gray-300">Footer</span>
-                        </div>
-                        <Switch 
-                          id="footer-toggle" 
-                          className="h-3 w-5 data-[state=checked]:bg-yellow-400"
-                          onCheckedChange={(checked) => {
-                            // Using only community elements with animation
-                            // Also change the community footer with animation
-                            const communityFooter = document.getElementById('community-footer');
-                            if (communityFooter) {
-                              if (checked) {
-                                communityFooter.style.display = "flex";
-                                communityFooter.style.opacity = "1";
-                                communityFooter.style.transform = "translateY(0)";
-                                communityFooter.style.backgroundColor = 'rgba(254, 240, 138, 0.1)'; 
-                                communityFooter.style.borderTop = '1px solid var(--border)';
-                              } else {
-                                setTimeout(() => {
-                                  communityFooter.style.display = "none";
-                                }, 300);
-                                communityFooter.style.opacity = "0";
-                                communityFooter.style.transform = "translateY(20px)";
-                              }
-                            }
-                          }} 
-                        />
-                      </div>
+              <div className="pb-1 pt-1 px-2">
+                <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400 capitalize">Layout Components</h4>
+              </div>
+              <div className="pt-1 pb-0 px-1">
+                <div className="space-y-1">
+                  {/* Header Navigation Row */}
+                  <div 
+                    id="header-section" 
+                    className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <Layout className="h-3 w-3 text-blue-400" />
+                      <span className="text-[10px] text-gray-600 dark:text-gray-300">Header</span>
                     </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+                    <Switch 
+                      id="header-toggle" 
+                      className="h-3 w-5 data-[state=checked]:bg-blue-400"
+                      onCheckedChange={(checked) => {
+                        // Toggle visibility of options
+                        const options = document.getElementById('header-options');
+                        if (options) {
+                          options.classList.toggle('hidden', !checked);
+                        }
+                        
+                        // Using only community elements now
+                        // Also change the community header with animation
+                        const communityHeader = document.getElementById('community-header');
+                        if (communityHeader) {
+                          if (checked) {
+                            communityHeader.style.display = "flex";
+                            communityHeader.style.opacity = "1";
+                            communityHeader.style.transform = "translateY(0)";
+                            communityHeader.style.backgroundColor = 'rgba(219, 234, 254, 0.1)';
+                            communityHeader.style.borderBottom = '1px solid var(--border)';
+                          } else {
+                            setTimeout(() => {
+                              communityHeader.style.display = "none";
+                            }, 300);
+                            communityHeader.style.opacity = "0";
+                            communityHeader.style.transform = "translateY(-20px)";
+                          }
+                        }
+                      }} 
+                    />
+                  </div>
+                  
+                  {/* Right Sidebar Navigation Row */}
+                  <div 
+                    id="right-sidebar-section" 
+                    className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <PanelRight className="h-3 w-3 text-red-400" />
+                      <span className="text-[10px] text-gray-600 dark:text-gray-300">Right Sidebar</span>
+                    </div>
+                    <Switch 
+                      id="right-sidebar-toggle" 
+                      className="h-3 w-5 data-[state=checked]:bg-red-400"
+                      onCheckedChange={(checked) => {
+                        // Using only community elements with animation  
+                        // Also change the community right sidebar with animation
+                        const communityRightSidebar = document.getElementById('community-right-sidebar');
+                        if (communityRightSidebar) {
+                          if (checked) {
+                            communityRightSidebar.style.display = "block";
+                            communityRightSidebar.style.transform = "translateX(0)";
+                            communityRightSidebar.style.opacity = "1";
+                            communityRightSidebar.style.width = '9rem';
+                            communityRightSidebar.style.borderLeft = '1px solid var(--border)';
+                            communityRightSidebar.style.backgroundColor = 'rgba(254, 226, 226, 0.1)';
+                          } else {
+                            setTimeout(() => {
+                              communityRightSidebar.style.display = "none";
+                            }, 300);
+                            communityRightSidebar.style.transform = "translateX(20px)";
+                            communityRightSidebar.style.opacity = "0";
+                            communityRightSidebar.style.width = '0';
+                            communityRightSidebar.style.padding = '0';
+                            communityRightSidebar.style.overflow = "hidden";
+                          }
+                        }
+                      }} 
+                    />
+                  </div>
+                  
+                  {/* Left Sidebar Navigation Row */}
+                  <div 
+                    id="left-sidebar-section" 
+                    className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <PanelLeft className="h-3 w-3 text-green-400" />
+                      <span className="text-[10px] text-gray-600 dark:text-gray-300">Left Sidebar</span>
+                    </div>
+                    <Switch 
+                      id="left-sidebar-toggle" 
+                      className="h-3 w-5 data-[state=checked]:bg-green-400"
+                      onCheckedChange={(checked) => {
+                        // Using only community elements with animation
+                        // Also change the community left sidebar with animation
+                        const communityLeftSidebar = document.getElementById('community-left-sidebar');
+                        if (communityLeftSidebar) {
+                          if (checked) {
+                            communityLeftSidebar.style.transform = "translateX(0)";
+                            communityLeftSidebar.style.opacity = "1";
+                            communityLeftSidebar.style.backgroundColor = 'rgba(220, 252, 231, 0.1)'; 
+                            communityLeftSidebar.style.borderRight = '1px solid var(--border)';
+                            communityLeftSidebar.style.width = '9rem';
+                          } else {
+                            communityLeftSidebar.style.transform = "translateX(-20px)";
+                            communityLeftSidebar.style.width = '0';
+                            communityLeftSidebar.style.padding = '0';
+                            communityLeftSidebar.style.opacity = "0";
+                            communityLeftSidebar.style.overflow = "hidden";
+                          }
+                        }
+                      }} 
+                    />
+                  </div>
+                  
+                  {/* Footer Navigation Row */}
+                  <div 
+                    id="footer-section" 
+                    className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <Columns className="h-3 w-3 text-yellow-400" />
+                      <span className="text-[10px] text-gray-600 dark:text-gray-300">Footer</span>
+                    </div>
+                    <Switch 
+                      id="footer-toggle" 
+                      className="h-3 w-5 data-[state=checked]:bg-yellow-400"
+                      onCheckedChange={(checked) => {
+                        // Using only community elements with animation
+                        // Also change the community footer with animation
+                        const communityFooter = document.getElementById('community-footer');
+                        if (communityFooter) {
+                          if (checked) {
+                            communityFooter.style.display = "flex";
+                            communityFooter.style.opacity = "1";
+                            communityFooter.style.transform = "translateY(0)";
+                            communityFooter.style.backgroundColor = 'rgba(254, 240, 138, 0.1)'; 
+                            communityFooter.style.borderTop = '1px solid var(--border)';
+                          } else {
+                            setTimeout(() => {
+                              communityFooter.style.display = "none";
+                            }, 300);
+                            communityFooter.style.opacity = "0";
+                            communityFooter.style.transform = "translateY(20px)";
+                          }
+                        }
+                      }} 
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
             
-            {/* Content Blocks section with accordion */}
+            {/* Content Blocks section */}
             <div className="mt-0">
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="content-blocks" className="border-0">
-                  <AccordionTrigger className="py-0 px-1 hover:no-underline">
-                    <h4 className="text-[11px] uppercase tracking-wide font-medium text-gray-500 dark:text-gray-400">Content Blocks</h4>
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-1 pb-0 px-0">
-                    <div className="relative">
-                      <button
-                        className="flex items-center justify-between w-full py-1.5 px-2 text-[10px] border border-gray-200 dark:border-gray-700 rounded text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-100"
-                        onClick={() => {
-                          const dropdown = document.getElementById('blocks-dropdown');
-                          if (dropdown) {
-                            dropdown.classList.toggle('hidden');
-                          }
-                        }}
-                      >
-                        <div className="flex items-center">
-                          <Plus className="h-3 w-3 mr-1.5 text-gray-500" />
-                          <span>Add Block</span>
-                        </div>
-                        <ChevronDown className="h-3 w-3 text-gray-500" />
-                      </button>
-                      
-                      {/* Dropdown for block options - Minimalist version */}
-                      <div id="blocks-dropdown" className="absolute left-0 right-0 z-10 mt-1 hidden rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
-                        <div className="py-1">
-                          <div className="flex items-center gap-2 px-2 py-1.5 text-[10px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
-                            <File className="h-2.5 w-2.5 text-gray-500" />
-                            <span>Text</span>
-                          </div>
-                          <div className="flex items-center gap-2 px-2 py-1.5 text-[10px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
-                            <Eye className="h-2.5 w-2.5 text-gray-500" />
-                            <span>Image</span>
-                          </div>
-                          <div className="flex items-center gap-2 px-2 py-1.5 text-[10px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
-                            <Pencil className="h-2.5 w-2.5 text-gray-500" />
-                            <span>Video</span>
-                          </div>
-                          <div className="flex items-center gap-2 px-2 py-1.5 text-[10px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
-                            <FileBox className="h-2.5 w-2.5 text-gray-500" />
-                            <span>Button</span>
-                          </div>
-                          <div className="flex items-center gap-2 px-2 py-1.5 text-[10px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
-                            <FileCog className="h-2.5 w-2.5 text-gray-500" />
-                            <span>Form</span>
-                          </div>
-                        </div>
+              <div className="pb-1 pt-1 px-2">
+                <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400 capitalize">Sections and Blocks</h4>
+              </div>
+              <div className="pt-1 pb-0 px-1">
+                <div className="relative">
+                  <button
+                    className="flex items-center justify-between w-full py-1.5 px-2 text-[10px] border border-gray-200 dark:border-gray-700 rounded text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-100"
+                    onClick={() => {
+                      const dropdown = document.getElementById('blocks-dropdown');
+                      if (dropdown) {
+                        dropdown.classList.toggle('hidden');
+                      }
+                    }}
+                  >
+                    <div className="flex items-center">
+                      <Plus className="h-3 w-3 mr-1.5 text-gray-500" />
+                      <span>Add Block</span>
+                    </div>
+                    <ChevronDown className="h-3 w-3 text-gray-500" />
+                  </button>
+                  
+                  {/* Dropdown for block options - Minimalist version */}
+                  <div id="blocks-dropdown" className="absolute left-0 right-0 z-10 mt-1 hidden rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
+                    <div className="py-1">
+                      <div className="flex items-center gap-2 px-2 py-1.5 text-[10px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
+                        <File className="h-2.5 w-2.5 text-gray-500" />
+                        <span>Text</span>
+                      </div>
+                      <div className="flex items-center gap-2 px-2 py-1.5 text-[10px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
+                        <Eye className="h-2.5 w-2.5 text-gray-500" />
+                        <span>Image</span>
+                      </div>
+                      <div className="flex items-center gap-2 px-2 py-1.5 text-[10px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
+                        <Pencil className="h-2.5 w-2.5 text-gray-500" />
+                        <span>Video</span>
+                      </div>
+                      <div className="flex items-center gap-2 px-2 py-1.5 text-[10px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
+                        <FileBox className="h-2.5 w-2.5 text-gray-500" />
+                        <span>Button</span>
+                      </div>
+                      <div className="flex items-center gap-2 px-2 py-1.5 text-[10px] hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-400">
+                        <FileCog className="h-2.5 w-2.5 text-gray-500" />
+                        <span>Form</span>
                       </div>
                     </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
