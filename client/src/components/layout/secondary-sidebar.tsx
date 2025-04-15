@@ -1057,151 +1057,163 @@ export function SecondarySidebar() {
                   {/* Header Navigation Row */}
                   <div 
                     id="header-section" 
-                    className="flex items-center justify-between py-2.5 px-2 rounded-md group transition-colors duration-150"
+                    className="flex items-center justify-between py-1.5 px-2 rounded-md group transition-colors duration-150"
                   >
-                    <div className="flex items-center gap-2">
-                      <Layout className="h-5 w-5 text-gray-700" />
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Header</span>
+                    <div className="flex items-center gap-1.5">
+                      <Layout className="h-4 w-4 text-gray-500" />
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Header</span>
                     </div>
-                    <Switch 
-                      id="header-toggle"
-                      className="data-[state=checked]:bg-blue-500"
-                      onCheckedChange={(checked) => {
-                        // Toggle visibility of options
-                        const options = document.getElementById('header-options');
-                        if (options) {
-                          options.classList.toggle('hidden', !checked);
-                        }
-                        
-                        // Using only community elements now
-                        // Also change the community header with animation
-                        const communityHeader = document.getElementById('community-header');
-                        if (communityHeader) {
-                          if (checked) {
-                            communityHeader.style.display = "flex";
-                            communityHeader.style.opacity = "1";
-                            communityHeader.style.transform = "translateY(0)";
-                            communityHeader.style.backgroundColor = 'rgba(229, 231, 235, 0.1)';
-                            communityHeader.style.borderBottom = '1px solid var(--border)';
-                          } else {
-                            setTimeout(() => {
-                              communityHeader.style.display = "none";
-                            }, 300);
-                            communityHeader.style.opacity = "0";
-                            communityHeader.style.transform = "translateY(-20px)";
+                    <div className="flex items-center gap-1">
+                      <Switch 
+                        id="header-toggle"
+                        className="data-[state=checked]:bg-blue-500"
+                        onCheckedChange={(checked) => {
+                          // Toggle visibility of options
+                          const options = document.getElementById('header-options');
+                          if (options) {
+                            options.classList.toggle('hidden', !checked);
                           }
-                        }
-                      }} 
-                    />
+                          
+                          // Using only community elements now
+                          // Also change the community header with animation
+                          const communityHeader = document.getElementById('community-header');
+                          if (communityHeader) {
+                            if (checked) {
+                              communityHeader.style.display = "flex";
+                              communityHeader.style.opacity = "1";
+                              communityHeader.style.transform = "translateY(0)";
+                              communityHeader.style.backgroundColor = 'rgba(229, 231, 235, 0.1)';
+                              communityHeader.style.borderBottom = '1px solid var(--border)';
+                            } else {
+                              setTimeout(() => {
+                                communityHeader.style.display = "none";
+                              }, 300);
+                              communityHeader.style.opacity = "0";
+                              communityHeader.style.transform = "translateY(-20px)";
+                            }
+                          }
+                        }} 
+                      />
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                    </div>
                   </div>
                   
                   {/* Right Sidebar Navigation Row */}
                   <div 
                     id="right-sidebar-section" 
-                    className="flex items-center justify-between py-2.5 px-2 rounded-md group transition-colors duration-150"
+                    className="flex items-center justify-between py-1.5 px-2 rounded-md group transition-colors duration-150"
                   >
-                    <div className="flex items-center gap-2">
-                      <PanelTop className="h-5 w-5 text-gray-700 transform rotate-90" />
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Right Sidebar</span>
+                    <div className="flex items-center gap-1.5">
+                      <PanelTop className="h-4 w-4 text-gray-500 transform rotate-90" />
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Right Sidebar</span>
                     </div>
-                    <Switch 
-                      id="right-sidebar-toggle"
-                      className="data-[state=checked]:bg-blue-500"
-                      onCheckedChange={(checked) => {
-                        // Using only community elements with animation  
-                        // Also change the community right sidebar with animation
-                        const communityRightSidebar = document.getElementById('community-right-sidebar');
-                        if (communityRightSidebar) {
-                          if (checked) {
-                            communityRightSidebar.style.display = "block";
-                            communityRightSidebar.style.transform = "translateX(0)";
-                            communityRightSidebar.style.opacity = "1";
-                            communityRightSidebar.style.width = '9rem';
-                            communityRightSidebar.style.borderLeft = '1px solid var(--border)';
-                            communityRightSidebar.style.backgroundColor = 'rgba(229, 231, 235, 0.1)';
-                          } else {
-                            setTimeout(() => {
-                              communityRightSidebar.style.display = "none";
-                            }, 300);
-                            communityRightSidebar.style.transform = "translateX(20px)";
-                            communityRightSidebar.style.opacity = "0";
-                            communityRightSidebar.style.width = '0';
-                            communityRightSidebar.style.padding = '0';
-                            communityRightSidebar.style.overflow = "hidden";
+                    <div className="flex items-center gap-1">
+                      <Switch 
+                        id="right-sidebar-toggle"
+                        className="data-[state=checked]:bg-blue-500"
+                        onCheckedChange={(checked) => {
+                          // Using only community elements with animation  
+                          // Also change the community right sidebar with animation
+                          const communityRightSidebar = document.getElementById('community-right-sidebar');
+                          if (communityRightSidebar) {
+                            if (checked) {
+                              communityRightSidebar.style.display = "block";
+                              communityRightSidebar.style.transform = "translateX(0)";
+                              communityRightSidebar.style.opacity = "1";
+                              communityRightSidebar.style.width = '9rem';
+                              communityRightSidebar.style.borderLeft = '1px solid var(--border)';
+                              communityRightSidebar.style.backgroundColor = 'rgba(229, 231, 235, 0.1)';
+                            } else {
+                              setTimeout(() => {
+                                communityRightSidebar.style.display = "none";
+                              }, 300);
+                              communityRightSidebar.style.transform = "translateX(20px)";
+                              communityRightSidebar.style.opacity = "0";
+                              communityRightSidebar.style.width = '0';
+                              communityRightSidebar.style.padding = '0';
+                              communityRightSidebar.style.overflow = "hidden";
+                            }
                           }
-                        }
-                      }} 
-                    />
+                        }} 
+                      />
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                    </div>
                   </div>
                   
                   {/* Left Sidebar Navigation Row */}
                   <div 
                     id="left-sidebar-section" 
-                    className="flex items-center justify-between py-2.5 px-2 rounded-md group transition-colors duration-150"
+                    className="flex items-center justify-between py-1.5 px-2 rounded-md group transition-colors duration-150"
                   >
-                    <div className="flex items-center gap-2">
-                      <PanelLeft className="h-5 w-5 text-gray-700" />
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Left Sidebar</span>
+                    <div className="flex items-center gap-1.5">
+                      <PanelLeft className="h-4 w-4 text-gray-500" />
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Left Sidebar</span>
                     </div>
-                    <Switch 
-                      id="left-sidebar-toggle"
-                      className="data-[state=checked]:bg-blue-500"
-                      onCheckedChange={(checked) => {
-                        // Using only community elements with animation
-                        // Also change the community left sidebar with animation
-                        const communityLeftSidebar = document.getElementById('community-left-sidebar');
-                        if (communityLeftSidebar) {
-                          if (checked) {
-                            communityLeftSidebar.style.transform = "translateX(0)";
-                            communityLeftSidebar.style.opacity = "1";
-                            communityLeftSidebar.style.backgroundColor = 'rgba(229, 231, 235, 0.1)'; 
-                            communityLeftSidebar.style.borderRight = '1px solid var(--border)';
-                            communityLeftSidebar.style.width = '9rem';
-                          } else {
-                            communityLeftSidebar.style.transform = "translateX(-20px)";
-                            communityLeftSidebar.style.width = '0';
-                            communityLeftSidebar.style.padding = '0';
-                            communityLeftSidebar.style.opacity = "0";
-                            communityLeftSidebar.style.overflow = "hidden";
+                    <div className="flex items-center gap-1">
+                      <Switch 
+                        id="left-sidebar-toggle"
+                        className="data-[state=checked]:bg-blue-500"
+                        onCheckedChange={(checked) => {
+                          // Using only community elements with animation
+                          // Also change the community left sidebar with animation
+                          const communityLeftSidebar = document.getElementById('community-left-sidebar');
+                          if (communityLeftSidebar) {
+                            if (checked) {
+                              communityLeftSidebar.style.transform = "translateX(0)";
+                              communityLeftSidebar.style.opacity = "1";
+                              communityLeftSidebar.style.backgroundColor = 'rgba(229, 231, 235, 0.1)'; 
+                              communityLeftSidebar.style.borderRight = '1px solid var(--border)';
+                              communityLeftSidebar.style.width = '9rem';
+                            } else {
+                              communityLeftSidebar.style.transform = "translateX(-20px)";
+                              communityLeftSidebar.style.width = '0';
+                              communityLeftSidebar.style.padding = '0';
+                              communityLeftSidebar.style.opacity = "0";
+                              communityLeftSidebar.style.overflow = "hidden";
+                            }
                           }
-                        }
-                      }} 
-                    />
+                        }} 
+                      />
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                    </div>
                   </div>
                   
                   {/* Footer Navigation Row */}
                   <div 
                     id="footer-section" 
-                    className="flex items-center justify-between py-2.5 px-2 rounded-md group transition-colors duration-150"
+                    className="flex items-center justify-between py-1.5 px-2 rounded-md group transition-colors duration-150"
                   >
-                    <div className="flex items-center gap-2">
-                      <Columns className="h-5 w-5 text-gray-700" />
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Footer</span>
+                    <div className="flex items-center gap-1.5">
+                      <Columns className="h-4 w-4 text-gray-500" />
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Footer</span>
                     </div>
-                    <Switch 
-                      id="footer-toggle"
-                      className="data-[state=checked]:bg-blue-500"
-                      onCheckedChange={(checked) => {
-                        // Using only community elements with animation
-                        // Also change the community footer with animation
-                        const communityFooter = document.getElementById('community-footer');
-                        if (communityFooter) {
-                          if (checked) {
-                            communityFooter.style.display = "flex";
-                            communityFooter.style.opacity = "1";
-                            communityFooter.style.transform = "translateY(0)";
-                            communityFooter.style.backgroundColor = 'rgba(229, 231, 235, 0.1)'; 
-                            communityFooter.style.borderTop = '1px solid var(--border)';
-                          } else {
-                            setTimeout(() => {
-                              communityFooter.style.display = "none";
-                            }, 300);
-                            communityFooter.style.opacity = "0";
-                            communityFooter.style.transform = "translateY(20px)";
+                    <div className="flex items-center gap-1">
+                      <Switch 
+                        id="footer-toggle"
+                        className="data-[state=checked]:bg-blue-500"
+                        onCheckedChange={(checked) => {
+                          // Using only community elements with animation
+                          // Also change the community footer with animation
+                          const communityFooter = document.getElementById('community-footer');
+                          if (communityFooter) {
+                            if (checked) {
+                              communityFooter.style.display = "flex";
+                              communityFooter.style.opacity = "1";
+                              communityFooter.style.transform = "translateY(0)";
+                              communityFooter.style.backgroundColor = 'rgba(229, 231, 235, 0.1)'; 
+                              communityFooter.style.borderTop = '1px solid var(--border)';
+                            } else {
+                              setTimeout(() => {
+                                communityFooter.style.display = "none";
+                              }, 300);
+                              communityFooter.style.opacity = "0";
+                              communityFooter.style.transform = "translateY(20px)";
+                            }
                           }
-                        }
-                      }} 
-                    />
+                        }} 
+                      />
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1215,7 +1227,7 @@ export function SecondarySidebar() {
               <div className="pt-1 pb-0 px-1">
                 <div className="relative">
                   <button
-                    className="flex items-center justify-between w-full py-2.5 px-2 text-sm font-medium border border-gray-200 dark:border-gray-700 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-100"
+                    className="flex items-center justify-between w-full py-1.5 px-2 text-xs border border-gray-200 dark:border-gray-700 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-100"
                     onClick={() => {
                       const dropdown = document.getElementById('blocks-dropdown');
                       if (dropdown) {
@@ -1224,33 +1236,33 @@ export function SecondarySidebar() {
                     }}
                   >
                     <div className="flex items-center">
-                      <Plus className="h-5 w-5 mr-2 text-gray-700" />
+                      <Plus className="h-4 w-4 mr-1.5 text-gray-500" />
                       <span>Add Block</span>
                     </div>
-                    <ChevronDown className="h-5 w-5 text-gray-700" />
+                    <ChevronDown className="h-3.5 w-3.5 text-gray-400" />
                   </button>
                   
                   {/* Dropdown for block options - Minimalist version */}
                   <div id="blocks-dropdown" className="absolute left-0 right-0 z-10 mt-1 hidden rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
                     <div className="py-1">
-                      <div className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-700 dark:text-gray-300">
-                        <File className="h-5 w-5 text-gray-700" />
+                      <div className="flex items-center gap-1.5 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-300">
+                        <File className="h-3.5 w-3.5 text-gray-500" />
                         <span>Text</span>
                       </div>
-                      <div className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-700 dark:text-gray-300">
-                        <Eye className="h-5 w-5 text-gray-700" />
+                      <div className="flex items-center gap-1.5 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-300">
+                        <Eye className="h-3.5 w-3.5 text-gray-500" />
                         <span>Image</span>
                       </div>
-                      <div className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-700 dark:text-gray-300">
-                        <Pencil className="h-5 w-5 text-gray-700" />
+                      <div className="flex items-center gap-1.5 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-300">
+                        <Pencil className="h-3.5 w-3.5 text-gray-500" />
                         <span>Video</span>
                       </div>
-                      <div className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-700 dark:text-gray-300">
-                        <FileBox className="h-5 w-5 text-gray-700" />
+                      <div className="flex items-center gap-1.5 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-300">
+                        <FileBox className="h-3.5 w-3.5 text-gray-500" />
                         <span>Button</span>
                       </div>
-                      <div className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-700 dark:text-gray-300">
-                        <FileCog className="h-5 w-5 text-gray-700" />
+                      <div className="flex items-center gap-1.5 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-300">
+                        <FileCog className="h-3.5 w-3.5 text-gray-500" />
                         <span>Form</span>
                       </div>
                     </div>
