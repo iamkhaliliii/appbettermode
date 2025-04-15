@@ -1012,16 +1012,25 @@ export function SecondarySidebar() {
   const renderDesignStudioSpacesFeedSidebar = () => {
     return (
       <div className="p-3">
-        {/* Top nav with back button and settings in a single row - ultra minimalist */}
+        {/* Top nav with title/icon left and settings right - ultra minimalist */}
         <div className="sticky top-0 bg-white dark:bg-gray-800 z-10 border-b border-gray-100 dark:border-gray-800 pb-2">
           <div className="flex items-center justify-between py-2">
-            <button 
-              onClick={() => window.history.back()}
-              className="p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded transition-colors"
-              aria-label="Go back"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => window.history.back()}
+                className="p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded transition-colors"
+                aria-label="Go back"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+              </button>
+              
+              <div className="flex items-center gap-2">
+                <div className="bg-purple-50 dark:bg-purple-900/20 p-1.5 rounded">
+                  <MessageSquare className="h-4 w-4 text-purple-500" />
+                </div>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300 tracking-wide">Feed</span>
+              </div>
+            </div>
             
             <button 
               className="p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded transition-colors"
@@ -1029,13 +1038,6 @@ export function SecondarySidebar() {
             >
               <Settings className="h-3.5 w-3.5" />
             </button>
-          </div>
-          
-          <div className="flex items-center justify-center pt-1 pb-2 gap-2">
-            <div className="bg-purple-50 dark:bg-purple-900/20 p-1.5 rounded">
-              <MessageSquare className="h-4 w-4 text-purple-500" />
-            </div>
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 tracking-wide">Feed</span>
           </div>
         </div>
         
