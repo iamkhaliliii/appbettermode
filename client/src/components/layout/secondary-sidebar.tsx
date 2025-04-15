@@ -92,29 +92,107 @@ interface MinimalItemProps {
   icon: React.ReactNode;
   iconColor?: string;
   level?: number;
+  isHidden?: boolean; 
+  isFile?: boolean;
+  inSpaces?: boolean;
 }
 
-function MinimalItem({ name, path, icon, iconColor = "text-gray-500", level = 0 }: MinimalItemProps) {
+function MinimalItem({ 
+  name, 
+  path, 
+  icon, 
+  iconColor = "text-gray-500", 
+  level = 0, 
+  isHidden = false,
+  isFile = true,
+  inSpaces = false
+}: MinimalItemProps) {
   const [location] = useLocation();
   const [showDropdown, setShowDropdown] = useState(false);
+  const [hidden, setHidden] = useState(isHidden);
   const isActive = location === path;
+  
+  // Format the name to remove file extension
+  const displayName = name.includes('.') ? name.split('.')[0] : name;
+  
+  // Only show hide/unhide for files in Spaces section
+  const showHideOption = inSpaces && isFile;
+  
+  const toggleHidden = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setHidden(!hidden);
+    setShowDropdown(false);
+  };
+  
+  if (hidden && !showDropdown) return (
+    <div className="relative group" onMouseLeave={() => setShowDropdown(false)}>
+      <div
+        className={cn(
+          "flex items-center px-2 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded opacity-50",
+          isActive 
+            ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white" 
+            : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+        )}
+        style={{ paddingLeft: `${(level * 10) + 4}px` }}
+      >
+        <EyeOff className="h-3 w-3 mr-1 text-gray-400" />
+        <span className="font-medium text-gray-400">{displayName}</span>
+        <div 
+          className="ml-auto opacity-0 group-hover:opacity-100"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowDropdown(!showDropdown);
+          }}
+        >
+          <MoreHorizontal className="h-3 w-3 text-gray-400" />
+        </div>
+      </div>
+      
+      {showDropdown && (
+        <div className="absolute right-0 mt-1 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-[100]">
+          <div className="py-1 text-xs">
+            {showHideOption && (
+              <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={toggleHidden}>
+                <Eye className="mr-2 h-3 w-3" />
+                <span>Unhide</span>
+              </a>
+            )}
+            <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+              <Pencil className="mr-2 h-3 w-3" />
+              <span>Rename</span>
+            </a>
+            <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+              <Pencil className="mr-2 h-3 w-3" />
+              <span>Edit</span>
+            </a>
+            <a href="#" className="flex items-center px-3 py-1 text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700">
+              <Trash2 className="mr-2 h-3 w-3" />
+              <span>Delete</span>
+            </a>
+          </div>
+        </div>
+      )}
+    </div>
+  );
   
   return (
     <div className="relative group" onMouseLeave={() => setShowDropdown(false)}>
       <div
         className={cn(
-          "flex items-center px-2.5 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded",
+          "flex items-center px-2 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded",
           isActive 
             ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white" 
             : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
         )}
-        style={{ paddingLeft: `${(level * 12) + 10}px` }}
+        style={{ paddingLeft: `${(level * 10) + 4}px` }}
       >
         <span className={cn("flex-shrink-0 mr-1.5", iconColor)}>
           {icon}
         </span>
         <Link href={path}>
-          <span className={cn("font-medium", iconColor)}>{name}</span>
+          <span className={cn("font-medium", iconColor)}>{displayName}</span>
         </Link>
         <div 
           className="ml-auto opacity-0 group-hover:opacity-100"
@@ -129,12 +207,14 @@ function MinimalItem({ name, path, icon, iconColor = "text-gray-500", level = 0 
       </div>
       
       {showDropdown && (
-        <div className="absolute right-0 mt-1 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
+        <div className="absolute right-0 mt-1 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-[100]">
           <div className="py-1 text-xs">
-            <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-              <Eye className="mr-2 h-3 w-3" />
-              <span>Hide/Unhide</span>
-            </a>
+            {showHideOption && (
+              <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={toggleHidden}>
+                <EyeOff className="mr-2 h-3 w-3" />
+                <span>Hide</span>
+              </a>
+            )}
             <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
               <Pencil className="mr-2 h-3 w-3" />
               <span>Rename</span>
@@ -171,6 +251,7 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
   
   const handleToggle = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setExpanded(!expanded);
   };
   
@@ -179,15 +260,15 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
       <div className="relative group" onMouseLeave={() => setShowDropdown(false)}>
         <div
           className={cn(
-            "flex items-center px-2.5 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded",
+            "flex items-center px-2 py-1 text-xs my-0.5 transition-colors duration-150 rounded",
             isActive 
               ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white" 
               : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
           )}
-          style={{ paddingLeft: `${(level * 12) + 10}px` }}
+          style={{ paddingLeft: `${(level * 10) + 4}px` }}
         >
           <span 
-            className="w-4 h-4 mr-1.5 flex-shrink-0 flex items-center justify-center"
+            className="w-4 h-4 mr-1 flex-shrink-0 flex items-center justify-center cursor-pointer"
             onClick={handleToggle}
           >
             <ChevronDown
@@ -197,10 +278,12 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
               )}
             />
           </span>
-          <Folder className="h-3.5 w-3.5 mr-1.5 text-gray-500" />
-          <Link href={path}>
-            <span className="font-medium">{name}</span>
-          </Link>
+          <div className="flex items-center cursor-default">
+            <Folder className="h-3.5 w-3.5 mr-1 text-gray-500" />
+            <Link href={path}>
+              <span className="font-medium">{name}</span>
+            </Link>
+          </div>
           <div 
             className="ml-auto opacity-0 group-hover:opacity-100"
             onClick={(e) => {
@@ -214,12 +297,8 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
         </div>
         
         {showDropdown && (
-          <div className="absolute right-0 mt-1 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
+          <div className="absolute right-0 mt-1 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-[100]">
             <div className="py-1 text-xs">
-              <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                <Eye className="mr-2 h-3 w-3" />
-                <span>Hide/Unhide</span>
-              </a>
               <a href="#" className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                 <Pencil className="mr-2 h-3 w-3" />
                 <span>Rename</span>
@@ -238,7 +317,7 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
       </div>
       
       {expanded && children && (
-        <div className="pl-2">
+        <div>
           {children}
         </div>
       )}
@@ -514,7 +593,7 @@ export function SecondarySidebar() {
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-1 pb-1">
-              <div className="border-l border-gray-200 dark:border-gray-700 ml-2 pl-2">
+              <div className="space-y-1">
                 {/* Tree view of folders */}
                 <TreeFolder 
                   name="Main Website" 
@@ -527,6 +606,8 @@ export function SecondarySidebar() {
                     icon={<FileCode2 className="h-3.5 w-3.5" />}
                     iconColor="text-purple-500"
                     level={1}
+                    inSpaces={true}
+                    isHidden={false}
                   />
                   <TreeFolder 
                     name="Home" 
@@ -539,6 +620,7 @@ export function SecondarySidebar() {
                       icon={<FileCode2 className="h-3.5 w-3.5" />}
                       iconColor="text-purple-500"
                       level={2}
+                      inSpaces={true}
                     />
                     <MinimalItem 
                       name="hero.tsx" 
@@ -546,6 +628,8 @@ export function SecondarySidebar() {
                       icon={<File className="h-3.5 w-3.5" />}
                       iconColor="text-gray-500"
                       level={2}
+                      inSpaces={true}
+                      isHidden={true}
                     />
                   </TreeFolder>
                   <TreeFolder 
@@ -559,6 +643,7 @@ export function SecondarySidebar() {
                       icon={<FileCode2 className="h-3.5 w-3.5" />}
                       iconColor="text-purple-500"
                       level={2}
+                      inSpaces={true}
                     />
                     <MinimalItem 
                       name="team.tsx" 
@@ -566,6 +651,7 @@ export function SecondarySidebar() {
                       icon={<File className="h-3.5 w-3.5" />}
                       iconColor="text-gray-500"
                       level={2}
+                      inSpaces={true}
                     />
                   </TreeFolder>
                   <TreeFolder 
@@ -579,6 +665,7 @@ export function SecondarySidebar() {
                       icon={<FileCode2 className="h-3.5 w-3.5" />}
                       iconColor="text-purple-500"
                       level={2}
+                      inSpaces={true}
                     />
                     <MinimalItem 
                       name="post.tsx" 
@@ -586,6 +673,7 @@ export function SecondarySidebar() {
                       icon={<File className="h-3.5 w-3.5" />}
                       iconColor="text-gray-500"
                       level={2}
+                      inSpaces={true}
                     />
                   </TreeFolder>
                 </TreeFolder>
@@ -601,6 +689,7 @@ export function SecondarySidebar() {
                     icon={<FileCode2 className="h-3.5 w-3.5" />}
                     iconColor="text-purple-500"
                     level={1}
+                    inSpaces={true}
                   />
                   <TreeFolder 
                     name="Dashboard" 
@@ -613,6 +702,7 @@ export function SecondarySidebar() {
                       icon={<FileCode2 className="h-3.5 w-3.5" />}
                       iconColor="text-purple-500"
                       level={2}
+                      inSpaces={true}
                     />
                   </TreeFolder>
                   <TreeFolder 
@@ -626,11 +716,12 @@ export function SecondarySidebar() {
                       icon={<File className="h-3.5 w-3.5" />}
                       iconColor="text-gray-500"
                       level={2}
+                      inSpaces={true}
                     />
                   </TreeFolder>
                 </TreeFolder>
                 
-                <div className="flex items-center py-1.5 px-2.5 text-xs text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded cursor-pointer">
+                <div className="flex items-center py-1 px-2 text-xs text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded cursor-pointer">
                   <FolderPlus className="h-3.5 w-3.5 mr-1.5 text-gray-500" />
                   <span>Create new space</span>
                 </div>
@@ -648,7 +739,7 @@ export function SecondarySidebar() {
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-1 pb-1">
-              <div className="space-y-1 pl-6">
+              <div className="space-y-1">
                 <MinimalItem 
                   name="Blog Home" 
                   path="/design-studio/collections/blog"
@@ -687,7 +778,7 @@ export function SecondarySidebar() {
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-1 pb-1">
-              <div className="space-y-1 pl-6">
+              <div className="space-y-1">
                 <MinimalItem 
                   name="Page Templates" 
                   path="/design-studio/templates/page"
@@ -720,7 +811,7 @@ export function SecondarySidebar() {
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-1 pb-1">
-              <div className="space-y-1 pl-6">
+              <div className="space-y-1">
                 <MinimalItem 
                   name="404 Page" 
                   path="/design-studio/utility/404"
