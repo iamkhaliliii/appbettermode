@@ -1066,7 +1066,7 @@ export function SecondarySidebar() {
                     <div className="flex items-center gap-1">
                       <Switch 
                         id="header-toggle"
-                        className="data-[state=checked]:bg-blue-500"
+                        className="data-[state=checked]:bg-blue-500 h-3 w-5"
                         onCheckedChange={(checked) => {
                           // Toggle visibility of options
                           const options = document.getElementById('header-options');
@@ -1110,7 +1110,7 @@ export function SecondarySidebar() {
                     <div className="flex items-center gap-1">
                       <Switch 
                         id="right-sidebar-toggle"
-                        className="data-[state=checked]:bg-blue-500"
+                        className="data-[state=checked]:bg-blue-500 h-3 w-5"
                         onCheckedChange={(checked) => {
                           // Using only community elements with animation  
                           // Also change the community right sidebar with animation
@@ -1152,7 +1152,7 @@ export function SecondarySidebar() {
                     <div className="flex items-center gap-1">
                       <Switch 
                         id="left-sidebar-toggle"
-                        className="data-[state=checked]:bg-blue-500"
+                        className="data-[state=checked]:bg-blue-500 h-3 w-5"
                         onCheckedChange={(checked) => {
                           // Using only community elements with animation
                           // Also change the community left sidebar with animation
@@ -1190,7 +1190,7 @@ export function SecondarySidebar() {
                     <div className="flex items-center gap-1">
                       <Switch 
                         id="footer-toggle"
-                        className="data-[state=checked]:bg-blue-500"
+                        className="data-[state=checked]:bg-blue-500 h-3 w-5"
                         onCheckedChange={(checked) => {
                           // Using only community elements with animation
                           // Also change the community footer with animation
