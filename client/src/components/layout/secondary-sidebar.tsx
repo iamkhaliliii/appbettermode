@@ -437,26 +437,39 @@ export function SecondarySidebar() {
       </div>
       
       <div className="space-y-1">
-        <SideNavItem 
-          href="/content/posts"
-          isActive={isActiveUrl('/content/posts') || location === '/content'}
-        >
-          CMS Collections
-        </SideNavItem>
+        <Link href="/content/posts">
+          <div
+            className={cn(
+              "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
+              (isActiveUrl('/content/posts') || location === '/content')
+                ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-md" 
+                : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded"
+            )}
+            style={{paddingLeft: "10px", paddingRight: "10px"}}
+          >
+            <span className="font-medium">CMS Collections</span>
+            <span className="ml-auto">
+              <ChevronRight className="h-4 w-4 text-gray-400" />
+            </span>
+          </div>
+        </Link>
 
-        <SideNavItem 
-          href="/content/comments"
-          isActive={isActiveUrl('/content/comments')}
-        >
-          Activity Hub
-        </SideNavItem>
-        
-        <SideNavItem 
-          href="/content/tags"
-          isActive={isActiveUrl('/content/tags')}
-        >
-          Tags
-        </SideNavItem>
+        <Link href="/content/comments">
+          <div
+            className={cn(
+              "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
+              isActiveUrl('/content/comments')
+                ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-md" 
+                : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded"
+            )}
+            style={{paddingLeft: "10px", paddingRight: "10px"}}
+          >
+            <span className="font-medium">Activity Hub</span>
+            <span className="ml-auto">
+              <ChevronRight className="h-4 w-4 text-gray-400" />
+            </span>
+          </div>
+        </Link>
       </div>
     </div>
   );
