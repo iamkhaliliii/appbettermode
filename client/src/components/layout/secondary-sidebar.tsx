@@ -592,7 +592,7 @@ export function SecondarySidebar() {
                   name="Feed" 
                   path="/design-studio/spaces/feed"
                   icon={<FileCode2 className="h-3.5 w-3.5" />}
-                  iconColor="text-[#FF5757]"
+                  iconColor="text-[#A694FF]"
                   inSpaces={true}
                 />
                 <MinimalItem 
