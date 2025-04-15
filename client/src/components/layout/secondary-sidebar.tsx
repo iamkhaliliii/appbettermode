@@ -342,8 +342,8 @@ export function SecondarySidebar() {
   const renderDesignStudioSidebar = () => {
     // Default expanded accordion value
     const defaultExpanded = location.includes('/design-studio/spaces') ? 'spaces' :
-                           location.includes('/design-studio/templates') ? 'templates' :
                            location.includes('/design-studio/collections') ? 'collections' :
+                           location.includes('/design-studio/templates') ? 'templates' :
                            location.includes('/design-studio/utility') ? 'utility' : '';
   
     return (
@@ -391,7 +391,7 @@ export function SecondarySidebar() {
           </div>
         </div>
         
-        <Accordion type="single" collapsible defaultValue={defaultExpanded} className="space-y-1">
+        <Accordion type="single" collapsible defaultValue={defaultExpanded} className="space-y-3">
           <AccordionItem value="spaces" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
               <div className="flex items-center">
@@ -449,36 +449,7 @@ export function SecondarySidebar() {
             </AccordionContent>
           </AccordionItem>
           
-          <AccordionItem value="templates" className="border-0">
-            <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
-              <div className="flex items-center">
-                <Layers2 className="h-4 w-4 mr-2 text-gray-500" />
-                <span className="font-medium text-sm">Templates</span>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent className="pt-1 pb-1">
-              <div className="space-y-1 pl-6">
-                <SideNavItem 
-                  href="/design-studio/templates/page"
-                  isActive={isActiveUrl('/design-studio/templates/page')}
-                >
-                  Page templates
-                </SideNavItem>
-                <SideNavItem 
-                  href="/design-studio/templates/email"
-                  isActive={isActiveUrl('/design-studio/templates/email')}
-                >
-                  Email templates
-                </SideNavItem>
-                <SideNavItem 
-                  href="/design-studio/templates/popup"
-                  isActive={isActiveUrl('/design-studio/templates/popup')}
-                >
-                  Popup templates
-                </SideNavItem>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
+          <div className="h-px bg-gray-100 dark:bg-gray-700 mx-1"></div>
           
           <AccordionItem value="collections" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
@@ -516,6 +487,41 @@ export function SecondarySidebar() {
               </div>
             </AccordionContent>
           </AccordionItem>
+          
+          <div className="h-px bg-gray-100 dark:bg-gray-700 mx-1"></div>
+          
+          <AccordionItem value="templates" className="border-0">
+            <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
+              <div className="flex items-center">
+                <Layers2 className="h-4 w-4 mr-2 text-gray-500" />
+                <span className="font-medium text-sm">Templates</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="pt-1 pb-1">
+              <div className="space-y-1 pl-6">
+                <SideNavItem 
+                  href="/design-studio/templates/page"
+                  isActive={isActiveUrl('/design-studio/templates/page')}
+                >
+                  Page templates
+                </SideNavItem>
+                <SideNavItem 
+                  href="/design-studio/templates/email"
+                  isActive={isActiveUrl('/design-studio/templates/email')}
+                >
+                  Email templates
+                </SideNavItem>
+                <SideNavItem 
+                  href="/design-studio/templates/popup"
+                  isActive={isActiveUrl('/design-studio/templates/popup')}
+                >
+                  Popup templates
+                </SideNavItem>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+          
+          <div className="h-px bg-gray-100 dark:bg-gray-700 mx-1"></div>
           
           <AccordionItem value="utility" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
