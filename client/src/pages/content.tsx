@@ -763,7 +763,7 @@ export default function Content() {
       <DashboardLayout>
         <div className="max-w-7xl mx-auto">
           {/* Content container with padding */}
-          <div className="px-2 py-3 sm:px-3 sm:py-4">
+          <div className="px-2 py-3 pb-1.5 sm:px-3 sm:py-4 sm:pb-2">
             <div className="mb-3 flex flex-row items-center justify-between gap-3">
               <div>
                 <h1 className="text-xl font-medium text-gray-900 dark:text-white">
