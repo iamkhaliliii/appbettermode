@@ -37,21 +37,26 @@ export default function DesignStudio() {
     <DashboardLayout>
       <div className="max-w-7xl mx-auto p-4">
 
-        {/* Browser mockup */}
-        <div className="bg-white dark:bg-gray-800 shadow-sm rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 max-h-[700px]">
+        {/* Browser mockup - with shadow */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 max-h-[600px] shadow-3xl" 
+            style={{ 
+              boxShadow: '0px 32px 64px -12px rgba(16, 24, 40, 0.14)',
+              maxWidth: '900px',
+              margin: '0 auto'
+            }}>
           {/* Browser chrome - Balanced minimal */}
           <div className="bg-gray-100 dark:bg-gray-850 px-4 py-2 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
             {/* Left side with traffic lights */}
             <div className="flex space-x-2">
-              <div className="w-3 h-3 rounded-full bg-red-500"></div>
-              <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-              <div className="w-3 h-3 rounded-full bg-green-500"></div>
+              <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+              <div className="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
+              <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
             </div>
             
             {/* Centered Address bar */}
             <div className="flex-1 flex justify-center">
-              <div className="w-64">
-                <div className="bg-white dark:bg-gray-800 px-3 py-1.5 rounded-md border border-gray-300 dark:border-gray-600 flex items-center justify-center text-xs text-gray-500 dark:text-gray-400 truncate">
+              <div className="w-56">
+                <div className="bg-white dark:bg-gray-800 px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 flex items-center justify-center text-xs text-gray-500 dark:text-gray-400 truncate">
                   <span className="opacity-50 mr-1">https://</span>community.bettermode.io
                 </div>
               </div>
@@ -185,136 +190,128 @@ export default function DesignStudio() {
             </div>
           </div>
           
-          {/* Community Platform UI - with internal scrolling */}
-          <div className="bg-gray-50 dark:bg-gray-900 overflow-y-auto h-[600px] pointer-events-none">
-            {/* Community platform header */}
-            <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-3 flex items-center justify-between">
-              <div className="flex items-center space-x-4">
+          {/* Community Platform UI - with internal scrolling - Minimal */}
+          <div className="bg-gray-50 dark:bg-gray-900 overflow-y-auto h-[500px] pointer-events-none">
+            {/* Community platform header - more compact */}
+            <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-2 flex items-center justify-between">
+              <div className="flex items-center space-x-3">
                 <div className="flex items-center">
-                  <div className="bg-gray-900 dark:bg-gray-700 p-1.5 rounded">
-                    <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                  <div className="bg-gray-900 dark:bg-gray-700 p-1 rounded">
+                    <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
                     </svg>
                   </div>
-                  <span className="ml-2 font-semibold text-gray-900 dark:text-white">LaunchSimple</span>
+                  <span className="ml-1.5 font-medium text-sm text-gray-900 dark:text-white">LaunchSimple</span>
                 </div>
                 
-                <div className="relative hidden sm:block w-64">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <Search className="h-4 w-4 text-gray-400" />
+                <div className="relative hidden sm:block w-48">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+                    <Search className="h-3 w-3 text-gray-400" />
                   </div>
                   <input
                     type="text"
-                    placeholder="Search for topics and discussions"
-                    className="w-full pl-10 pr-4 py-1.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-gray-900 dark:text-gray-100"
+                    placeholder="Search..."
+                    className="w-full pl-7 pr-2 py-1 text-xs bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-gray-900 dark:text-gray-100"
                   />
                 </div>
               </div>
               
-              <div className="flex items-center space-x-3">
-                <button className="text-gray-500 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
-                  <Plus className="h-5 w-5" />
+              <div className="flex items-center space-x-2">
+                <button className="text-gray-500 p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <Plus className="h-4 w-4" />
                 </button>
-                <button className="text-gray-500 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
-                  <Moon className="h-5 w-5" />
+                <button className="text-gray-500 p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <Moon className="h-4 w-4" />
                 </button>
-                <Avatar className="h-8 w-8">
+                <Avatar className="h-6 w-6">
                   <img src="https://github.com/shadcn.png" alt="Avatar" />
                 </Avatar>
               </div>
             </div>
             
-            {/* Main content area */}
-            <div className="flex min-h-[800px]">
-              {/* Left sidebar */}
-              <div className="w-56 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4">
-                <nav className="space-y-1">
+            {/* Main content area - more compact */}
+            <div className="flex min-h-[550px]">
+              {/* Left sidebar - more compact */}
+              <div className="w-40 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-2">
+                <nav className="space-y-0.5">
                   <a 
                     href="#" 
-                    className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="flex items-center px-2 py-1.5 text-xs font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
-                    <Home className="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" />
+                    <Home className="h-3.5 w-3.5 mr-2 text-gray-500 dark:text-gray-400" />
                     Explore
                   </a>
                   
                   <a 
                     href="#" 
-                    className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="flex items-center px-2 py-1.5 text-xs font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
-                    <MessageSquare className="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" />
+                    <MessageSquare className="h-3.5 w-3.5 mr-2 text-gray-500 dark:text-gray-400" />
                     Feed
                   </a>
                   
                   <a 
                     href="#" 
-                    className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="flex items-center px-2 py-1.5 text-xs font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
-                    <Bell className="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" />
+                    <Bell className="h-3.5 w-3.5 mr-2 text-gray-500 dark:text-gray-400" />
                     Notifications
                   </a>
                   
                   <a 
                     href="#" 
-                    className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="flex items-center px-2 py-1.5 text-xs font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
-                    <Users className="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" />
+                    <Users className="h-3.5 w-3.5 mr-2 text-gray-500 dark:text-gray-400" />
                     Members
                   </a>
                   
-                  <a 
-                    href="#" 
-                    className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                  >
-                    <User className="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" />
-                    My profile
-                  </a>
-                  
-                  <Separator className="my-2" />
+                  <Separator className="my-1.5" />
                   
                   <a 
                     href="#" 
-                    className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="flex items-center px-2 py-1.5 text-xs font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
-                    <MessageSquare className="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" />
+                    <MessageSquare className="h-3.5 w-3.5 mr-2 text-gray-500 dark:text-gray-400" />
                     Discussions
                   </a>
                   
                   <a 
                     href="#" 
-                    className="flex items-center px-3 py-2 text-sm font-medium rounded-md bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="flex items-center px-2 py-1.5 text-xs font-medium rounded-md bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
                   >
-                    <FileText className="h-5 w-5 mr-3 text-gray-700 dark:text-gray-300" />
+                    <FileText className="h-3.5 w-3.5 mr-2 text-gray-700 dark:text-gray-300" />
                     Articles
                   </a>
                   
                   <a 
                     href="#" 
-                    className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="flex items-center px-2 py-1.5 text-xs font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
-                    <Calendar className="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" />
+                    <Calendar className="h-3.5 w-3.5 mr-2 text-gray-500 dark:text-gray-400" />
                     Events
                   </a>
                 </nav>
               </div>
               
-              {/* Main content */}
-              <div className="flex-1 p-6">
-                <div className="flex items-center justify-between mb-4">
+              {/* Main content - more compact */}
+              <div className="flex-1 p-3">
+                <div className="flex items-center justify-between mb-3">
                   <div>
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Articles</h1>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    <h1 className="text-lg font-bold text-gray-900 dark:text-white">Articles</h1>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                       Advice and answers from the Tribe Team
                     </p>
                   </div>
                   
                   <div className="flex items-center">
-                    <button className="text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded">
-                      <Bell className="h-5 w-5" />
+                    <button className="text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 p-0.5 rounded">
+                      <Bell className="h-4 w-4" />
                     </button>
                     
-                    <div className="ml-2">
-                      <button className="text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="ml-1.5">
+                      <button className="text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 p-0.5 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                         </svg>
                       </button>
@@ -322,38 +319,37 @@ export default function DesignStudio() {
                   </div>
                 </div>
                 
-                <Tabs defaultValue="all" className="mb-6">
+                <Tabs defaultValue="all" className="mb-3">
                   <TabsList className="bg-gray-100 dark:bg-gray-800">
-                    <TabsTrigger value="all" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">View all</TabsTrigger>
-                    <TabsTrigger value="design" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Design</TabsTrigger>
-                    <TabsTrigger value="product" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Product</TabsTrigger>
-                    <TabsTrigger value="development" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Software Development</TabsTrigger>
-                    <TabsTrigger value="success" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Customer Success</TabsTrigger>
+                    <TabsTrigger value="all" className="text-xs data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">View all</TabsTrigger>
+                    <TabsTrigger value="design" className="text-xs data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Design</TabsTrigger>
+                    <TabsTrigger value="product" className="text-xs data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Product</TabsTrigger>
+                    <TabsTrigger value="dev" className="text-xs data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700">Development</TabsTrigger>
                   </TabsList>
                 </Tabs>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Article Card 1 */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {/* Minimal Article Card 1 */}
                   <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
-                    <div className="h-48 bg-purple-100 flex items-center justify-center overflow-hidden">
+                    <div className="h-32 bg-purple-100 flex items-center justify-center overflow-hidden">
                       <svg className="w-full h-full object-cover" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
                         <path d="M0,100 C150,200 250,0 400,100 L400,200 L0,200 Z" fill="#8B5CF6" />
                         <path d="M0,100 C150,0 250,200 400,100 L400,200 L0,200 Z" fill="#A78BFA" opacity="0.7" />
                       </svg>
                     </div>
-                    <div className="p-4">
-                      <div className="flex items-center mb-2">
-                        <Badge variant="outline" className="bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400">Design</Badge>
+                    <div className="p-2.5">
+                      <div className="flex items-center mb-1.5">
+                        <Badge variant="outline" className="text-[10px] bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400">Design</Badge>
                       </div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white text-lg mb-1">UX review presentations</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">UX review presentations</h3>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mb-2 line-clamp-2">
                         How do you create compelling presentations that wow your colleagues and impress your managers
                       </p>
-                      <div className="flex items-center mt-4">
-                        <Avatar className="h-8 w-8 mr-2">
+                      <div className="flex items-center mt-2">
+                        <Avatar className="h-5 w-5 mr-1.5">
                           <img src="https://github.com/shadcn.png" alt="Olivia Rhye" />
                         </Avatar>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                        <div className="text-[10px] text-gray-500 dark:text-gray-400">
                           <div>Olivia Rhye</div>
                           <div>20 Jan 2024</div>
                         </div>
@@ -361,28 +357,28 @@ export default function DesignStudio() {
                     </div>
                   </div>
                   
-                  {/* Article Card 2 */}
+                  {/* Minimal Article Card 2 */}
                   <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
-                    <div className="h-48 overflow-hidden">
+                    <div className="h-32 overflow-hidden">
                       <img 
                         src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80" 
                         alt="People discussing work" 
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <div className="p-4">
-                      <div className="flex items-center mb-2">
-                        <Badge variant="outline" className="bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400">Design</Badge>
+                    <div className="p-2.5">
+                      <div className="flex items-center mb-1.5">
+                        <Badge variant="outline" className="text-[10px] bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400">Design</Badge>
                       </div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white text-lg mb-1">Migrating to Linear 101</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">Migrating to Linear 101</h3>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mb-2 line-clamp-2">
                         Linear helps streamline software projects, sprints, tasks, and bug tracking. Here's how to get started.
                       </p>
-                      <div className="flex items-center mt-4">
-                        <Avatar className="h-8 w-8 mr-2">
+                      <div className="flex items-center mt-2">
+                        <Avatar className="h-5 w-5 mr-1.5">
                           <img src="https://github.com/shadcn.png" alt="Olivia Rhye" />
                         </Avatar>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                        <div className="text-[10px] text-gray-500 dark:text-gray-400">
                           <div>Olivia Rhye</div>
                           <div>20 Jan 2024</div>
                         </div>
@@ -390,27 +386,27 @@ export default function DesignStudio() {
                     </div>
                   </div>
                   
-                  {/* Article Card 3 */}
+                  {/* Minimal Article Card 3 */}
                   <div className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
-                    <div className="h-48 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-                      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-32 h-32 text-gray-400">
+                    <div className="h-32 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-20 h-20 text-gray-400">
                         <path fill="currentColor" d="M 100 20 L 120 80 L 180 80 L 130 110 L 150 170 L 100 140 L 50 170 L 70 110 L 20 80 L 80 80 Z" />
                         <path fill="currentColor" d="M 100 40 L 120 100 L 180 100 L 130 130 L 150 190 L 100 160 L 50 190 L 70 130 L 20 100 L 80 100 Z" opacity="0.5" transform="rotate(15)" />
                       </svg>
                     </div>
-                    <div className="p-4">
-                      <div className="flex items-center mb-2">
-                        <Badge variant="outline" className="bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400">Design</Badge>
+                    <div className="p-2.5">
+                      <div className="flex items-center mb-1.5">
+                        <Badge variant="outline" className="text-[10px] bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400">Design</Badge>
                       </div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white text-lg mb-1">Building your API stack</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">Building your API stack</h3>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mb-2 line-clamp-2">
                         The rise of RESTful APIs has been met by a rise in tools for creating, testing, and managing them.
                       </p>
-                      <div className="flex items-center mt-4">
-                        <Avatar className="h-8 w-8 mr-2">
+                      <div className="flex items-center mt-2">
+                        <Avatar className="h-5 w-5 mr-1.5">
                           <img src="https://github.com/shadcn.png" alt="Olivia Rhye" />
                         </Avatar>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                        <div className="text-[10px] text-gray-500 dark:text-gray-400">
                           <div>Olivia Rhye</div>
                           <div>20 Jan 2024</div>
                         </div>
