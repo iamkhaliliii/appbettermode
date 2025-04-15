@@ -279,7 +279,7 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
             />
           </span>
           <div className="flex items-center cursor-default">
-            <Folder className="h-3.5 w-3.5 mr-1 text-gray-500" />
+            <Folder className="h-3.5 w-3.5 mr-1 text-[#A694FF]" />
             <Link href={path}>
               <span className="font-medium">{name}</span>
             </Link>
@@ -744,25 +744,29 @@ export function SecondarySidebar() {
                   name="Blog Home" 
                   path="/design-studio/collections/blog"
                   icon={<FileBox className="h-3.5 w-3.5" />}
-                  iconColor="text-purple-500"
+                  iconColor="text-[#A694FF]"
+                  level={1}
                 />
                 <MinimalItem 
                   name="Products Page" 
                   path="/design-studio/collections/products"
                   icon={<FileBox className="h-3.5 w-3.5" />}
-                  iconColor="text-purple-500"
+                  iconColor="text-[#A694FF]"
+                  level={1}
                 />
                 <MinimalItem 
                   name="Category Listing" 
                   path="/design-studio/collections/categories"
                   icon={<FileBox className="h-3.5 w-3.5" />}
-                  iconColor="text-purple-500"
+                  iconColor="text-[#A694FF]"
+                  level={1}
                 />
                 <MinimalItem 
                   name="Authors Directory" 
                   path="/design-studio/collections/authors"
                   icon={<FileBox className="h-3.5 w-3.5" />}
-                  iconColor="text-purple-500"
+                  iconColor="text-[#A694FF]"
+                  level={1}
                 />
               </div>
             </AccordionContent>
@@ -783,19 +787,22 @@ export function SecondarySidebar() {
                   name="Page Templates" 
                   path="/design-studio/templates/page"
                   icon={<FileCog className="h-3.5 w-3.5" />}
-                  iconColor="text-blue-500"
+                  iconColor="text-[#57ABFF]"
+                  level={1}
                 />
                 <MinimalItem 
                   name="Email Templates" 
                   path="/design-studio/templates/email"
                   icon={<FileCog className="h-3.5 w-3.5" />}
-                  iconColor="text-blue-500"
+                  iconColor="text-[#57ABFF]"
+                  level={1}
                 />
                 <MinimalItem 
                   name="Popup Templates" 
                   path="/design-studio/templates/popup"
                   icon={<FileCog className="h-3.5 w-3.5" />}
-                  iconColor="text-blue-500"
+                  iconColor="text-[#57ABFF]"
+                  level={1}
                 />
               </div>
             </AccordionContent>
