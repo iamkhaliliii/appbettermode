@@ -630,7 +630,7 @@ export function SecondarySidebar() {
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-1 pb-1">
-              <div className="space-y-1">
+              <div>
                 {/* Root files first */}
                 <MinimalItem 
                   name="Feed" 
