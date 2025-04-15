@@ -566,7 +566,7 @@ export function SecondarySidebar() {
                   <Files className="h-4 w-4 mr-2 text-gray-500" />
                   <span className="font-medium text-sm">Spaces</span>
                 </div>
-                <div className="relative group ml-4">
+                <div className="relative group ml-6">
                   <div className="p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer">
                     <Plus className="h-3 w-3 text-gray-400" />
                   </div>
@@ -729,7 +729,7 @@ export function SecondarySidebar() {
                   <Database className="h-4 w-4 mr-2 text-gray-500" />
                   <span className="font-medium text-sm">CMS Pages</span>
                 </div>
-                <div className="relative group ml-4">
+                <div className="relative group ml-6">
                   <div className="p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer">
                     <Plus className="h-3 w-3 text-gray-400" />
                   </div>
@@ -787,7 +787,7 @@ export function SecondarySidebar() {
                   <Layers2 className="h-4 w-4 mr-2 text-gray-500" />
                   <span className="font-medium text-sm">Templates</span>
                 </div>
-                <div className="relative group ml-4">
+                <div className="relative group ml-6">
                   <div className="p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer">
                     <Plus className="h-3 w-3 text-gray-400" />
                   </div>
