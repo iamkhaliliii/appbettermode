@@ -39,66 +39,68 @@ export default function DesignStudio() {
 
         {/* Browser mockup */}
         <div className="bg-white dark:bg-gray-800 shadow-sm rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 max-h-[700px]">
-          {/* Browser chrome - Ultra minimal */}
+          {/* Browser chrome - Balanced minimal */}
           <div className="bg-gray-100 dark:bg-gray-850 px-4 py-2 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
-            {/* Traffic lights */}
+            {/* Left side with traffic lights */}
             <div className="flex space-x-2">
               <div className="w-3 h-3 rounded-full bg-red-500"></div>
               <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
               <div className="w-3 h-3 rounded-full bg-green-500"></div>
             </div>
             
-            {/* Browser controls - All right aligned - Ultra Minimal */}
-            <div className="flex items-center space-x-1">
-              {/* Micro Address bar */}
-              <div className="w-44 mr-2">
-                <div className="bg-white dark:bg-gray-800 px-1.5 py-0.5 rounded-md border border-gray-300 dark:border-gray-600 flex items-center justify-center text-[10px] text-gray-500 dark:text-gray-400 truncate">
-                  community.bettermode.io
+            {/* Centered Address bar */}
+            <div className="flex-1 flex justify-center">
+              <div className="w-64">
+                <div className="bg-white dark:bg-gray-800 px-3 py-1.5 rounded-md border border-gray-300 dark:border-gray-600 flex items-center justify-center text-xs text-gray-500 dark:text-gray-400 truncate">
+                  <span className="opacity-50 mr-1">https://</span>community.bettermode.io
                 </div>
               </div>
-              
+            </div>
+            
+            {/* Browser controls - Right aligned */}
+            <div className="flex items-center space-x-3">
               {/* Undo/Redo buttons - More stylish */}
-              <div className="flex space-x-1 mr-1">
+              <div className="flex space-x-2">
                 <button 
-                  className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md px-1.5 py-1 flex items-center text-[10px] bg-gray-50 dark:bg-gray-750"
+                  className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md px-2 py-1 flex items-center text-xs bg-gray-50 dark:bg-gray-750"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path d="M12 5C7.58172 5 4 8.58172 4 13C4 17.4183 7.58172 21 12 21C16.4183 21 20 17.4183 20 13" strokeWidth="1.5" strokeLinecap="round"/>
                     <path d="M15 5L12 8L9 5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </button>
                 
                 <button 
-                  className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md px-1.5 py-1 flex items-center text-[10px] bg-gray-50 dark:bg-gray-750"
+                  className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md px-2 py-1 flex items-center text-xs bg-gray-50 dark:bg-gray-750"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path d="M12 5C16.4183 5 20 8.58172 20 13C20 17.4183 16.4183 21 12 21C7.58172 21 4 17.4183 4 13" strokeWidth="1.5" strokeLinecap="round"/>
                     <path d="M9 5L12 8L15 5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </button>
               </div>
               
-              {/* Action Controls - Ultra Minimal */}
-              <div className="flex space-x-1">
+              {/* Action Controls */}
+              <div className="flex space-x-2">
                 {/* User View Button */}
                 <button 
-                  className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md p-1 flex items-center justify-center"
+                  className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md px-2 py-1 flex items-center text-xs"
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  style={{ width: '18px', height: '18px' }}
                 >
-                  <User className="h-3 w-3" />
+                  <User className="h-4 w-4 mr-1" />
+                  <span>User</span>
                 </button>
                 
                 {userDropdownOpen && (
-                  <div className="absolute right-0 mt-5 w-36 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50 text-[10px]">
+                  <div className="absolute right-0 mt-8 w-40 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
                     <div className="py-1">
-                      <a href="#" className="block px-3 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      <a href="#" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                         View as Admin
                       </a>
-                      <a href="#" className="block px-3 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      <a href="#" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                         View as Member
                       </a>
-                      <a href="#" className="block px-3 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      <a href="#" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                         View as Guest
                       </a>
                     </div>
@@ -107,23 +109,23 @@ export default function DesignStudio() {
                 
                 {/* Language Button */}
                 <button 
-                  className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md p-1 flex items-center justify-center"
+                  className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md px-2 py-1 flex items-center text-xs"
                   onClick={() => setLanguageDropdownOpen(!languageDropdownOpen)}
-                  style={{ width: '18px', height: '18px' }}
                 >
-                  <span className="text-[10px] font-medium">EN</span>
+                  <span>EN</span>
+                  <ChevronDown className="h-3 w-3 ml-1" />
                 </button>
                 
                 {languageDropdownOpen && (
-                  <div className="absolute right-0 mt-5 w-36 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50 text-[10px]">
+                  <div className="absolute right-0 mt-8 w-40 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
                     <div className="py-1">
-                      <a href="#" className="block px-3 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      <a href="#" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                         English
                       </a>
-                      <a href="#" className="block px-3 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      <a href="#" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                         中文 (Chinese)
                       </a>
-                      <a href="#" className="block px-3 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      <a href="#" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                         العربية (Arabic)
                       </a>
                     </div>
@@ -132,20 +134,19 @@ export default function DesignStudio() {
                 
                 {/* Theme Button */}
                 <button 
-                  className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md p-1 flex items-center justify-center"
+                  className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md px-2 py-1 flex items-center text-xs"
                   onClick={() => setThemeDropdownOpen(!themeDropdownOpen)}
-                  style={{ width: '18px', height: '18px' }}
                 >
-                  <MoonIcon className="h-3 w-3" />
+                  <MoonIcon className="h-4 w-4" />
                 </button>
                 
                 {themeDropdownOpen && (
-                  <div className="absolute right-0 mt-5 w-24 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50 text-[10px]">
+                  <div className="absolute right-0 mt-8 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
                     <div className="py-1">
-                      <a href="#" className="block px-3 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      <a href="#" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                         Light
                       </a>
-                      <a href="#" className="block px-3 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      <a href="#" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                         Dark
                       </a>
                     </div>
@@ -154,25 +155,24 @@ export default function DesignStudio() {
                 
                 {/* Responsive View Button */}
                 <button 
-                  className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md p-1 flex items-center justify-center"
+                  className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md px-2 py-1 flex items-center text-xs"
                   onClick={() => setResponsiveDropdownOpen(!responsiveDropdownOpen)}
-                  style={{ width: '18px', height: '18px' }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
                   </svg>
                 </button>
                 
                 {responsiveDropdownOpen && (
-                  <div className="absolute right-0 mt-5 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50 text-[10px]">
+                  <div className="absolute right-0 mt-8 w-36 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
                     <div className="py-1">
-                      <a href="#" className="block px-3 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      <a href="#" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                         Desktop
                       </a>
-                      <a href="#" className="block px-3 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      <a href="#" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                         Tablet
                       </a>
-                      <a href="#" className="block px-3 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      <a href="#" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                         Mobile
                       </a>
                     </div>
