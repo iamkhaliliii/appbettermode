@@ -8,8 +8,23 @@ import {
   ShoppingBag, 
   ClipboardList, 
   Settings, 
-  Lock 
+  Lock,
+  ChevronDown,
+  FolderTree,
+  Layout,
+  Newspaper,
+  FileText,
+  FilePlus,
+  Folder,
+  FolderPlus
 } from "lucide-react";
+import { 
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger 
+} from "@/components/ui/accordion";
+import { useState } from "react";
 
 interface SideNavItemProps {
   href: string;
@@ -55,6 +70,62 @@ function SideNavItem({ href, icon, children, isActive = false, badge }: SideNavI
           )}
         </div>
       </Link>
+  );
+}
+
+// Tree view folder component
+interface TreeFolderProps {
+  name: string;
+  path: string;
+  level?: number;
+  isExpanded?: boolean;
+  children?: React.ReactNode;
+}
+
+function TreeFolder({ name, path, level = 0, isExpanded = false, children }: TreeFolderProps) {
+  const [expanded, setExpanded] = useState(isExpanded);
+  const [location] = useLocation();
+  const isActive = location === path;
+  
+  const handleToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setExpanded(!expanded);
+  };
+  
+  return (
+    <div className="folder-tree-item">
+      <div
+        className={cn(
+          "flex items-center px-2.5 py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
+          isActive 
+            ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-md" 
+            : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded"
+        )}
+        style={{ paddingLeft: `${(level * 12) + 10}px` }}
+      >
+        <span 
+          className="w-4 h-4 mr-2 flex-shrink-0 flex items-center justify-center"
+          onClick={handleToggle}
+        >
+          <ChevronDown
+            className={cn(
+              "h-3.5 w-3.5 text-gray-500 transition-transform",
+              expanded ? "transform rotate-0" : "transform -rotate-90"
+            )}
+          />
+        </span>
+        <Folder className="h-4 w-4 mr-2 text-gray-500" />
+        <Link href={path}>
+          <span className="font-medium">{name}</span>
+        </Link>
+      </div>
+      
+      {expanded && children && (
+        <div className="pl-2">
+          {children}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -263,29 +334,189 @@ export function SecondarySidebar() {
     </div>
   );
 
-  const renderDesignStudioSidebar = () => (
-    <div className="p-3">
-      <div className="mb-2">
-        <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Design studio</h2>
-      </div>
-      
-      <div className="space-y-1">
-        <SideNavItem 
-          href="/design-studio/collections"
-          isActive={isActiveUrl('/design-studio/collections') || location === '/design-studio'}
-        >
-          Collections and spaces
-        </SideNavItem>
+  const renderDesignStudioSidebar = () => {
+    // Default expanded accordion value
+    const defaultExpanded = location.includes('/design-studio/spaces') ? 'spaces' :
+                           location.includes('/design-studio/templates') ? 'templates' :
+                           location.includes('/design-studio/collections') ? 'collections' :
+                           location.includes('/design-studio/utility') ? 'utility' : '';
+  
+    return (
+      <div className="p-3">
+        <div className="mb-2">
+          <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Design studio</h2>
+        </div>
         
-        <SideNavItem 
-          href="/design-studio/header"
-          isActive={isActiveUrl('/design-studio/header')}
-        >
-          Header and sidebar
-        </SideNavItem>
+        <Accordion type="single" collapsible defaultValue={defaultExpanded} className="space-y-1">
+          <AccordionItem value="spaces" className="border-0">
+            <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
+              <div className="flex items-center">
+                <FolderTree className="h-4 w-4 mr-2 text-gray-500" />
+                <span className="font-medium text-sm">Spaces</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="pt-1 pb-1">
+              <div className="border-l border-gray-200 dark:border-gray-700 ml-2 pl-2">
+                {/* Tree view of folders */}
+                <TreeFolder 
+                  name="Main Website" 
+                  path="/design-studio/spaces/main-website" 
+                  isExpanded={location.startsWith('/design-studio/spaces/main-website')}
+                >
+                  <TreeFolder 
+                    name="Home" 
+                    path="/design-studio/spaces/main-website/home" 
+                    level={1}
+                  />
+                  <TreeFolder 
+                    name="About" 
+                    path="/design-studio/spaces/main-website/about" 
+                    level={1}
+                  />
+                  <TreeFolder 
+                    name="Blog" 
+                    path="/design-studio/spaces/main-website/blog" 
+                    level={1}
+                  />
+                </TreeFolder>
+                
+                <TreeFolder 
+                  name="Members Area" 
+                  path="/design-studio/spaces/members" 
+                  isExpanded={location.startsWith('/design-studio/spaces/members')}
+                >
+                  <TreeFolder 
+                    name="Dashboard" 
+                    path="/design-studio/spaces/members/dashboard" 
+                    level={1}
+                  />
+                  <TreeFolder 
+                    name="Profile" 
+                    path="/design-studio/spaces/members/profile" 
+                    level={1}
+                  />
+                </TreeFolder>
+                
+                <div className="flex items-center py-1.5 px-2.5 text-sm text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded cursor-pointer">
+                  <FolderPlus className="h-4 w-4 mr-2 text-gray-500" />
+                  <span>Create new space</span>
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+          
+          <AccordionItem value="templates" className="border-0">
+            <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
+              <div className="flex items-center">
+                <Layout className="h-4 w-4 mr-2 text-gray-500" />
+                <span className="font-medium text-sm">Templates</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="pt-1 pb-1">
+              <div className="space-y-1 pl-6">
+                <SideNavItem 
+                  href="/design-studio/templates/page"
+                  isActive={isActiveUrl('/design-studio/templates/page')}
+                >
+                  Page templates
+                </SideNavItem>
+                <SideNavItem 
+                  href="/design-studio/templates/email"
+                  isActive={isActiveUrl('/design-studio/templates/email')}
+                >
+                  Email templates
+                </SideNavItem>
+                <SideNavItem 
+                  href="/design-studio/templates/popup"
+                  isActive={isActiveUrl('/design-studio/templates/popup')}
+                >
+                  Popup templates
+                </SideNavItem>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+          
+          <AccordionItem value="collections" className="border-0">
+            <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
+              <div className="flex items-center">
+                <Newspaper className="h-4 w-4 mr-2 text-gray-500" />
+                <span className="font-medium text-sm">CMS Collections</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="pt-1 pb-1">
+              <div className="space-y-1 pl-6">
+                <SideNavItem 
+                  href="/design-studio/collections/blog"
+                  isActive={isActiveUrl('/design-studio/collections/blog')}
+                >
+                  Blog posts
+                </SideNavItem>
+                <SideNavItem 
+                  href="/design-studio/collections/products"
+                  isActive={isActiveUrl('/design-studio/collections/products')}
+                >
+                  Products
+                </SideNavItem>
+                <SideNavItem 
+                  href="/design-studio/collections/categories"
+                  isActive={isActiveUrl('/design-studio/collections/categories')}
+                >
+                  Categories
+                </SideNavItem>
+                <SideNavItem 
+                  href="/design-studio/collections/authors"
+                  isActive={isActiveUrl('/design-studio/collections/authors')}
+                >
+                  Authors
+                </SideNavItem>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+          
+          <AccordionItem value="utility" className="border-0">
+            <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
+              <div className="flex items-center">
+                <FileText className="h-4 w-4 mr-2 text-gray-500" />
+                <span className="font-medium text-sm">Utility Pages</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="pt-1 pb-1">
+              <div className="space-y-1 pl-6">
+                <SideNavItem 
+                  href="/design-studio/utility/404"
+                  isActive={isActiveUrl('/design-studio/utility/404')}
+                >
+                  404 Page
+                </SideNavItem>
+                <SideNavItem 
+                  href="/design-studio/utility/password"
+                  isActive={isActiveUrl('/design-studio/utility/password')}
+                >
+                  Password Protected
+                </SideNavItem>
+                <SideNavItem 
+                  href="/design-studio/utility/search"
+                  isActive={isActiveUrl('/design-studio/utility/search')}
+                >
+                  Search Results
+                </SideNavItem>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+        
+        <div className="mt-4 space-y-1">
+          <SideNavItem 
+            href="/design-studio/header"
+            isActive={isActiveUrl('/design-studio/header')}
+            icon={<Layout className="h-4 w-4" />}
+          >
+            Header and Sidebar
+          </SideNavItem>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
   
   const renderAppearanceSidebar = () => (
     <div className="p-3">
