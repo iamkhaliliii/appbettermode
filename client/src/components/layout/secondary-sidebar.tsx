@@ -577,11 +577,11 @@ export function SecondarySidebar() {
                     <div className="py-1">
                       <a href="#" className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                         <Files className="h-3 w-3 mr-2 text-gray-500" />
-                        <span>Add a new Space</span>
+                        <span>Create new Space</span>
                       </a>
                       <a href="#" className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                         <Folder className="h-3 w-3 mr-2 text-gray-500" />
-                        <span>Add a new Folder</span>
+                        <span>Create new Folder</span>
                       </a>
                     </div>
                   </div>
@@ -743,7 +743,7 @@ export function SecondarySidebar() {
                     <div className="py-1">
                       <a href="#" className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                         <FileBox className="h-3 w-3 mr-2 text-[#A694FF]" />
-                        <span>Add a new CMS</span>
+                        <span>Create new CMS</span>
                       </a>
                     </div>
                   </div>
@@ -801,7 +801,7 @@ export function SecondarySidebar() {
                     <div className="py-1">
                       <a href="#" className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                         <FileCog className="h-3 w-3 mr-2 text-[#57ABFF]" />
-                        <span>Add a new Template</span>
+                        <span>Create new Template</span>
                       </a>
                     </div>
                   </div>
