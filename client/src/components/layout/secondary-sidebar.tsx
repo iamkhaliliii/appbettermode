@@ -60,11 +60,11 @@ const MiniToggle = ({ isActive: initialActive = false, onChange }: { isActive?: 
   
   return (
     <div 
-      className={`relative h-3 w-6 rounded-full cursor-pointer transition-colors ${isActive ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-700'}`}
+      className={`relative h-4 w-8 rounded-full cursor-pointer transition-colors ${isActive ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-700'}`}
       onClick={handleToggle}
     >
       <div 
-        className={`absolute top-0.5 h-2 w-2 rounded-full bg-white transform transition-transform ${isActive ? 'translate-x-3.5' : 'translate-x-0.5'}`} 
+        className={`absolute top-0.5 h-3 w-3 rounded-full bg-white transform transition-transform ${isActive ? 'translate-x-4' : 'translate-x-0.5'}`} 
       />
     </div>
   );
