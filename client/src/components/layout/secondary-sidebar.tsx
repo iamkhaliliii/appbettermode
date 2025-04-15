@@ -564,9 +564,22 @@ export function SecondarySidebar() {
         <Accordion type="single" collapsible defaultValue={defaultExpanded} className="space-y-1">
           <AccordionItem value="spaces" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
-              <div className="flex items-center">
-                <Files className="h-4 w-4 mr-2 text-gray-500" />
-                <span className="font-medium text-sm">Spaces</span>
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center">
+                  <Files className="h-4 w-4 mr-2 text-gray-500" />
+                  <span className="font-medium text-sm">Spaces</span>
+                </div>
+                <div className="relative group">
+                  <div className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer">
+                    <Plus className="h-3.5 w-3.5 text-gray-500" />
+                  </div>
+                  <div className="absolute right-0 mt-1 w-32 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                    <div className="py-1">
+                      <a href="#" className="block px-3 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Add Space</a>
+                      <a href="#" className="block px-3 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Add Folder</a>
+                    </div>
+                  </div>
+                </div>
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-1 pb-1">
@@ -711,9 +724,21 @@ export function SecondarySidebar() {
           
           <AccordionItem value="collections" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
-              <div className="flex items-center">
-                <Database className="h-4 w-4 mr-2 text-gray-500" />
-                <span className="font-medium text-sm">CMS Pages</span>
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center">
+                  <Database className="h-4 w-4 mr-2 text-gray-500" />
+                  <span className="font-medium text-sm">CMS Pages</span>
+                </div>
+                <div className="relative group">
+                  <div className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer">
+                    <Plus className="h-3.5 w-3.5 text-gray-500" />
+                  </div>
+                  <div className="absolute right-0 mt-1 w-32 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                    <div className="py-1">
+                      <a href="#" className="block px-3 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Add CMS Page</a>
+                    </div>
+                  </div>
+                </div>
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-1 pb-1">
@@ -754,9 +779,21 @@ export function SecondarySidebar() {
           
           <AccordionItem value="templates" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
-              <div className="flex items-center">
-                <Layers2 className="h-4 w-4 mr-2 text-gray-500" />
-                <span className="font-medium text-sm">Templates</span>
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center">
+                  <Layers2 className="h-4 w-4 mr-2 text-gray-500" />
+                  <span className="font-medium text-sm">Templates</span>
+                </div>
+                <div className="relative group">
+                  <div className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer">
+                    <Plus className="h-3.5 w-3.5 text-gray-500" />
+                  </div>
+                  <div className="absolute right-0 mt-1 w-32 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                    <div className="py-1">
+                      <a href="#" className="block px-3 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Add Template</a>
+                    </div>
+                  </div>
+                </div>
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-1 pb-1">
@@ -790,9 +827,21 @@ export function SecondarySidebar() {
           
           <AccordionItem value="utility" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
-              <div className="flex items-center">
-                <PanelTop className="h-4 w-4 mr-2 text-gray-500" />
-                <span className="font-medium text-sm">Utility Pages</span>
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center">
+                  <PanelTop className="h-4 w-4 mr-2 text-gray-500" />
+                  <span className="font-medium text-sm">Utility Pages</span>
+                </div>
+                <div className="relative group">
+                  <div className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer">
+                    <Plus className="h-3.5 w-3.5 text-gray-500" />
+                  </div>
+                  <div className="absolute right-0 mt-1 w-32 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                    <div className="py-1">
+                      <a href="#" className="block px-3 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Add Utility Page</a>
+                    </div>
+                  </div>
+                </div>
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-1 pb-1">
