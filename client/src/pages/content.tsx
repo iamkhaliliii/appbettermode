@@ -478,7 +478,7 @@ const columns: ColumnDef<Post>[] = [
             )
           })}
           {tags.length > 2 && (
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-gray-50/60 dark:bg-gray-800/30 text-gray-600 dark:text-gray-400 whitespace-nowrap">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 whitespace-nowrap">
               +{tags.length - 2}
             </span>
           )}
