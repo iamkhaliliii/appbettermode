@@ -187,10 +187,7 @@ const columns: ColumnDef<Post>[] = [
       const config = statusConfig[status] || statusConfig["Draft"]
       
       return (
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${config.bgClass} ${config.textClass}`}>
-          <svg className={`mr-1 h-2 w-2 ${config.dotColor}`} fill="currentColor" viewBox="0 0 8 8">
-            <circle cx="4" cy="4" r="3" />
-          </svg>
+        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs whitespace-nowrap ${config.bgClass} ${config.textClass}`}>
           {status}
         </span>
       )
@@ -279,7 +276,7 @@ const columns: ColumnDef<Post>[] = [
       
       return (
         <div className="flex items-center">
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300">
+          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs whitespace-nowrap bg-gray-100 dark:bg-gray-800/40 text-gray-700 dark:text-gray-300">
             {getIconForSpace(space.name)}
             {space.name}
           </span>
@@ -351,11 +348,14 @@ const columns: ColumnDef<Post>[] = [
         textClass: "text-indigo-700 dark:text-indigo-300"
       }
       
+      // رنگ خنثی برای مدل
+      const neutralConfig = {
+        bgClass: "bg-gray-100 dark:bg-gray-800/40", 
+        textClass: "text-gray-700 dark:text-gray-300"
+      }
+      
       return (
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${config.bgClass} ${config.textClass}`}>
-          <svg className="mr-1 h-2 w-2 text-indigo-500 dark:text-indigo-400" fill="currentColor" viewBox="0 0 8 8">
-            <circle cx="4" cy="4" r="3" />
-          </svg>
+        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs whitespace-nowrap ${neutralConfig.bgClass} ${neutralConfig.textClass}`}>
           {model}
         </span>
       )
@@ -416,49 +416,24 @@ const columns: ColumnDef<Post>[] = [
       const tags = row.getValue("tags") as string[]
       if (!tags || tags.length === 0) return null
       
-      const tagConfig: Record<string, { bgClass: string; textClass: string; dotColor: string }> = {
-        "Discussion": { 
-          bgClass: "bg-purple-50 dark:bg-purple-900/30", 
-          textClass: "text-purple-700 dark:text-purple-300",
-          dotColor: "text-purple-500 dark:text-purple-400"
-        },
-        "new": { 
-          bgClass: "bg-blue-50 dark:bg-blue-900/30", 
-          textClass: "text-blue-700 dark:text-blue-300",
-          dotColor: "text-blue-500 dark:text-blue-400"
-        },
-        "me_too": { 
-          bgClass: "bg-emerald-50 dark:bg-emerald-900/30", 
-          textClass: "text-emerald-700 dark:text-emerald-300",
-          dotColor: "text-emerald-500 dark:text-emerald-400"
-        },
-        "question": { 
-          bgClass: "bg-amber-50 dark:bg-amber-900/30", 
-          textClass: "text-amber-700 dark:text-amber-300",
-          dotColor: "text-amber-500 dark:text-amber-400"
-        },
-        "bug": { 
-          bgClass: "bg-red-50 dark:bg-red-900/30", 
-          textClass: "text-red-700 dark:text-red-300",
-          dotColor: "text-red-500 dark:text-red-400"
-        },
-        "community": { 
-          bgClass: "bg-indigo-50 dark:bg-indigo-900/30", 
-          textClass: "text-indigo-700 dark:text-indigo-300",
-          dotColor: "text-indigo-500 dark:text-indigo-400"
-        },
-        "featured": { 
-          bgClass: "bg-fuchsia-50 dark:bg-fuchsia-900/30", 
-          textClass: "text-fuchsia-700 dark:text-fuchsia-300",
-          dotColor: "text-fuchsia-500 dark:text-fuchsia-400"
-        },
+      // استفاده از یک رنگ خنثی برای همه تگ‌ها (مینیمال)
+      const neutralConfig = {
+        bgClass: "bg-gray-100 dark:bg-gray-800/40", 
+        textClass: "text-gray-700 dark:text-gray-300"
       }
       
-      const defaultConfig = {
-        bgClass: "bg-slate-100 dark:bg-slate-800/50", 
-        textClass: "text-slate-700 dark:text-slate-300",
-        dotColor: "text-slate-500 dark:text-slate-400"
+      // به هر تگ همان کانفیگ خنثی را اختصاص می‌دهیم
+      const tagConfig: Record<string, typeof neutralConfig> = {
+        "Discussion": neutralConfig,
+        "new": neutralConfig,
+        "me_too": neutralConfig,
+        "question": neutralConfig,
+        "bug": neutralConfig,
+        "community": neutralConfig,
+        "featured": neutralConfig,
       }
+      
+      const defaultConfig = neutralConfig
       
       return (
         <div className="flex items-center gap-1 overflow-hidden max-w-xs">
@@ -467,18 +442,15 @@ const columns: ColumnDef<Post>[] = [
             return (
               <span 
                 key={i} 
-                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap
+                className={`inline-flex items-center px-2 py-0.5 rounded text-xs whitespace-nowrap
                 ${config.bgClass} ${config.textClass}`}
               >
-                <svg className={`mr-1 h-2 w-2 ${config.dotColor}`} fill="currentColor" viewBox="0 0 8 8">
-                  <circle cx="4" cy="4" r="3" />
-                </svg>
                 {tag}
               </span>
             )
           })}
           {tags.length > 2 && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 whitespace-nowrap">
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-gray-100 dark:bg-gray-800/40 text-gray-700 dark:text-gray-300 whitespace-nowrap">
               +{tags.length - 2}
             </span>
           )}
