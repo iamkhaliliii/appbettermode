@@ -435,14 +435,31 @@ export function SecondarySidebar() {
     if (isActiveUrl('/content/CMS')) {
       return (
         <div className="p-3">
-          <div className="mb-4">
-            <div className="flex items-center mb-2">
-              <Link href="/content">
-                <button className="mr-2 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700">
-                  <ArrowLeft className="h-4 w-4 text-gray-500" />
-                </button>
-              </Link>
-              <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">CMS Collections</h2>
+          <div className="mb-2">
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center">
+                <Link href="/content">
+                  <ArrowLeft className="h-3.5 w-3.5 text-gray-400 mr-1.5" />
+                </Link>
+                <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">CMS Collections</h2>
+              </div>
+              <div className="relative group">
+                <div className="p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer">
+                  <Plus className="h-3.5 w-3.5 text-gray-400" />
+                </div>
+                <div className="absolute right-0 mt-1 w-40 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                  <div className="py-1">
+                    <a href="#" className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      <FileBox className="h-3 w-3 mr-2 text-gray-500" />
+                      <span>Create new CMS</span>
+                    </a>
+                    <a href="#" className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      <Plus className="h-3 w-3 mr-2 text-gray-500" />
+                      <span>Add custom view</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           
@@ -492,12 +509,7 @@ export function SecondarySidebar() {
             </div>
           </div>
           
-          <div className="mt-6">
-            <button className="flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-sm w-full">
-              <Plus className="h-4 w-4 mr-2" />
-              <span>Add custom view</span>
-            </button>
-          </div>
+
         </div>
       );
     }
