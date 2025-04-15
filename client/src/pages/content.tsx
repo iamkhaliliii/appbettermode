@@ -835,7 +835,7 @@ export default function Content() {
                   <TableRow key={headerGroup.id} className="bg-transparent border-b border-gray-200/70 dark:border-gray-700/70">
                     {headerGroup.headers.map((header) => {
                       return (
-                        <TableHead key={header.id} className="px-2 py-0.5 h-5 text-left text-xs font-medium text-gray-400 dark:text-gray-500 tracking-wide sticky top-0 bg-white dark:bg-gray-800">
+                        <TableHead key={header.id} className="px-2 py-1.5 h-7 text-left text-xs font-medium text-gray-400 dark:text-gray-500 tracking-wide sticky top-0 bg-white dark:bg-gray-800">
                           {header.isPlaceholder
                             ? null
                             : flexRender(
