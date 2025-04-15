@@ -361,11 +361,7 @@ export function SecondarySidebar() {
   // Helper function to check if a URL is active
   const isActiveUrl = (url: string): boolean => {
     if (location === url) return true;
-    if (url.includes("/") && location.startsWith(url)) return true;
-    
-    // Special case for root menu items
-    const mainSection = url.split("/")[1]; // e.g. "content" from "/content/CMS"
-    if (location === `/${mainSection}`) return true;
+    if (url.includes("/") && location.startsWith(url) && url !== '/content/CMS' && url !== '/content/activity') return true;
     
     // Special case for our renamed routes
     if (url === '/content/CMS' && location === '/content/posts') return true;
