@@ -162,7 +162,7 @@ const columns: ColumnDef<Post>[] = [
       const config = statusConfig[status] || statusConfig["Draft"]
       
       return (
-        <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${config.bgClass} ${config.textClass}`}>
+        <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs whitespace-nowrap ${config.bgClass} ${config.textClass}`}>
           {status}
         </span>
       )
@@ -235,13 +235,13 @@ const columns: ColumnDef<Post>[] = [
       const space = row.getValue("space") as { name: string; color: string }
       return (
         <div className="flex items-center">
-          <div className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs whitespace-nowrap`} 
+          <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs whitespace-nowrap`} 
                style={{ 
                  backgroundColor: `${space.color}15`, 
                  color: space.color
                }}>
             {space.name}
-          </div>
+          </span>
         </div>
       )
     },
@@ -328,7 +328,7 @@ const columns: ColumnDef<Post>[] = [
       }
       
       return (
-        <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${config.bgClass} ${config.textClass}`}>
+        <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs whitespace-nowrap ${config.bgClass} ${config.textClass}`}>
           {model}
         </span>
       )
