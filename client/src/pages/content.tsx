@@ -886,48 +886,69 @@ export default function Content() {
                         <ChevronDown className="ml-1 h-3 w-3 opacity-70" />
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-[200px] rounded-md p-1.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-lg">
-                      <DropdownMenuItem className="flex cursor-pointer items-center rounded-sm px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750 focus:bg-gray-50 dark:focus:bg-gray-750 outline-none">
-                        <Hash className="h-3.5 w-3.5 mr-2 text-gray-500 dark:text-gray-400" />
+                    <DropdownMenuContent align="end" className="w-[170px] rounded-md p-1 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-lg">
+                      <DropdownMenuItem className="flex cursor-pointer items-center px-2 py-1 text-[10px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750">
+                        <Hash className="h-3 w-3 mr-1.5 text-gray-500 dark:text-gray-400" />
                         <span>Move to space</span>
                       </DropdownMenuItem>
                       
-                      <DropdownMenuItem className="flex cursor-pointer items-center rounded-sm px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750 focus:bg-gray-50 dark:focus:bg-gray-750 outline-none">
-                        <Eye className="h-3.5 w-3.5 mr-2 text-gray-500 dark:text-gray-400" strokeWidth={2.5} />
+                      <DropdownMenuItem className="flex cursor-pointer items-center px-2 py-1 text-[10px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750">
+                        <svg className="h-3 w-3 mr-1.5 text-gray-500 dark:text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg>
                         <span>Hide</span>
                       </DropdownMenuItem>
                       
-                      <DropdownMenuItem className="flex cursor-pointer items-center rounded-sm px-2.5 py-1.5 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 focus:bg-red-50 dark:focus:bg-red-900/10 outline-none">
-                        <Trash2 className="h-3.5 w-3.5 mr-2 text-red-500 dark:text-red-400" strokeWidth={2.5} />
+                      <DropdownMenuItem className="flex cursor-pointer items-center px-2 py-1 text-[10px] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10">
+                        <svg className="h-3 w-3 mr-1.5 text-red-500 dark:text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M3 6h18" />
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                          <line x1="10" y1="11" x2="10" y2="17" />
+                          <line x1="14" y1="11" x2="14" y2="17" />
+                        </svg>
                         <span>Delete</span>
                       </DropdownMenuItem>
                       
-                      <DropdownMenuSeparator className="my-1 h-px bg-gray-200 dark:bg-gray-700" />
+                      <DropdownMenuSeparator className="my-0.5 h-px bg-gray-200 dark:bg-gray-700" />
                       
-                      <DropdownMenuItem className="flex cursor-pointer items-center rounded-sm px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750 focus:bg-gray-50 dark:focus:bg-gray-750 outline-none">
-                        <Tag className="h-3.5 w-3.5 mr-2 text-blue-500 dark:text-blue-400" strokeWidth={2.5} />
+                      <DropdownMenuItem className="flex cursor-pointer items-center px-2 py-1 text-[10px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750">
+                        <svg className="h-3 w-3 mr-1.5 text-blue-500 dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                          <line x1="7" y1="7" x2="7.01" y2="7" />
+                        </svg>
                         <span>Add tag</span>
                       </DropdownMenuItem>
                       
-                      <DropdownMenuItem className="flex cursor-pointer items-center rounded-sm px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750 focus:bg-gray-50 dark:focus:bg-gray-750 outline-none">
-                        <X className="h-3.5 w-3.5 mr-2 text-gray-500 dark:text-gray-400" strokeWidth={2.5} />
+                      <DropdownMenuItem className="flex cursor-pointer items-center px-2 py-1 text-[10px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750">
+                        <X className="h-3 w-3 mr-1.5 text-gray-500 dark:text-gray-400" />
                         <span>Remove tag</span>
                       </DropdownMenuItem>
                       
-                      <DropdownMenuSeparator className="my-1 h-px bg-gray-200 dark:bg-gray-700" />
+                      <DropdownMenuSeparator className="my-0.5 h-px bg-gray-200 dark:bg-gray-700" />
                       
-                      <DropdownMenuItem className="flex cursor-pointer items-center rounded-sm px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750 focus:bg-gray-50 dark:focus:bg-gray-750 outline-none">
-                        <Lock className="h-3.5 w-3.5 mr-2 text-yellow-500 dark:text-yellow-400" strokeWidth={2.5} />
+                      <DropdownMenuItem className="flex cursor-pointer items-center px-2 py-1 text-[10px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750">
+                        <svg className="h-3 w-3 mr-1.5 text-yellow-500 dark:text-yellow-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
                         <span>Lock</span>
                       </DropdownMenuItem>
                       
-                      <DropdownMenuItem className="flex cursor-pointer items-center rounded-sm px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750 focus:bg-gray-50 dark:focus:bg-gray-750 outline-none">
-                        <User className="h-3.5 w-3.5 mr-2 text-purple-500 dark:text-purple-400" strokeWidth={2.5} />
+                      <DropdownMenuItem className="flex cursor-pointer items-center px-2 py-1 text-[10px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750">
+                        <svg className="h-3 w-3 mr-1.5 text-purple-500 dark:text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                          <circle cx="12" cy="7" r="4" />
+                        </svg>
                         <span>Change author</span>
                       </DropdownMenuItem>
                       
-                      <DropdownMenuItem className="flex cursor-pointer items-center rounded-sm px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750 focus:bg-gray-50 dark:focus:bg-gray-750 outline-none">
-                        <Clock className="h-3.5 w-3.5 mr-2 text-green-500 dark:text-green-400" strokeWidth={2.5} />
+                      <DropdownMenuItem className="flex cursor-pointer items-center px-2 py-1 text-[10px] text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750">
+                        <svg className="h-3 w-3 mr-1.5 text-green-500 dark:text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10" />
+                          <polyline points="12 6 12 12 16 14" />
+                        </svg>
                         <span>Change publish time</span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
