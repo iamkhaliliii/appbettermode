@@ -280,9 +280,7 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
           </span>
           <div className="flex items-center cursor-default">
             <Folder className="h-3.5 w-3.5 mr-1 text-gray-400" />
-            <Link href={path}>
-              <span className="font-medium text-gray-500">{name}</span>
-            </Link>
+            <span className="font-medium text-gray-500">{name}</span>
           </div>
           <div 
             className="ml-auto opacity-0 group-hover:opacity-100"
@@ -718,10 +716,7 @@ export function SecondarySidebar() {
                   />
                 </TreeFolder>
                 
-                <div className="flex items-center py-1 px-2 text-xs text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded cursor-pointer">
-                  <FolderPlus className="h-3.5 w-3.5 mr-1.5 text-gray-500" />
-                  <span>Create new space</span>
-                </div>
+
               </div>
             </AccordionContent>
           </AccordionItem>
