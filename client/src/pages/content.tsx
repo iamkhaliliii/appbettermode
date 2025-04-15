@@ -17,7 +17,10 @@ import {
   FileText,
   File,
   Hash,
-  X
+  X,
+  FileOutput,
+  ArrowUpDown,
+  Columns
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useLocation, useRoute, useParams, Redirect } from "wouter";
@@ -646,113 +649,79 @@ export default function Content() {
     return (
       <DashboardLayout>
         <div className="max-w-7xl mx-auto p-6 sm:p-8">
-          <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+          <div className="mb-6 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
-              <h1 className="text-2xl lg:text-3xl font-semibold text-gray-900 dark:text-white flex items-center">
+              <h1 className="text-xl font-medium text-gray-900 dark:text-white">
                 All Posts
-                <span className="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300 border border-primary-200 dark:border-primary-800/30">
-                  14 items
-                </span>
+                <span className="ml-2 text-sm text-gray-500 dark:text-gray-400 font-normal">14 items</span>
               </h1>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                Manage all your content from a single, powerful interface
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                Manage all your content from a single interface
               </p>
             </div>
-            <div className="flex items-center gap-3">
-              <Button variant="secondary-gray" size="sm" className="h-9 px-3 py-2 bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-200 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-800">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4" />
-                </svg>
+            <div className="flex items-center gap-2">
+              <button className="inline-flex items-center px-2.5 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                <FileOutput className="h-3.5 w-3.5 mr-1.5" />
                 Export
-              </Button>
-              <Button size="sm" className="h-9 px-3 py-2 bg-primary-600/90 hover:bg-primary-600 text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                Create Content
-              </Button>
+              </button>
+              <button className="inline-flex items-center px-2.5 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
+                <Plus className="h-3.5 w-3.5 mr-1.5" />
+                Create Post
+              </button>
             </div>
           </div>
 
           {/* Filter tabs */}
-          <div className="mb-6 border-b border-gray-200 dark:border-gray-700">
+          <div className="mb-6 border-b border-gray-100 dark:border-gray-800">
             <div className="flex flex-wrap -mb-px">
-              <button className="inline-flex items-center px-4 py-2.5 text-sm font-medium text-primary-600 dark:text-primary-400 border-b-2 border-primary-600 dark:border-primary-400 relative">
-                All <span className="ml-2 rounded-full bg-primary-50 border border-primary-200 dark:border-primary-800/40 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 px-2 py-0.5 text-xs">14</span>
-                <span className="absolute -bottom-px left-1/2 transform -translate-x-1/2 w-8 h-0.5 bg-primary-600 dark:bg-primary-400 rounded-full"></span>
+              <button className="inline-flex items-center px-3 py-2 text-xs font-medium text-gray-900 dark:text-white border-b-2 border-gray-900 dark:border-white relative">
+                All <span className="ml-1.5 text-xs text-gray-500 dark:text-gray-400">14</span>
               </button>
-              <button className="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-b-2 hover:border-gray-300 dark:hover:border-gray-600 transition-all">
-                Published <span className="ml-2 rounded-full bg-green-50 border border-green-200 dark:border-green-800/40 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-2 py-0.5 text-xs">6</span>
+              <button className="inline-flex items-center px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                Published <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-500">6</span>
               </button>
-              <button className="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-b-2 hover:border-gray-300 dark:hover:border-gray-600 transition-all">
-                Scheduled <span className="ml-2 rounded-full bg-blue-50 border border-blue-200 dark:border-blue-800/40 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-0.5 text-xs">3</span>
+              <button className="inline-flex items-center px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                Scheduled <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-500">3</span>
               </button>
-              <button className="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-b-2 hover:border-gray-300 dark:hover:border-gray-600 transition-all">
-                Drafts <span className="ml-2 rounded-full bg-gray-50 border border-gray-200 dark:border-gray-700 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 px-2 py-0.5 text-xs">0</span>
+              <button className="inline-flex items-center px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                Drafts <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-500">0</span>
               </button>
-              <button className="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-b-2 hover:border-gray-300 dark:hover:border-gray-600 transition-all">
-                Pending <span className="ml-2 rounded-full bg-yellow-50 border border-yellow-200 dark:border-yellow-800/40 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 px-2 py-0.5 text-xs">0</span>
+              <button className="inline-flex items-center px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                Pending <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-500">0</span>
               </button>
-              <button className="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-b-2 hover:border-gray-300 dark:hover:border-gray-600 transition-all">
-                Reported <span className="ml-2 rounded-full bg-red-50 border border-red-200 dark:border-red-800/40 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-2 py-0.5 text-xs">0</span>
+              <button className="inline-flex items-center px-3 py-2 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                Reported <span className="ml-1.5 text-xs text-gray-400 dark:text-gray-500">0</span>
               </button>
             </div>
           </div>
 
           {/* Table toolbar */}
-          <div className="mb-5 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-200 dark:border-gray-700 backdrop-blur-sm">
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <div className="flex items-center rounded-md overflow-hidden border border-gray-200 dark:border-gray-700">
-                <button className="p-1.5 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-750 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                  </svg>
-                </button>
-                <button className="p-1.5 border-l border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-primary-600 dark:text-primary-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="8" y1="6" x2="21" y2="6" />
-                    <line x1="8" y1="12" x2="21" y2="12" />
-                    <line x1="8" y1="18" x2="21" y2="18" />
-                    <line x1="3" y1="6" x2="3.01" y2="6" />
-                    <line x1="3" y1="12" x2="3.01" y2="12" />
-                    <line x1="3" y1="18" x2="3.01" y2="18" />
-                  </svg>
-                </button>
-              </div>
-              
-              <div className="h-6 border-r border-gray-300 dark:border-gray-600 mx-1"></div>
-              
-              <button className="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-750 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.75">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                </svg>
+          <div className="mb-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center gap-2 flex-wrap">
+              <button className="inline-flex items-center px-2.5 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                <Filter className="h-3.5 w-3.5 mr-1.5" />
                 Filter
               </button>
               
-              <button className="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-750 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.75">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
-                </svg>
+              <button className="inline-flex items-center px-2.5 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                <ArrowUpDown className="h-3.5 w-3.5 mr-1.5" />
                 Sort
               </button>
               
-              <button className="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-750 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.75">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
+              <button className="inline-flex items-center px-2.5 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                <Columns className="h-3.5 w-3.5 mr-1.5" />
                 Columns
               </button>
             </div>
             
-            <div className="flex items-center gap-2 mt-2 md:mt-0">
-              <div className="relative w-full md:w-64">
+            <div className="flex items-center gap-2">
+              <div className="relative w-full md:w-60">
                 <input
                   type="text"
                   placeholder="Search content..."
-                  className="w-full py-1.5 pl-9 pr-3 text-sm border border-gray-200 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                  className="w-full py-1 pl-8 pr-3 text-xs border-none bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md focus:outline-none focus:ring-0 transition-colors"
                 />
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
               </div>
             </div>
           </div>
