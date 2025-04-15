@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Header } from "./header";
 import { MainSidebar } from "./main-sidebar";
-import { CustomSecondarySidebar as SecondarySidebar } from "./temp-sidebar";
+import { EnhancedSidebar as SecondarySidebar } from "./enhanced-sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, X, PanelLeft, PanelRightClose } from "lucide-react";
