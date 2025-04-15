@@ -1047,78 +1047,84 @@ export function SecondarySidebar() {
           />
         </div>
         
-        {/* Only one section - Sections and Blocks */}
-        <div className="mt-3">          
-          {/* Main Accordion with single section */}
-          <div className="px-1">
-            <Accordion type="single" collapsible defaultValue="sections" className="space-y-2">
-              {/* Sections and Blocks Accordion */}
-              <AccordionItem value="sections" className="border-0 bg-gray-50 dark:bg-gray-800/50 rounded-lg overflow-hidden">
-                <AccordionTrigger className="flex items-center py-2 px-3 rounded-t text-gray-700 dark:text-gray-300 hover:no-underline hover:bg-gray-100 dark:hover:bg-gray-700/50">
-                  <div className="flex items-center justify-between w-full">
-                    <div className="flex items-center">
-                      <Layers2 className="h-4 w-4 mr-2 text-purple-500" />
-                      <span className="font-medium text-sm">Sections and Blocks</span>
-                    </div>
+        {/* Sections and Blocks - without accordion */}
+        <div className="mt-4">
+          <div className="px-1 mb-4">
+            <div className="flex items-center mb-2">
+              <Layers2 className="h-4 w-4 mr-2 text-purple-500" />
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Sections and Blocks</h3>
+            </div>
+            
+            {/* Divider */}
+            <div className="h-px bg-gray-200 dark:bg-gray-700 mb-3 mt-2"></div>
+            
+            {/* Navigation Section */}
+            <div className="mb-6">
+              <div className="flex items-center px-1 mb-3">
+                <div className="w-1 h-5 bg-blue-500 rounded-r mr-2"></div>
+                <h4 className="text-xs font-medium text-gray-700 dark:text-gray-300">Navigations</h4>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-2 cursor-pointer hover:shadow-sm transition-shadow">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-full h-2 bg-blue-100 dark:bg-blue-900/30 rounded-sm mb-1.5"></div>
+                    <span className="text-xs text-gray-700 dark:text-gray-300">Header</span>
                   </div>
-                </AccordionTrigger>
-                <AccordionContent className="pt-2 pb-2 bg-white dark:bg-gray-800 px-1">
-                  {/* Navigation Section */}
-                  <div className="mb-3">
-                    <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400 px-3 mb-2">Navigations</h4>
-                    <div className="space-y-1">
-                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                        <span>Header</span>
-                      </div>
-                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                        <span>Right Sidebar</span>
-                      </div>
-                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                        <span>Left Sidebar</span>
-                      </div>
-                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                        <span>Footer</span>
-                      </div>
-                    </div>
+                </div>
+                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-2 cursor-pointer hover:shadow-sm transition-shadow">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-2 h-8 bg-red-100 dark:bg-red-900/30 rounded-sm absolute right-1"></div>
+                    <span className="text-xs text-gray-700 dark:text-gray-300">Right Sidebar</span>
                   </div>
-                  
-                  {/* Main Section with blocks */}
-                  <div>
-                    <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400 px-3 mb-2">Main Section</h4>
-                    <div className="space-y-1">
-                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                        <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
-                        <span>Add Text Block</span>
-                      </div>
-                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                        <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
-                        <span>Add Image Block</span>
-                      </div>
-                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                        <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
-                        <span>Add Video Block</span>
-                      </div>
-                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                        <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
-                        <span>Add Button Block</span>
-                      </div>
-                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                        <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
-                        <span>Add Form Block</span>
-                      </div>
-                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                        <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
-                        <span>Add Custom Block</span>
-                      </div>
-                    </div>
+                </div>
+                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-2 cursor-pointer hover:shadow-sm transition-shadow">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-2 h-8 bg-green-100 dark:bg-green-900/30 rounded-sm absolute left-1"></div>
+                    <span className="text-xs text-gray-700 dark:text-gray-300">Left Sidebar</span>
                   </div>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+                </div>
+                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-2 cursor-pointer hover:shadow-sm transition-shadow">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-full h-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-sm mt-1.5"></div>
+                    <span className="text-xs text-gray-700 dark:text-gray-300">Footer</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Main Section with blocks */}
+            <div>
+              <div className="flex items-center px-1 mb-3">
+                <div className="w-1 h-5 bg-purple-500 rounded-r mr-2"></div>
+                <h4 className="text-xs font-medium text-gray-700 dark:text-gray-300">Main Section Blocks</h4>
+              </div>
+              <div className="space-y-1.5">
+                <button className="flex items-center w-full px-3 py-2 text-xs rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/70 cursor-pointer text-gray-700 dark:text-gray-300 transition-colors">
+                  <Plus className="h-3.5 w-3.5 mr-2 text-purple-500" />
+                  <span>Add Text Block</span>
+                </button>
+                <button className="flex items-center w-full px-3 py-2 text-xs rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/70 cursor-pointer text-gray-700 dark:text-gray-300 transition-colors">
+                  <Plus className="h-3.5 w-3.5 mr-2 text-purple-500" />
+                  <span>Add Image Block</span>
+                </button>
+                <button className="flex items-center w-full px-3 py-2 text-xs rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/70 cursor-pointer text-gray-700 dark:text-gray-300 transition-colors">
+                  <Plus className="h-3.5 w-3.5 mr-2 text-purple-500" />
+                  <span>Add Video Block</span>
+                </button>
+                <button className="flex items-center w-full px-3 py-2 text-xs rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/70 cursor-pointer text-gray-700 dark:text-gray-300 transition-colors">
+                  <Plus className="h-3.5 w-3.5 mr-2 text-purple-500" />
+                  <span>Add Button Block</span>
+                </button>
+                <button className="flex items-center w-full px-3 py-2 text-xs rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/70 cursor-pointer text-gray-700 dark:text-gray-300 transition-colors">
+                  <Plus className="h-3.5 w-3.5 mr-2 text-purple-500" />
+                  <span>Add Form Block</span>
+                </button>
+                <button className="flex items-center w-full px-3 py-2 text-xs rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/70 cursor-pointer text-gray-700 dark:text-gray-300 transition-colors">
+                  <Plus className="h-3.5 w-3.5 mr-2 text-purple-500" />
+                  <span>Add Custom Block</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
