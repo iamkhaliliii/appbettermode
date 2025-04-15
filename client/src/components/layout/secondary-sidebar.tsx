@@ -842,15 +842,15 @@ export function SecondarySidebar() {
                   level={1}
                 />
                 <MinimalItem 
-                  name="Password Protected" 
-                  path="/design-studio/utility/password"
+                  name="Search result" 
+                  path="/design-studio/utility/search"
                   icon={<File className="h-3.5 w-3.5" />}
                   iconColor="text-gray-500"
                   level={1}
                 />
                 <MinimalItem 
-                  name="Search Results" 
-                  path="/design-studio/utility/search"
+                  name="Member profile" 
+                  path="/design-studio/utility/member-profile"
                   icon={<File className="h-3.5 w-3.5" />}
                   iconColor="text-gray-500"
                   level={1}
