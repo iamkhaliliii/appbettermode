@@ -1175,7 +1175,7 @@ export function SecondarySidebar() {
                         const leftSidebar = document.getElementById('mockup-left-sidebar');
                         if (leftSidebar) {
                           if (checked) {
-                            leftSidebar.style.display = "block";
+//                           leftSidebar.style.display = "block";
                             leftSidebar.classList.add('border-green-500');
                             leftSidebar.classList.add('bg-green-50/30');
                             leftSidebar.classList.add('dark:bg-green-900/5');
