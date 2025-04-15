@@ -726,6 +726,11 @@ export default function Content() {
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 20,
+      },
+    },
     state: {
       sorting,
       columnFilters,
@@ -753,7 +758,7 @@ export default function Content() {
         <div className="max-w-7xl mx-auto p-4 sm:p-6">
           <div className="mb-3 flex flex-row items-center justify-between gap-3">
             <div>
-              <h1 className="text-lg font-medium text-gray-900 dark:text-white">
+              <h1 className="text-xl font-medium text-gray-900 dark:text-white">
                 All Posts <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">14 items</span>
               </h1>
             </div>
@@ -814,14 +819,14 @@ export default function Content() {
           </div>
 
           {/* Main table */}
-          <div className="bg-white dark:bg-gray-800 border border-gray-200/80 dark:border-gray-700/80 rounded-xl overflow-hidden shadow-sm backdrop-blur-sm">
+          <div className="bg-white dark:bg-gray-800 border border-gray-200/80 dark:border-gray-700/80 shadow-sm backdrop-blur-sm overflow-auto" style={{ scrollbarWidth: 'thin' }}>
             <Table className="w-full">
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id} className="bg-transparent border-b border-gray-200/70 dark:border-gray-700/70">
                     {headerGroup.headers.map((header) => {
                       return (
-                        <TableHead key={header.id} className="px-2 py-1 text-left text-xs font-medium text-gray-400 dark:text-gray-500 tracking-wide">
+                        <TableHead key={header.id} className="px-2 py-1 text-left text-xs font-medium text-gray-400 dark:text-gray-500 tracking-wide sticky top-0 bg-white dark:bg-gray-800">
                           {header.isPlaceholder
                             ? null
                             : flexRender(
