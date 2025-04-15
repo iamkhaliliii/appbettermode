@@ -1005,30 +1005,22 @@ export function SecondarySidebar() {
   const renderDesignStudioSpacesFeedSidebar = () => {
     return (
       <div className="p-3">
-        {/* Back and title section */}
-        <div className="px-1 py-2 flex items-center">
-          <button 
-            onClick={() => window.history.back()}
-            className="text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 p-1.5 rounded transition-colors mr-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </button>
-          <h2 className="text-sm font-semibold text-gray-900 dark:text-white">Spaces Feed</h2>
-          <button className="ml-auto text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 p-1.5 rounded transition-colors">
-            <Settings className="h-4 w-4" />
-          </button>
+        <div className="mb-2">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize flex items-center">
+              <button 
+                onClick={() => window.history.back()}
+                className="text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 p-1 rounded transition-colors mr-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </button>
+              <span className="text-base font-medium text-gray-900 dark:text-white">Feed</span>
+            </h2>
+            <button className="text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 p-1 rounded transition-colors">
+              <Settings className="h-4 w-4" />
+            </button>
+          </div>
         </div>
-        
-        {/* Breadcrumb */}
-        <div className="px-2 py-2 flex items-center text-xs text-gray-500 dark:text-gray-400">
-          <span>Design Studio</span>
-          <ChevronRight className="h-3 w-3 mx-1" />
-          <span>Spaces</span>
-          <ChevronRight className="h-3 w-3 mx-1" />
-          <span className="text-gray-900 dark:text-white">Feed</span>
-        </div>
-        
-        <Separator className="my-2" />
         
         {/* Actions Accordion */}
         <div className="px-1 py-2">
