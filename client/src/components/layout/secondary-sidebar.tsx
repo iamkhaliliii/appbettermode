@@ -31,8 +31,11 @@ import {
   EyeOff,
   ArrowLeft,
   ChevronRight,
-  MessageSquare
+  MessageSquare,
+  Edit,
+  Check
 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { 
   Accordion,
   AccordionContent,
@@ -1054,21 +1057,160 @@ export function SecondarySidebar() {
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Sections and Blocks</h3>
             </div>
             
-            {/* Simple Navigation Section */}
+            {/* Navigation Section with Toggles */}
             <div className="mb-5">
               <h4 className="text-xs text-gray-500 dark:text-gray-400 mb-2">Navigations</h4>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="border border-gray-200 dark:border-gray-700 rounded p-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 text-center">
+              <div className="space-y-2">
+                {/* Header Navigation Row */}
+                <div 
+                  id="header-section" 
+                  className="flex items-center justify-between border border-gray-200 dark:border-gray-700 rounded p-2 hover:bg-gray-50 dark:hover:bg-gray-800"
+                >
                   <span className="text-xs text-gray-700 dark:text-gray-300">Header</span>
+                  <div className="flex items-center">
+                    <Switch id="header-toggle" onCheckedChange={(checked) => {
+                      // Set active state and show options
+                      const options = document.getElementById('header-options');
+                      if (options) {
+                        options.classList.toggle('hidden', !checked);
+                      }
+                      // Set the mockup effect
+                      const headerSection = document.getElementById('header-section');
+                      if (headerSection) {
+                        headerSection.classList.toggle('border-blue-500', checked);
+                        headerSection.classList.toggle('bg-blue-50', checked);
+                        headerSection.classList.toggle('dark:bg-blue-900/10', checked);
+                      }
+                    }} />
+                  </div>
                 </div>
-                <div className="border border-gray-200 dark:border-gray-700 rounded p-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 text-center">
+                
+                {/* Header options (initially hidden) */}
+                <div id="header-options" className="ml-4 mb-2 hidden">
+                  <div className="space-y-1">
+                    <div className="flex items-center px-2 py-1 text-xs rounded cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                      <Check className="h-3 w-3 mr-2 text-blue-500" />
+                      <span>Use Default</span>
+                    </div>
+                    <div className="flex items-center px-2 py-1 text-xs rounded cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                      <Edit className="h-3 w-3 mr-2 text-blue-500" />
+                      <span>Customize</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Right Sidebar Navigation Row */}
+                <div 
+                  id="right-sidebar-section" 
+                  className="flex items-center justify-between border border-gray-200 dark:border-gray-700 rounded p-2 hover:bg-gray-50 dark:hover:bg-gray-800"
+                >
                   <span className="text-xs text-gray-700 dark:text-gray-300">Right Sidebar</span>
+                  <div className="flex items-center">
+                    <Switch id="right-sidebar-toggle" onCheckedChange={(checked) => {
+                      // Set active state and show options
+                      const options = document.getElementById('right-sidebar-options');
+                      if (options) {
+                        options.classList.toggle('hidden', !checked);
+                      }
+                      // Set the mockup effect
+                      const section = document.getElementById('right-sidebar-section');
+                      if (section) {
+                        section.classList.toggle('border-red-500', checked);
+                        section.classList.toggle('bg-red-50', checked);
+                        section.classList.toggle('dark:bg-red-900/10', checked);
+                      }
+                    }} />
+                  </div>
                 </div>
-                <div className="border border-gray-200 dark:border-gray-700 rounded p-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 text-center">
+                
+                {/* Right Sidebar options (initially hidden) */}
+                <div id="right-sidebar-options" className="ml-4 mb-2 hidden">
+                  <div className="space-y-1">
+                    <div className="flex items-center px-2 py-1 text-xs rounded cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                      <Check className="h-3 w-3 mr-2 text-red-500" />
+                      <span>Use Default</span>
+                    </div>
+                    <div className="flex items-center px-2 py-1 text-xs rounded cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                      <Edit className="h-3 w-3 mr-2 text-red-500" />
+                      <span>Customize</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Left Sidebar Navigation Row */}
+                <div 
+                  id="left-sidebar-section" 
+                  className="flex items-center justify-between border border-gray-200 dark:border-gray-700 rounded p-2 hover:bg-gray-50 dark:hover:bg-gray-800"
+                >
                   <span className="text-xs text-gray-700 dark:text-gray-300">Left Sidebar</span>
+                  <div className="flex items-center">
+                    <Switch id="left-sidebar-toggle" onCheckedChange={(checked) => {
+                      // Set active state and show options
+                      const options = document.getElementById('left-sidebar-options');
+                      if (options) {
+                        options.classList.toggle('hidden', !checked);
+                      }
+                      // Set the mockup effect
+                      const section = document.getElementById('left-sidebar-section');
+                      if (section) {
+                        section.classList.toggle('border-green-500', checked);
+                        section.classList.toggle('bg-green-50', checked);
+                        section.classList.toggle('dark:bg-green-900/10', checked);
+                      }
+                    }} />
+                  </div>
                 </div>
-                <div className="border border-gray-200 dark:border-gray-700 rounded p-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 text-center">
+                
+                {/* Left Sidebar options (initially hidden) */}
+                <div id="left-sidebar-options" className="ml-4 mb-2 hidden">
+                  <div className="space-y-1">
+                    <div className="flex items-center px-2 py-1 text-xs rounded cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                      <Check className="h-3 w-3 mr-2 text-green-500" />
+                      <span>Use Default</span>
+                    </div>
+                    <div className="flex items-center px-2 py-1 text-xs rounded cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                      <Edit className="h-3 w-3 mr-2 text-green-500" />
+                      <span>Customize</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Footer Navigation Row */}
+                <div 
+                  id="footer-section" 
+                  className="flex items-center justify-between border border-gray-200 dark:border-gray-700 rounded p-2 hover:bg-gray-50 dark:hover:bg-gray-800"
+                >
                   <span className="text-xs text-gray-700 dark:text-gray-300">Footer</span>
+                  <div className="flex items-center">
+                    <Switch id="footer-toggle" onCheckedChange={(checked) => {
+                      // Set active state and show options
+                      const options = document.getElementById('footer-options');
+                      if (options) {
+                        options.classList.toggle('hidden', !checked);
+                      }
+                      // Set the mockup effect
+                      const section = document.getElementById('footer-section');
+                      if (section) {
+                        section.classList.toggle('border-yellow-500', checked);
+                        section.classList.toggle('bg-yellow-50', checked);
+                        section.classList.toggle('dark:bg-yellow-900/10', checked);
+                      }
+                    }} />
+                  </div>
+                </div>
+                
+                {/* Footer options (initially hidden) */}
+                <div id="footer-options" className="ml-4 mb-2 hidden">
+                  <div className="space-y-1">
+                    <div className="flex items-center px-2 py-1 text-xs rounded cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                      <Check className="h-3 w-3 mr-2 text-yellow-500" />
+                      <span>Use Default</span>
+                    </div>
+                    <div className="flex items-center px-2 py-1 text-xs rounded cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                      <Edit className="h-3 w-3 mr-2 text-yellow-500" />
+                      <span>Customize</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
