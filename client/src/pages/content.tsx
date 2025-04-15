@@ -757,17 +757,6 @@ export default function Content() {
                 All Posts <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">14 items</span>
               </h1>
             </div>
-            <div className="flex items-center gap-1.5">
-              <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                <Search className="h-3 w-3" />
-              </button>
-              <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                <FileOutput className="h-3 w-3" />
-              </button>
-              <button className="inline-flex items-center justify-center h-6 w-6 rounded bg-blue-500 text-white hover:bg-blue-400 transition-colors">
-                <Plus className="h-3 w-3" />
-              </button>
-            </div>
           </div>
 
           {/* Filter tabs */}
@@ -792,7 +781,8 @@ export default function Content() {
           </div>
 
           {/* Table toolbar */}
-          <div className="mb-2 flex items-center justify-end gap-1.5">
+          <div className="mb-2 flex items-center justify-between gap-1.5">
+            {/* Left side - Filter, Sort, Column buttons */}
             <div className="flex items-center gap-1.5">
               <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                 <Filter className="h-3 w-3" />
@@ -804,6 +794,21 @@ export default function Content() {
               
               <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                 <Columns className="h-3 w-3" />
+              </button>
+            </div>
+            
+            {/* Right side - Action buttons (Search, Export, Add) */}
+            <div className="flex items-center gap-1.5">
+              <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <Search className="h-3 w-3" />
+              </button>
+              
+              <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <FileOutput className="h-3 w-3" />
+              </button>
+              
+              <button className="inline-flex items-center justify-center h-6 w-6 rounded bg-blue-500 text-white hover:bg-blue-400 transition-colors">
+                <Plus className="h-3 w-3" />
               </button>
             </div>
           </div>
