@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function DesignStudio() {
+  const [searchQuery, setSearchQuery] = useState('');
   const [location, setLocation] = useLocation();
   const [isSpaces] = useRoute('/design-studio/spaces/:path*');
   const [isTemplates] = useRoute('/design-studio/templates/:type');
@@ -109,8 +110,6 @@ export default function DesignStudio() {
 
   // Render different content based on the route
   const renderContent = () => {
-    const [searchQuery, setSearchQuery] = useState('');
-    
     // Search bar and Add button that should appear at the top of every page
     const topBar = (
       <div className="flex justify-between items-center mb-6">
@@ -154,7 +153,7 @@ export default function DesignStudio() {
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-medium text-gray-900 dark:text-white">{getTitle()}</h2>
             <div className="flex space-x-2">
-              <Button size="sm" variant="secondary">
+              <Button size="sm" variant="outline">
                 <FolderPlus className="mr-2 h-4 w-4" />
                 New Folder
               </Button>
