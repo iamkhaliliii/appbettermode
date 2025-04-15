@@ -828,7 +828,7 @@ export default function Content() {
           </div>
 
           {/* Main table - Full width with no padding */}
-          <div className="bg-white dark:bg-gray-800 border-y border-gray-200/80 dark:border-gray-700/80 shadow-sm backdrop-blur-sm overflow-auto mt-3 scrollbar-minimal">
+          <div className="bg-white dark:bg-gray-800 border-y border-gray-200/80 dark:border-gray-700/80 shadow-sm backdrop-blur-sm overflow-auto mt-1.5 scrollbar-minimal">
             <Table className="w-full">
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
