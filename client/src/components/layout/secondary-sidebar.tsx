@@ -514,7 +514,7 @@ export function SecondarySidebar() {
             <div
               className={cn(
                 "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
-                (isActiveUrl('/content/CMS') || location === '/content')
+                isActiveUrl('/content/CMS')
                   ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-md" 
                   : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded"
               )}

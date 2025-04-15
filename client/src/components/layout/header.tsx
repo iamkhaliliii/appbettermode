@@ -190,10 +190,7 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
                     {/* Always show Content with path for consistency */}
                     <span>Content</span>
                     
-                    {/* Root content path without additional label */}
-                    {location === '/content' && (
-                      <span className="font-medium text-gray-900 dark:text-white ml-1">Management</span>
-                    )}
+                    {/* Root content path has no additional label */}
                     
                     {/* Show specific section for subpaths */}
                     {location !== '/content' && (
