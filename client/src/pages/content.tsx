@@ -872,22 +872,41 @@ export default function Content() {
                 {table.getFilteredSelectedRowModel().rows.length > 0 && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="inline-flex items-center justify-center h-6 px-2 rounded bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 shadow-sm text-xs font-medium gap-1 whitespace-nowrap hover:bg-blue-100/50 dark:hover:bg-blue-900/30 transition-colors">
+                      <button className="inline-flex items-center justify-center h-6 px-2 rounded-md bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 shadow-sm text-xs font-medium gap-1 whitespace-nowrap hover:bg-blue-100/50 dark:hover:bg-blue-900/30 transition-colors">
                         <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-blue-500 text-white text-[9px] font-semibold mr-1">
                           {table.getFilteredSelectedRowModel().rows.length}
                         </span>
                         Actions
+                        <ChevronDown className="ml-1 h-3 w-3 opacity-70" />
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-[180px]">
-                      <DropdownMenuItem>Move to space</DropdownMenuItem>
-                      <DropdownMenuItem>Hide</DropdownMenuItem>
-                      <DropdownMenuItem>Delete</DropdownMenuItem>
-                      <DropdownMenuItem>Add tag</DropdownMenuItem>
-                      <DropdownMenuItem>Remove tag</DropdownMenuItem>
-                      <DropdownMenuItem>Lock</DropdownMenuItem>
-                      <DropdownMenuItem>Change author</DropdownMenuItem>
-                      <DropdownMenuItem>Change publish time</DropdownMenuItem>
+                    <DropdownMenuContent align="end" className="w-[180px] rounded-md p-1.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-lg">
+                      <DropdownMenuItem className="flex cursor-pointer items-center rounded-sm px-2 py-1.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700 outline-none">
+                        Move to space
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="flex cursor-pointer items-center rounded-sm px-2 py-1.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700 outline-none">
+                        Hide
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="flex cursor-pointer items-center rounded-sm px-2 py-1.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 focus:bg-red-50 dark:focus:bg-red-900/20 outline-none">
+                        Delete
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator className="my-1 h-px bg-gray-200 dark:bg-gray-700" />
+                      <DropdownMenuItem className="flex cursor-pointer items-center rounded-sm px-2 py-1.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700 outline-none">
+                        Add tag
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="flex cursor-pointer items-center rounded-sm px-2 py-1.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700 outline-none">
+                        Remove tag
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator className="my-1 h-px bg-gray-200 dark:bg-gray-700" />
+                      <DropdownMenuItem className="flex cursor-pointer items-center rounded-sm px-2 py-1.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700 outline-none">
+                        Lock
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="flex cursor-pointer items-center rounded-sm px-2 py-1.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700 outline-none">
+                        Change author
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="flex cursor-pointer items-center rounded-sm px-2 py-1.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700 outline-none">
+                        Change publish time
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 )}
