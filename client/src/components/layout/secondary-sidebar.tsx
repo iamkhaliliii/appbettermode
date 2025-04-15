@@ -1093,15 +1093,21 @@ export function SecondarySidebar() {
                           }
                         }
                         
-                        // Also change the community header
+                        // Also change the community header with animation
                         const communityHeader = document.getElementById('community-header');
                         if (communityHeader) {
                           if (checked) {
                             communityHeader.style.display = "flex";
+                            communityHeader.style.opacity = "1";
+                            communityHeader.style.transform = "translateY(0)";
                             communityHeader.style.backgroundColor = 'rgba(219, 234, 254, 0.1)';
                             communityHeader.style.borderBottom = '2px solid var(--border)';
                           } else {
-                            communityHeader.style.display = "none";
+                            setTimeout(() => {
+                              communityHeader.style.display = "none";
+                            }, 300);
+                            communityHeader.style.opacity = "0";
+                            communityHeader.style.transform = "translateY(-20px)";
                           }
                         }
                       }} 
@@ -1152,15 +1158,25 @@ export function SecondarySidebar() {
                           }
                         }
                         
-                        // Also change the community right sidebar
+                        // Also change the community right sidebar with animation
                         const communityRightSidebar = document.getElementById('community-right-sidebar');
                         if (communityRightSidebar) {
                           if (checked) {
                             communityRightSidebar.style.display = "block";
+                            communityRightSidebar.style.transform = "translateX(0)";
+                            communityRightSidebar.style.opacity = "1";
+                            communityRightSidebar.style.width = '9rem';
                             communityRightSidebar.style.borderLeft = '2px solid var(--border)';
                             communityRightSidebar.style.backgroundColor = 'rgba(254, 226, 226, 0.1)';
                           } else {
-                            communityRightSidebar.style.display = "none";
+                            setTimeout(() => {
+                              communityRightSidebar.style.display = "none";
+                            }, 300);
+                            communityRightSidebar.style.transform = "translateX(20px)";
+                            communityRightSidebar.style.opacity = "0";
+                            communityRightSidebar.style.width = '0';
+                            communityRightSidebar.style.padding = '0';
+                            communityRightSidebar.style.overflow = "hidden";
                           }
                         }
                       }} 
@@ -1199,14 +1215,33 @@ export function SecondarySidebar() {
                         const leftSidebar = document.getElementById('mockup-left-sidebar');
                         if (leftSidebar) {
                           if (checked) {
-//                           leftSidebar.style.display = "block";
+                            leftSidebar.style.display = "block";
                             leftSidebar.classList.add('border-green-500');
                             leftSidebar.classList.add('bg-green-50/30');
                             leftSidebar.classList.add('dark:bg-green-900/5');
                           } else {
+                            leftSidebar.style.display = "none";
                             leftSidebar.classList.remove('border-green-500');
                             leftSidebar.classList.remove('bg-green-50/30');
                             leftSidebar.classList.remove('dark:bg-green-900/5');
+                          }
+                        }
+                        
+                        // Also change the community left sidebar with animation
+                        const communityLeftSidebar = document.getElementById('community-left-sidebar');
+                        if (communityLeftSidebar) {
+                          if (checked) {
+                            communityLeftSidebar.style.transform = "translateX(0)";
+                            communityLeftSidebar.style.opacity = "1";
+                            communityLeftSidebar.style.backgroundColor = 'rgba(220, 252, 231, 0.1)'; 
+                            communityLeftSidebar.style.borderRight = '2px solid var(--border)';
+                            communityLeftSidebar.style.width = '9rem';
+                          } else {
+                            communityLeftSidebar.style.transform = "translateX(-20px)";
+                            communityLeftSidebar.style.width = '0';
+                            communityLeftSidebar.style.padding = '0';
+                            communityLeftSidebar.style.opacity = "0";
+                            communityLeftSidebar.style.overflow = "hidden";
                           }
                         }
                       }} 
@@ -1255,15 +1290,21 @@ export function SecondarySidebar() {
                           }
                         }
                         
-                        // Also change the community footer
+                        // Also change the community footer with animation
                         const communityFooter = document.getElementById('community-footer');
                         if (communityFooter) {
                           if (checked) {
                             communityFooter.style.display = "flex";
+                            communityFooter.style.opacity = "1";
+                            communityFooter.style.transform = "translateY(0)";
                             communityFooter.style.backgroundColor = 'rgba(254, 240, 138, 0.1)'; 
                             communityFooter.style.borderTop = '2px solid var(--border)';
                           } else {
-                            communityFooter.style.display = "none";
+                            setTimeout(() => {
+                              communityFooter.style.display = "none";
+                            }, 300);
+                            communityFooter.style.opacity = "0";
+                            communityFooter.style.transform = "translateY(20px)";
                           }
                         }
                       }} 
