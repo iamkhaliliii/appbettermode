@@ -599,6 +599,108 @@ const data: Post[] = [
     tags: ["community", "featured"],
     locked: false
   },
+  {
+    id: "u5TrF8Y3iO2P1aS",
+    title: "Building Authentic Relationships",
+    status: "Published",
+    author: {
+      name: "Alice Johnson",
+      avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    },
+    space: {
+      name: "Articles",
+      color: "#2563eb"
+    },
+    publishedAt: "Jan 15, 2025",
+    cmsModel: "Article",
+    tags: ["community", "featured"],
+    locked: false
+  },
+  {
+    id: "v6UgH9Z4jP3Q2bD",
+    title: "Content Moderation Best Practices",
+    status: "Draft",
+    author: {
+      name: "Mark Wilson",
+      avatar: "https://images.unsplash.com/photo-1520785643438-5bf77931f493?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    },
+    space: {
+      name: "Guidelines",
+      color: "#10b981"
+    },
+    publishedAt: "Jan 16, 2025",
+    cmsModel: "Guide",
+    tags: ["moderation", "guidelines"],
+    locked: false
+  },
+  {
+    id: "w7ViJ1A5kR4S3cF",
+    title: "Growing Your User Base",
+    status: "Schedule",
+    author: {
+      name: "Sarah Thompson",
+      avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    },
+    space: {
+      name: "Marketing",
+      color: "#ef4444"
+    },
+    publishedAt: "Jan 17, 2025",
+    cmsModel: "Strategy",
+    tags: ["marketing", "engagement"],
+    locked: false
+  },
+  {
+    id: "x8WjK2B6lS5T4dG",
+    title: "Community Newsletter Guidelines",
+    status: "Published",
+    author: {
+      name: "Emily Davis",
+      avatar: "https://images.unsplash.com/photo-1502378735452-bc7d86632805?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    },
+    space: {
+      name: "Newsletter",
+      color: "#9333ea"
+    },
+    publishedAt: "Jan 18, 2025",
+    cmsModel: "Template",
+    tags: ["newsletter", "communication"],
+    locked: true
+  },
+  {
+    id: "y9XkL3C7mT6U5eH",
+    title: "Onboarding New Community Members",
+    status: "Published",
+    author: {
+      name: "Robert Brown",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    },
+    space: {
+      name: "Members",
+      color: "#f59e0b"
+    },
+    publishedAt: "Jan 19, 2025",
+    cmsModel: "Process",
+    tags: ["onboarding", "members"],
+    locked: false
+  },
+  {
+    id: "z1YlM4D8nU7V6fI",
+    title: "Product Feedback Collection Strategy",
+    status: "Draft",
+    author: {
+      name: "Amanda White",
+      avatar: "https://images.unsplash.com/photo-1554151228-14d9def656e4?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    },
+    space: {
+      name: "Product",
+      color: "#06b6d4"
+    },
+    publishedAt: "Jan 20, 2025",
+    cmsModel: "Strategy",
+    tags: ["feedback", "product"],
+    locked: false
+  },
 ];
 
 export default function Content() {
@@ -648,15 +750,17 @@ export default function Content() {
   if (section === 'CMS') {
     return (
       <DashboardLayout>
-        <div className="max-w-7xl mx-auto p-6 sm:p-8">
-          <div className="mb-4 flex flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <h1 className="text-base font-medium text-gray-900 dark:text-white">
-                All Posts
+        <div className="max-w-7xl mx-auto p-4 sm:p-6">
+          <div className="mb-3 flex flex-row items-center justify-between gap-3">
+            <div>
+              <h1 className="text-lg font-medium text-gray-900 dark:text-white">
+                All Posts <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">14 items</span>
               </h1>
-              <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">14 items</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
+              <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <Search className="h-3 w-3" />
+              </button>
               <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                 <FileOutput className="h-3 w-3" />
               </button>
@@ -688,27 +792,20 @@ export default function Content() {
           </div>
 
           {/* Table toolbar */}
-          <div className="mb-4 flex items-center justify-end gap-1.5">
-            <div className="relative w-full md:w-48 mr-auto">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="w-full py-1 pl-7 pr-3 text-xs border-none bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-md focus:outline-none focus:ring-0 transition-colors"
-              />
-              <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400" />
+          <div className="mb-2 flex items-center justify-end gap-1.5">
+            <div className="flex items-center gap-1.5">
+              <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <Filter className="h-3 w-3" />
+              </button>
+              
+              <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <ArrowUpDown className="h-3 w-3" />
+              </button>
+              
+              <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <Columns className="h-3 w-3" />
+              </button>
             </div>
-            
-            <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-              <Filter className="h-3 w-3" />
-            </button>
-            
-            <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-              <ArrowUpDown className="h-3 w-3" />
-            </button>
-            
-            <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-              <Columns className="h-3 w-3" />
-            </button>
           </div>
 
           {/* Main table */}
