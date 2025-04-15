@@ -335,7 +335,7 @@ export default function DesignStudioSpacesFeed() {
           {/* Main content area - Ultra minimal */}
           <div className="flex flex-1 overflow-auto">
             {/* Left sidebar - Ultra minimal - No background */}
-            <div className="w-36 p-1.5 border-r border-gray-200/50 dark:border-gray-700/50 bg-transparent">
+            <div id="mockup-left-sidebar" className="w-36 p-1.5 border-r border-gray-200/50 dark:border-gray-700/50 bg-transparent">
               <nav className="space-y-0">
                 <a 
                   href="#" 
@@ -405,12 +405,48 @@ export default function DesignStudioSpacesFeed() {
               </nav>
             </div>
             
-            {/* Now using the global secondary sidebar */}
-            
-            {/* Main content area */}
-            <div className="flex-1 flex justify-center overflow-auto">
-              <div className="max-w-4xl w-full">
-                <FeedContent />
+            {/* Main content area with header/footer indicators */}
+            <div className="flex-1 flex flex-col">
+              {/* Header - initially hidden, shown when header toggle is activated */}
+              <div id="mockup-header" className="h-8 border-b border-gray-200 dark:border-gray-700 hidden">
+                <div className="h-full flex items-center px-4">
+                  <div className="w-24 h-3 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                  <div className="ml-auto flex space-x-3">
+                    <div className="w-6 h-3 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                    <div className="w-6 h-3 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                    <div className="w-6 h-3 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Main content with flex layout to accommodate right sidebar */}
+              <div className="flex-1 flex overflow-auto">
+                {/* Feed content in the main area */}
+                <div className="flex-1 flex justify-center overflow-auto">
+                  <div className="max-w-4xl w-full">
+                    <FeedContent />
+                  </div>
+                </div>
+                
+                {/* Right sidebar - initially hidden, shown when right sidebar toggle is activated */}
+                <div id="mockup-right-sidebar" className="w-36 p-1.5 border-l border-gray-200/50 dark:border-gray-700/50 hidden">
+                  <div className="space-y-2">
+                    <div className="w-full h-8 bg-gray-100 dark:bg-gray-800 rounded"></div>
+                    <div className="w-full h-8 bg-gray-100 dark:bg-gray-800 rounded"></div>
+                    <div className="w-full h-8 bg-gray-100 dark:bg-gray-800 rounded"></div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Footer - initially hidden, shown when footer toggle is activated */}
+              <div id="mockup-footer" className="h-8 border-t border-gray-200 dark:border-gray-700 hidden">
+                <div className="h-full flex items-center justify-center">
+                  <div className="flex space-x-4">
+                    <div className="w-16 h-2 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                    <div className="w-16 h-2 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                    <div className="w-16 h-2 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

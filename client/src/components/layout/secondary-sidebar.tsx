@@ -1079,8 +1079,19 @@ export function SecondarySidebar() {
                           options.classList.toggle('hidden', !checked);
                         }
                         
-                        // Add strong visual indicator for mockup
-                        document.getElementById('mockup-header')?.classList.toggle('hidden', !checked);
+                        // Show/hide header in mockup
+                        const header = document.getElementById('mockup-header');
+                        if (header) {
+                          if (checked) {
+                            header.style.display = "flex";
+                            header.classList.add('bg-blue-50/30');
+                            header.classList.add('dark:bg-blue-900/5');
+                          } else {
+                            header.style.display = "none";
+                            header.classList.remove('bg-blue-50/30');
+                            header.classList.remove('dark:bg-blue-900/5');
+                          }
+                        }
                       }} 
                     />
                   </div>
@@ -1113,8 +1124,21 @@ export function SecondarySidebar() {
                           options.classList.toggle('hidden', !checked);
                         }
                         
-                        // Add strong visual indicator for mockup
-                        document.getElementById('mockup-right-sidebar')?.classList.toggle('hidden', !checked);
+                        // Show/hide right sidebar in mockup
+                        const rightSidebar = document.getElementById('mockup-right-sidebar');
+                        if (rightSidebar) {
+                          if (checked) {
+                            rightSidebar.style.display = "block";
+                            rightSidebar.classList.add('border-red-500');
+                            rightSidebar.classList.add('bg-red-50/30');
+                            rightSidebar.classList.add('dark:bg-red-900/5');
+                          } else {
+                            rightSidebar.style.display = "none";
+                            rightSidebar.classList.remove('border-red-500');
+                            rightSidebar.classList.remove('bg-red-50/30');
+                            rightSidebar.classList.remove('dark:bg-red-900/5');
+                          }
+                        }
                       }} 
                     />
                   </div>
@@ -1147,8 +1171,20 @@ export function SecondarySidebar() {
                           options.classList.toggle('hidden', !checked);
                         }
                         
-                        // Add strong visual indicator for mockup
-                        document.getElementById('mockup-left-sidebar')?.classList.toggle('hidden', !checked);
+                        // Show/hide left sidebar in mockup
+                        const leftSidebar = document.getElementById('mockup-left-sidebar');
+                        if (leftSidebar) {
+                          if (checked) {
+                            leftSidebar.style.display = "block";
+                            leftSidebar.classList.add('border-green-500');
+                            leftSidebar.classList.add('bg-green-50/30');
+                            leftSidebar.classList.add('dark:bg-green-900/5');
+                          } else {
+                            leftSidebar.classList.remove('border-green-500');
+                            leftSidebar.classList.remove('bg-green-50/30');
+                            leftSidebar.classList.remove('dark:bg-green-900/5');
+                          }
+                        }
                       }} 
                     />
                   </div>
@@ -1181,8 +1217,19 @@ export function SecondarySidebar() {
                           options.classList.toggle('hidden', !checked);
                         }
                         
-                        // Add strong visual indicator for mockup
-                        document.getElementById('mockup-footer')?.classList.toggle('hidden', !checked);
+                        // Show/hide footer in mockup
+                        const footer = document.getElementById('mockup-footer');
+                        if (footer) {
+                          if (checked) {
+                            footer.style.display = "flex";
+                            footer.classList.add('bg-yellow-50/30');
+                            footer.classList.add('dark:bg-yellow-900/5');
+                          } else {
+                            footer.style.display = "none";
+                            footer.classList.remove('bg-yellow-50/30');
+                            footer.classList.remove('dark:bg-yellow-900/5');
+                          }
+                        }
                       }} 
                     />
                   </div>
