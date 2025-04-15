@@ -186,7 +186,7 @@ function MinimalItem({
             ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white" 
             : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
         )}
-        style={{ paddingLeft: `${(level * 10) + 4}px` }}
+        style={{ paddingLeft: level === 0 ? "12px" : `${(level * 10) + 16}px` }}
       >
         <span className={cn("flex-shrink-0 mr-1.5", iconColor)}>
           {icon}
@@ -265,7 +265,7 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
               ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white" 
               : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
           )}
-          style={{ paddingLeft: `${(level * 10) + 4}px` }}
+          style={{ paddingLeft: level === 0 ? "12px" : `${(level * 10) + 16}px` }}
         >
           <span 
             className="w-4 h-4 mr-1 flex-shrink-0 flex items-center justify-center cursor-pointer"
@@ -279,7 +279,7 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
             />
           </span>
           <div className="flex items-center cursor-default">
-            <Folder className="h-3.5 w-3.5 mr-1 text-gray-500" />
+            <Folder className="h-3.5 w-3.5 mr-1 text-gray-400" />
             <Link href={path}>
               <span className="font-medium">{name}</span>
             </Link>
