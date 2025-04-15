@@ -31,12 +31,9 @@ export default function DesignStudio() {
   
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto p-8">
+      <div className="max-w-7xl mx-auto p-4">
         <div className="mb-8">
           <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Design Studio</h1>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Preview and customize community platform design
-          </p>
         </div>
 
         {/* Browser mockup */}
