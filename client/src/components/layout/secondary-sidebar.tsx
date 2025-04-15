@@ -1031,8 +1031,10 @@ export function SecondarySidebar() {
             </button>
           </div>
           
-          <div className="flex flex-col items-center justify-center pt-1 pb-2">
-            <MessageSquare className="h-5 w-5 text-purple-500 mb-1" />
+          <div className="flex items-center justify-center pt-1 pb-2 gap-2">
+            <div className="bg-purple-50 dark:bg-purple-900/20 p-1.5 rounded">
+              <MessageSquare className="h-4 w-4 text-purple-500" />
+            </div>
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300 tracking-wide">Feed</span>
           </div>
         </div>
