@@ -22,6 +22,7 @@ function Router() {
       <Route path="/people/:section" component={People} />
       <Route path="/design-studio" component={DesignStudio} />
       <Route path="/design-studio/:section" component={DesignStudio} />
+      <Route path="/design-studio/:section/:subsection" component={DesignStudio} />
       <Route path="/appearance" component={Appearance} />
       <Route path="/appearance/:section" component={Appearance} />
       <Route path="/settings" component={Settings} />
