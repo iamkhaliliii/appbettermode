@@ -1012,50 +1012,42 @@ export function SecondarySidebar() {
   const renderDesignStudioSpacesFeedSidebar = () => {
     return (
       <div className="p-3">
-        {/* Back button in top corner */}
-        <div className="flex justify-between items-center mb-4">
-          <button 
-            onClick={() => window.history.back()}
-            className="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 p-1 rounded-full transition-colors"
-            aria-label="Go back"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-          </button>
+        {/* Top nav with combined title, buttons in a single row - ultra minimalist */}
+        <div className="flex items-center justify-between py-2 mb-3 sticky top-0 bg-white dark:bg-gray-800 z-10 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => window.history.back()}
+              className="p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded transition-colors"
+              aria-label="Go back"
+            >
+              <ArrowLeft className="h-3 w-3" />
+            </button>
+            
+            <div className="flex items-center gap-1.5">
+              <MessageSquare className="h-3.5 w-3.5 text-purple-500" />
+              <span className="text-xs font-medium text-gray-700 dark:text-gray-300 tracking-wide">Feed</span>
+            </div>
+          </div>
           
-          <button 
-            className="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 p-1 rounded-full transition-colors"
-            aria-label="Settings"
-          >
-            <Settings className="h-3.5 w-3.5" />
-          </button>
-        </div>
-        
-        {/* Feed title with icon - made larger */}
-        <div className="flex items-center mb-4 px-1">
-          <div className="bg-purple-100 dark:bg-purple-900/30 p-2 rounded-lg mr-3">
-            <MessageSquare className="h-5 w-5 text-purple-700 dark:text-purple-400" />
-          </div>
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Feed</h2>
-            <p className="text-xs text-gray-500 dark:text-gray-400">Manage your space feed</p>
+          <div className="flex items-center gap-1">
+            <button 
+              className="p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded transition-colors"
+              aria-label="Search"
+            >
+              <Search className="h-3 w-3" />
+            </button>
+            <button 
+              className="p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded transition-colors"
+              aria-label="Settings"
+            >
+              <Settings className="h-3 w-3" />
+            </button>
           </div>
         </div>
         
-        {/* Search filter - optional addition */}
-        <div className="relative mb-4">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search className="h-3.5 w-3.5 text-gray-400" />
-          </div>
-          <input
-            type="text"
-            className="block w-full pl-9 pr-3 py-1.5 text-xs border border-gray-200 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-purple-500"
-            placeholder="Filter items..."
-          />
-        </div>
-        
-        {/* Sections and Blocks - minimal design */}
-        <div className="mt-4">
-          <div className="px-1 mb-4">
+        {/* Sections and Blocks - ultra minimal design */}
+        <div>
+          <div className="px-0.5 mb-4">
             <div className="flex items-center justify-between py-1 mb-2 border-b border-gray-100 dark:border-gray-800">
               <h3 className="text-[11px] uppercase tracking-wide font-semibold text-gray-500 dark:text-gray-400 letter-spacing-[0.05em]">Page Builder</h3>
               <Settings className="h-3 w-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer" />
