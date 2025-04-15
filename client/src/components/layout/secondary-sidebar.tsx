@@ -448,7 +448,7 @@ export function SecondarySidebar() {
           href="/content/comments"
           isActive={isActiveUrl('/content/comments')}
         >
-          Comments
+          Activity Hub
         </SideNavItem>
         
         <SideNavItem 
