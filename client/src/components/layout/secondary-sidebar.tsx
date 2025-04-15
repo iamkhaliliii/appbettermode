@@ -439,8 +439,15 @@ export function SecondarySidebar() {
     if (isActiveUrl('/content/CMS') || location === '/content') {
       return (
         <div className="p-3">
-          <div className="mb-2">
-            <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Post Types</h2>
+          <div className="mb-4">
+            <div className="flex items-center mb-2">
+              <Link href="/content">
+                <button className="mr-2 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <ArrowLeft className="h-4 w-4 text-gray-500" />
+                </button>
+              </Link>
+              <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">CMS Collections</h2>
+            </div>
           </div>
           
           <div className="space-y-1">
