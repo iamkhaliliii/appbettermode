@@ -279,7 +279,7 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
             />
           </span>
           <div className="flex items-center cursor-default">
-            <Folder className="h-3.5 w-3.5 mr-1 text-[#A694FF]" />
+            <Folder className="h-3.5 w-3.5 mr-1 text-gray-500" />
             <Link href={path}>
               <span className="font-medium">{name}</span>
             </Link>
@@ -594,131 +594,132 @@ export function SecondarySidebar() {
             </AccordionTrigger>
             <AccordionContent className="pt-1 pb-1">
               <div className="space-y-1">
-                {/* Tree view of folders */}
+                {/* Root files first */}
+                <MinimalItem 
+                  name="Feed" 
+                  path="/design-studio/spaces/feed"
+                  icon={<FileCode2 className="h-3.5 w-3.5" />}
+                  iconColor="text-[#A694FF]"
+                  inSpaces={true}
+                />
+                <MinimalItem 
+                  name="Explore" 
+                  path="/design-studio/spaces/explore"
+                  icon={<File className="h-3.5 w-3.5" />}
+                  iconColor="text-gray-500"
+                  inSpaces={true}
+                />
+                
+                {/* Connect folder */}
                 <TreeFolder 
-                  name="Main Website" 
-                  path="/design-studio/spaces/main-website" 
-                  isExpanded={location.startsWith('/design-studio/spaces/main-website')}
+                  name="Connect" 
+                  path="/design-studio/spaces/connect" 
+                  isExpanded={location.startsWith('/design-studio/spaces/connect')}
                 >
                   <MinimalItem 
-                    name="index.tsx" 
-                    path="/design-studio/spaces/main-website/index"
+                    name="Intros & Networking" 
+                    path="/design-studio/spaces/connect/intros"
                     icon={<FileCode2 className="h-3.5 w-3.5" />}
-                    iconColor="text-purple-500"
+                    iconColor="text-[#A694FF]"
                     level={1}
                     inSpaces={true}
-                    isHidden={false}
                   />
-                  <TreeFolder 
-                    name="Home" 
-                    path="/design-studio/spaces/main-website/home" 
+                  <MinimalItem 
+                    name="Ask the Community" 
+                    path="/design-studio/spaces/connect/ask"
+                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    iconColor="text-[#A694FF]"
                     level={1}
-                  >
-                    <MinimalItem 
-                      name="home.tsx" 
-                      path="/design-studio/spaces/main-website/home/home"
-                      icon={<FileCode2 className="h-3.5 w-3.5" />}
-                      iconColor="text-purple-500"
-                      level={2}
-                      inSpaces={true}
-                    />
-                    <MinimalItem 
-                      name="hero.tsx" 
-                      path="/design-studio/spaces/main-website/home/hero"
-                      icon={<File className="h-3.5 w-3.5" />}
-                      iconColor="text-gray-500"
-                      level={2}
-                      inSpaces={true}
-                      isHidden={true}
-                    />
-                  </TreeFolder>
-                  <TreeFolder 
-                    name="About" 
-                    path="/design-studio/spaces/main-website/about" 
+                    inSpaces={true}
+                  />
+                  <MinimalItem 
+                    name="Hire Experts" 
+                    path="/design-studio/spaces/connect/hire"
+                    icon={<File className="h-3.5 w-3.5" />}
+                    iconColor="text-gray-500"
                     level={1}
-                  >
-                    <MinimalItem 
-                      name="about.tsx" 
-                      path="/design-studio/spaces/main-website/about/about"
-                      icon={<FileCode2 className="h-3.5 w-3.5" />}
-                      iconColor="text-purple-500"
-                      level={2}
-                      inSpaces={true}
-                    />
-                    <MinimalItem 
-                      name="team.tsx" 
-                      path="/design-studio/spaces/main-website/about/team"
-                      icon={<File className="h-3.5 w-3.5" />}
-                      iconColor="text-gray-500"
-                      level={2}
-                      inSpaces={true}
-                    />
-                  </TreeFolder>
-                  <TreeFolder 
-                    name="Blog" 
-                    path="/design-studio/spaces/main-website/blog" 
-                    level={1}
-                  >
-                    <MinimalItem 
-                      name="blog.tsx" 
-                      path="/design-studio/spaces/main-website/blog/blog"
-                      icon={<FileCode2 className="h-3.5 w-3.5" />}
-                      iconColor="text-purple-500"
-                      level={2}
-                      inSpaces={true}
-                    />
-                    <MinimalItem 
-                      name="post.tsx" 
-                      path="/design-studio/spaces/main-website/blog/post"
-                      icon={<File className="h-3.5 w-3.5" />}
-                      iconColor="text-gray-500"
-                      level={2}
-                      inSpaces={true}
-                    />
-                  </TreeFolder>
+                    inSpaces={true}
+                  />
                 </TreeFolder>
                 
+                {/* Help Center folder */}
                 <TreeFolder 
-                  name="Members Area" 
-                  path="/design-studio/spaces/members" 
-                  isExpanded={location.startsWith('/design-studio/spaces/members')}
+                  name="Help Center" 
+                  path="/design-studio/spaces/help-center" 
+                  isExpanded={location.startsWith('/design-studio/spaces/help-center')}
                 >
                   <MinimalItem 
-                    name="auth.tsx" 
-                    path="/design-studio/spaces/members/auth"
+                    name="Getting Started" 
+                    path="/design-studio/spaces/help-center/getting-started"
                     icon={<FileCode2 className="h-3.5 w-3.5" />}
-                    iconColor="text-purple-500"
+                    iconColor="text-[#A694FF]"
                     level={1}
                     inSpaces={true}
                   />
-                  <TreeFolder 
-                    name="Dashboard" 
-                    path="/design-studio/spaces/members/dashboard" 
+                  <MinimalItem 
+                    name="Account & Billing" 
+                    path="/design-studio/spaces/help-center/account"
+                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    iconColor="text-[#A694FF]"
                     level={1}
-                  >
-                    <MinimalItem 
-                      name="dashboard.tsx" 
-                      path="/design-studio/spaces/members/dashboard/dashboard"
-                      icon={<FileCode2 className="h-3.5 w-3.5" />}
-                      iconColor="text-purple-500"
-                      level={2}
-                      inSpaces={true}
-                    />
-                  </TreeFolder>
-                  <TreeFolder 
-                    name="Profile" 
-                    path="/design-studio/spaces/members/profile" 
+                    inSpaces={true}
+                  />
+                  <MinimalItem 
+                    name="Content Management" 
+                    path="/design-studio/spaces/help-center/content"
+                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    iconColor="text-[#A694FF]"
                     level={1}
-                  >
-                    <MinimalItem 
-                      name="profile.tsx" 
-                      path="/design-studio/spaces/members/profile/profile"
-                      icon={<File className="h-3.5 w-3.5" />}
-                      iconColor="text-gray-500"
-                      level={2}
-                      inSpaces={true}
-                    />
-                  </TreeFolder>
+                    inSpaces={true}
+                  />
+                  <MinimalItem 
+                    name="Member Management" 
+                    path="/design-studio/spaces/help-center/members"
+                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    iconColor="text-[#A694FF]"
+                    level={1}
+                    inSpaces={true}
+                  />
+                  <MinimalItem 
+                    name="Appearance & Design" 
+                    path="/design-studio/spaces/help-center/appearance"
+                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    iconColor="text-[#A694FF]"
+                    level={1}
+                    inSpaces={true}
+                  />
+                  <MinimalItem 
+                    name="Reports & Analytics" 
+                    path="/design-studio/spaces/help-center/reports"
+                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    iconColor="text-[#A694FF]"
+                    level={1}
+                    inSpaces={true}
+                  />
+                  <MinimalItem 
+                    name="Apps & Integrations" 
+                    path="/design-studio/spaces/help-center/apps"
+                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    iconColor="text-[#A694FF]"
+                    level={1}
+                    inSpaces={true}
+                  />
+                  <MinimalItem 
+                    name="API & Webhooks" 
+                    path="/design-studio/spaces/help-center/api"
+                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    iconColor="text-[#A694FF]"
+                    level={1}
+                    inSpaces={true}
+                  />
+                  <MinimalItem 
+                    name="Get Inspired" 
+                    path="/design-studio/spaces/help-center/inspired"
+                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    iconColor="text-[#A694FF]"
+                    level={1}
+                    inSpaces={true}
+                  />
                 </TreeFolder>
                 
                 <div className="flex items-center py-1 px-2 text-xs text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 rounded cursor-pointer">
@@ -824,18 +825,21 @@ export function SecondarySidebar() {
                   path="/design-studio/utility/404"
                   icon={<File className="h-3.5 w-3.5" />}
                   iconColor="text-gray-500"
+                  level={1}
                 />
                 <MinimalItem 
                   name="Password Protected" 
                   path="/design-studio/utility/password"
                   icon={<File className="h-3.5 w-3.5" />}
                   iconColor="text-gray-500"
+                  level={1}
                 />
                 <MinimalItem 
                   name="Search Results" 
                   path="/design-studio/utility/search"
                   icon={<File className="h-3.5 w-3.5" />}
                   iconColor="text-gray-500"
+                  level={1}
                 />
               </div>
             </AccordionContent>
