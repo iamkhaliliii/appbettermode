@@ -161,29 +161,36 @@ const columns: ColumnDef<Post>[] = [
     },
     cell: ({ row }) => {
       const status = row.getValue("status") as string
-      const statusConfig: Record<string, { bgClass: string; textClass: string; }> = {
+      const statusConfig: Record<string, { bgClass: string; textClass: string; dotColor: string }> = {
         "Published": { 
-          bgClass: "bg-green-50/60 dark:bg-green-900/10", 
-          textClass: "text-green-600 dark:text-green-400"
+          bgClass: "bg-blue-50 dark:bg-blue-900/30", 
+          textClass: "text-blue-700 dark:text-blue-300",
+          dotColor: "text-blue-500 dark:text-blue-400"
         },
         "Draft": { 
-          bgClass: "bg-gray-50/60 dark:bg-gray-800/30", 
-          textClass: "text-gray-600 dark:text-gray-400"
+          bgClass: "bg-slate-100 dark:bg-slate-800/50", 
+          textClass: "text-slate-700 dark:text-slate-300",
+          dotColor: "text-slate-500 dark:text-slate-400"
         },
         "Schedule": { 
-          bgClass: "bg-blue-50/60 dark:bg-blue-900/10", 
-          textClass: "text-blue-600 dark:text-blue-400"
+          bgClass: "bg-purple-50 dark:bg-purple-900/30", 
+          textClass: "text-purple-700 dark:text-purple-300",
+          dotColor: "text-purple-500 dark:text-purple-400"
         },
         "Pending review": { 
-          bgClass: "bg-amber-50/60 dark:bg-amber-900/10", 
-          textClass: "text-amber-600 dark:text-amber-400"
+          bgClass: "bg-amber-50 dark:bg-amber-900/30", 
+          textClass: "text-amber-700 dark:text-amber-300",
+          dotColor: "text-amber-500 dark:text-amber-400"
         },
       }
       
       const config = statusConfig[status] || statusConfig["Draft"]
       
       return (
-        <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs whitespace-nowrap ${config.bgClass} ${config.textClass}`}>
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${config.bgClass} ${config.textClass}`}>
+          <svg className={`mr-1 h-2 w-2 ${config.dotColor}`} fill="currentColor" viewBox="0 0 8 8">
+            <circle cx="4" cy="4" r="3" />
+          </svg>
           {status}
         </span>
       )
@@ -272,7 +279,7 @@ const columns: ColumnDef<Post>[] = [
       
       return (
         <div className="flex items-center">
-          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs whitespace-nowrap bg-gray-100 dark:bg-gray-800/60 text-gray-700 dark:text-gray-300">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300">
             {getIconForSpace(space.name)}
             {space.name}
           </span>
@@ -340,12 +347,15 @@ const columns: ColumnDef<Post>[] = [
       
       // استفاده از رنگ بنفش برای همه‌ی مدل‌ها
       const config = {
-        bgClass: "bg-purple-50/60 dark:bg-purple-900/10", 
-        textClass: "text-purple-600 dark:text-purple-400"
+        bgClass: "bg-indigo-50 dark:bg-indigo-900/30", 
+        textClass: "text-indigo-700 dark:text-indigo-300"
       }
       
       return (
-        <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs whitespace-nowrap ${config.bgClass} ${config.textClass}`}>
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${config.bgClass} ${config.textClass}`}>
+          <svg className="mr-1 h-2 w-2 text-indigo-500 dark:text-indigo-400" fill="currentColor" viewBox="0 0 8 8">
+            <circle cx="4" cy="4" r="3" />
+          </svg>
           {model}
         </span>
       )
@@ -406,40 +416,48 @@ const columns: ColumnDef<Post>[] = [
       const tags = row.getValue("tags") as string[]
       if (!tags || tags.length === 0) return null
       
-      const tagConfig: Record<string, { bgClass: string; textClass: string; }> = {
+      const tagConfig: Record<string, { bgClass: string; textClass: string; dotColor: string }> = {
         "Discussion": { 
-          bgClass: "bg-purple-50/60 dark:bg-purple-900/10", 
-          textClass: "text-purple-600 dark:text-purple-400"
+          bgClass: "bg-purple-50 dark:bg-purple-900/30", 
+          textClass: "text-purple-700 dark:text-purple-300",
+          dotColor: "text-purple-500 dark:text-purple-400"
         },
         "new": { 
-          bgClass: "bg-blue-50/60 dark:bg-blue-900/10", 
-          textClass: "text-blue-600 dark:text-blue-400"
+          bgClass: "bg-blue-50 dark:bg-blue-900/30", 
+          textClass: "text-blue-700 dark:text-blue-300",
+          dotColor: "text-blue-500 dark:text-blue-400"
         },
         "me_too": { 
-          bgClass: "bg-emerald-50/60 dark:bg-emerald-900/10", 
-          textClass: "text-emerald-600 dark:text-emerald-400"
+          bgClass: "bg-emerald-50 dark:bg-emerald-900/30", 
+          textClass: "text-emerald-700 dark:text-emerald-300",
+          dotColor: "text-emerald-500 dark:text-emerald-400"
         },
         "question": { 
-          bgClass: "bg-amber-50/60 dark:bg-amber-900/10", 
-          textClass: "text-amber-600 dark:text-amber-400"
+          bgClass: "bg-amber-50 dark:bg-amber-900/30", 
+          textClass: "text-amber-700 dark:text-amber-300",
+          dotColor: "text-amber-500 dark:text-amber-400"
         },
         "bug": { 
-          bgClass: "bg-red-50/60 dark:bg-red-900/10", 
-          textClass: "text-red-600 dark:text-red-400"
+          bgClass: "bg-red-50 dark:bg-red-900/30", 
+          textClass: "text-red-700 dark:text-red-300",
+          dotColor: "text-red-500 dark:text-red-400"
         },
         "community": { 
-          bgClass: "bg-indigo-50/60 dark:bg-indigo-900/10", 
-          textClass: "text-indigo-600 dark:text-indigo-400"
+          bgClass: "bg-indigo-50 dark:bg-indigo-900/30", 
+          textClass: "text-indigo-700 dark:text-indigo-300",
+          dotColor: "text-indigo-500 dark:text-indigo-400"
         },
         "featured": { 
-          bgClass: "bg-fuchsia-50/60 dark:bg-fuchsia-900/10", 
-          textClass: "text-fuchsia-600 dark:text-fuchsia-400"
+          bgClass: "bg-fuchsia-50 dark:bg-fuchsia-900/30", 
+          textClass: "text-fuchsia-700 dark:text-fuchsia-300",
+          dotColor: "text-fuchsia-500 dark:text-fuchsia-400"
         },
       }
       
       const defaultConfig = {
-        bgClass: "bg-gray-50/60 dark:bg-gray-800/30", 
-        textClass: "text-gray-600 dark:text-gray-400"
+        bgClass: "bg-slate-100 dark:bg-slate-800/50", 
+        textClass: "text-slate-700 dark:text-slate-300",
+        dotColor: "text-slate-500 dark:text-slate-400"
       }
       
       return (
@@ -449,9 +467,12 @@ const columns: ColumnDef<Post>[] = [
             return (
               <span 
                 key={i} 
-                className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs whitespace-nowrap
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap
                 ${config.bgClass} ${config.textClass}`}
               >
+                <svg className={`mr-1 h-2 w-2 ${config.dotColor}`} fill="currentColor" viewBox="0 0 8 8">
+                  <circle cx="4" cy="4" r="3" />
+                </svg>
                 {tag}
               </span>
             )
@@ -1223,9 +1244,34 @@ function ContentCard({ title, type, status, date }: ContentCardProps) {
             <span>Type:</span>
             <span className="font-medium text-foreground dark:text-foreground">{type}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center">
             <span>Status:</span>
-            <span className={`font-medium ${status === 'Published' ? 'text-green-600 dark:text-green-400' : 'text-amber-600 dark:text-amber-400'}`}>
+            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+              status === 'Published' ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : 
+              status === 'Draft' ? 'bg-slate-100 text-slate-700 dark:bg-slate-800/50 dark:text-slate-300' :
+              status === 'Schedule' ? 'bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300' :
+              'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'
+            }`}>
+              {status === 'Published' && (
+                <svg className="mr-1 h-2 w-2 text-blue-500 dark:text-blue-400" fill="currentColor" viewBox="0 0 8 8">
+                  <circle cx="4" cy="4" r="3" />
+                </svg>
+              )}
+              {status === 'Draft' && (
+                <svg className="mr-1 h-2 w-2 text-slate-500 dark:text-slate-400" fill="currentColor" viewBox="0 0 8 8">
+                  <circle cx="4" cy="4" r="3" />
+                </svg>
+              )}
+              {status === 'Schedule' && (
+                <svg className="mr-1 h-2 w-2 text-purple-500 dark:text-purple-400" fill="currentColor" viewBox="0 0 8 8">
+                  <circle cx="4" cy="4" r="3" />
+                </svg>
+              )}
+              {status === 'Pending review' && (
+                <svg className="mr-1 h-2 w-2 text-amber-500 dark:text-amber-400" fill="currentColor" viewBox="0 0 8 8">
+                  <circle cx="4" cy="4" r="3" />
+                </svg>
+              )}
               {status}
             </span>
           </div>
