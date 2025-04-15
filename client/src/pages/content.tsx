@@ -248,11 +248,10 @@ const columns: ColumnDef<Post>[] = [
       const space = row.getValue("space") as { name: string; color: string }
       return (
         <div className="flex items-center">
-          <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs whitespace-nowrap bg-opacity-10 border border-opacity-20`} 
+          <div className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs whitespace-nowrap bg-opacity-10 border-0`} 
                style={{ 
-                 backgroundColor: `${space.color}20`, 
-                 color: space.color,
-                 borderColor: space.color
+                 backgroundColor: `${space.color}15`, 
+                 color: space.color
                }}>
             {space.name}
           </div>
@@ -347,7 +346,7 @@ const columns: ColumnDef<Post>[] = [
       }
       
       return (
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.bgClass} ${config.textClass} ${config.borderClass} backdrop-blur-sm`}>
+        <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium ${config.bgClass} ${config.textClass}`}>
           {model}
         </span>
       )
@@ -459,16 +458,16 @@ const columns: ColumnDef<Post>[] = [
             return (
               <span 
                 key={i} 
-                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs whitespace-nowrap
-                ${config.bgClass} ${config.textClass} ${config.borderClass} backdrop-blur-sm`}
+                className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs whitespace-nowrap
+                ${config.bgClass} ${config.textClass}`}
               >
                 {tag}
               </span>
             )
           })}
           {tags.length > 2 && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-gray-50/60 dark:bg-gray-800/30 text-gray-600 dark:text-gray-400 border border-gray-200/70 dark:border-gray-700/30 backdrop-blur-sm whitespace-nowrap">
-              +{tags.length - 2} more
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-gray-50/60 dark:bg-gray-800/30 text-gray-600 dark:text-gray-400 whitespace-nowrap">
+              +{tags.length - 2}
             </span>
           )}
         </div>
@@ -790,7 +789,7 @@ export default function Content() {
                   <TableRow key={headerGroup.id} className="bg-transparent border-b border-gray-200/70 dark:border-gray-700/70">
                     {headerGroup.headers.map((header) => {
                       return (
-                        <TableHead key={header.id} className="px-4 py-2 text-left text-xs font-medium text-gray-400 dark:text-gray-500 tracking-wide">
+                        <TableHead key={header.id} className="px-2 py-1.5 text-left text-xs font-medium text-gray-400 dark:text-gray-500 tracking-wide">
                           {header.isPlaceholder
                             ? null
                             : flexRender(
@@ -817,7 +816,7 @@ export default function Content() {
                       `}
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id} className="px-4 py-2.5 whitespace-nowrap text-sm border-b border-gray-100/50 dark:border-gray-800/50">
+                        <TableCell key={cell.id} className="px-2 py-1.5 whitespace-nowrap text-xs border-b border-gray-100/50 dark:border-gray-800/50">
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </TableCell>
                       ))}
