@@ -725,9 +725,17 @@ export default function Content() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
+  // Filter data for published content if needed
+  const filteredData = useMemo(() => {
+    if (showPublishedOnly) {
+      return data.filter(post => post.status === "Published");
+    }
+    return data;
+  }, [data, showPublishedOnly]);
+  
   // Create table instance
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
