@@ -39,32 +39,52 @@ export default function DesignStudio() {
 
         {/* Browser mockup */}
         <div className="bg-white dark:bg-gray-800 shadow-sm rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 max-h-[700px]">
-          {/* Browser chrome - More minimal */}
-          <div className="bg-gray-100 dark:bg-gray-850 px-4 py-2 border-b border-gray-200 dark:border-gray-700 flex items-center">
+          {/* Browser chrome - Ultra minimal */}
+          <div className="bg-gray-100 dark:bg-gray-850 px-4 py-2 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
             {/* Traffic lights */}
-            <div className="flex space-x-2 mr-4">
+            <div className="flex space-x-2">
               <div className="w-3 h-3 rounded-full bg-red-500"></div>
               <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
               <div className="w-3 h-3 rounded-full bg-green-500"></div>
             </div>
             
-            {/* Address bar */}
-            <div className="flex-1 mx-2">
-              <div className="bg-white dark:bg-gray-800 px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 flex items-center justify-center text-xs text-gray-500 dark:text-gray-400">
-                <span className="opacity-50 mr-1">https://</span>community.bettermode.io
+            {/* Browser controls - All right aligned */}
+            <div className="flex items-center space-x-2">
+              {/* Smaller Address bar */}
+              <div className="w-56 mr-2">
+                <div className="bg-white dark:bg-gray-800 px-2 py-1 rounded-md border border-gray-300 dark:border-gray-600 flex items-center justify-center text-xs text-gray-500 dark:text-gray-400 truncate">
+                  <span className="opacity-50 mr-1">https://</span>community.bettermode.io
+                </div>
               </div>
-            </div>
-            
-            {/* Browser controls - Dropdowns */}
-            <div className="flex space-x-3">
+              
+              {/* Undo/Redo buttons */}
+              <div className="relative">
+                <button 
+                  className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md px-2 py-1 flex items-center text-xs"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div className="relative">
+                <button 
+                  className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md px-2 py-1 flex items-center text-xs"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </button>
+              </div>
+              
               {/* User View Dropdown */}
               <div className="relative">
                 <button 
                   className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md px-2 py-1 flex items-center text-xs"
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                 >
-                  <User className="h-4 w-4 mr-1" />
-                  <ChevronDown className="h-3 w-3 ml-1" />
+                  <User className="h-4 w-4" />
                 </button>
                 
                 {userDropdownOpen && (
@@ -91,7 +111,6 @@ export default function DesignStudio() {
                   onClick={() => setLanguageDropdownOpen(!languageDropdownOpen)}
                 >
                   <span>EN</span>
-                  <ChevronDown className="h-3 w-3 ml-1" />
                 </button>
                 
                 {languageDropdownOpen && (
