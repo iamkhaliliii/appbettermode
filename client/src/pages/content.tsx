@@ -820,9 +820,9 @@ export default function Content() {
                   <FileOutput className="h-3 w-3" />
                 </button>
                 
-                <button className="inline-flex items-center px-2 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors">
+                <button className="inline-flex items-center justify-center h-6 px-1.5 rounded bg-primary-500 text-white hover:bg-primary-400 transition-colors">
                   <Plus className="h-3 w-3 mr-0.5" />
-                  <span>New</span>
+                  <span className="text-[10px] font-medium">New</span>
                 </button>
               </div>
             </div>
