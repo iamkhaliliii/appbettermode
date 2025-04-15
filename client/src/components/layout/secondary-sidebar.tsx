@@ -364,8 +364,12 @@ export function SecondarySidebar() {
     if (url.includes("/") && location.startsWith(url)) return true;
     
     // Special case for root menu items
-    const mainSection = url.split("/")[1]; // e.g. "content" from "/content/posts"
+    const mainSection = url.split("/")[1]; // e.g. "content" from "/content/CMS"
     if (location === `/${mainSection}`) return true;
+    
+    // Special case for our renamed routes
+    if (url === '/content/CMS' && (location === '/content/posts' || location === '/content')) return true;
+    if (url === '/content/activity' && location === '/content/comments') return true;
     
     return false;
   };
@@ -437,11 +441,11 @@ export function SecondarySidebar() {
       </div>
       
       <div className="space-y-1">
-        <Link href="/content/posts">
+        <Link href="/content/CMS">
           <div
             className={cn(
               "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
-              (isActiveUrl('/content/posts') || location === '/content')
+              (isActiveUrl('/content/CMS') || location === '/content')
                 ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-md" 
                 : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded"
             )}
@@ -454,11 +458,11 @@ export function SecondarySidebar() {
           </div>
         </Link>
 
-        <Link href="/content/comments">
+        <Link href="/content/activity">
           <div
             className={cn(
               "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
-              isActiveUrl('/content/comments')
+              isActiveUrl('/content/activity')
                 ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-md" 
                 : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded"
             )}

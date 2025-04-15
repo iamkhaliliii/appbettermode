@@ -11,10 +11,10 @@ export default function Content() {
   const [, params] = useRoute('/content/:section');
   const section = params?.section;
 
-  // Redirect to the first tab (posts) if we're at the root content route
+  // Redirect to the first tab (CMS) if we're at the root content route
   useEffect(() => {
     if (location === '/content') {
-      setLocation('/content/posts');
+      setLocation('/content/CMS');
     }
   }, [location, setLocation]);
 
@@ -23,13 +23,27 @@ export default function Content() {
     return <DashboardLayout><div className="p-8">Loading content...</div></DashboardLayout>;
   }
   
+  // Show appropriate content based on section
+  const getTitle = () => {
+    switch(section) {
+      case 'CMS':
+        return 'CMS Collections';
+      case 'activity':
+        return 'Activity Hub';
+      default:
+        return 'Content Management';
+    }
+  };
+  
   return (
     <DashboardLayout>
       <div className="max-w-7xl mx-auto p-4">
         <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Content Management</h1>
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">{getTitle()}</h1>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Manage all your content in one place
+            {section === 'CMS' ? 'Manage content collections and templates' : 
+             section === 'activity' ? 'Track user activities and engagement' : 
+             'Manage all your content in one place'}
           </p>
         </div>
 
