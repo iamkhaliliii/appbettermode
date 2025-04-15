@@ -994,7 +994,7 @@ export default function Content() {
                   <TableRow key={headerGroup.id} className="bg-transparent border-b border-border/70 dark:border-border/70">
                     {headerGroup.headers.map((header) => {
                       return (
-                        <TableHead key={header.id} className="px-2 py-1.5 h-7 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground tracking-wide sticky top-0 bg-background dark:bg-background">
+                        <TableHead key={header.id} className="px-4 py-2 h-8 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground tracking-wide sticky top-0 bg-background dark:bg-background">
                           {header.isPlaceholder
                             ? null
                             : flexRender(
@@ -1021,7 +1021,7 @@ export default function Content() {
                       `}
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id} className="px-2 py-1 whitespace-nowrap text-xs border-b border-border/50 dark:border-border/50">
+                        <TableCell key={cell.id} className="px-4 py-2.5 whitespace-nowrap text-xs border-b border-border/50 dark:border-border/50">
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </TableCell>
                       ))}
