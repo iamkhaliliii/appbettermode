@@ -333,15 +333,6 @@ export default function DesignStudio() {
             </div>
           </div>
         </div>
-        
-        <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-          <p>This is a non-functional preview of a community platform interface. All elements are for display only.</p>
-          <p className="mt-2">
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-              Preview Mode
-            </span>
-          </p>
-        </div>
       </div>
     </DashboardLayout>
   );
