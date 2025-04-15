@@ -240,16 +240,25 @@ const columns: ColumnDef<Post>[] = [
     cell: ({ row }) => {
       const space = row.getValue("space") as { name: string; color: string }
       
+      const getIconForSpace = (spaceName: string) => {
+        switch(spaceName.toLowerCase()) {
+          case 'discussions':
+            return <MessageSquare className="h-3 w-3 mr-1" />;
+          case 'wishlist':
+            return <Star className="h-3 w-3 mr-1" />;
+          case 'articles':
+            return <FileText className="h-3 w-3 mr-1" />;
+          case 'pages':
+            return <File className="h-3 w-3 mr-1" />;
+          default:
+            return <Hash className="h-3 w-3 mr-1" />;
+        }
+      };
+      
       return (
         <div className="flex items-center">
-          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs whitespace-nowrap bg-gray-50/60 dark:bg-gray-800/30 text-gray-600 dark:text-gray-400">
-            <span className="w-3 h-3 mr-1 inline-flex items-center justify-center">
-              {space.name.toLowerCase() === 'discussions' && '💬'}
-              {space.name.toLowerCase() === 'wishlist' && '⭐'}
-              {space.name.toLowerCase() === 'articles' && '📄'}
-              {space.name.toLowerCase() === 'pages' && '📝'}
-              {!['discussions', 'wishlist', 'articles', 'pages'].includes(space.name.toLowerCase()) && '#'}
-            </span>
+          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs whitespace-nowrap bg-gray-100 dark:bg-gray-800/60 text-gray-700 dark:text-gray-300">
+            {getIconForSpace(space.name)}
             {space.name}
           </span>
         </div>
