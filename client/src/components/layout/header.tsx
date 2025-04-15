@@ -26,7 +26,7 @@ export function Header({ onToggleMobileMenu }: HeaderProps) {
         </div>
 
         {/* Middle Section - App Navigation */}
-        <div className="w-56 flex-shrink-0 h-full border-r border-gray-200 dark:border-gray-700">
+        <div className="w-64 flex-shrink-0 h-full border-r border-gray-200 dark:border-gray-700">
           <div className="flex h-full items-center justify-center gap-2 px-2">
             <Tooltip.Provider delayDuration={200}>
               <Tooltip.Root>
