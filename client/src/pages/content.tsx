@@ -978,72 +978,7 @@ export default function Content() {
             </div>
           </div>
 
-          {/* Action menu - Floating action button */}
-          <div className="px-2 py-3 sm:px-3 sm:py-4">
-            <div className="fixed bottom-5 right-5 z-20">
-              <div className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-primary-500 to-primary-400 rounded-full blur opacity-20 group-hover:opacity-30 transition duration-1000 group-hover:duration-200"></div>
-                <button className="relative bg-primary-500 hover:bg-primary-400 text-white p-2.5 rounded-full shadow-md flex items-center justify-center transition-all duration-200 focus:outline-none">
-                  <Plus className="h-4 w-4" />
-                </button>
-                
-                {/* Action menu dropdown */}
-                <div className="absolute right-0 bottom-full mb-2 w-48 overflow-hidden rounded-lg bg-white/98 dark:bg-gray-800/98 shadow-md border border-gray-200 dark:border-gray-700 backdrop-blur-sm origin-bottom-right scale-0 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-200">
-                  <div className="py-1">
-                    <div className="px-3 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                      Create New
-                    </div>
-                    <button className="flex w-full items-center px-3 py-2 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                      <span className="flex-shrink-0 mr-2.5 h-5 w-5 rounded-full bg-primary-50 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                      </span>
-                      <div>
-                        <div className="font-medium">Create Post</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Add new content</div>
-                      </div>
-                    </button>
-                    <button className="flex w-full items-center px-3 py-2 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                      <span className="flex-shrink-0 mr-2.5 h-5 w-5 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                      </span>
-                      <div>
-                        <div className="font-medium">New Collection</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Create structure</div>
-                      </div>
-                    </button>
-                    <button className="flex w-full items-center px-3 py-2 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                      <span className="flex-shrink-0 mr-2.5 h-5 w-5 rounded-full bg-green-50 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
-                        </svg>
-                      </span>
-                      <div>
-                        <div className="font-medium">Import Content</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Bulk import</div>
-                      </div>
-                    </button>
-                    <div className="border-t border-gray-200 dark:border-gray-700 my-0.5"></div>
-                    <button className="flex w-full items-center px-3 py-2 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                      <span className="flex-shrink-0 mr-2.5 h-5 w-5 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                      </span>
-                      <div>
-                        <div className="font-medium">Settings</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">CMS config</div>
-                      </div>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+
         </div>
       </DashboardLayout>
     );
