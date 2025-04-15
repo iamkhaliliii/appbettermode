@@ -1047,82 +1047,72 @@ export function SecondarySidebar() {
           />
         </div>
         
-        {/* Sections and Blocks - without accordion */}
+        {/* Sections and Blocks - minimal design */}
         <div className="mt-4">
           <div className="px-1 mb-4">
-            <div className="flex items-center mb-2">
-              <Layers2 className="h-4 w-4 mr-2 text-purple-500" />
+            <div className="flex items-center mb-4">
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Sections and Blocks</h3>
             </div>
             
-            {/* Divider */}
-            <div className="h-px bg-gray-200 dark:bg-gray-700 mb-3 mt-2"></div>
-            
-            {/* Navigation Section */}
-            <div className="mb-6">
-              <div className="flex items-center px-1 mb-3">
-                <div className="w-1 h-5 bg-blue-500 rounded-r mr-2"></div>
-                <h4 className="text-xs font-medium text-gray-700 dark:text-gray-300">Navigations</h4>
-              </div>
+            {/* Simple Navigation Section */}
+            <div className="mb-5">
+              <h4 className="text-xs text-gray-500 dark:text-gray-400 mb-2">Navigations</h4>
               <div className="grid grid-cols-2 gap-2">
-                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-2 cursor-pointer hover:shadow-sm transition-shadow">
-                  <div className="flex flex-col items-center text-center">
-                    <div className="w-full h-2 bg-blue-100 dark:bg-blue-900/30 rounded-sm mb-1.5"></div>
-                    <span className="text-xs text-gray-700 dark:text-gray-300">Header</span>
-                  </div>
+                <div className="border border-gray-200 dark:border-gray-700 rounded p-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 text-center">
+                  <span className="text-xs text-gray-700 dark:text-gray-300">Header</span>
                 </div>
-                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-2 cursor-pointer hover:shadow-sm transition-shadow">
-                  <div className="flex flex-col items-center text-center">
-                    <div className="w-2 h-8 bg-red-100 dark:bg-red-900/30 rounded-sm absolute right-1"></div>
-                    <span className="text-xs text-gray-700 dark:text-gray-300">Right Sidebar</span>
-                  </div>
+                <div className="border border-gray-200 dark:border-gray-700 rounded p-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 text-center">
+                  <span className="text-xs text-gray-700 dark:text-gray-300">Right Sidebar</span>
                 </div>
-                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-2 cursor-pointer hover:shadow-sm transition-shadow">
-                  <div className="flex flex-col items-center text-center">
-                    <div className="w-2 h-8 bg-green-100 dark:bg-green-900/30 rounded-sm absolute left-1"></div>
-                    <span className="text-xs text-gray-700 dark:text-gray-300">Left Sidebar</span>
-                  </div>
+                <div className="border border-gray-200 dark:border-gray-700 rounded p-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 text-center">
+                  <span className="text-xs text-gray-700 dark:text-gray-300">Left Sidebar</span>
                 </div>
-                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-2 cursor-pointer hover:shadow-sm transition-shadow">
-                  <div className="flex flex-col items-center text-center">
-                    <div className="w-full h-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-sm mt-1.5"></div>
-                    <span className="text-xs text-gray-700 dark:text-gray-300">Footer</span>
-                  </div>
+                <div className="border border-gray-200 dark:border-gray-700 rounded p-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 text-center">
+                  <span className="text-xs text-gray-700 dark:text-gray-300">Footer</span>
                 </div>
               </div>
             </div>
             
-            {/* Main Section with blocks */}
+            {/* Main Section with dropdown block selector */}
             <div>
-              <div className="flex items-center px-1 mb-3">
-                <div className="w-1 h-5 bg-purple-500 rounded-r mr-2"></div>
-                <h4 className="text-xs font-medium text-gray-700 dark:text-gray-300">Main Section Blocks</h4>
-              </div>
-              <div className="space-y-1.5">
-                <button className="flex items-center w-full px-3 py-2 text-xs rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/70 cursor-pointer text-gray-700 dark:text-gray-300 transition-colors">
-                  <Plus className="h-3.5 w-3.5 mr-2 text-purple-500" />
-                  <span>Add Text Block</span>
+              <h4 className="text-xs text-gray-500 dark:text-gray-400 mb-2">Main Section</h4>
+              <div className="relative">
+                <button
+                  className="flex items-center justify-between w-full px-3 py-2 text-xs rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
+                  onClick={() => {
+                    const dropdown = document.getElementById('blocks-dropdown');
+                    if (dropdown) {
+                      dropdown.classList.toggle('hidden');
+                    }
+                  }}
+                >
+                  <div className="flex items-center">
+                    <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
+                    <span>Add Block</span>
+                  </div>
+                  <ChevronDown className="h-3.5 w-3.5 text-gray-500" />
                 </button>
-                <button className="flex items-center w-full px-3 py-2 text-xs rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/70 cursor-pointer text-gray-700 dark:text-gray-300 transition-colors">
-                  <Plus className="h-3.5 w-3.5 mr-2 text-purple-500" />
-                  <span>Add Image Block</span>
-                </button>
-                <button className="flex items-center w-full px-3 py-2 text-xs rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/70 cursor-pointer text-gray-700 dark:text-gray-300 transition-colors">
-                  <Plus className="h-3.5 w-3.5 mr-2 text-purple-500" />
-                  <span>Add Video Block</span>
-                </button>
-                <button className="flex items-center w-full px-3 py-2 text-xs rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/70 cursor-pointer text-gray-700 dark:text-gray-300 transition-colors">
-                  <Plus className="h-3.5 w-3.5 mr-2 text-purple-500" />
-                  <span>Add Button Block</span>
-                </button>
-                <button className="flex items-center w-full px-3 py-2 text-xs rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/70 cursor-pointer text-gray-700 dark:text-gray-300 transition-colors">
-                  <Plus className="h-3.5 w-3.5 mr-2 text-purple-500" />
-                  <span>Add Form Block</span>
-                </button>
-                <button className="flex items-center w-full px-3 py-2 text-xs rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/70 cursor-pointer text-gray-700 dark:text-gray-300 transition-colors">
-                  <Plus className="h-3.5 w-3.5 mr-2 text-purple-500" />
-                  <span>Add Custom Block</span>
-                </button>
+                
+                {/* Dropdown for block options */}
+                <div id="blocks-dropdown" className="absolute left-0 right-0 z-10 mt-1 hidden border border-gray-200 dark:border-gray-700 rounded bg-white dark:bg-gray-800 shadow-sm">
+                  <div className="py-1">
+                    <div className="flex items-center px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <span>Text Block</span>
+                    </div>
+                    <div className="flex items-center px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <span>Image Block</span>
+                    </div>
+                    <div className="flex items-center px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <span>Video Block</span>
+                    </div>
+                    <div className="flex items-center px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <span>Button Block</span>
+                    </div>
+                    <div className="flex items-center px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                      <span>Form Block</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
