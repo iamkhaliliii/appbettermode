@@ -1047,83 +1047,11 @@ export function SecondarySidebar() {
           />
         </div>
         
-        {/* Actions Section */}
-        <div className="mt-3">
-          <div className="flex items-center justify-between mb-2 px-1">
-            <h3 className="text-xs font-medium text-gray-400">Quick Actions</h3>
-          </div>
-          
-          {/* Quick action buttons */}
-          <div className="grid grid-cols-2 gap-2 mb-4">
-            <button className="flex items-center justify-center p-2 bg-gray-50 dark:bg-gray-700/50 text-xs font-medium rounded-md border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-              <Plus className="h-3.5 w-3.5 mr-1.5 text-purple-500" />
-              <span>New Post</span>
-            </button>
-            <button className="flex items-center justify-center p-2 bg-gray-50 dark:bg-gray-700/50 text-xs font-medium rounded-md border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-              <MessageSquare className="h-3.5 w-3.5 mr-1.5 text-purple-500" />
-              <span>New Thread</span>
-            </button>
-          </div>
-          
-          {/* Accordion sections with enhanced styling */}
+        {/* Only one section - Sections and Blocks */}
+        <div className="mt-3">          
+          {/* Main Accordion with single section */}
           <div className="px-1">
-            <Accordion type="single" collapsible defaultValue="actions" className="space-y-2">
-              {/* Actions Accordion */}
-              <AccordionItem value="actions" className="border-0 bg-gray-50 dark:bg-gray-800/50 rounded-lg overflow-hidden">
-                <AccordionTrigger className="flex items-center py-2 px-3 rounded-t text-gray-700 dark:text-gray-300 hover:no-underline hover:bg-gray-100 dark:hover:bg-gray-700/50">
-                  <div className="flex items-center justify-between w-full">
-                    <div className="flex items-center">
-                      <FileCode2 className="h-4 w-4 mr-2 text-purple-500" />
-                      <span className="font-medium text-sm">Content Actions</span>
-                    </div>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="pt-1 pb-2 bg-white dark:bg-gray-800 px-1">
-                  <div className="space-y-1">
-                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                      <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
-                      <span>Create Post</span>
-                    </div>
-                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                      <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
-                      <span>New Thread</span>
-                    </div>
-                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                      <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
-                      <span>Import Content</span>
-                    </div>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-              
-              {/* Layout Templates Accordion */}
-              <AccordionItem value="templates" className="border-0 bg-gray-50 dark:bg-gray-800/50 rounded-lg overflow-hidden">
-                <AccordionTrigger className="flex items-center py-2 px-3 rounded-t text-gray-700 dark:text-gray-300 hover:no-underline hover:bg-gray-100 dark:hover:bg-gray-700/50">
-                  <div className="flex items-center justify-between w-full">
-                    <div className="flex items-center">
-                      <Layout className="h-4 w-4 mr-2 text-purple-500" />
-                      <span className="font-medium text-sm">Layout Templates</span>
-                    </div>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="pt-1 pb-2 bg-white dark:bg-gray-800 px-1">
-                  <div className="space-y-1">
-                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                      <span>Default Layout</span>
-                    </div>
-                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                      <span>Compact View</span>
-                    </div>
-                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                      <div className="w-2 h-2 bg-amber-500 rounded-full mr-2"></div>
-                      <span>Grid Layout</span>
-                    </div>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-              
+            <Accordion type="single" collapsible defaultValue="sections" className="space-y-2">
               {/* Sections and Blocks Accordion */}
               <AccordionItem value="sections" className="border-0 bg-gray-50 dark:bg-gray-800/50 rounded-lg overflow-hidden">
                 <AccordionTrigger className="flex items-center py-2 px-3 rounded-t text-gray-700 dark:text-gray-300 hover:no-underline hover:bg-gray-100 dark:hover:bg-gray-700/50">
@@ -1134,23 +1062,58 @@ export function SecondarySidebar() {
                     </div>
                   </div>
                 </AccordionTrigger>
-                <AccordionContent className="pt-1 pb-2 bg-white dark:bg-gray-800 px-1">
-                  <div className="space-y-1">
-                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                      <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-                      <span>Header Section</span>
+                <AccordionContent className="pt-2 pb-2 bg-white dark:bg-gray-800 px-1">
+                  {/* Navigation Section */}
+                  <div className="mb-3">
+                    <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400 px-3 mb-2">Navigations</h4>
+                    <div className="space-y-1">
+                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                        <span>Header</span>
+                      </div>
+                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                        <span>Right Sidebar</span>
+                      </div>
+                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                        <span>Left Sidebar</span>
+                      </div>
+                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                        <span>Footer</span>
+                      </div>
                     </div>
-                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                      <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-                      <span>Content Block</span>
-                    </div>
-                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                      <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-                      <span>Media Gallery</span>
-                    </div>
-                    <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
-                      <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-                      <span>Comments Section</span>
+                  </div>
+                  
+                  {/* Main Section with blocks */}
+                  <div>
+                    <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400 px-3 mb-2">Main Section</h4>
+                    <div className="space-y-1">
+                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                        <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
+                        <span>Add Text Block</span>
+                      </div>
+                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                        <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
+                        <span>Add Image Block</span>
+                      </div>
+                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                        <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
+                        <span>Add Video Block</span>
+                      </div>
+                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                        <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
+                        <span>Add Button Block</span>
+                      </div>
+                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                        <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
+                        <span>Add Form Block</span>
+                      </div>
+                      <div className="flex items-center px-3 py-1.5 text-xs rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-700 dark:text-gray-300">
+                        <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
+                        <span>Add Custom Block</span>
+                      </div>
                     </div>
                   </div>
                 </AccordionContent>
