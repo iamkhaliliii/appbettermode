@@ -1,15 +1,518 @@
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Search, ChevronDown, Filter, MoreHorizontal } from "lucide-react";
+import { 
+  Plus, 
+  Search, 
+  ChevronDown, 
+  ChevronUp,
+  Filter, 
+  MoreHorizontal, 
+  ListFilter,
+  CircleX,
+  Trash,
+  MoreVertical
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useLocation, useRoute, useParams, Redirect } from "wouter";
-import { useEffect } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+// Define post data type
+interface Post {
+  id: string;
+  title: string;
+  status: "Published" | "Draft" | "Schedule" | "Pending review";
+  author: {
+    name: string;
+    avatar: string;
+  };
+  space: {
+    name: string;
+    color: string;
+  };
+  publishedAt: string;
+  cmsModel: string;
+  tags: string[];
+  locked: boolean;
+}
+
+// Column definitions for the table
+const columns: ColumnDef<Post>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: "title",
+    header: ({ column }) => {
+      return (
+        <div className="flex items-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
+          <span>Title</span>
+          <div className="ml-1">
+            {column.getIsSorted() === "asc" ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : column.getIsSorted() === "desc" ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" />
+            )}
+          </div>
+        </div>
+      )
+    },
+    cell: ({ row }) => <div className="font-medium">{row.getValue("title")}</div>,
+  },
+  {
+    accessorKey: "status",
+    header: ({ column }) => {
+      return (
+        <div className="flex items-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
+          <span>Status</span>
+          <div className="ml-1">
+            {column.getIsSorted() === "asc" ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : column.getIsSorted() === "desc" ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" />
+            )}
+          </div>
+        </div>
+      )
+    },
+    cell: ({ row }) => {
+      const status = row.getValue("status") as string
+      const statusConfig = {
+        "Published": { bgClass: "bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300", icon: null },
+        "Draft": { bgClass: "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300", icon: null },
+        "Schedule": { bgClass: "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300", icon: null },
+        "Pending review": { bgClass: "bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300", icon: null },
+      }
+      
+      const config = statusConfig[status] || statusConfig["Draft"]
+      
+      return (
+        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${config.bgClass}`}>
+          {status}
+        </span>
+      )
+    },
+  },
+  {
+    accessorKey: "author",
+    header: ({ column }) => {
+      return (
+        <div className="flex items-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
+          <span>Author</span>
+          <div className="ml-1">
+            {column.getIsSorted() === "asc" ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : column.getIsSorted() === "desc" ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" />
+            )}
+          </div>
+        </div>
+      )
+    },
+    cell: ({ row }) => {
+      const author = row.getValue("author") as { name: string; avatar: string }
+      return (
+        <div className="flex items-center">
+          <div className="flex-shrink-0 h-6 w-6">
+            <img className="h-6 w-6 rounded-full" src={author.avatar} alt={author.name} />
+          </div>
+          <div className="ml-2">{author.name}</div>
+        </div>
+      )
+    },
+    sortingFn: (rowA, rowB) => {
+      const authorA = rowA.getValue("author") as { name: string }
+      const authorB = rowB.getValue("author") as { name: string }
+      return authorA.name.localeCompare(authorB.name)
+    },
+  },
+  {
+    accessorKey: "space",
+    header: ({ column }) => {
+      return (
+        <div className="flex items-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
+          <span>Space</span>
+          <div className="ml-1">
+            {column.getIsSorted() === "asc" ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : column.getIsSorted() === "desc" ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" />
+            )}
+          </div>
+        </div>
+      )
+    },
+    cell: ({ row }) => {
+      const space = row.getValue("space") as { name: string; color: string }
+      return (
+        <div className="flex items-center">
+          <div className={`flex-shrink-0 h-4 w-4 rounded-full mr-2`} style={{ backgroundColor: space.color }}></div>
+          <div>{space.name}</div>
+        </div>
+      )
+    },
+    sortingFn: (rowA, rowB) => {
+      const spaceA = rowA.getValue("space") as { name: string }
+      const spaceB = rowB.getValue("space") as { name: string }
+      return spaceA.name.localeCompare(spaceB.name)
+    },
+  },
+  {
+    accessorKey: "publishedAt",
+    header: ({ column }) => {
+      return (
+        <div className="flex items-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
+          <span>Published at</span>
+          <div className="ml-1">
+            {column.getIsSorted() === "asc" ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : column.getIsSorted() === "desc" ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" />
+            )}
+          </div>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "cmsModel",
+    header: ({ column }) => {
+      return (
+        <div className="flex items-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
+          <span>CMS model</span>
+          <div className="ml-1">
+            {column.getIsSorted() === "asc" ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : column.getIsSorted() === "desc" ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" />
+            )}
+          </div>
+        </div>
+      )
+    },
+    cell: ({ row }) => {
+      const model = row.getValue("cmsModel") as string
+      const modelColorMap = {
+        "Discussion": "violet",
+        "Wishlist": "yellow",
+        "Article": "blue",
+        "Page": "green",
+      }
+      const color = modelColorMap[model] || "gray"
+      
+      return (
+        <span className={`px-2 py-0.5 rounded-full text-xs bg-${color}-100 text-${color}-700 dark:bg-${color}-900 dark:text-${color}-300`}>
+          {model}
+        </span>
+      )
+    },
+  },
+  {
+    accessorKey: "id",
+    header: ({ column }) => {
+      return (
+        <div className="flex items-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
+          <span>ID</span>
+          <div className="ml-1">
+            {column.getIsSorted() === "asc" ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : column.getIsSorted() === "desc" ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" />
+            )}
+          </div>
+        </div>
+      )
+    },
+    cell: ({ row }) => {
+      const id = row.getValue("id") as string
+      return <span className="text-gray-500 dark:text-gray-400">{id}</span>
+    },
+  },
+  {
+    accessorKey: "tags",
+    header: ({ column }) => {
+      return (
+        <div className="flex items-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
+          <span>Tags</span>
+          <div className="ml-1">
+            {column.getIsSorted() === "asc" ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : column.getIsSorted() === "desc" ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" />
+            )}
+          </div>
+        </div>
+      )
+    },
+    cell: ({ row }) => {
+      const tags = row.getValue("tags") as string[]
+      if (!tags || tags.length === 0) return null
+      
+      const tagColors = {
+        "Discussion": "violet",
+        "new": "blue",
+        "me_too": "green",
+        "question": "yellow",
+        "bug": "red",
+      }
+      
+      return (
+        <div className="flex gap-1">
+          {tags.slice(0, 3).map((tag, i) => {
+            const color = tagColors[tag] || "gray"
+            return (
+              <span key={i} className={`px-2 py-0.5 rounded-full text-xs bg-${color}-100 text-${color}-700 dark:bg-${color}-900 dark:text-${color}-300`}>
+                {tag}
+              </span>
+            )
+          })}
+          {tags.length > 3 && (
+            <span className="px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300">
+              +{tags.length - 3}
+            </span>
+          )}
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "locked",
+    header: ({ column }) => {
+      return (
+        <div className="flex items-center justify-center hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer transition-colors group">
+          <span>Locked</span>
+          <div className="ml-1">
+            {column.getIsSorted() === "asc" ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : column.getIsSorted() === "desc" ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400" />
+            )}
+          </div>
+        </div>
+      )
+    },
+    cell: ({ row }) => {
+      const locked = row.getValue("locked") as boolean
+      return (
+        <div className="text-center">
+          {locked ? (
+            <span className="text-yellow-500">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </span>
+          ) : (
+            <span className="text-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </span>
+          )}
+        </div>
+      )
+    },
+  },
+  {
+    id: "actions",
+    header: () => <span className="sr-only">Actions</span>,
+    cell: ({ row }) => {
+      return (
+        <div className="text-right">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <MoreVertical className="h-4 w-4" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem>Edit</DropdownMenuItem>
+              <DropdownMenuItem>Duplicate</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Archive</DropdownMenuItem>
+              <DropdownMenuItem className="text-red-600">
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )
+    },
+  },
+]
+
+// Sample data for the demonstration
+const data: Post[] = [
+  {
+    id: "dOUwwAq3Lc9vmA",
+    title: "Level Up Your Community",
+    status: "Schedule",
+    author: {
+      name: "John Doe",
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    },
+    space: {
+      name: "Discussions",
+      color: "#6366f1"
+    },
+    publishedAt: "Jan 13, 2025",
+    cmsModel: "Discussion",
+    tags: ["Discussion", "new", "me_too"],
+    locked: false
+  },
+  {
+    id: "9fXYxHmWxwvcf15",
+    title: "Community Building Strategies",
+    status: "Pending review",
+    author: {
+      name: "John Doe",
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    },
+    space: {
+      name: "Wishlist",
+      color: "#eab308"
+    },
+    publishedAt: "Jan 13, 2025",
+    cmsModel: "Wishlist",
+    tags: ["Discussion", "new", "me_too"],
+    locked: true
+  },
+  {
+    id: "qbJgwG9RtWsJW5d",
+    title: "Engaging Your Online Community",
+    status: "Pending review",
+    author: {
+      name: "John Doe",
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    },
+    space: {
+      name: "Discussions",
+      color: "#6366f1"
+    },
+    publishedAt: "Jan 13, 2025",
+    cmsModel: "Discussion",
+    tags: ["Discussion", "new", "me_too"],
+    locked: false
+  },
+  {
+    id: "5tRgT7Y9oP4Z1qA",
+    title: "Modern Community Examples",
+    status: "Published",
+    author: {
+      name: "Jane Smith",
+      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    },
+    space: {
+      name: "Articles",
+      color: "#2563eb"
+    },
+    publishedAt: "Jan 14, 2025",
+    cmsModel: "Article",
+    tags: ["community", "featured"],
+    locked: false
+  },
+];
 
 export default function Content() {
   const [location, setLocation] = useLocation();
   const [, params] = useRoute('/content/:section');
   const section = params?.section;
+  
+  // Table state
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
+
+  // Create table instance
+  const table = useReactTable({
+    data,
+    columns,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+    },
+  });
 
   // No automatic redirect from /content to /content/CMS anymore
   
