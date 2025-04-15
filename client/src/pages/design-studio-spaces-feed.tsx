@@ -405,7 +405,33 @@ export default function DesignStudioSpacesFeed() {
               </nav>
             </div>
             
-            {/* Now using the global secondary sidebar */}
+            {/* Secondary sidebar with breadcrumb */}
+            <div className="w-64 border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-y-auto h-full">
+              {/* Breadcrumb header */}
+              <div className="p-3 pb-0">
+                <div className="flex items-center justify-between mb-2">
+                  <nav className="flex items-center space-x-1 text-xs text-gray-500 dark:text-gray-400">
+                    <a href="/design-studio" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setLocation('/design-studio');
+                      }}
+                      className="hover:text-gray-900 dark:hover:text-white transition-colors"
+                    >
+                      Design Studio
+                    </a>
+                    <ChevronRight className="h-3 w-3" />
+                    <a href="/design-studio/spaces" 
+                      className="hover:text-gray-900 dark:hover:text-white transition-colors"
+                    >
+                      Spaces
+                    </a>
+                    <ChevronRight className="h-3 w-3" />
+                    <span className="text-gray-900 dark:text-white font-medium">Feed</span>
+                  </nav>
+                </div>
+              </div>
+            </div>
             
             {/* Main content area */}
             <div className="flex-1 flex justify-center overflow-auto">
