@@ -38,7 +38,7 @@ import {
   Edit,
   Check
 } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
+// Custom MiniToggle component replaces Switch
 import { 
   Accordion,
   AccordionContent,
@@ -47,6 +47,20 @@ import {
 } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
+
+// Minimal Toggle Switch Component
+const MiniToggle = ({ isActive, onChange }: { isActive: boolean; onChange: (state: boolean) => void }) => {
+  return (
+    <div 
+      className={`relative h-3 w-6 rounded-full cursor-pointer transition-colors ${isActive ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-700'}`}
+      onClick={() => onChange(!isActive)}
+    >
+      <div 
+        className={`absolute top-0.5 h-2 w-2 rounded-full bg-white transform transition-transform ${isActive ? 'translate-x-3.5' : 'translate-x-0.5'}`} 
+      />
+    </div>
+  );
+};
 
 interface SideNavItemProps {
   href: string;
@@ -1064,10 +1078,9 @@ export function SecondarySidebar() {
                       <span className="text-xs text-gray-600 dark:text-gray-300">Header</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Switch 
-                        id="header-toggle"
-                        className="data-[state=checked]:bg-blue-500 h-3 w-5"
-                        onCheckedChange={(checked) => {
+                      <MiniToggle
+                        isActive={false}
+                        onChange={(checked) => {
                           // Toggle visibility of options
                           const options = document.getElementById('header-options');
                           if (options) {
@@ -1108,10 +1121,9 @@ export function SecondarySidebar() {
                       <span className="text-xs text-gray-600 dark:text-gray-300">Right Sidebar</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Switch 
-                        id="right-sidebar-toggle"
-                        className="data-[state=checked]:bg-blue-500 h-3 w-5"
-                        onCheckedChange={(checked) => {
+                      <MiniToggle 
+                        isActive={false}
+                        onChange={(checked) => {
                           // Using only community elements with animation  
                           // Also change the community right sidebar with animation
                           const communityRightSidebar = document.getElementById('community-right-sidebar');
@@ -1150,10 +1162,9 @@ export function SecondarySidebar() {
                       <span className="text-xs text-gray-600 dark:text-gray-300">Left Sidebar</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Switch 
-                        id="left-sidebar-toggle"
-                        className="data-[state=checked]:bg-blue-500 h-3 w-5"
-                        onCheckedChange={(checked) => {
+                      <MiniToggle 
+                        isActive={false}
+                        onChange={(checked) => {
                           // Using only community elements with animation
                           // Also change the community left sidebar with animation
                           const communityLeftSidebar = document.getElementById('community-left-sidebar');
@@ -1188,10 +1199,9 @@ export function SecondarySidebar() {
                       <span className="text-xs text-gray-600 dark:text-gray-300">Footer</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Switch 
-                        id="footer-toggle"
-                        className="data-[state=checked]:bg-blue-500 h-3 w-5"
-                        onCheckedChange={(checked) => {
+                      <MiniToggle 
+                        isActive={false}
+                        onChange={(checked) => {
                           // Using only community elements with animation
                           // Also change the community footer with animation
                           const communityFooter = document.getElementById('community-footer');
