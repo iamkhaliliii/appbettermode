@@ -978,14 +978,14 @@ export default function Content() {
           </div>
 
           {/* Main table - Full width with no padding */}
-          <div className="bg-white dark:bg-gray-800 border-y border-gray-200/80 dark:border-gray-700/80 shadow-sm backdrop-blur-sm overflow-auto mt-[1px] scrollbar-minimal">
+          <div className="bg-background dark:bg-background border-y border-border dark:border-border shadow-sm backdrop-blur-sm overflow-auto mt-[1px] scrollbar-minimal">
             <Table className="w-full">
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id} className="bg-transparent border-b border-gray-200/70 dark:border-gray-700/70">
+                  <TableRow key={headerGroup.id} className="bg-transparent border-b border-border/70 dark:border-border/70">
                     {headerGroup.headers.map((header) => {
                       return (
-                        <TableHead key={header.id} className="px-2 py-1.5 h-7 text-left text-xs font-medium text-gray-400 dark:text-gray-500 tracking-wide sticky top-0 bg-white dark:bg-gray-800">
+                        <TableHead key={header.id} className="px-2 py-1.5 h-7 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground tracking-wide sticky top-0 bg-background dark:bg-background">
                           {header.isPlaceholder
                             ? null
                             : flexRender(
@@ -1005,14 +1005,14 @@ export default function Content() {
                       key={row.id}
                       data-state={row.getIsSelected() && "selected"}
                       className={`
-                        hover:bg-gray-50/40 dark:hover:bg-gray-750/40
-                        ${row.getIsSelected() ? 'bg-primary-50/20 dark:bg-primary-900/5' : ''}
-                        ${i % 2 === 0 ? 'bg-white dark:bg-gray-800' : 'bg-gray-50/30 dark:bg-gray-800/30'}
+                        hover:bg-secondary/40 dark:hover:bg-secondary/40
+                        ${row.getIsSelected() ? 'bg-primary/5 dark:bg-primary/5' : ''}
+                        ${i % 2 === 0 ? 'bg-background dark:bg-background' : 'bg-secondary/30 dark:bg-secondary/30'}
                         transition-colors
                       `}
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id} className="px-2 py-1 whitespace-nowrap text-xs border-b border-gray-100/50 dark:border-gray-800/50">
+                        <TableCell key={cell.id} className="px-2 py-1 whitespace-nowrap text-xs border-b border-border/50 dark:border-border/50">
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </TableCell>
                       ))}
@@ -1020,9 +1020,9 @@ export default function Content() {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={columns.length} className="h-32 text-center text-gray-500 dark:text-gray-400">
+                    <TableCell colSpan={columns.length} className="h-32 text-center text-muted-foreground dark:text-muted-foreground">
                       <div className="flex flex-col items-center justify-center space-y-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-muted dark:text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                         </svg>
                         <span>No results found</span>
@@ -1038,10 +1038,10 @@ export default function Content() {
           <div className="px-2 py-3 sm:px-3 sm:py-4">
             <div className="flex items-center justify-between gap-2">
               <div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">
+                <div className="text-xs text-muted-foreground dark:text-muted-foreground">
                   {table.getFilteredSelectedRowModel().rows.length > 0 ? (
                     <span className="flex items-center">
-                      <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400 text-xs font-semibold mr-1">
+                      <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-primary/10 text-primary dark:bg-primary/10 dark:text-primary text-xs font-semibold mr-1">
                         {table.getFilteredSelectedRowModel().rows.length}
                       </span>
                       selected
@@ -1054,13 +1054,13 @@ export default function Content() {
               
               <div className="flex items-center gap-4 lg:gap-5">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xs text-gray-500 dark:text-gray-400">Rows</span>
+                  <span className="text-xs text-muted-foreground dark:text-muted-foreground">Rows</span>
                   <select
                     value={table.getState().pagination.pageSize}
                     onChange={(e) => {
                       table.setPageSize(Number(e.target.value))
                     }}
-                    className="h-6 w-14 rounded-md border-none bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs"
+                    className="h-6 w-14 rounded-md border-none bg-secondary dark:bg-secondary text-foreground dark:text-foreground text-xs"
                   >
                     {[5, 10, 20, 30, 40, 50].map((pageSize) => (
                       <option key={pageSize} value={pageSize}>
@@ -1072,7 +1072,7 @@ export default function Content() {
                 
                 <div className="flex items-center gap-1">
                   <button
-                    className="h-6 w-6 flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="h-6 w-6 flex items-center justify-center bg-secondary dark:bg-secondary text-muted-foreground dark:text-muted-foreground hover:text-foreground dark:hover:text-foreground rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
                     onClick={() => table.setPageIndex(0)}
                     disabled={!table.getCanPreviousPage()}
                   >
@@ -1084,7 +1084,7 @@ export default function Content() {
                   </button>
                   
                   <button
-                    className="h-6 w-6 flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="h-6 w-6 flex items-center justify-center bg-secondary dark:bg-secondary text-muted-foreground dark:text-muted-foreground hover:text-foreground dark:hover:text-foreground rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
                     onClick={() => table.previousPage()}
                     disabled={!table.getCanPreviousPage()}
                   >
@@ -1094,14 +1094,14 @@ export default function Content() {
                     </svg>
                   </button>
                   
-                  <div className="flex items-center justify-center min-w-[50px] px-1 h-6 text-xs text-gray-500 dark:text-gray-400">
-                    <span className="font-medium text-gray-700 dark:text-gray-300">{table.getState().pagination.pageIndex + 1}</span>
-                    <span className="mx-0.5 text-gray-400 dark:text-gray-600">/</span>
+                  <div className="flex items-center justify-center min-w-[50px] px-1 h-6 text-xs text-muted-foreground dark:text-muted-foreground">
+                    <span className="font-medium text-foreground dark:text-foreground">{table.getState().pagination.pageIndex + 1}</span>
+                    <span className="mx-0.5 text-muted-foreground/60 dark:text-muted-foreground/60">/</span>
                     <span>{table.getPageCount() || 1}</span>
                   </div>
                   
                   <button
-                    className="h-6 w-6 flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="h-6 w-6 flex items-center justify-center bg-secondary dark:bg-secondary text-muted-foreground dark:text-muted-foreground hover:text-foreground dark:hover:text-foreground rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
                     onClick={() => table.nextPage()}
                     disabled={!table.getCanNextPage()}
                   >
@@ -1112,7 +1112,7 @@ export default function Content() {
                   </button>
                   
                   <button
-                    className="h-6 w-6 flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="h-6 w-6 flex items-center justify-center bg-secondary dark:bg-secondary text-muted-foreground dark:text-muted-foreground hover:text-foreground dark:hover:text-foreground rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
                     onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                     disabled={!table.getCanNextPage()}
                   >
@@ -1138,8 +1138,8 @@ export default function Content() {
     <DashboardLayout>
       <div className="max-w-7xl mx-auto p-4">
         <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">{getTitle()}</h1>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <h1 className="text-2xl font-semibold text-foreground dark:text-foreground">{getTitle()}</h1>
+          <p className="mt-1 text-sm text-muted-foreground dark:text-muted-foreground">
             {section === 'activity' ? 'Track user activities and engagement' : 
              'Manage all your content in one place'}
           </p>
@@ -1148,15 +1148,15 @@ export default function Content() {
         {/* Content Header with Filters */}
         <div className="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="relative w-full md:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input 
               placeholder="Search content..." 
-              className="pl-9 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 w-full" 
+              className="pl-9 bg-background dark:bg-background border-border dark:border-border w-full" 
             />
           </div>
           
           <div className="flex items-center gap-3 w-full md:w-auto">
-            <Button variant="secondary-gray" size="sm" className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300">
+            <Button variant="secondary" size="sm" className="bg-secondary dark:bg-secondary border-border dark:border-border text-foreground dark:text-foreground">
               <Filter className="h-4 w-4 mr-1" />
               Filter
               <ChevronDown className="h-3 w-3 ml-1 opacity-60" />
@@ -1183,15 +1183,15 @@ export default function Content() {
         </div>
 
         {/* Pagination */}
-        <div className="flex justify-between items-center py-4 border-t border-gray-200 dark:border-gray-700">
-          <div className="text-sm text-gray-500 dark:text-gray-400">
-            Showing <span className="font-medium text-gray-700 dark:text-gray-300">1-6</span> of <span className="font-medium text-gray-700 dark:text-gray-300">24</span> items
+        <div className="flex justify-between items-center py-4 border-t border-border dark:border-border">
+          <div className="text-sm text-muted-foreground dark:text-muted-foreground">
+            Showing <span className="font-medium text-foreground dark:text-foreground">1-6</span> of <span className="font-medium text-foreground dark:text-foreground">24</span> items
           </div>
           <div className="flex gap-2">
-            <Button variant="secondary-gray" size="sm" className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+            <Button variant="secondary" size="sm" className="bg-secondary dark:bg-secondary border-border dark:border-border">
               Previous
             </Button>
-            <Button variant="secondary-gray" size="sm" className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+            <Button variant="secondary" size="sm" className="bg-secondary dark:bg-secondary border-border dark:border-border">
               Next
             </Button>
           </div>
@@ -1211,17 +1211,17 @@ interface ContentCardProps {
 function ContentCard({ title, type, status, date }: ContentCardProps) {
   return (
     <Card className="overflow-hidden">
-      <CardHeader className="bg-gray-50 dark:bg-gray-800 px-5 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-row justify-between items-center">
-        <CardTitle className="text-base font-medium text-gray-900 dark:text-white">{title}</CardTitle>
+      <CardHeader className="bg-secondary dark:bg-secondary px-5 py-4 border-b border-border dark:border-border flex flex-row justify-between items-center">
+        <CardTitle className="text-base font-medium text-foreground dark:text-foreground">{title}</CardTitle>
         <Button variant="ghost" size="icon" className="h-8 w-8">
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </CardHeader>
       <CardContent className="p-5">
-        <div className="text-sm text-gray-500 dark:text-gray-400 space-y-3">
+        <div className="text-sm text-muted-foreground dark:text-muted-foreground space-y-3">
           <div className="flex justify-between">
             <span>Type:</span>
-            <span className="font-medium text-gray-700 dark:text-gray-300">{type}</span>
+            <span className="font-medium text-foreground dark:text-foreground">{type}</span>
           </div>
           <div className="flex justify-between">
             <span>Status:</span>
@@ -1231,10 +1231,10 @@ function ContentCard({ title, type, status, date }: ContentCardProps) {
           </div>
           <div className="flex justify-between">
             <span>Last Updated:</span>
-            <span className="font-medium text-gray-700 dark:text-gray-300">{date}</span>
+            <span className="font-medium text-foreground dark:text-foreground">{date}</span>
           </div>
         </div>
-        <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
+        <div className="mt-4 pt-3 border-t border-border dark:border-border">
           <Button variant="link-color" className="p-0 h-auto text-sm">
             Edit Content
           </Button>
