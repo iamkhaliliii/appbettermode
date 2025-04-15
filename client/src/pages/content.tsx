@@ -3,8 +3,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Search, ChevronDown, Filter, MoreHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useLocation, useRoute, useParams, Redirect } from "wouter";
+import { useEffect } from "react";
 
 export default function Content() {
+  const [location, setLocation] = useLocation();
+  const [, params] = useRoute('/content/:section');
+  const section = params?.section;
+
+  // Redirect to the first tab (posts) if we're at the root content route
+  useEffect(() => {
+    if (location === '/content') {
+      setLocation('/content/posts');
+    }
+  }, [location, setLocation]);
+
+  // If we're at the root content URL, show a loading state until the redirect happens
+  if (location === '/content') {
+    return <DashboardLayout><div className="p-8">Loading content...</div></DashboardLayout>;
+  }
+  
   return (
     <DashboardLayout>
       <div className="max-w-7xl mx-auto">

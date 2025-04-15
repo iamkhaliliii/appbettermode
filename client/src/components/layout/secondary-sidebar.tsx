@@ -26,10 +26,10 @@ function SideNavItem({ href, icon, children, isActive = false, badge }: SideNavI
       <Link href={href}>
         <div
           className={cn(
-            "flex items-center px-3 py-1.5 text-sm rounded cursor-pointer my-0.5 transition-colors duration-150",
+            "flex items-center px-3 py-2 text-sm rounded cursor-pointer my-0.5 transition-all duration-150 relative",
             isActive 
-              ? "bg-primary-100 dark:bg-primary-800/40 text-primary-800 dark:text-primary-50 font-medium border-l-2 border-primary-600 dark:border-primary-400" 
-              : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-50 font-medium"
+              ? "bg-primary-50 dark:bg-primary-800/30 text-primary-800 dark:text-primary-50 font-medium border-l-2 border-primary-600 dark:border-primary-400 shadow-sm" 
+              : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-gray-50 hover:border-l-2 hover:border-gray-300 dark:hover:border-gray-600"
           )}
         >
           {icon && (
@@ -52,6 +52,11 @@ function SideNavItem({ href, icon, children, isActive = false, badge }: SideNavI
             )}>
               {badge}
             </span>
+          )}
+          
+          {/* Add a subtle animated indicator dot for active items */}
+          {isActive && (
+            <span className="absolute right-2 top-1/2 -translate-y-1/2 h-1.5 w-1.5 bg-primary-500 dark:bg-primary-400 rounded-full animate-pulse"></span>
           )}
         </div>
       </Link>

@@ -3,8 +3,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useLocation, useRoute } from "wouter";
+import { useEffect } from "react";
 
 export default function Settings() {
+  const [location, setLocation] = useLocation();
+  const [, params] = useRoute('/settings/:section');
+  const section = params?.section;
+
+  // Redirect to the first tab (my-details) if we're at the root settings route
+  useEffect(() => {
+    if (location === '/settings') {
+      setLocation('/settings/my-details');
+    }
+  }, [location, setLocation]);
+
+  // If we're at the root settings URL, show a loading state until the redirect happens
+  if (location === '/settings') {
+    return <DashboardLayout><div className="p-8">Loading settings...</div></DashboardLayout>;
+  }
+  
   return (
     <DashboardLayout>
       <div className="max-w-7xl mx-auto">
