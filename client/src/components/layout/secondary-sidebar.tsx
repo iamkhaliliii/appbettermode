@@ -1049,26 +1049,24 @@ export function SecondarySidebar() {
             
             {/* Navigation Section with Toggles - Ultra minimal version */}
             <div className="mb-2">
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="layout-components" className="border-0">
-                  <AccordionTrigger className="py-1 px-1 hover:no-underline">
-                    <h4 className="text-sm font-medium text-gray-600 dark:text-gray-400 capitalize">Layout Components</h4>
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-1 pb-0 px-1">
-                    <div className="space-y-2">
-                      {/* Header Navigation Row */}
-                      <div 
-                        id="header-section" 
-                        className="flex items-center justify-between py-2 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
-                      >
-                        <div className="flex items-center gap-1.5">
-                          <Layout className="h-3.5 w-3.5 text-gray-500" />
-                          <span className="text-xs text-gray-600 dark:text-gray-300">Header</span>
-                        </div>
-                        <Switch 
-                          id="header-toggle" 
-                          className="h-3 w-5 data-[state=checked]:bg-gray-500"
-                          onCheckedChange={(checked) => {
+              <div className="pb-1 pt-1 px-2">
+                <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400 capitalize">Layout Components</h4>
+              </div>
+              <div className="pt-1 pb-0 px-1">
+                <div className="space-y-1">
+                  {/* Header Navigation Row */}
+                  <div 
+                    id="header-section" 
+                    className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <Layout className="h-3 w-3 text-blue-400" />
+                      <span className="text-[10px] text-gray-600 dark:text-gray-300">Header</span>
+                    </div>
+                    <Switch 
+                      id="header-toggle" 
+                      className="h-3 w-5 data-[state=checked]:bg-blue-400"
+                      onCheckedChange={(checked) => {
                         // Toggle visibility of options
                         const options = document.getElementById('header-options');
                         if (options) {
@@ -1100,15 +1098,15 @@ export function SecondarySidebar() {
                   {/* Right Sidebar Navigation Row */}
                   <div 
                     id="right-sidebar-section" 
-                    className="flex items-center justify-between py-2 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
+                    className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
                   >
                     <div className="flex items-center gap-1.5">
-                      <PanelRight className="h-3.5 w-3.5 text-gray-500" />
-                      <span className="text-xs text-gray-600 dark:text-gray-300">Right Sidebar</span>
+                      <PanelRight className="h-3 w-3 text-red-400" />
+                      <span className="text-[10px] text-gray-600 dark:text-gray-300">Right Sidebar</span>
                     </div>
                     <Switch 
                       id="right-sidebar-toggle" 
-                      className="h-3 w-5 data-[state=checked]:bg-gray-500"
+                      className="h-3 w-5 data-[state=checked]:bg-red-400"
                       onCheckedChange={(checked) => {
                         // Using only community elements with animation  
                         // Also change the community right sidebar with animation
@@ -1139,15 +1137,15 @@ export function SecondarySidebar() {
                   {/* Left Sidebar Navigation Row */}
                   <div 
                     id="left-sidebar-section" 
-                    className="flex items-center justify-between py-2 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
+                    className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
                   >
                     <div className="flex items-center gap-1.5">
-                      <PanelLeft className="h-3.5 w-3.5 text-gray-500" />
-                      <span className="text-xs text-gray-600 dark:text-gray-300">Left Sidebar</span>
+                      <PanelLeft className="h-3 w-3 text-green-400" />
+                      <span className="text-[10px] text-gray-600 dark:text-gray-300">Left Sidebar</span>
                     </div>
                     <Switch 
                       id="left-sidebar-toggle" 
-                      className="h-3 w-5 data-[state=checked]:bg-gray-500"
+                      className="h-3 w-5 data-[state=checked]:bg-green-400"
                       onCheckedChange={(checked) => {
                         // Using only community elements with animation
                         // Also change the community left sidebar with animation
@@ -1174,15 +1172,15 @@ export function SecondarySidebar() {
                   {/* Footer Navigation Row */}
                   <div 
                     id="footer-section" 
-                    className="flex items-center justify-between py-2 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
+                    className="flex items-center justify-between py-1.5 px-1 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-sm group transition-colors duration-150"
                   >
                     <div className="flex items-center gap-1.5">
-                      <Columns className="h-3.5 w-3.5 text-gray-500" />
-                      <span className="text-xs text-gray-600 dark:text-gray-300">Footer</span>
+                      <Columns className="h-3 w-3 text-yellow-400" />
+                      <span className="text-[10px] text-gray-600 dark:text-gray-300">Footer</span>
                     </div>
                     <Switch 
                       id="footer-toggle" 
-                      className="h-3 w-5 data-[state=checked]:bg-gray-500"
+                      className="h-3 w-5 data-[state=checked]:bg-yellow-400"
                       onCheckedChange={(checked) => {
                         // Using only community elements with animation
                         // Also change the community footer with animation
