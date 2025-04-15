@@ -788,7 +788,7 @@ export default function Content() {
             </div>
 
             {/* Table toolbar */}
-            <div className="mb-2 flex items-center justify-between gap-1.5">
+            <div className="mb-0 flex items-center justify-between gap-1.5">
               {/* Left side - Filter, Sort, Column buttons */}
               <div className="flex items-center gap-1.5">
                 <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
