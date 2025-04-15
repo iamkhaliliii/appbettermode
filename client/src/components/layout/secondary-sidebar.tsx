@@ -26,7 +26,7 @@ function SideNavItem({ href, icon, children, isActive = false, badge }: SideNavI
       <Link href={href}>
         <div
           className={cn(
-            "flex items-center px-2 py-1 text-sm rounded cursor-pointer my-0.5 transition-colors duration-150",
+            "flex items-center px-2.5 py-1.5 text-sm rounded cursor-pointer my-0.5 transition-colors duration-150",
             isActive 
               ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium" 
               : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100"
