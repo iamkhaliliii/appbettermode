@@ -443,13 +443,6 @@ export function SecondarySidebar() {
         >
           Posts
         </SideNavItem>
-        
-        <SideNavItem 
-          href="/content/spaces"
-          isActive={isActiveUrl('/content/spaces')}
-        >
-          Spaces
-        </SideNavItem>
 
         <SideNavItem 
           href="/content/comments"
