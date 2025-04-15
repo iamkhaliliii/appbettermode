@@ -248,8 +248,14 @@ const columns: ColumnDef<Post>[] = [
       const space = row.getValue("space") as { name: string; color: string }
       return (
         <div className="flex items-center">
-          <div className={`flex-shrink-0 h-4 w-4 rounded-full mr-2`} style={{ backgroundColor: space.color }}></div>
-          <div>{space.name}</div>
+          <div className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs whitespace-nowrap bg-opacity-10 border border-opacity-20`} 
+               style={{ 
+                 backgroundColor: `${space.color}20`, 
+                 color: space.color,
+                 borderColor: space.color
+               }}>
+            {space.name}
+          </div>
         </div>
       )
     },
@@ -342,7 +348,6 @@ const columns: ColumnDef<Post>[] = [
       
       return (
         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.bgClass} ${config.textClass} ${config.borderClass} backdrop-blur-sm`}>
-          <span className={`w-1.5 h-1.5 rounded-full ${config.textClass.replace('text-', 'bg-')} mr-1.5 flex-shrink-0`}></span>
           {model}
         </span>
       )
@@ -457,14 +462,12 @@ const columns: ColumnDef<Post>[] = [
                 className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs whitespace-nowrap
                 ${config.bgClass} ${config.textClass} ${config.borderClass} backdrop-blur-sm`}
               >
-                <span className={`w-1.5 h-1.5 rounded-full ${config.textClass.replace('text-', 'bg-')} mr-1.5 flex-shrink-0`}></span>
                 {tag}
               </span>
             )
           })}
           {tags.length > 2 && (
             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-gray-50/60 dark:bg-gray-800/30 text-gray-600 dark:text-gray-400 border border-gray-200/70 dark:border-gray-700/30 backdrop-blur-sm whitespace-nowrap">
-              <span className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500 mr-1.5 flex-shrink-0"></span>
               +{tags.length - 2} more
             </span>
           )}
