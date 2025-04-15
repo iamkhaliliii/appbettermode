@@ -140,34 +140,22 @@ const columns: ColumnDef<Post>[] = [
     },
     cell: ({ row }) => {
       const status = row.getValue("status") as string
-      const statusConfig: Record<string, { bgClass: string; textClass: string; borderClass: string; dotClass: string; icon: null }> = {
+      const statusConfig: Record<string, { bgClass: string; textClass: string; }> = {
         "Published": { 
           bgClass: "bg-green-50/60 dark:bg-green-900/10", 
-          textClass: "text-green-600 dark:text-green-400",
-          borderClass: "border border-green-200/70 dark:border-green-700/30",
-          dotClass: "bg-green-500 dark:bg-green-400",
-          icon: null 
+          textClass: "text-green-600 dark:text-green-400"
         },
         "Draft": { 
           bgClass: "bg-gray-50/60 dark:bg-gray-800/30", 
-          textClass: "text-gray-600 dark:text-gray-400",
-          borderClass: "border border-gray-200/70 dark:border-gray-700/30",
-          dotClass: "bg-gray-400 dark:bg-gray-500",
-          icon: null 
+          textClass: "text-gray-600 dark:text-gray-400"
         },
         "Schedule": { 
           bgClass: "bg-blue-50/60 dark:bg-blue-900/10", 
-          textClass: "text-blue-600 dark:text-blue-400",
-          borderClass: "border border-blue-200/70 dark:border-blue-700/30",
-          dotClass: "bg-blue-500 dark:bg-blue-400",
-          icon: null 
+          textClass: "text-blue-600 dark:text-blue-400"
         },
         "Pending review": { 
           bgClass: "bg-amber-50/60 dark:bg-amber-900/10", 
-          textClass: "text-amber-600 dark:text-amber-400",
-          borderClass: "border border-amber-200/70 dark:border-amber-700/30",
-          dotClass: "bg-amber-500 dark:bg-amber-400",
-          icon: null 
+          textClass: "text-amber-600 dark:text-amber-400"
         },
       }
       
@@ -247,7 +235,7 @@ const columns: ColumnDef<Post>[] = [
       const space = row.getValue("space") as { name: string; color: string }
       return (
         <div className="flex items-center">
-          <div className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs whitespace-nowrap bg-opacity-10 border-0`} 
+          <div className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs whitespace-nowrap`} 
                style={{ 
                  backgroundColor: `${space.color}15`, 
                  color: space.color
@@ -315,7 +303,7 @@ const columns: ColumnDef<Post>[] = [
     },
     cell: ({ row }) => {
       const model = row.getValue("cmsModel") as string
-      const modelConfig: Record<string, { bgClass: string; textClass: string; borderClass: string; }> = {
+      const modelConfig: Record<string, { bgClass: string; textClass: string; }> = {
         "Discussion": { 
           bgClass: "bg-purple-50/60 dark:bg-purple-900/10", 
           textClass: "text-purple-600 dark:text-purple-400",
