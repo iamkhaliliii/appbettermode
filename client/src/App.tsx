@@ -19,7 +19,6 @@ function Router() {
       <Route path="/" component={() => <Redirect to="/content" />} />
       <Route path="/content" component={Content} />
       <Route path="/content/:section" component={Content} />
-      <Route path="/content/:section/:postType" component={Content} />
       <Route path="/people" component={People} />
       <Route path="/people/:section" component={People} />
       <Route path="/design-studio" component={DesignStudio} />
