@@ -441,7 +441,7 @@ export function SecondarySidebar() {
           href="/content/posts"
           isActive={isActiveUrl('/content/posts') || location === '/content'}
         >
-          Posts
+          CMS Collections
         </SideNavItem>
 
         <SideNavItem 
