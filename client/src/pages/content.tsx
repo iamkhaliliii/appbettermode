@@ -870,12 +870,26 @@ export default function Content() {
               {/* Right side - Action buttons (Search, Export, Add) */}
               <div className="flex items-center gap-1.5">
                 {table.getFilteredSelectedRowModel().rows.length > 0 && (
-                  <button className="inline-flex items-center justify-center h-6 px-2 rounded bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 shadow-sm text-xs font-medium gap-1 whitespace-nowrap hover:bg-blue-100/50 dark:hover:bg-blue-900/30 transition-colors">
-                    <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-blue-500 text-white text-[9px] font-semibold mr-1">
-                      {table.getFilteredSelectedRowModel().rows.length}
-                    </span>
-                    Actions
-                  </button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="inline-flex items-center justify-center h-6 px-2 rounded bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 shadow-sm text-xs font-medium gap-1 whitespace-nowrap hover:bg-blue-100/50 dark:hover:bg-blue-900/30 transition-colors">
+                        <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-blue-500 text-white text-[9px] font-semibold mr-1">
+                          {table.getFilteredSelectedRowModel().rows.length}
+                        </span>
+                        Actions
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-[180px]">
+                      <DropdownMenuItem>Move to space</DropdownMenuItem>
+                      <DropdownMenuItem>Hide</DropdownMenuItem>
+                      <DropdownMenuItem>Delete</DropdownMenuItem>
+                      <DropdownMenuItem>Add tag</DropdownMenuItem>
+                      <DropdownMenuItem>Remove tag</DropdownMenuItem>
+                      <DropdownMenuItem>Lock</DropdownMenuItem>
+                      <DropdownMenuItem>Change author</DropdownMenuItem>
+                      <DropdownMenuItem>Change publish time</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 )}
                 
                 <button className="inline-flex items-center justify-center h-6 w-6 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
