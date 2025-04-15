@@ -820,9 +820,9 @@ export default function Content() {
                   <FileOutput className="h-3 w-3" />
                 </button>
                 
-                <button className="inline-flex items-center justify-center h-6 px-2.5 rounded bg-[hsl(259.1,68.3%,52%)] text-white hover:bg-[hsl(259.1,68.3%,60%)] transition-colors">
-                  <Plus className="h-3 w-3 mr-1" />
-                  <span className="text-[11px] font-medium">New</span>
+                <button className="inline-flex items-center justify-center h-6 px-2.5 rounded shadow-sm text-xs font-medium gap-1 whitespace-nowrap bg-[#7F56D9] text-white border border-[#7F56D9] hover:bg-[#7F56D9]/90 transition-colors">
+                  <Plus className="h-3 w-3" />
+                  <span>New</span>
                 </button>
               </div>
             </div>
