@@ -1027,18 +1027,18 @@ export function SecondarySidebar() {
           
           {/* Second line - icon/title on left, settings on right */}
           <div className="flex items-center justify-between py-2">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <div className="bg-purple-50 dark:bg-purple-900/20 p-2 rounded">
                 <MessageSquare className="h-5 w-5 text-purple-500" />
               </div>
-              <span className="text-base font-medium text-gray-700 dark:text-gray-300 tracking-wide">Feed</span>
+              <span className="text-lg font-bold text-gray-700 dark:text-gray-300 tracking-wide">Feed</span>
             </div>
             
             <button 
-              className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded transition-colors"
+              className="p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded transition-colors"
               aria-label="Settings"
             >
-              <Settings className="h-5 w-5" />
+              <Settings className="h-4 w-4" />
             </button>
           </div>
         </div>
