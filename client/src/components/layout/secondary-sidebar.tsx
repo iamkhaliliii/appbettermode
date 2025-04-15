@@ -1057,170 +1057,179 @@ export function SecondarySidebar() {
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Sections and Blocks</h3>
             </div>
             
-            {/* Navigation Section with Toggles */}
+            {/* Navigation Section with Toggles - Ultra minimal version */}
             <div className="mb-5">
-              <h4 className="text-xs text-gray-500 dark:text-gray-400 mb-2">Navigations</h4>
-              <div className="space-y-2">
-                {/* Header Navigation Row */}
-                <div 
-                  id="header-section" 
-                  className="flex items-center justify-between border border-gray-200 dark:border-gray-700 rounded p-2 hover:bg-gray-50 dark:hover:bg-gray-800"
-                >
-                  <span className="text-xs text-gray-700 dark:text-gray-300">Header</span>
-                  <div className="flex items-center">
-                    <Switch id="header-toggle" onCheckedChange={(checked) => {
-                      // Set active state and show options
-                      const options = document.getElementById('header-options');
-                      if (options) {
-                        options.classList.toggle('hidden', !checked);
-                      }
-                      // Set the mockup effect
-                      const headerSection = document.getElementById('header-section');
-                      if (headerSection) {
-                        headerSection.classList.toggle('border-blue-500', checked);
-                        headerSection.classList.toggle('bg-blue-50', checked);
-                        headerSection.classList.toggle('dark:bg-blue-900/10', checked);
-                      }
-                    }} />
+              <h4 className="text-xs text-gray-500 dark:text-gray-400 mb-3">Navigations</h4>
+              <div className="space-y-1">
+                {/* Section list with toggles */}
+                <div className="border-b border-gray-100 dark:border-gray-700/30 pb-4 space-y-2">
+                  {/* Header Navigation Row */}
+                  <div 
+                    id="header-section" 
+                    className="flex items-center justify-between py-1"
+                  >
+                    <span className="text-xs text-gray-600 dark:text-gray-400">Header</span>
+                    <Switch 
+                      id="header-toggle" 
+                      className="data-[state=checked]:scale-105 data-[state=checked]:bg-gray-900 dark:data-[state=checked]:bg-gray-100"
+                      onCheckedChange={(checked) => {
+                        // Toggle visibility of options
+                        const options = document.getElementById('header-options');
+                        if (options) {
+                          options.classList.toggle('hidden', !checked);
+                        }
+                        
+                        // Add strong visual indicator for mockup
+                        document.getElementById('mockup-header')?.classList.toggle('hidden', !checked);
+                      }} 
+                    />
+                  </div>
+                  
+                  {/* Header options (initially hidden) */}
+                  <div id="header-options" className="pl-5 hidden space-y-1.5">
+                    <div className="flex items-center py-1 text-xs cursor-pointer">
+                      <input type="radio" name="header-choice" id="header-default" className="mr-2 h-3 w-3" defaultChecked />
+                      <label htmlFor="header-default" className="text-gray-600 dark:text-gray-400 cursor-pointer">Use Default</label>
+                    </div>
+                    <div className="flex items-center py-1 text-xs cursor-pointer">
+                      <input type="radio" name="header-choice" id="header-custom" className="mr-2 h-3 w-3" />
+                      <label htmlFor="header-custom" className="text-gray-600 dark:text-gray-400 cursor-pointer">Customize</label>
+                    </div>
+                  </div>
+                  
+                  {/* Right Sidebar Navigation Row */}
+                  <div 
+                    id="right-sidebar-section" 
+                    className="flex items-center justify-between py-1"
+                  >
+                    <span className="text-xs text-gray-600 dark:text-gray-400">Right Sidebar</span>
+                    <Switch 
+                      id="right-sidebar-toggle" 
+                      className="data-[state=checked]:scale-105 data-[state=checked]:bg-gray-900 dark:data-[state=checked]:bg-gray-100"
+                      onCheckedChange={(checked) => {
+                        // Toggle visibility of options
+                        const options = document.getElementById('right-sidebar-options');
+                        if (options) {
+                          options.classList.toggle('hidden', !checked);
+                        }
+                        
+                        // Add strong visual indicator for mockup
+                        document.getElementById('mockup-right-sidebar')?.classList.toggle('hidden', !checked);
+                      }} 
+                    />
+                  </div>
+                  
+                  {/* Right Sidebar options (initially hidden) */}
+                  <div id="right-sidebar-options" className="pl-5 hidden space-y-1.5">
+                    <div className="flex items-center py-1 text-xs cursor-pointer">
+                      <input type="radio" name="right-sidebar-choice" id="right-sidebar-default" className="mr-2 h-3 w-3" defaultChecked />
+                      <label htmlFor="right-sidebar-default" className="text-gray-600 dark:text-gray-400 cursor-pointer">Use Default</label>
+                    </div>
+                    <div className="flex items-center py-1 text-xs cursor-pointer">
+                      <input type="radio" name="right-sidebar-choice" id="right-sidebar-custom" className="mr-2 h-3 w-3" />
+                      <label htmlFor="right-sidebar-custom" className="text-gray-600 dark:text-gray-400 cursor-pointer">Customize</label>
+                    </div>
+                  </div>
+                  
+                  {/* Left Sidebar Navigation Row */}
+                  <div 
+                    id="left-sidebar-section" 
+                    className="flex items-center justify-between py-1"
+                  >
+                    <span className="text-xs text-gray-600 dark:text-gray-400">Left Sidebar</span>
+                    <Switch 
+                      id="left-sidebar-toggle" 
+                      className="data-[state=checked]:scale-105 data-[state=checked]:bg-gray-900 dark:data-[state=checked]:bg-gray-100"
+                      onCheckedChange={(checked) => {
+                        // Toggle visibility of options
+                        const options = document.getElementById('left-sidebar-options');
+                        if (options) {
+                          options.classList.toggle('hidden', !checked);
+                        }
+                        
+                        // Add strong visual indicator for mockup
+                        document.getElementById('mockup-left-sidebar')?.classList.toggle('hidden', !checked);
+                      }} 
+                    />
+                  </div>
+                  
+                  {/* Left Sidebar options (initially hidden) */}
+                  <div id="left-sidebar-options" className="pl-5 hidden space-y-1.5">
+                    <div className="flex items-center py-1 text-xs cursor-pointer">
+                      <input type="radio" name="left-sidebar-choice" id="left-sidebar-default" className="mr-2 h-3 w-3" defaultChecked />
+                      <label htmlFor="left-sidebar-default" className="text-gray-600 dark:text-gray-400 cursor-pointer">Use Default</label>
+                    </div>
+                    <div className="flex items-center py-1 text-xs cursor-pointer">
+                      <input type="radio" name="left-sidebar-choice" id="left-sidebar-custom" className="mr-2 h-3 w-3" />
+                      <label htmlFor="left-sidebar-custom" className="text-gray-600 dark:text-gray-400 cursor-pointer">Customize</label>
+                    </div>
+                  </div>
+                  
+                  {/* Footer Navigation Row */}
+                  <div 
+                    id="footer-section" 
+                    className="flex items-center justify-between py-1"
+                  >
+                    <span className="text-xs text-gray-600 dark:text-gray-400">Footer</span>
+                    <Switch 
+                      id="footer-toggle" 
+                      className="data-[state=checked]:scale-105 data-[state=checked]:bg-gray-900 dark:data-[state=checked]:bg-gray-100"
+                      onCheckedChange={(checked) => {
+                        // Toggle visibility of options
+                        const options = document.getElementById('footer-options');
+                        if (options) {
+                          options.classList.toggle('hidden', !checked);
+                        }
+                        
+                        // Add strong visual indicator for mockup
+                        document.getElementById('mockup-footer')?.classList.toggle('hidden', !checked);
+                      }} 
+                    />
+                  </div>
+                  
+                  {/* Footer options (initially hidden) */}
+                  <div id="footer-options" className="pl-5 hidden space-y-1.5">
+                    <div className="flex items-center py-1 text-xs cursor-pointer">
+                      <input type="radio" name="footer-choice" id="footer-default" className="mr-2 h-3 w-3" defaultChecked />
+                      <label htmlFor="footer-default" className="text-gray-600 dark:text-gray-400 cursor-pointer">Use Default</label>
+                    </div>
+                    <div className="flex items-center py-1 text-xs cursor-pointer">
+                      <input type="radio" name="footer-choice" id="footer-custom" className="mr-2 h-3 w-3" />
+                      <label htmlFor="footer-custom" className="text-gray-600 dark:text-gray-400 cursor-pointer">Customize</label>
+                    </div>
                   </div>
                 </div>
                 
-                {/* Header options (initially hidden) */}
-                <div id="header-options" className="ml-4 mb-2 hidden">
-                  <div className="space-y-1">
-                    <div className="flex items-center px-2 py-1 text-xs rounded cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                      <Check className="h-3 w-3 mr-2 text-blue-500" />
-                      <span>Use Default</span>
-                    </div>
-                    <div className="flex items-center px-2 py-1 text-xs rounded cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                      <Edit className="h-3 w-3 mr-2 text-blue-500" />
-                      <span>Customize</span>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Right Sidebar Navigation Row */}
-                <div 
-                  id="right-sidebar-section" 
-                  className="flex items-center justify-between border border-gray-200 dark:border-gray-700 rounded p-2 hover:bg-gray-50 dark:hover:bg-gray-800"
-                >
-                  <span className="text-xs text-gray-700 dark:text-gray-300">Right Sidebar</span>
-                  <div className="flex items-center">
-                    <Switch id="right-sidebar-toggle" onCheckedChange={(checked) => {
-                      // Set active state and show options
-                      const options = document.getElementById('right-sidebar-options');
-                      if (options) {
-                        options.classList.toggle('hidden', !checked);
-                      }
-                      // Set the mockup effect
-                      const section = document.getElementById('right-sidebar-section');
-                      if (section) {
-                        section.classList.toggle('border-red-500', checked);
-                        section.classList.toggle('bg-red-50', checked);
-                        section.classList.toggle('dark:bg-red-900/10', checked);
-                      }
-                    }} />
-                  </div>
-                </div>
-                
-                {/* Right Sidebar options (initially hidden) */}
-                <div id="right-sidebar-options" className="ml-4 mb-2 hidden">
-                  <div className="space-y-1">
-                    <div className="flex items-center px-2 py-1 text-xs rounded cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                      <Check className="h-3 w-3 mr-2 text-red-500" />
-                      <span>Use Default</span>
-                    </div>
-                    <div className="flex items-center px-2 py-1 text-xs rounded cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                      <Edit className="h-3 w-3 mr-2 text-red-500" />
-                      <span>Customize</span>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Left Sidebar Navigation Row */}
-                <div 
-                  id="left-sidebar-section" 
-                  className="flex items-center justify-between border border-gray-200 dark:border-gray-700 rounded p-2 hover:bg-gray-50 dark:hover:bg-gray-800"
-                >
-                  <span className="text-xs text-gray-700 dark:text-gray-300">Left Sidebar</span>
-                  <div className="flex items-center">
-                    <Switch id="left-sidebar-toggle" onCheckedChange={(checked) => {
-                      // Set active state and show options
-                      const options = document.getElementById('left-sidebar-options');
-                      if (options) {
-                        options.classList.toggle('hidden', !checked);
-                      }
-                      // Set the mockup effect
-                      const section = document.getElementById('left-sidebar-section');
-                      if (section) {
-                        section.classList.toggle('border-green-500', checked);
-                        section.classList.toggle('bg-green-50', checked);
-                        section.classList.toggle('dark:bg-green-900/10', checked);
-                      }
-                    }} />
-                  </div>
-                </div>
-                
-                {/* Left Sidebar options (initially hidden) */}
-                <div id="left-sidebar-options" className="ml-4 mb-2 hidden">
-                  <div className="space-y-1">
-                    <div className="flex items-center px-2 py-1 text-xs rounded cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                      <Check className="h-3 w-3 mr-2 text-green-500" />
-                      <span>Use Default</span>
-                    </div>
-                    <div className="flex items-center px-2 py-1 text-xs rounded cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                      <Edit className="h-3 w-3 mr-2 text-green-500" />
-                      <span>Customize</span>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Footer Navigation Row */}
-                <div 
-                  id="footer-section" 
-                  className="flex items-center justify-between border border-gray-200 dark:border-gray-700 rounded p-2 hover:bg-gray-50 dark:hover:bg-gray-800"
-                >
-                  <span className="text-xs text-gray-700 dark:text-gray-300">Footer</span>
-                  <div className="flex items-center">
-                    <Switch id="footer-toggle" onCheckedChange={(checked) => {
-                      // Set active state and show options
-                      const options = document.getElementById('footer-options');
-                      if (options) {
-                        options.classList.toggle('hidden', !checked);
-                      }
-                      // Set the mockup effect
-                      const section = document.getElementById('footer-section');
-                      if (section) {
-                        section.classList.toggle('border-yellow-500', checked);
-                        section.classList.toggle('bg-yellow-50', checked);
-                        section.classList.toggle('dark:bg-yellow-900/10', checked);
-                      }
-                    }} />
-                  </div>
-                </div>
-                
-                {/* Footer options (initially hidden) */}
-                <div id="footer-options" className="ml-4 mb-2 hidden">
-                  <div className="space-y-1">
-                    <div className="flex items-center px-2 py-1 text-xs rounded cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                      <Check className="h-3 w-3 mr-2 text-yellow-500" />
-                      <span>Use Default</span>
-                    </div>
-                    <div className="flex items-center px-2 py-1 text-xs rounded cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                      <Edit className="h-3 w-3 mr-2 text-yellow-500" />
-                      <span>Customize</span>
+                {/* Visual mockup elements (hidden by default) */}
+                <div className="mt-4 border border-gray-200 dark:border-gray-700 rounded-md p-3 relative">
+                  <div className="h-28 bg-gray-50 dark:bg-gray-800/70 rounded-sm overflow-hidden relative">
+                    {/* Header mockup */}
+                    <div id="mockup-header" className="w-full h-5 absolute top-0 left-0 bg-gray-900 dark:bg-gray-200 hidden" />
+                    
+                    {/* Left sidebar mockup */}
+                    <div id="mockup-left-sidebar" className="w-5 h-full absolute top-0 left-0 bg-gray-900 dark:bg-gray-200 hidden" />
+                    
+                    {/* Right sidebar mockup */}
+                    <div id="mockup-right-sidebar" className="w-5 h-full absolute top-0 right-0 bg-gray-900 dark:bg-gray-200 hidden" />
+                    
+                    {/* Footer mockup */}
+                    <div id="mockup-footer" className="w-full h-5 absolute bottom-0 left-0 bg-gray-900 dark:bg-gray-200 hidden" />
+                    
+                    {/* Center label */}
+                    <div className="absolute inset-0 flex items-center justify-center text-xs text-gray-400 dark:text-gray-500">
+                      Layout Preview
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             
-            {/* Main Section with dropdown block selector */}
-            <div>
-              <h4 className="text-xs text-gray-500 dark:text-gray-400 mb-2">Main Section</h4>
+            {/* Main Section with minimal dropdown block selector */}
+            <div className="mt-5">
+              <h4 className="text-xs text-gray-500 dark:text-gray-400 mb-3">Main Section</h4>
               <div className="relative">
                 <button
-                  className="flex items-center justify-between w-full px-3 py-2 text-xs rounded border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
+                  className="flex items-center justify-between w-full py-1.5 text-xs border-b border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
                   onClick={() => {
                     const dropdown = document.getElementById('blocks-dropdown');
                     if (dropdown) {
@@ -1229,28 +1238,28 @@ export function SecondarySidebar() {
                   }}
                 >
                   <div className="flex items-center">
-                    <Plus className="h-3.5 w-3.5 mr-2 text-gray-500" />
+                    <Plus className="h-3 w-3 mr-1.5 text-gray-500" />
                     <span>Add Block</span>
                   </div>
-                  <ChevronDown className="h-3.5 w-3.5 text-gray-500" />
+                  <ChevronDown className="h-3 w-3 text-gray-500" />
                 </button>
                 
-                {/* Dropdown for block options */}
-                <div id="blocks-dropdown" className="absolute left-0 right-0 z-10 mt-1 hidden border border-gray-200 dark:border-gray-700 rounded bg-white dark:bg-gray-800 shadow-sm">
-                  <div className="py-1">
-                    <div className="flex items-center px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                {/* Dropdown for block options - Minimalist version */}
+                <div id="blocks-dropdown" className="absolute left-0 right-0 z-10 mt-1 hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
+                  <div className="py-1.5">
+                    <div className="flex items-center px-2 py-1 text-xs hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-600 dark:text-gray-400">
                       <span>Text Block</span>
                     </div>
-                    <div className="flex items-center px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                    <div className="flex items-center px-2 py-1 text-xs hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-600 dark:text-gray-400">
                       <span>Image Block</span>
                     </div>
-                    <div className="flex items-center px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                    <div className="flex items-center px-2 py-1 text-xs hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-600 dark:text-gray-400">
                       <span>Video Block</span>
                     </div>
-                    <div className="flex items-center px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                    <div className="flex items-center px-2 py-1 text-xs hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-600 dark:text-gray-400">
                       <span>Button Block</span>
                     </div>
-                    <div className="flex items-center px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                    <div className="flex items-center px-2 py-1 text-xs hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer text-gray-600 dark:text-gray-400">
                       <span>Form Block</span>
                     </div>
                   </div>
