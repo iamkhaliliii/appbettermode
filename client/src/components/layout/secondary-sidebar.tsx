@@ -550,7 +550,8 @@ export function SecondarySidebar() {
               style={{paddingLeft: "10px", paddingRight: "10px"}}
             >
               <span className="font-medium">Activity Hub</span>
-              <span className="ml-auto">
+              <span className="ml-auto flex items-center gap-2">
+                <span className="bg-gray-100 dark:bg-gray-700 text-xs rounded-full px-2 py-0.5">12</span>
                 <ChevronRight className="h-4 w-4 text-gray-400" />
               </span>
             </div>
