@@ -544,11 +544,8 @@ export function SecondarySidebar() {
           
           
           <div className="space-y-4">
-            {/* Overview Section */}
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <h3 className="text-[11px] uppercase tracking-wide font-medium text-gray-500 dark:text-gray-400">Overview</h3>
-              </div>
+            <div className="space-y-3">
+              {/* Primary Actions */}
               <div className="space-y-0.5">
                 <SideNavItemWithBadge 
                   href="/inbox/all-activity"
@@ -569,21 +566,17 @@ export function SecondarySidebar() {
                   Unread
                 </SideNavItemWithBadge>
               </div>
-            </div>
 
-            {/* Interactions Group */}
-            <div>
-              <h3 className="mb-1.5 text-[11px] uppercase tracking-wide font-medium text-gray-500 dark:text-gray-400">Interactions</h3>
-              <div className="space-y-0.5">
+              {/* Interactions - More Compact */}
+              <div className="space-y-0.5 border-t border-gray-100 dark:border-gray-700 pt-2">
                 <SideNavItemWithBadge 
                   href="/inbox/comments"
                   isActive={isActiveUrl('/inbox/comments')}
                   icon={<MessageSquare className="h-3.5 w-3.5" />}
                   badgeText="24"
                 >
-                  Comments & Replies
+                  Comments
                 </SideNavItemWithBadge>
-                
                 <SideNavItemWithBadge 
                   href="/inbox/reactions"
                   isActive={isActiveUrl('/inbox/reactions')}
@@ -592,7 +585,6 @@ export function SecondarySidebar() {
                 >
                   Reactions
                 </SideNavItemWithBadge>
-                
                 <SideNavItemWithBadge 
                   href="/inbox/mentions"
                   isActive={isActiveUrl('/inbox/mentions')}
@@ -601,22 +593,14 @@ export function SecondarySidebar() {
                 >
                   Mentions
                 </SideNavItemWithBadge>
-              </div>
-            </div>
-
-            {/* Management Group */}
-            <div>
-              <h3 className="mb-1.5 text-[11px] uppercase tracking-wide font-medium text-gray-500 dark:text-gray-400">Management</h3>
-              <div className="space-y-0.5">
                 <SideNavItemWithBadge 
                   href="/inbox/reports"
                   isActive={isActiveUrl('/inbox/reports')}
                   icon={<Flag className="h-3.5 w-3.5" />}
                   badgeText="5"
                 >
-                  Reports & Moderation
+                  Reports
                 </SideNavItemWithBadge>
-                
                 <SideNavItem 
                   href="/inbox/rsvps"
                   isActive={isActiveUrl('/inbox/rsvps')}
@@ -624,13 +608,12 @@ export function SecondarySidebar() {
                 >
                   RSVPs
                 </SideNavItem>
-                
                 <SideNavItem 
                   href="/inbox/forms"
                   isActive={isActiveUrl('/inbox/forms')}
                   icon={<ClipboardList className="h-3.5 w-3.5" />}
                 >
-                  Form Submissions
+                  Forms
                 </SideNavItem>
               </div>
             </div>
