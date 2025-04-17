@@ -122,9 +122,9 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
       <div className="px-1.5 py-3 h-full flex flex-col">
         <nav className="space-y-2 flex-grow flex flex-col items-center pt-1.5">
           <NavItem 
-            href="/content/inbox" 
+            href="/inbox" 
             icon={<Inbox className="h-4 w-4" />} 
-            isActive={location.startsWith('/content/inbox')} 
+            isActive={location.startsWith('/inbox')} 
             collapsed={true}
           >
             Inbox
