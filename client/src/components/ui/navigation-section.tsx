@@ -64,7 +64,7 @@ export function NavigationSection({
               <Tooltip.Root>
                 <Tooltip.Trigger asChild>
                   <button className="flex items-center justify-center w-4 h-4 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                    <span className="text-gray-400 dark:text-gray-500 text-xs font-medium leading-none">+</span>
+                    <span className="text-gray-400 dark:text-gray-500 text-sm font-medium leading-none">+</span>
                   </button>
                 </Tooltip.Trigger>
                 <Tooltip.Portal>
