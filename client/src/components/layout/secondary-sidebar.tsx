@@ -937,8 +937,7 @@ export function SecondarySidebar() {
         : location.includes("/design-studio/templates")
           ? "templates"
           : location.includes("/design-studio/utility")
-            ? "utility"
-            : "";
+            ? "utility            : "";
 
     return (
       <div className="p-3">
