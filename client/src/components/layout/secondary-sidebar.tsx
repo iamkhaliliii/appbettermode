@@ -278,6 +278,10 @@ function MinimalItem({
               )}
               <DropdownMenuItem>
                 <Pencil className="mr-1.5 h-3 w-3" />
+                Rename
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Settings2 className="mr-1.5 h-3 w-3" />
                 Edit
               </DropdownMenuItem>
               <DropdownMenuItem className="text-red-500 focus:text-red-500">
@@ -321,6 +325,10 @@ function MinimalItem({
                 Hide
               </DropdownMenuItem>
             )}
+            <DropdownMenuItem>
+              <Pencil className="mr-1.5 h-3 w-3" />
+              Rename
+            </DropdownMenuItem>
             <DropdownMenuItem>
               <Settings2 className="mr-1.5 h-3 w-3" />
               Edit
@@ -959,8 +967,7 @@ export function SecondarySidebar() {
               <div className="flex items-center justify-between w-full">
                 <div className="flex items-center">
                   <Files className="h-4 w-4 mr-2 text-gray-500" />
-                  <span className="font-medium text-sm">Spaces</span>
-                </div>
+                  <span className="font-medium text-sm">Spaces</span</div>
                 <div className="relative ml-6">
                   <button
                     onClick={(e) => {
