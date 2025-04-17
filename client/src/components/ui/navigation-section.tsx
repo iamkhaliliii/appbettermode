@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { MiniToggle } from "./mini-toggle";
 import { NavigationItem } from "./navigation-item";
+import * as Tooltip from "@radix-ui/react-tooltip";
 
 interface NavigationSectionProps {
   title: string;
@@ -59,9 +60,24 @@ export function NavigationSection({
         </div>
         <div onClick={e => e.stopPropagation()} className="flex items-center gap-2">
           {isActive && (
-            <button className="flex items-center justify-center w-5 h-5 rounded bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700">
-              <span className="text-gray-500 dark:text-gray-400 text-sm font-medium leading-none">+</span>
-            </button>
+            <Tooltip.Provider delayDuration={200}>
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <button className="flex items-center justify-center w-4 h-4 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <span className="text-gray-400 dark:text-gray-500 text-xs font-medium leading-none">+</span>
+                  </button>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content
+                    className="bg-gray-900 text-white px-2 py-1 rounded text-xs"
+                    side="top"
+                  >
+                    Add block
+                    <Tooltip.Arrow className="fill-gray-900" />
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+            </Tooltip.Provider>
           )}
           <MiniToggle isActive={isActive} onChange={setIsActive} />
         </div>
