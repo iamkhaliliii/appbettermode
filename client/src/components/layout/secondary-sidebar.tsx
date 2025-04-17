@@ -11,6 +11,7 @@ import {
   Settings, 
   Lock,
   Image,
+  Box,
   ChevronDown,
   Files,
   Layout,
