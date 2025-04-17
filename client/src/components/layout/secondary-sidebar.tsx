@@ -43,6 +43,9 @@ import {
   Edit,
   Check,
   Dock,
+  AppWindow,
+  Logs,
+  SquareMousePointer,
   // Icons for inbox sidebar
   Inbox,
   MessageCircle,
@@ -1267,6 +1270,42 @@ export function SecondarySidebar() {
             <div id="navigation-content" className="pt-1 pb-1">
               <div className="space-y-0.5">
                 <div className="relative group">
+                  <div className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+                    onClick={(e) => {
+                      const content = e.currentTarget.nextElementSibling;
+                      const chevron =
+                        e.currentTarget.querySelector(".chevron-icon");
+                      if (content && chevron) {
+                        content.classList.toggle("hidden");
+                        chevron.style.transform = content.classList.contains(
+                          "hidden",
+                        )
+                          ? "rotate(0deg)"
+                          : "rotate(90deg)";
+                      }
+                    }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <ChevronRight className="chevron-icon h-3.5 w-3.5 text-gray-400 transition-transform duration-200" />
+                      <PanelTop className="h-3.5 w-3.5 text-gray-500" />
+                      <span className="text-xs text-gray-600 dark:text-gray-300">
+                        Header
+                      </span>
+                    </div>
+                    <div>
+                      <MiniToggle isActive={true} onChange={() => {}} />
+                    </div>
+                  </div>
+                  <div className="hidden pl-6 pr-2 space-y-0.5">
+                    <NavigationItem
+                      icon={
+                        <AppWindow className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
+                      }
+                      title="Top Navigation"
+                    />
+                  </div>
+                </div>
+                <div className="relative group">
                   <div
                     className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
                     onClick={(e) => {
@@ -1285,36 +1324,24 @@ export function SecondarySidebar() {
                   >
                     <div className="flex items-center gap-2">
                       <ChevronDown className="chevron-icon h-3.5 w-3.5 text-gray-400 transition-transform duration-200" />
-                      <Layout className="h-3.5 w-3.5 text-gray-500" />
+                      <PanelLeft className="h-3.5 w-3.5 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">
-                        Header
+                        Left Sidebar
                       </span>
                     </div>
                     <div>
-                      <MiniToggle isActive={false} onChange={() => {}} />
+                      <MiniToggle isActive={true} onChange={() => {}} />
                     </div>
                   </div>
                   <div className="hidden pl-6 pr-2 space-y-0.5">
                     <NavigationItem
                       icon={
-                        <Image className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
+                        <Logs className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
                       }
-                      title="Logo"
+                      title="Menu"
                     />
-                    <NavigationItem
-                      icon={
-                        <Image className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
-                      }
-                      title="Logo"
-                    />
-                  </div>
-                  <div className="hidden pl-6 pr-2 space-y-0.5">
-                    <div className="flex items-center gap-2 py-1.5 px-2 text-xs text-gray-500">
-                      Navigation
-                    </div>
                   </div>
                 </div>
-
                 <div className="relative group">
                   <div
                     className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
@@ -1344,12 +1371,20 @@ export function SecondarySidebar() {
                     </div>
                   </div>
                   <div className="hidden pl-6 pr-2 space-y-0.5">
-                    <div className="flex items-center gap-2 py-1.5 px-2 text-xs text-gray-500">
-                      Content
-                    </div>
+                    <NavigationItem
+                      icon={
+                        <SquareMousePointer className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
+                      }
+                      title="Banner"
+                    />
+                    <NavigationItem
+                      icon={
+                        <Logs className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
+                      }
+                      title="Menu"
+                    />
                   </div>
                 </div>
-
                 <div className="relative group">
                   <div
                     className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
@@ -1369,42 +1404,7 @@ export function SecondarySidebar() {
                   >
                     <div className="flex items-center gap-2">
                       <ChevronDown className="chevron-icon h-3.5 w-3.5 text-gray-400 transition-transform duration-200" />
-                      <PanelLeft className="h-3.5 w-3.5 text-gray-500" />
-                      <span className="text-xs text-gray-600 dark:text-gray-300">
-                        Left Sidebar
-                      </span>
-                    </div>
-                    <div>
-                      <MiniToggle isActive={false} onChange={() => {}} />
-                    </div>
-                  </div>
-                  <div className="hidden pl-6 pr-2 space-y-0.5">
-                    <div className="flex items-center gap-2 py-1.5 px-2 text-xs text-gray-500">
-                      Menu
-                    </div>
-                  </div>
-                </div>
-
-                <div className="relative group">
-                  <div
-                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
-                    onClick={(e) => {
-                      const content = e.currentTarget.nextElementSibling;
-                      const chevron =
-                        e.currentTarget.querySelector(".chevron-icon");
-                      if (content && chevron) {
-                        content.classList.toggle("hidden");
-                        chevron.style.transform = content.classList.contains(
-                          "hidden",
-                        )
-                          ? "rotate(-90deg)"
-                          : "rotate(0deg)";
-                      }
-                    }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <ChevronDown className="chevron-icon h-3.5 w-3.5 text-gray-400 transition-transform duration-200" />
-                      <Layout className="h-3.5 w-3.5 text-gray-500" />
+                      <PanelBottom className="h-3.5 w-3.5 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">
                         Footer
                       </span>
@@ -1414,12 +1414,18 @@ export function SecondarySidebar() {
                     </div>
                   </div>
                   <div className="hidden pl-6 pr-2 space-y-0.5">
-                    <div className="flex items-center gap-2 py-1.5 px-2 text-xs text-gray-500">
-                      Links
-                    </div>
-                    <div className="flex items-center gap-2 py-1.5 px-2 text-xs text-gray-500">
-                      Copyright
-                    </div>
+                    <NavigationItem
+                      icon={
+                        <Image className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
+                      }
+                      title="Logo"
+                    />
+                    <NavigationItem
+                      icon={
+                        <Logs className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
+                      }
+                      title="Menu"
+                    />
                   </div>
                 </div>
               </div>
