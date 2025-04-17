@@ -1169,6 +1169,7 @@ export function SecondarySidebar() {
                     <div className="flex items-center gap-2 py-1.5 px-2 text-xs text-gray-500">
                       Navigation
                     </div>
+                    {/* Logo Item */}
                     <div className="group relative flex items-center justify-between gap-2 py-1.5 px-2 text-xs hover:bg-gray-50/50 dark:hover:bg-gray-800/50 rounded cursor-pointer">
                       <div className="flex items-center gap-1.5">
                         <div className="relative bg-amber-50/50 dark:bg-amber-900/20 p-0.5 rounded border border-amber-200 dark:border-amber-600">
@@ -1191,19 +1192,148 @@ export function SecondarySidebar() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-36 py-1 shadow-md border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
                             <DropdownMenuItem className="flex items-center text-[12px] py-1 px-2 cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-700/50 text-gray-600 dark:text-gray-300">
-                              <Pencil className="h-1 w-1 mr-1.5 text-gray-400 dark:text-gray-500" />
+                              <Pencil className="h-3 w-3 mr-1.5 text-gray-400 dark:text-gray-500" />
                               <span>Rename</span>
                             </DropdownMenuItem>
                             <DropdownMenuItem className="flex items-center text-[12px] py-1 px-2 cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-700/50 text-gray-600 dark:text-gray-300">
-                              <EyeOff className="h-1 w-1 mr-1.5 text-gray-400 dark:text-gray-500" />
+                              <EyeOff className="h-3 w-3 mr-1.5 text-gray-400 dark:text-gray-500" />
                               <span>Hide</span>
                             </DropdownMenuItem>
                             <DropdownMenuItem className="flex items-center text-[12px] py-1 px-2 cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-700/50 text-gray-600 dark:text-gray-300">
-                              <Edit className="h-1 w-1 mr-1.5 text-gray-400 dark:text-gray-500" />
+                              <Edit className="h-3 w-3 mr-1.5 text-gray-400 dark:text-gray-500" />
                               <span>Edit</span>
                             </DropdownMenuItem>
                             <DropdownMenuItem className="flex items-center text-[12px] py-1 px-2 cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/10 text-red-600 dark:text-red-400">
-                              <Trash2 className="h-1 w-1 mr-1.5 text-red-400 dark:text-red-400" />
+                              <Trash2 className="h-3 w-3 mr-1.5 text-red-400 dark:text-red-400" />
+                              <span>Delete</span>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </div>
+
+                    {/* Navigation Item */}
+                    <div className="group relative flex items-center justify-between gap-2 py-1.5 px-2 text-xs hover:bg-gray-50/50 dark:hover:bg-gray-800/50 rounded cursor-pointer">
+                      <div className="flex items-center gap-1.5">
+                        <div className="relative bg-blue-50/50 dark:bg-blue-900/20 p-0.5 rounded border border-blue-200 dark:border-blue-600">
+                          <Layout className="h-3.5 w-3.5 dark:text-blue-200 text-blue-600/80" />
+                          <div className="absolute -bottom-1 -right-1">
+                            <Box className="h-2.5 w-2.5 text-blue-500 dark:text-blue-400" />
+                          </div>
+                        </div>
+                        <span className="dark:text-blue-200 text-blue-600/80">Navigation</span>
+                      </div>
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button className="p-0.5 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded">
+                          <Settings className="h-3 w-3 text-gray-400" />
+                        </button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="p-0.5 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded">
+                              <MoreHorizontal className="h-3 w-3 text-gray-400" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-36 py-1 shadow-md border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
+                            <DropdownMenuItem className="flex items-center text-[12px] py-1 px-2 cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-700/50 text-gray-600 dark:text-gray-300">
+                              <Pencil className="h-3 w-3 mr-1.5 text-gray-400 dark:text-gray-500" />
+                              <span>Rename</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="flex items-center text-[12px] py-1 px-2 cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-700/50 text-gray-600 dark:text-gray-300">
+                              <EyeOff className="h-3 w-3 mr-1.5 text-gray-400 dark:text-gray-500" />
+                              <span>Hide</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="flex items-center text-[12px] py-1 px-2 cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-700/50 text-gray-600 dark:text-gray-300">
+                              <Edit className="h-3 w-3 mr-1.5 text-gray-400 dark:text-gray-500" />
+                              <span>Edit</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="flex items-center text-[12px] py-1 px-2 cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/10 text-red-600 dark:text-red-400">
+                              <Trash2 className="h-3 w-3 mr-1.5 text-red-400 dark:text-red-400" />
+                              <span>Delete</span>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </div>
+
+                    {/* Search Item */}
+                    <div className="group relative flex items-center justify-between gap-2 py-1.5 px-2 text-xs hover:bg-gray-50/50 dark:hover:bg-gray-800/50 rounded cursor-pointer">
+                      <div className="flex items-center gap-1.5">
+                        <div className="relative bg-green-50/50 dark:bg-green-900/20 p-0.5 rounded border border-green-200 dark:border-green-600">
+                          <Search className="h-3.5 w-3.5 dark:text-green-200 text-green-600/80" />
+                          <div className="absolute -bottom-1 -right-1">
+                            <Box className="h-2.5 w-2.5 text-green-500 dark:text-green-400" />
+                          </div>
+                        </div>
+                        <span className="dark:text-green-200 text-green-600/80">Search</span>
+                      </div>
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button className="p-0.5 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded">
+                          <Settings className="h-3 w-3 text-gray-400" />
+                        </button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="p-0.5 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded">
+                              <MoreHorizontal className="h-3 w-3 text-gray-400" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-36 py-1 shadow-md border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
+                            <DropdownMenuItem className="flex items-center text-[12px] py-1 px-2 cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-700/50 text-gray-600 dark:text-gray-300">
+                              <Pencil className="h-3 w-3 mr-1.5 text-gray-400 dark:text-gray-500" />
+                              <span>Rename</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="flex items-center text-[12px] py-1 px-2 cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-700/50 text-gray-600 dark:text-gray-300">
+                              <EyeOff className="h-3 w-3 mr-1.5 text-gray-400 dark:text-gray-500" />
+                              <span>Hide</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="flex items-center text-[12px] py-1 px-2 cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-700/50 text-gray-600 dark:text-gray-300">
+                              <Edit className="h-3 w-3 mr-1.5 text-gray-400 dark:text-gray-500" />
+                              <span>Edit</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="flex items-center text-[12px] py-1 px-2 cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/10 text-red-600 dark:text-red-400">
+                              <Trash2 className="h-3 w-3 mr-1.5 text-red-400 dark:text-red-400" />
+                              <span>Delete</span>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </div>
+
+                    {/* User Menu Item */}
+                    <div className="group relative flex items-center justify-between gap-2 py-1.5 px-2 text-xs hover:bg-gray-50/50 dark:hover:bg-gray-800/50 rounded cursor-pointer">
+                      <div className="flex items-center gap-1.5">
+                        <div className="relative bg-purple-50/50 dark:bg-purple-900/20 p-0.5 rounded border border-purple-200 dark:border-purple-600">
+                          <Users className="h-3.5 w-3.5 dark:text-purple-200 text-purple-600/80" />
+                          <div className="absolute -bottom-1 -right-1">
+                            <Box className="h-2.5 w-2.5 text-purple-500 dark:text-purple-400" />
+                          </div>
+                        </div>
+                        <span className="dark:text-purple-200 text-purple-600/80">User Menu</span>
+                      </div>
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button className="p-0.5 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded">
+                          <Settings className="h-3 w-3 text-gray-400" />
+                        </button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="p-0.5 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded">
+                              <MoreHorizontal className="h-3 w-3 text-gray-400" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-36 py-1 shadow-md border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
+                            <DropdownMenuItem className="flex items-center text-[12px] py-1 px-2 cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-700/50 text-gray-600 dark:text-gray-300">
+                              <Pencil className="h-3 w-3 mr-1.5 text-gray-400 dark:text-gray-500" />
+                              <span>Rename</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="flex items-center text-[12px] py-1 px-2 cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-700/50 text-gray-600 dark:text-gray-300">
+                              <EyeOff className="h-3 w-3 mr-1.5 text-gray-400 dark:text-gray-500" />
+                              <span>Hide</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="flex items-center text-[12px] py-1 px-2 cursor-pointer hover:bg-gray-50/50 dark:hover:bg-gray-700/50 text-gray-600 dark:text-gray-300">
+                              <Edit className="h-3 w-3 mr-1.5 text-gray-400 dark:text-gray-500" />
+                              <span>Edit</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="flex items-center text-[12px] py-1 px-2 cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/10 text-red-600 dark:text-red-400">
+                              <Trash2 className="h-3 w-3 mr-1.5 text-red-400 dark:text-red-400" />
                               <span>Delete</span>
                             </DropdownMenuItem>
                           </DropdownMenuContent>
