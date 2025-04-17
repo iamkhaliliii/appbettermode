@@ -48,7 +48,8 @@ import {
   FileText,
   Calendar,
   HelpCircle,
-  Star
+  Star,
+  Dock
 } from "lucide-react";
 // Custom MiniToggle component replaces Switch
 import { Separator } from "@/components/ui/separator";
@@ -867,7 +868,8 @@ export function SecondarySidebar() {
         <div className="mb-3">
           <div className="space-y-2">
             <div className="flex items-center justify-between mb-2">
-              <h2 className="text-xs font-normal text-gray-400 dark:text-gray500 capitalize">Design studio</h2>
+              <h2 className="text-xs font-normal text-gray-400 dark:text-gray500 capitalize">Design studio```javascript
+<h2></h2>
             </div>
 
             <div className="relative w-full mb-2">
@@ -1111,9 +1113,10 @@ export function SecondarySidebar() {
           <AccordionItem value="navigation" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
               <div className="flex items-center">
-                <Layout className="h-4 w-4 mr-2 text-gray-500" />
-                <span className="font-medium text-sm">Navigation Sections</span>
-              </div>
+                  <Layout className="h-4 w-4 mr-2 text-gray-500" />
+                  <Dock className="h-4 w-4 mr-2 text-gray-500" />
+                  <span className="font-medium text-sm">Navigation Sections</span>
+                </div>
             </AccordionTrigger>
             <AccordionContent className="pt-1 pb-1">
               <div className="space-y-0.5">
