@@ -474,6 +474,51 @@ export function SecondarySidebar() {
       );
     }
     
+    // For the Inbox page
+    if (isActiveUrl('/inbox') || location.startsWith('/inbox/')) {
+      return (
+        <div className="p-3">
+          <div className="mb-2">
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center">
+                <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Messages</h2>
+              </div>
+            </div>
+          </div>
+          
+          <div className="space-y-1">
+            <SideNavItem 
+              href="/inbox/unread"
+              isActive={isActiveUrl('/inbox/unread') || location === '/inbox'}
+            >
+              Unread
+            </SideNavItem>
+            
+            <SideNavItem 
+              href="/inbox/all"
+              isActive={isActiveUrl('/inbox/all')}
+            >
+              All Messages
+            </SideNavItem>
+            
+            <SideNavItem 
+              href="/inbox/sent"
+              isActive={isActiveUrl('/inbox/sent')}
+            >
+              Sent
+            </SideNavItem>
+            
+            <SideNavItem 
+              href="/inbox/archived"
+              isActive={isActiveUrl('/inbox/archived')}
+            >
+              Archived
+            </SideNavItem>
+          </div>
+        </div>
+      );
+    }
+
     // Default content sidebar - showing CMS Collections directly
     return (
       <div className="p-3">
