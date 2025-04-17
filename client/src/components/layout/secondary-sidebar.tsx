@@ -47,6 +47,7 @@ import {
   AppWindow,
   Logs,
   SquareMousePointer,
+  SquareDashedBottomCode,
   // Icons for inbox sidebar
   Inbox,
   MessageCircle,
@@ -1282,129 +1283,48 @@ export function SecondarySidebar() {
                     title="Top Navigation"
                   />
                 </NavigationSection>
-                <div className="relative group">
-                  <div
-                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
-                    onClick={(e) => {
-                      const content = e.currentTarget.nextElementSibling;
-                      const chevron =
-                        e.currentTarget.querySelector(".chevron-icon");
-                      if (content && chevron) {
-                        content.classList.toggle("hidden");
-                        chevron.style.transform = content.classList.contains(
-                          "hidden",
-                        )
-                          ? "rotate(-90deg)"
-                          : "rotate(0deg)";
-                      }
-                    }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <ChevronDown className="chevron-icon h-3.5 w-3.5 text-gray-400 transition-transform duration-200" />
-                      <PanelLeft className="h-3.5 w-3.5 text-gray-500" />
-                      <span className="text-xs text-gray-600 dark:text-gray-300">
-                        Left Sidebar
-                      </span>
-                    </div>
-                    <div>
-                      <MiniToggle isActive={true} onChange={() => {}} />
-                    </div>
-                  </div>
-                  <div className="hidden pl-6 pr-2 space-y-0.5">
-                    <NavigationItem
-                      icon={
-                        <Logs className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
-                      }
-                      title="Menu"
-                    />
-                  </div>
-                </div>
-                <div className="relative group">
-                  <div
-                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
-                    onClick={(e) => {
-                      const content = e.currentTarget.nextElementSibling;
-                      const chevron =
-                        e.currentTarget.querySelector(".chevron-icon");
-                      if (content && chevron) {
-                        content.classList.toggle("hidden");
-                        chevron.style.transform = content.classList.contains(
-                          "hidden",
-                        )
-                          ? "rotate(-90deg)"
-                          : "rotate(0deg)";
-                      }
-                    }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <ChevronDown className="chevron-icon h-3.5 w-3.5 text-gray-400 transition-transform duration-200" />
-                      <PanelRight className="h-3.5 w-3.5 text-gray-500" />
-                      <span className="text-xs text-gray-600 dark:text-gray-300">
-                        Right Sidebar
-                      </span>
-                    </div>
-                    <div>
-                      <MiniToggle isActive={false} onChange={() => {}} />
-                    </div>
-                  </div>
-                  <div className="hidden pl-6 pr-2 space-y-0.5">
-                    <NavigationItem
-                      icon={
-                        <SquareMousePointer className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
-                      }
-                      title="Banner"
-                    />
-                    <NavigationItem
-                      icon={
-                        <Logs className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
-                      }
-                      title="Menu"
-                    />
-                  </div>
-                </div>
-                <div className="relative group">
-                  <div
-                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
-                    onClick={(e) => {
-                      const content = e.currentTarget.nextElementSibling;
-                      const chevron =
-                        e.currentTarget.querySelector(".chevron-icon");
-                      if (content && chevron) {
-                        content.classList.toggle("hidden");
-                        chevron.style.transform = content.classList.contains(
-                          "hidden",
-                        )
-                          ? "rotate(-90deg)"
-                          : "rotate(0deg)";
-                      }
-                    }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <ChevronDown className="chevron-icon h-3.5 w-3.5 text-gray-400 transition-transform duration-200" />
-                      <PanelBottom className="h-3.5 w-3.5 text-gray-500" />
-                      <span className="text-xs text-gray-600 dark:text-gray-300">
-                        Footer
-                      </span>
-                    </div>
-                    <div>
-                      <MiniToggle isActive={false} onChange={() => {}} />
-                    </div>
-                  </div>
-                  <div className="hidden pl-6 pr-2 space-y-0.5">
-                    <NavigationItem
-                      icon={
-                        <Image className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
-                      }
-                      title="Logo"
-                    />
-                    <NavigationItem
-                      icon={
-                        <Logs className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
-                      }
-                      title="Menu"
-                    />
-                  </div>
-                </div>
+                <NavigationSection
+                  title="LeftSidebar"
+                  icon={<PanelLeft />}
+                  defaultActive={true}
+                >
+                  <NavigationItem
+                    icon={
+                      <Logs className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
+                    }
+                    title="Menu"
+                  />
+                </NavigationSection>
+                <NavigationSection
+                  title="RightSidebar"
+                  icon={<PanelRight />}
+                  defaultActive={false}
+                >
+                  <NavigationItem
+                    icon={
+                      <SquareMousePointer className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
+                    }
+                    title="Banner"
+                  />
+                  <NavigationItem
+                    icon={
+                      <Logs className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
+                    }
+                    title="Menu"
+                  />
+                </NavigationSection>
+                <NavigationSection
+                  title="Footer"
+                  icon={<PanelBottom />}
+                  defaultActive={false}
+                >
+                  <NavigationItem
+                    icon={
+                      <SquareDashedBottomCode className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
+                    }
+                    title="FooterBlock"
+                  />
+                </NavigationSection>
               </div>
             </div>
           </div>
