@@ -1160,8 +1160,19 @@ export function SecondarySidebar() {
                     <div className="flex items-center gap-2 py-1.5 px-2 text-xs text-gray-500">
                       Navigation
                     </div>
-                    <div className="flex items-center gap-2 py-1.5 px-2 text-xs text-gray-500">
-                      Logo
+                    <div className="group relative flex items-center justify-between gap-2 py-1.5 px-2 text-xs text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md cursor-pointer">
+                      <div className="flex items-center gap-2">
+                        <Image className="h-3.5 w-3.5" />
+                        <span>Logo</span>
+                      </div>
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button className="p-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                          <Settings className="h-3.5 w-3.5" />
+                        </button>
+                        <button className="p-0.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                          <MoreHorizontal className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
