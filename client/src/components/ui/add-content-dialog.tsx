@@ -1,45 +1,51 @@
-
 import * as React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { MessageSquare, HelpCircle, Calendar, BookOpen, Star, FileText, Newspaper, Users, Megaphone, Database } from "lucide-react";
+import { Database, AppWindowMac, ChevronRight } from "lucide-react";
 
 interface AddContentDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
+// Option card component as a div to avoid nesting button issue
 interface OptionCardProps {
   icon: React.ReactNode;
   title: string;
   description: string;
   onClick: () => void;
-  color: string;
 }
 
-function OptionCard({ icon, title, description, onClick, color }: OptionCardProps) {
+function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
   return (
     <div 
       role="button"
       tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => e.key === 'Enter' && onClick()}
-      className={`flex flex-col p-6 rounded-xl border border-gray-100 dark:border-gray-800 
-        hover:border-${color}-200 dark:hover:border-${color}-900
-        hover:bg-${color}-50/30 dark:hover:bg-${color}-900/10
-        hover:shadow-lg hover:shadow-${color}-500/5 dark:hover:shadow-${color}-400/5
-        transition-all duration-200 cursor-pointer group backdrop-blur-sm`}
+      className="flex items-start p-7 rounded-xl border border-gray-100 dark:border-gray-800 
+        hover:border-gray-200 dark:hover:border-gray-700
+        hover:bg-gray-50 dark:hover:bg-gray-800/70
+        hover:shadow-lg dark:hover:shadow-gray-900/30
+        transition-all duration-200 cursor-pointer group
+        backdrop-blur-sm"
     >
-      <div className={`h-12 w-12 rounded-lg bg-${color}-100 dark:bg-${color}-900/30 flex items-center justify-center 
-        group-hover:scale-110 transition-transform duration-200`}>
+      <div className="h-14 w-14 rounded-xl bg-white dark:bg-gray-800 flex items-center justify-center mr-6 
+        shadow-sm group-hover:shadow-md transition-shadow duration-200">
         {icon}
       </div>
       
-      <h3 className="font-medium text-gray-900 dark:text-white mt-4 text-base">
-        {title}
-      </h3>
-      <p className="text-gray-500 dark:text-gray-400 text-sm mt-1.5 line-clamp-2">
-        {description}
-      </p>
+      <div className="flex-1">
+        <h3 className="font-medium text-gray-900 dark:text-white text-lg tracking-tight">
+          {title}
+        </h3>
+        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
+          {description}
+        </p>
+      </div>
+      
+      <div className="self-center ml-4 opacity-0 group-hover:opacity-100 transition-opacity">
+        <ChevronRight className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+      </div>
     </div>
   );
 }
@@ -48,67 +54,45 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="sm:max-w-[900px] bg-white dark:bg-gray-900 shadow-2xl 
+        className="sm:max-w-[800px] bg-white dark:bg-gray-900 shadow-2xl 
           rounded-2xl p-0 overflow-hidden border-0"
       >
-        <div className="p-8">
-          <DialogHeader className="text-center space-y-2 mb-8">
-            <DialogTitle className="text-3xl font-bold tracking-tight bg-gradient-to-r from-gray-900 to-gray-600 dark:from-gray-100 dark:to-gray-400 bg-clip-text text-transparent">
-              Choose Your Content Type
-            </DialogTitle>
-            <DialogDescription className="text-base text-gray-600 dark:text-gray-300">
-              Select the type of content you want to create
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <OptionCard
-              icon={<MessageSquare className="h-6 w-6 text-purple-500 dark:text-purple-400" />}
-              title="Discussion"
-              description="Create spaces for open discussions and conversations"
-              onClick={() => onOpenChange(false)}
-              color="purple"
-            />
+        <div className="flex flex-col md:flex-row">
+          {/* Left side with heading */}
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-850 dark:to-gray-800 p-12 md:w-[40%] flex flex-col justify-center border-b md:border-b-0 md:border-r border-gray-100 dark:border-gray-700">
+            <DialogHeader className="items-start text-left space-y-4">
+              <DialogTitle className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-200 bg-clip-text text-transparent">
+                What do you want to add?
+              </DialogTitle>
+              <DialogDescription className="text-base text-gray-600 dark:text-gray-300 leading-relaxed">
+                Choose an option to enhance your site experience and engage your audience
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+          
+          {/* Right side with options */}
+          <div className="md:w-[60%] p-10">
+            <div className="space-y-6">
+              <OptionCard
+                icon={<Database className="h-7 w-7 text-[rgb(166,148,255)] dark:text-[rgb(166,148,255)] transition-transform group-hover:scale-110 duration-200" />}
+                title="I want to let people post something"
+                description="Events, jobs, questions, ideas, and more. Enable your community to contribute content."
+                onClick={() => onOpenChange(false)}
+              />
+              
+              <OptionCard
+                icon={<AppWindowMac className="h-7 w-7 text-blue-400 dark:text-blue-400 transition-transform group-hover:scale-110 duration-200" />}
+                title="I want to create a new page"
+                description="Homepage, explore page, faculty landing page, or any other structural content for your site."
+                onClick={() => onOpenChange(false)}
+              />
+            </div>
             
-            <OptionCard
-              icon={<HelpCircle className="h-6 w-6 text-blue-500 dark:text-blue-400" />}
-              title="Q&A"
-              description="Enable knowledge sharing through questions and answers"
-              onClick={() => onOpenChange(false)}
-              color="blue"
-            />
-
-            <OptionCard
-              icon={<Calendar className="h-6 w-6 text-emerald-500 dark:text-emerald-400" />}
-              title="Event"
-              description="Schedule and manage upcoming events and activities"
-              onClick={() => onOpenChange(false)}
-              color="emerald"
-            />
-
-            <OptionCard
-              icon={<BookOpen className="h-6 w-6 text-amber-500 dark:text-amber-400" />}
-              title="Knowledge Base"
-              description="Build a comprehensive library of guides and documentation"
-              onClick={() => onOpenChange(false)}
-              color="amber"
-            />
-
-            <OptionCard
-              icon={<Star className="h-6 w-6 text-pink-500 dark:text-pink-400" />}
-              title="Wishlist & Feedback"
-              description="Collect ideas and feedback from your community"
-              onClick={() => onOpenChange(false)}
-              color="pink"
-            />
-
-            <OptionCard
-              icon={<Newspaper className="h-6 w-6 text-indigo-500 dark:text-indigo-400" />}
-              title="Article"
-              description="Write and publish long-form content and blog posts"
-              onClick={() => onOpenChange(false)}
-              color="indigo"
-            />
+            <div className="mt-5 text-center">
+              <p className="text-xs text-gray-400 dark:text-gray-500">
+                Press ESC to dismiss
+              </p>
+            </div>
           </div>
         </div>
       </DialogContent>
