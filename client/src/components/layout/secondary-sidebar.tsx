@@ -1154,9 +1154,9 @@ export function SecondarySidebar() {
                     }}
                   >
                     <div className="flex items-center gap-2">
-                      <ChevronDown className="chevron-icon h-3.5 w-3.5 text-gray-400 transition-transform duration-200" />
-                      <Layout className="h-3.5 w-3.5 text-gray-500" />
-                      <span className="text-xs text-gray-600 dark:text-gray-300">Header</span>
+                      <ChevronDown className="chevron-icon h-3.5 w-3.5 text-amber-500 dark:text-amber-400 transition-transform duration-200" />
+                      <Layout className="h-3.5 w-3.5 text-amber-500 dark:text-amber-400" />
+                      <span className="text-xs text-amber-600 dark:text-amber-300">Header</span>
                     </div>
                     <div>
                       <MiniToggle
@@ -1165,6 +1165,15 @@ export function SecondarySidebar() {
                       />
                     </div>
                   </div>
+                  <div className="hidden pl-6 pr-2 space-y-0.5">
+                    <div className="flex items-center gap-2 py-1.5 px-2 text-xs text-amber-500 dark:text-amber-400">
+                      Logo and Navigation
+                    </div>
+                    <div className="flex items-center gap-2 py-1.5 px-2 text-xs text-amber-500 dark:text-amber-400">
+                      Top Navigation
+                    </div>
+                  </div>
+                </div>
                   <div className="hidden pl-6 pr-2 space-y-0.5">
                     <div className="flex items-center gap-2 py-1.5 px-2 text-xs text-gray-500">
                       Navigation
