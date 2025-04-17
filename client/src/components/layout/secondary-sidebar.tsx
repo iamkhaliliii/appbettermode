@@ -937,7 +937,8 @@ export function SecondarySidebar() {
         : location.includes("/design-studio/templates")
           ? "templates"
           : location.includes("/design-studio/utility")
-            ? "utility            : "";
+            ? "utility"
+            : "";
 
     return (
       <div className="p-3">
@@ -1777,7 +1778,7 @@ export function SecondarySidebar() {
                     id="footer-section"
                     className="flex items-center justify-between py-1.5 px-2 rounded-md group transition-colors duration-150"
                   >
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-15">
                       <Columns className="h-4 w-4 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">
                         Footer
