@@ -38,7 +38,7 @@ export function NavigationItem({
       <div className="flex items-center gap-1.5">
         <div className={`relative`}>
           {icon}
-          <div className="absolute -bottom-1 -right-1">
+          <div className="absolute -bottom-1 -right-1 bg-white dark:bg-black ">
             <Box
               className={`h-2.5 w-2.5 text-${iconColor}-500 dark:text-${iconColor}-400`}
             />

@@ -52,6 +52,8 @@ import {
   Settings2,
   DatabaseZap,
   AppWindowMac,
+  SquareBottomDashedScissors,
+  Paintbrush,
   // Icons for inbox sidebar
   Inbox,
   MessageCircle,
@@ -326,9 +328,9 @@ function MinimalItem({
             <div className="relative">
               <span className={cn("flex-shrink-0", iconColor)}>{icon}</span>
               {decorationIcon && (
-                <div className="absolute -bottom-1 -right-1">
+                <div className="absolute -bottom-1 -right-1 bg-white dark:bg-black" >
                   {React.cloneElement(decorationIcon as React.ReactElement, {
-                    className: `h-2.5 w-2.5 text-${iconColor.split("text-")[1]}`
+                    className: `h-2.5 w-2.5 text-${iconColor.split("text-")[1]}`,
                   })}
                 </div>
               )}
@@ -1041,7 +1043,7 @@ export function SecondarySidebar() {
                 <MinimalItem
                   name="Explore"
                   path="/design-studio/spaces/explore"
-                  icon={<File className="h-3.5 w-3.5" />}
+                  icon={<AppWindowMac className="h-3.5 w-3.5" />}
                   iconColor="text-gray-500"
                   inSpaces={true}
                 />
@@ -1057,26 +1059,29 @@ export function SecondarySidebar() {
                   <MinimalItem
                     name="Intros & Networking"
                     path="/design-studio/spaces/connect/intros"
-                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    icon={<AppWindowMac className="h-3.5 w-3.5" />}
                     iconColor="text-[#A694FF]"
-                    level={1}
                     inSpaces={true}
+                    decorationIcon={<Database />}
+                    level={1}
                   />
                   <MinimalItem
                     name="Ask the Community"
                     path="/design-studio/spaces/connect/ask"
-                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    icon={<AppWindowMac className="h-3.5 w-3.5" />}
                     iconColor="text-[#A694FF]"
-                    level={1}
                     inSpaces={true}
+                    decorationIcon={<Database />}
+                    level={1}
                   />
                   <MinimalItem
                     name="Hire Experts"
                     path="/design-studio/spaces/connect/hire"
-                    icon={<File className="h-3.5 w-3.5" />}
-                    iconColor="text-gray-500"
-                    level={1}
+                    icon={<AppWindowMac className="h-3.5 w-3.5" />}
+                    iconColor="text-[#A694FF]"
                     inSpaces={true}
+                    decorationIcon={<Database />}
+                    level={1}
                   />
                 </TreeFolder>
 
@@ -1091,74 +1096,83 @@ export function SecondarySidebar() {
                   <MinimalItem
                     name="Getting Started"
                     path="/design-studio/spaces/help-center/getting-started"
-                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    icon={<AppWindowMac className="h-3.5 w-3.5" />}
                     iconColor="text-[#A694FF]"
-                    level={1}
                     inSpaces={true}
+                    decorationIcon={<Database />}
+                    level={1}
                   />
                   <MinimalItem
                     name="Account & Billing"
                     path="/design-studio/spaces/help-center/account"
-                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    icon={<AppWindowMac className="h-3.5 w-3.5" />}
                     iconColor="text-[#A694FF]"
-                    level={1}
                     inSpaces={true}
+                    decorationIcon={<Database />}
+                    level={1}
                   />
                   <MinimalItem
                     name="Content Management"
                     path="/design-studio/spaces/help-center/content"
-                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    icon={<AppWindowMac className="h-3.5 w-3.5" />}
                     iconColor="text-[#A694FF]"
-                    level={1}
                     inSpaces={true}
+                    decorationIcon={<Database />}
+                    level={1}
                   />
                   <MinimalItem
                     name="Member Management"
                     path="/design-studio/spaces/help-center/members"
-                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    icon={<AppWindowMac className="h-3.5 w-3.5" />}
                     iconColor="text-[#A694FF]"
-                    level={1}
                     inSpaces={true}
+                    decorationIcon={<Database />}
+                    level={1}
                   />
                   <MinimalItem
                     name="Appearance & Design"
                     path="/design-studio/spaces/help-center/appearance"
-                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    icon={<AppWindowMac className="h-3.5 w-3.5" />}
                     iconColor="text-[#A694FF]"
-                    level={1}
                     inSpaces={true}
+                    decorationIcon={<Database />}
+                    level={1}
                   />
                   <MinimalItem
                     name="Reports & Analytics"
                     path="/design-studio/spaces/help-center/reports"
-                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    icon={<AppWindowMac className="h-3.5 w-3.5" />}
                     iconColor="text-[#A694FF]"
-                    level={1}
                     inSpaces={true}
+                    decorationIcon={<Database />}
+                    level={1}
                   />
                   <MinimalItem
                     name="Apps & Integrations"
                     path="/design-studio/spaces/help-center/apps"
-                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    icon={<AppWindowMac className="h-3.5 w-3.5" />}
                     iconColor="text-[#A694FF]"
-                    level={1}
                     inSpaces={true}
+                    decorationIcon={<Database />}
+                    level={1}
                   />
                   <MinimalItem
                     name="API & Webhooks"
                     path="/design-studio/spaces/help-center/api"
-                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    icon={<AppWindowMac className="h-3.5 w-3.5" />}
                     iconColor="text-[#A694FF]"
-                    level={1}
                     inSpaces={true}
+                    decorationIcon={<Database />}
+                    level={1}
                   />
                   <MinimalItem
                     name="Get Inspired"
                     path="/design-studio/spaces/help-center/inspired"
-                    icon={<FileCode2 className="h-3.5 w-3.5" />}
+                    icon={<AppWindowMac className="h-3.5 w-3.5" />}
                     iconColor="text-[#A694FF]"
-                    level={1}
                     inSpaces={true}
+                    decorationIcon={<Database />}
+                    level={1}
                   />
                 </TreeFolder>
               </div>
@@ -1206,30 +1220,34 @@ export function SecondarySidebar() {
                 <MinimalItem
                   name="Event"
                   path="/design-studio/collections/event"
-                  icon={<FileBox className="h-3.5 w-3.5" />}
+                  icon={<File className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
-                  level={1}
+
+                  decorationIcon={<Database />}
                 />
                 <MinimalItem
                   name="Discussion"
                   path="/design-studio/collections/discussion"
-                  icon={<FileBox className="h-3.5 w-3.5" />}
+                  icon={<File className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
-                  level={1}
+
+                  decorationIcon={<Database />}
                 />
                 <MinimalItem
                   name="Blog"
                   path="/design-studio/collections/blog"
-                  icon={<FileBox className="h-3.5 w-3.5" />}
+                  icon={<File className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
-                  level={1}
+
+                  decorationIcon={<Database />}
                 />
                 <MinimalItem
                   name="Job List"
                   path="/design-studio/collections/jobs"
-                  icon={<FileBox className="h-3.5 w-3.5" />}
+                  icon={<File className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
-                  level={1}
+
+                  decorationIcon={<Database />}
                 />
               </div>
             </AccordionContent>
@@ -1372,17 +1390,18 @@ export function SecondarySidebar() {
                 <MinimalItem
                   name="General template"
                   path="/design-studio/templates/general"
-                  icon={<FileCog className="h-3.5 w-3.5" />}
+                  icon={<File className="h-3.5 w-3.5" />}
                   iconColor="text-[#57ABFF]"
-                  level={1}
+
+                  decorationIcon={<Paintbrush />}
                 />
                 <MinimalItem
                   name="Product"
                   path="/design-studio/templates/product"
-                  icon={<FileCog className="h-3.5 w-3.5" />}
+                  icon={<File className="h-3.5 w-3.5" />}
                   iconColor="text-[#57ABFF]"
-                  level={1}
-                />
+
+                  decorationIcon={<Paintbrush />}/>
               </div>
             </AccordionContent>
           </AccordionItem>
@@ -1403,21 +1422,21 @@ export function SecondarySidebar() {
                   path="/design-studio/utility/404"
                   icon={<File className="h-3.5 w-3.5" />}
                   iconColor="text-gray-500"
-                  level={1}
+
                 />
                 <MinimalItem
                   name="Search result"
                   path="/design-studio/utility/search"
                   icon={<File className="h-3.5 w-3.5" />}
                   iconColor="text-gray-500"
-                  level={1}
+
                 />
                 <MinimalItem
                   name="Member profile"
                   path="/design-studio/utility/member-profile"
                   icon={<File className="h-3.5 w-3.5" />}
                   iconColor="text-gray-500"
-                  level={1}
+
                 />
               </div>
             </AccordionContent>
