@@ -67,6 +67,13 @@ import {
   CollapsibleContent,
   CollapsibleTrigger
 } from "@/components/ui/collapsible";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"; // Import Dropdown components
+
 
 // Minimal Toggle Switch Component
 const MiniToggle = ({ isActive: initialActive = false, onChange }: { isActive?: boolean; onChange: (state: boolean) => void }) => {
@@ -1176,10 +1183,37 @@ export function SecondarySidebar() {
                         <button className="p-0.5 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded">
                           <Settings className="h-3 w-3 text-gray-400" />
                         </button>
-                        <button className="p-0.5 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded">
-                          <MoreHorizontal className="h-3 w-3 text-gray-400" />
-                        </button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="p-0.5 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded">
+                              <MoreHorizontal className="h-3 w-3 text-gray-400" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-28">
+                            <DropdownMenuItem className="flex items-center text-xs cursor-pointer">
+                              <Pencil className="h-3 w-3 mr-1.5 text-gray-500" />
+                              <span>Rename</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="flex items-center text-xs cursor-pointer">
+                              <EyeOff className="h-3 w-3 mr-1.5 text-gray-500" />
+                              <span>Hide</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="flex items-center text-xs cursor-pointer">
+                              <Edit className="h-3 w-3 mr-1.5 text-gray-500" />
+                              <span>Edit</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="flex items-center text-xs cursor-pointer text-red-500">
+                              <Trash2 className="h-3 w-3 mr-1.5 text-red-500" />
+                              <span>Delete</span>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
+                    </div>
+                  </div>
+                  <div className="hidden pl-6 pr-2 space-y-0.5">
+                    <div className="flex items-center gap-2 py-1.5 px-2 text-xs text-gray-500">
+                      Navigation
                     </div>
                   </div>
                 </div>
