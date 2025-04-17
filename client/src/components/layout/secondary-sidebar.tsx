@@ -15,6 +15,7 @@ import {
   Layout,
   Database,
   PanelTop,
+  PanelBottom,
   Layers2,
   FilePlus,
   Folder,
