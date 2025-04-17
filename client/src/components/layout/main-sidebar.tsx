@@ -19,10 +19,14 @@ import {
   SunMedium,
   Moon,
   LayoutDashboard,
-  Inbox
+  Inbox,
+  BellDot
 } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { useState, useEffect } from "react";
+import { NotificationDrawer } from "@/components/ui/notification-drawer";
+import { useQuery } from "@tanstack/react-query";
+import { getNotifications } from "@/lib/dashboard-data";
 
 interface NavItemProps {
   href: string;

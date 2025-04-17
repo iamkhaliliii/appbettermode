@@ -25,7 +25,24 @@ export interface ActivityData {
   time: string;
 }
 
+export interface NotificationData {
+  id: string;
+  type: 'post' | 'comment' | 'reaction' | 'join' | 'mention' | 'system';
+  username: string;
+  action: string;
+  target: string;
+  space?: string;
+  time: string;
+  read: boolean;
+  avatar: string;
+}
+
 // These could be populated from API calls in a real application
+export const getNotifications = async (): Promise<NotificationData[]> => {
+  const data = await getDashboardData();
+  return data.notifications;
+};
+
 export const getDashboardData = async () => {
   return {
     overviewCards: [
@@ -89,6 +106,73 @@ export const getDashboardData = async () => {
         icon: 'alert',
         iconBgColor: 'bg-red-100',
         time: '3 hours ago'
+      }
+    ],
+    notifications: [
+      {
+        id: 'notification-1',
+        type: 'post',
+        username: 'Sara Ahmed',
+        action: 'posted new',
+        target: 'UI Framework Documentation',
+        space: 'Design System',
+        time: '5 min ago',
+        read: false,
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+      },
+      {
+        id: 'notification-2',
+        type: 'comment',
+        username: 'Michael Torres',
+        action: 'replied to',
+        target: 'Getting Started with Components',
+        space: 'Documentation',
+        time: '2 hours ago',
+        read: false,
+        avatar: 'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+      },
+      {
+        id: 'notification-3',
+        type: 'reaction',
+        username: 'Emily Chen',
+        action: 'reacted to',
+        target: 'Design Tokens Implementation',
+        space: 'Technical',
+        time: '5 hours ago',
+        read: false,
+        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+      },
+      {
+        id: 'notification-4',
+        type: 'join',
+        username: 'Ryan Garcia',
+        action: 'joined',
+        target: 'Frontend Team',
+        space: 'Teams',
+        time: '1 day ago',
+        read: true,
+        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+      },
+      {
+        id: 'notification-5',
+        type: 'mention',
+        username: 'Lisa Wong',
+        action: 'mentioned you in',
+        target: 'Design System Components Discussion',
+        space: 'Design',
+        time: '2 days ago',
+        read: true,
+        avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+      },
+      {
+        id: 'notification-6',
+        type: 'system',
+        username: 'System',
+        action: 'updated',
+        target: 'Design System Version 2.0 Released',
+        time: '3 days ago',
+        read: true,
+        avatar: 'https://images.unsplash.com/photo-1563237023-b1e970526dcb?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       }
     ]
   };
