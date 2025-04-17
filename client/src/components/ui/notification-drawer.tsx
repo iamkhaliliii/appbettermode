@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  DropdownMenu as DropdownMenuPrimitive,
+  DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -67,7 +67,7 @@ const NotificationItem = ({ notification }: { notification: NotificationData }) 
         return <MessageSquare className="h-3 w-3 text-gray-500" />;
     }
   };
-
+  
   return (
     <div 
       className={cn(
@@ -80,7 +80,7 @@ const NotificationItem = ({ notification }: { notification: NotificationData }) 
       {!notification.read && (
         <div className="absolute right-0 top-0 bottom-0 w-0.5 bg-blue-500"></div>
       )}
-
+      
       {/* User avatar and content */}
       <div className="flex items-start">
         <div className="flex-shrink-0 mr-2">
@@ -90,7 +90,7 @@ const NotificationItem = ({ notification }: { notification: NotificationData }) 
             className="h-5 w-5 rounded-full"
           />
         </div>
-
+        
         <div className="flex-1 min-w-0">
           {/* Main notification text - more minimal */}
           <div className="flex items-start justify-between">
@@ -100,20 +100,20 @@ const NotificationItem = ({ notification }: { notification: NotificationData }) 
                 {' '}
                 <span className="text-gray-500 dark:text-gray-400">{notification.action}</span>
               </p>
-
+              
               {/* Target with type and space info */}
               <div className="flex items-center mt-0.5 flex-wrap gap-1">
                 <span className="text-xs text-gray-700 dark:text-gray-300">
                   {notification.target}
                 </span>
-
+                
                 {notification.cmsType && (
                   <span className="text-[10px] px-1.5 py-0 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full inline-flex items-center">
                     <Database className="h-2 w-2 mr-0.5 text-gray-400" />
                     {notification.cmsType}
                   </span>
                 )}
-
+                
                 {notification.space && (
                   <span className="text-[10px] px-1.5 py-0 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-300 rounded-full inline-flex items-center">
                     <Boxes className="h-2 w-2 mr-0.5 text-purple-400" />
@@ -122,13 +122,13 @@ const NotificationItem = ({ notification }: { notification: NotificationData }) 
                 )}
               </div>
             </div>
-
+            
             <div className="flex-shrink-0 ml-2 text-[10px] text-gray-500 dark:text-gray-400 whitespace-nowrap">
               {notification.date || notification.time}
               {!notification.read && <span className="ml-1 h-1.5 w-1.5 rounded-full bg-blue-500 inline-block"></span>}
             </div>
           </div>
-
+          
           {/* Comment content if present */}
           {notification.type === 'comment' && notification.commentContent && (
             <div className="mt-1 border-l border-gray-200 dark:border-gray-700 pl-2">
@@ -184,45 +184,45 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
     queryKey: ["notifications"],
     queryFn: getNotifications,
   });
-
+  
   // Filter states
   const [activeStatusFilter, setActiveStatusFilter] = useState<'all' | 'unread' | 'read'>('all');
   const [activeTypeFilter, setActiveTypeFilter] = useState<string | null>(null);
   const [activeSpaceFilter, setActiveSpaceFilter] = useState<string | null>(null);
   const [activeCmsFilter, setActiveCmsFilter] = useState<string | null>(null);
   const [activeTimeFilter, setActiveTimeFilter] = useState<string | null>(null);
-
+  
   // UI state
   const [activeFilterCategory, setActiveFilterCategory] = useState<FilterCategory>('status');
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
-
+  
   // Handle marking all as read
   const markAllAsRead = () => {
     // This would be a mutation in a real app
     console.log("Marking all as read");
   };
-
+  
   // Apply filters to notifications
   const filteredNotifications = useMemo(() => {
     if (!notifications) return [];
-
+    
     return notifications.filter(notification => {
       // Apply read/unread filter
       if (activeStatusFilter === 'unread' && notification.read) return false;
       if (activeStatusFilter === 'read' && !notification.read) return false;
-
+      
       // Apply type filter
       if (activeTypeFilter && notification.type !== activeTypeFilter) return false;
-
+      
       // Apply space filter
       if (activeSpaceFilter && notification.space !== activeSpaceFilter) return false;
-
+      
       // Apply CMS filter
       if (activeCmsFilter && notification.cmsType !== activeCmsFilter) return false;
-
+      
       // Apply time filter
       if (activeTimeFilter && notification.timeCategory !== activeTimeFilter) return false;
-
+      
       return true;
     });
   }, [notifications, activeStatusFilter, activeTypeFilter, activeSpaceFilter, activeCmsFilter, activeTimeFilter]);
@@ -230,7 +230,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
   // Organize notifications into time-based groups
   const groupedByTime = useMemo(() => {
     if (!filteredNotifications.length) return {};
-
+    
     const timeGroups: Record<string, NotificationData[]> = {
       'Today': [],
       'Yesterday': [],
@@ -239,7 +239,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
       'This Month': [],
       'Older': []
     };
-
+    
     filteredNotifications.forEach(notification => {
       switch (notification.timeCategory) {
         case 'today':
@@ -262,14 +262,14 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
           break;
       }
     });
-
+    
     // Remove empty groups
     return Object.fromEntries(Object.entries(timeGroups).filter(([_, notifications]) => notifications.length > 0));
   }, [filteredNotifications]);
-
+  
   // Calculate counts
   const unreadCount = notifications?.filter(n => !n.read).length || 0;
-
+  
   // Extract available options for filters
   const availableTypes = useMemo(() => {
     if (!notifications) return [];
@@ -277,7 +277,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
     notifications.forEach(n => types.add(n.type));
     return Array.from(types);
   }, [notifications]);
-
+  
   const availableSpaces = useMemo(() => {
     if (!notifications) return [];
     const spaces = new Set<string>();
@@ -286,7 +286,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
     });
     return Array.from(spaces);
   }, [notifications]);
-
+  
   const availableCmsTypes = useMemo(() => {
     if (!notifications) return [];
     const cmsTypes = new Set<string>();
@@ -295,7 +295,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
     });
     return Array.from(cmsTypes);
   }, [notifications]);
-
+  
   const timePeriods: Record<string, string> = {
     'today': 'Today',
     'yesterday': 'Yesterday',
@@ -304,7 +304,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
     'this_month': 'This Month',
     'older': 'Older'
   };
-
+  
   // Helper to get filter count
   const getFilterCount = () => {
     let count = 0;
@@ -315,7 +315,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
     if (activeTimeFilter) count++;
     return count;
   };
-
+  
   // Clear all filters
   const clearAllFilters = () => {
     setActiveStatusFilter('all');
@@ -324,11 +324,11 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
     setActiveCmsFilter(null);
     setActiveTimeFilter(null);
   };
-
+  
   // Get type icon with custom classes
   const getTypeIconComponent = (type: string, customClass?: string) => {
     const baseClass = customClass || "h-3.5 w-3.5 mr-1.5";
-
+    
     switch (type) {
       case 'post':
         return <Database className={`${baseClass} text-blue-500`} />;
@@ -352,11 +352,11 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
         return <MessageSquare className={`${baseClass} text-gray-500`} />;
     }
   };
-
+  
   // Show active filters as a summary
   const renderActiveFilters = () => {
     const filters = [];
-
+    
     if (activeStatusFilter !== 'all') {
       filters.push(
         <div 
@@ -374,7 +374,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
         </div>
       );
     }
-
+    
     if (activeTypeFilter) {
       filters.push(
         <div 
@@ -392,7 +392,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
         </div>
       );
     }
-
+    
     if (activeSpaceFilter) {
       filters.push(
         <div 
@@ -410,7 +410,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
         </div>
       );
     }
-
+    
     if (activeCmsFilter) {
       filters.push(
         <div 
@@ -428,7 +428,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
         </div>
       );
     }
-
+    
     if (activeTimeFilter) {
       filters.push(
         <div 
@@ -446,12 +446,9 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
         </div>
       );
     }
-
+    
     return filters;
   };
-
-  const DropdownMenu = DropdownMenuPrimitive.Root;
-  DropdownMenu.displayName = 'DropdownMenu';
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="right">
@@ -487,9 +484,9 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
               <Check className="h-3 w-3 mr-1.5" />
               <span>Read all</span>
             </Button>
-
-            <DropdownMenuPrimitive.Root open={showFilterDropdown} onOpenChange={setShowFilterDropdown}>
-              <DropdownMenuPrimitive.Trigger asChild>
+            
+            <DropdownMenu open={showFilterDropdown} onOpenChange={setShowFilterDropdown}>
+              <DropdownMenuTrigger asChild>
                 <Button
                   variant={getFilterCount() > 0 ? "secondary-color" : "ghost"}
                   size="icon"
@@ -498,11 +495,11 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                 >
                   <Filter className="h-3.5 w-3.5" />
                 </Button>
-              </DropdownMenuPrimitive.Trigger>
-              <DropdownMenuPrimitive.Content align="start" className="min-w-[200px]">
-                <DropdownMenuPrimitive.Label className="text-xs">Filter by</DropdownMenuPrimitive.Label>
-                <DropdownMenuPrimitive.Separator />
-
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="min-w-[200px]">
+                <DropdownMenuLabel className="text-xs">Filter by</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                
                 {/* Status filter option */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -545,7 +542,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-
+                
                 {/* Type filter option */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -575,7 +572,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
-
+                
                 {/* Space filter option */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -605,7 +602,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
-
+                
                 {/* CMS filter option */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -635,7 +632,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
-
+                
                 {/* Time filter option */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -667,7 +664,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                 </DropdownMenu>
               </DropdownMenuContent>
             </DropdownMenu>
-
+            
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-7 w-7">
@@ -693,7 +690,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
             </DropdownMenu>
           </div>
         </DrawerHeader>
-
+        
         {/* Active filters display */}
         {getFilterCount() > 0 && (
           <div className="px-3 py-1.5 border-b border-gray-100 dark:border-gray-700">
@@ -701,7 +698,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
               <div className="flex-1 flex flex-wrap gap-1 items-center">
                 {/* Render active filters */}
               {renderActiveFilters()}
-
+              
               {/* Add Filter button */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -715,7 +712,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                 <DropdownMenuContent align="start" className="min-w-[200px]">
                   <DropdownMenuLabel className="text-xs">Filter by</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-
+                  
                   {/* Status filter option */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -765,7 +762,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-
+                  
                   {/* Type filter option */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -799,7 +796,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                       ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
-
+                  
                   {/* Space filter option */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -833,7 +830,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                       ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
-
+                  
                   {/* CMS filter option */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -867,7 +864,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                       ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
-
+                  
                   {/* Time filter option */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -905,7 +902,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
               </DropdownMenu>
 
             </div>
-
+            
             {getFilterCount() > 0 && (
               <Button 
                 variant="ghost" 
@@ -920,8 +917,8 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
           </div>
         </div>
         )}
-
-
+        
+        
         <div className="max-h-[calc(100vh-4rem)] overflow-y-auto">
           {isLoading ? (
             <>
