@@ -312,28 +312,28 @@ function MinimalItem({
       </div>
 
       {showDropdown && (
-        <div className="absolute right-0 mt-1 w-28 bg-white dark:bg-gray-850 rounded-md shadow-lg border border-gray-200 dark:border-gray-800 z-[100]">
-          <div className="py-1 text-[11px]">
-            {showHideOption && (
-              <a href="#" className="flex items-center px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-50/50 dark:hover:bg-gray-800/50" onClick={toggleHidden}>
-                <Eye className="mr-1.5 h-2.5 w-2.5 text-gray-400 dark:text-gray-500" />
-                <span>Unhide</span>
-              </a>
-            )}
-            <a href="#" className="flex items-center px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-50/50 dark:hover:bg-gray-800/50">
-              <Pencil className="mr-1.5 h-2.5 w-2.5 text-gray-400 dark:text-gray-500" />
-              <span>Rename</span>
-            </a>
-            <a href="#" className="flex items-center px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-50/50 dark:hover:bg-gray-800/50">
-              <Edit className="mr-1.5 h-2.5 w-2.5 text-gray-400 dark:text-gray-500" />
-              <span>Edit</span>
-            </a>
-            <a href="#" className="flex items-center px-2 py-1 text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10">
-              <Trash2 className="mr-1.5 h-2.5 w-2.5 text-red-400" />
-              <span>Delete</span>
-            </a>
-          </div>
-        </div>
+        <DropdownMenuContent align="end" className="w-28 bg-white dark:bg-gray-850 rounded-md shadow-lg border border-gray-200 dark:border-gray-800 z-[100]">
+                      <div className="py-1 text-xs">
+                        {showHideOption && (
+                          <a href="#" className="flex items-center px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-50/50 dark:hover:bg-gray-800/50" onClick={toggleHidden}>
+                            <Eye className="mr-1.5 h-[10px] w-[10px] text-gray-400 dark:text-gray-400" />
+                            <span>Unhide</span>
+                          </a>
+                        )}
+                        <a href="#" className="flex items-center px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-50/50 dark:hover:bg-gray-800/50">
+                          <Pencil className="mr-1.5 h-[10px] w-[10px] text-gray-400 dark:text-gray-400" />
+                          <span>Rename</span>
+                        </a>
+                        <a href="#" className="flex items-center px-2 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-50/50 dark:hover:bg-gray-800/50">
+                          <Edit className="mr-1.5 h-[10px] w-[10px] text-gray-400 dark:text-gray-400" />
+                          <span>Edit</span>
+                        </a>
+                        <a href="#" className="flex items-center px-2 py-1 text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10">
+                          <Trash2 className="mr-1.5 h-[10px] w-[10px] text-red-400" />
+                          <span>Delete</span>
+                        </a>
+                      </div>
+                    </DropdownMenuContent>
       )}
     </div>
   );
