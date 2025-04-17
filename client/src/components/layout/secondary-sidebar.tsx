@@ -867,7 +867,7 @@ export function SecondarySidebar() {
         <div className="mb-3">
           <div className="space-y-2">
             <div className="flex items-center justify-between mb-2">
-              <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Design studio</h2>
+              <h2 className="text-xs font-normal text-gray-400 dark:text-gray500 capitalize">Design studio</h2>
             </div>
 
             <div className="relative w-full mb-2">
@@ -1123,13 +1123,13 @@ export function SecondarySidebar() {
                     <div className="flex items-center gap-2">
                       <Layout className="h-3.5 w-3.5 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Header</span>
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400 ml-1" />
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div>
                       <MiniToggle
                         isActive={false}
                         onChange={() => {}} 
                       />
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
                     </div>
                   </div>
 
@@ -1139,13 +1139,13 @@ export function SecondarySidebar() {
                     <div className="flex items-center gap-2">
                       <PanelRight className="h-3.5 w-3.5 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Right Sidebar</span>
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400 ml-1" />
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div>
                       <MiniToggle
                         isActive={false}
                         onChange={() => {}} 
                       />
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
                     </div>
                   </div>
 
@@ -1155,13 +1155,13 @@ export function SecondarySidebar() {
                     <div className="flex items-center gap-2">
                       <PanelLeft className="h-3.5 w-3.5 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Left Sidebar</span>
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400 ml-1" />
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div>
                       <MiniToggle
                         isActive={false}
                         onChange={() => {}} 
                       />
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
                     </div>
                   </div>
 
@@ -1171,13 +1171,13 @@ export function SecondarySidebar() {
                     <div className="flex items-center gap-2">
                       <Columns className="h-3.5 w-3.5 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Footer</span>
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400 ml-1" />
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div>
                       <MiniToggle
                         isActive={false}
                         onChange={() => {}} 
                       />
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
                     </div>
                   </div>
                 </div>
@@ -1475,8 +1475,9 @@ export function SecondarySidebar() {
                     <div className="flex items-center gap-1.5">
                       <Layout className="h-4 w-4 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Header</span>
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400 ml-1" />
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div>
                       <MiniToggle
                         isActive={false}
                         onChange={(checked) => {
@@ -1506,7 +1507,6 @@ export function SecondarySidebar() {
                           }
                         }} 
                       />
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
                     </div>
                   </div>
 
@@ -1518,8 +1518,9 @@ export function SecondarySidebar() {
                     <div className="flex items-center gap-1.5">
                       <PanelTop className="h-4 w-4 text-gray-500 transform rotate-90" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Right Sidebar</span>
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400 ml-1" />
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div>
                       <MiniToggle 
                         isActive={false}
                         onChange={(checked) => {
@@ -1547,7 +1548,6 @@ export function SecondarySidebar() {
                           }
                         }} 
                       />
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
                     </div>
                   </div>
 
@@ -1559,8 +1559,9 @@ export function SecondarySidebar() {
                     <div className="flex items-center gap-1.5">
                       <PanelLeft className="h-4 w-4 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Left Sidebar</span>
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400 ml-1" />
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div>
                       <MiniToggle 
                         isActive={false}
                         onChange={(checked) => {
@@ -1584,7 +1585,6 @@ export function SecondarySidebar() {
                           }
                         }} 
                       />
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
                     </div>
                   </div>
 
@@ -1596,12 +1596,13 @@ export function SecondarySidebar() {
                     <div className="flex items-center gap-1.5">
                       <Columns className="h-4 w-4 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Footer</span>
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400 ml-1" />
                     </div>
-                    <div className="flex items-center gap-1">
+                    <div>
                       <MiniToggle 
                         isActive={false}
                         onChange={(checked) => {
-                          // Using only community elements with animation
+                          // Using only communityelements with animation
                           // Also change the community footer with animation
                           const communityFooter = document.getElementById('community-footer');
                           if (communityFooter) {
@@ -1621,7 +1622,6 @@ export function SecondarySidebar() {
                           }
                         }} 
                       />
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
                     </div>
                   </div>
                 </div>
