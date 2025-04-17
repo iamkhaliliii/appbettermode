@@ -557,16 +557,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                       </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent side="right" align="start" className="min-w-[180px]">
-                      <DropdownMenuItem 
-                        className="text-xs"
-                        onClick={() => setActiveStatusFilter('all')}
-                      >
-                        <span className="flex items-center">
-                          <Bell className="h-3.5 w-3.5 mr-2 text-gray-500" />
-                          All
-                          {activeStatusFilter === 'all' && <Check className="h-3 w-3 ml-auto" />}
-                        </span>
-                      </DropdownMenuItem>
+
                       <DropdownMenuItem 
                         className="text-xs"
                         onClick={() => setActiveStatusFilter('unread')}
@@ -610,17 +601,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                       </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent side="right" align="start" className="min-w-[180px]">
-                      <DropdownMenuItem 
-                        className="text-xs"
-                        onClick={() => setActiveTypeFilter(null)}
-                      >
-                        <span className="flex items-center">
-                          <Bell className="h-3.5 w-3.5 mr-2" />
-                          All types
-                          {activeTypeFilter === null && <Check className="h-3 w-3 ml-auto" />}
-                        </span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
+
                       {availableTypes.map(type => (
                         <DropdownMenuItem
                           key={type}
@@ -651,17 +632,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                       </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent side="right" align="start" className="min-w-[200px]">
-                      <DropdownMenuItem 
-                        className="text-xs"
-                        onClick={() => setActiveSpaceFilter(null)}
-                      >
-                        <span className="flex items-center">
-                          <Boxes className="h-3.5 w-3.5 mr-2" />
-                          All spaces
-                          {activeSpaceFilter === null && <Check className="h-3 w-3 ml-auto" />}
-                        </span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
+
                       {availableSpaces.map(space => (
                         <DropdownMenuItem
                           key={space}
@@ -692,17 +663,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                       </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent side="right" align="start" className="min-w-[200px]">
-                      <DropdownMenuItem 
-                        className="text-xs"
-                        onClick={() => setActiveCmsFilter(null)}
-                      >
-                        <span className="flex items-center">
-                          <Database className="h-3.5 w-3.5 mr-2" />
-                          All CMS types
-                          {activeCmsFilter === null && <Check className="h-3 w-3 ml-auto" />}
-                        </span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
+
                       {availableCmsTypes.map(cmsType => (
                         <DropdownMenuItem
                           key={cmsType}
@@ -733,17 +694,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                       </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent side="right" align="end" className="min-w-[180px]">
-                      <DropdownMenuItem 
-                        className="text-xs"
-                        onClick={() => setActiveTimeFilter(null)}
-                      >
-                        <span className="flex items-center">
-                          <Calendar className="h-3.5 w-3.5 mr-2" />
-                          All time
-                          {activeTimeFilter === null && <Check className="h-3 w-3 ml-auto" />}
-                        </span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
+
                       {Object.entries(timePeriods).map(([value, label]) => (
                         <DropdownMenuItem
                           key={value}
