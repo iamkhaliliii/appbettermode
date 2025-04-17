@@ -1,6 +1,6 @@
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { useLocation } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Home, 
   Search, 
@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AddContentDialog } from "@/components/ui/add-content-dialog";
 
 // Feed post interface
 interface FeedPost {
@@ -332,12 +333,39 @@ export default function DesignStudio() {
   const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
   const [responsiveDropdownOpen, setResponsiveDropdownOpen] = useState(false);
+  const [addContentDialogOpen, setAddContentDialogOpen] = useState(false);
   
   // Check if we're in the feed section
   const isFeed = location.includes('/spaces/feed');
+  
+  // Set up keyboard shortcut for opening the dialog
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Only trigger if key 'n' is pressed and no input elements are focused
+      if (
+        event.key === 'n' && 
+        document.activeElement?.tagName !== 'INPUT' && 
+        document.activeElement?.tagName !== 'TEXTAREA'
+      ) {
+        setAddContentDialogOpen(true);
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   return (
     <DashboardLayout>
+      {/* Add Content Dialog */}
+      <AddContentDialog 
+        open={addContentDialogOpen} 
+        onOpenChange={setAddContentDialogOpen} 
+      />
+      
       <div className="w-full p-4">
         {/* Browser mockup - with shadow */}
         <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-3xl w-full h-[calc(100vh-100px)]" 
