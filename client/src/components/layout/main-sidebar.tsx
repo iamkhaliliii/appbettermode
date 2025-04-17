@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { 
   Home, 
   FileText as FileTextIcon,
+  Database,
   Folder,
   PanelsLeftBottom, 
   Users, 
@@ -121,21 +122,21 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
       <div className="px-1.5 py-3 h-full flex flex-col">
         <nav className="space-y-2 flex-grow flex flex-col items-center pt-1.5">
           <NavItem 
-            href="/content" 
-            icon={<Folder className="h-4 w-4" />} 
-            isActive={location.startsWith('/content') && !location.startsWith('/content/inbox')} 
-            collapsed={true}
-          >
-            Content
-          </NavItem>
-          
-          <NavItem 
             href="/content/inbox" 
             icon={<Inbox className="h-4 w-4" />} 
             isActive={location.startsWith('/content/inbox')} 
             collapsed={true}
           >
             Inbox
+          </NavItem>
+          
+          <NavItem 
+            href="/content" 
+            icon={<Database className="h-4 w-4" />} 
+            isActive={location.startsWith('/content') && !location.startsWith('/content/inbox')} 
+            collapsed={true}
+          >
+            Content
           </NavItem>
           
           <NavItem 
