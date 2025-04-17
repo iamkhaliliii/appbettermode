@@ -238,6 +238,7 @@ function MinimalItem({
   isHidden = false,
   isFile = true,
   inSpaces = false,
+  decorationIcon,
 }: MinimalItemProps) {
   const [location] = useLocation();
   const [hidden, setHidden] = useState(isHidden);
@@ -888,7 +889,8 @@ export function SecondarySidebar() {
 
       <div className="space-y-1">
         <SideNavItem
-          href="/settings/my-details"
+          href<replit_final_file>
+          "/settings/my-details"
           isActive={
             isActiveUrl("/settings/my-details") || location === "/settings"
           }
