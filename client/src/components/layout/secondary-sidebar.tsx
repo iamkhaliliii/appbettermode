@@ -1166,8 +1166,10 @@ export function SecondarySidebar() {
                       <div className="flex items-center gap-2">
                         <div className="relative bg-amber-50/50 dark:bg-amber-900/20 p-1 rounded border border-amber-200 dark:border-amber-600">
                           <Image className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
-                          <div className="absolute -bottom-0.5 -right-0.5">
-                            <Box className="h-2.5 w-2.5 text-amber-500 dark:text-amber-400" />
+                          <div className="absolute -bottom-0.75 -right-0.75">
+                            <div className="rounded-full bg-amber-600/90 dark:bg-amber-200 p-[1px]">
+                              <Box className="h-2 w-2 text-amber-50/90 dark:text-amber-900/40" />
+                            </div>
                           </div>
                         </div>
                         <span className="dark:text-amber-200 text-amber-600/80">Logo</span>
@@ -1573,7 +1575,7 @@ export function SecondarySidebar() {
                   >
                     <div className="flex items-center gap-1.5">
                       <Layout className="h-4 w-4 text-gray-500" />
-                      <span className="text-xs text-gray-600 dark:text-gray-300">Header</span>
+                      <span className="text-xs text-gray-600 dark:text-gray-300">span>Header</span>
                       <ChevronRight className="h-3.5 w-3.5 text-gray-400 ml-1" />
                     </div>
                     <div>
