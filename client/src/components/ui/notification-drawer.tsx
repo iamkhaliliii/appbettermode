@@ -790,7 +790,11 @@ export function NotificationDrawer({
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-7 w-7 hover:bg-gray-100 dark:hover:bg-gray-800">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 hover:bg-gray-100 dark:hover:bg-gray-800"
+                >
                   <Settings className="h-3.5 w-3.5" />
                 </Button>
               </DropdownMenuTrigger>
@@ -827,7 +831,7 @@ export function NotificationDrawer({
                 {/* Add Filter button */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <div className="inline-flex items-center h-5 text-[10px] rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300 pl-1.5 pr-1.5 py-0 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900/30">
+                    <div className="inline-flex items-center h-5 text-[11px] text-gray-500 dark:text-gray-400 pl-1.5 pr-1.5 py-0 cursor-pointer hover:text-gray-800 dark:hover:text-gray-300">
                       <Filter className="h-2.5 w-2.5 mr-1" />
                       <span>+ Filter</span>
                     </div>
