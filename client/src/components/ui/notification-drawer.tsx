@@ -551,12 +551,12 @@ export function NotificationDrawer({
             >
               <DropdownMenuTrigger asChild>
                 <Button
-                  variant={getFilterCount() > 0 ? "secondary-color" : "ghost"}
+                  variant="ghost"
                   size="icon"
                   className="h-7 w-7"
                   title="Filter notifications"
                 >
-                  <Filter className="h-3.5 w-3.5" />
+                  <Filter className={`h-3.5 w-3.5 ${getFilterCount() > 0 ? "text-blue-500" : ""}`} />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="min-w-[200px]">
