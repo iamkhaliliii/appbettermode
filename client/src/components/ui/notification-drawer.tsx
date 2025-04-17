@@ -459,8 +459,8 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
   };
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="min-h-[35vh] max-h-[95vh]">
+    <Drawer open={open} onOpenChange={onOpenChange} direction="right">
+      <DrawerContent className="min-h-[35vh] max-h-[95vh] ml-auto max-w-md w-full">
         <DrawerHeader className="px-3 py-2 border-b border-gray-100 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <DrawerTitle className="text-sm font-medium">Notifications</DrawerTitle>
@@ -476,6 +476,15 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                   <span>Read all</span>
                 </Button>
               )}
+              
+              {/* Settings button */}
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-7 w-7 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+              >
+                <Settings className="h-4 w-4" />
+              </Button>
               
               {/* Filter button - changes color when filters are active */}
               <Button 
