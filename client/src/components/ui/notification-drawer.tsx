@@ -537,7 +537,7 @@ export function NotificationDrawer({
             <Button
               variant="ghost"
               size="sm"
-              className="h-7 px-2 text-xs rounded-md"
+              className="h-7 px-2 text-xs rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
               onClick={markAllAsRead}
             >
               Read all
