@@ -226,6 +226,7 @@ interface MinimalItemProps {
   isHidden?: boolean;
   isFile?: boolean;
   inSpaces?: boolean;
+  decorationIcon?: React.ReactNode;
 }
 
 function MinimalItem({
@@ -322,11 +323,13 @@ function MinimalItem({
           <div className="flex items-center gap-1.5">
             <div className="relative">
               <span className={cn("flex-shrink-0", iconColor)}>{icon}</span>
-              <div className="absolute -bottom-1 -right-1">
-                <Database
-                  className={`h-2.5 w-2.5 text-${iconColor.split("text-")[1]}`}
-                />
-              </div>
+              {decorationIcon && (
+                <div className="absolute -bottom-1 -right-1">
+                  {React.cloneElement(decorationIcon as React.ReactElement, {
+                    className: `h-2.5 w-2.5 text-${iconColor.split("text-")[1]}`
+                  })}
+                </div>
+              )}
             </div>
           </div>
           <Link href={path}>
