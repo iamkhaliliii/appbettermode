@@ -17,7 +17,8 @@ import {
   LogOut,
   SunMedium,
   Moon,
-  LayoutDashboard
+  LayoutDashboard,
+  Inbox
 } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { useState, useEffect } from "react";
@@ -122,10 +123,19 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
           <NavItem 
             href="/content" 
             icon={<Folder className="h-4 w-4" />} 
-            isActive={location.startsWith('/content')} 
+            isActive={location.startsWith('/content') && !location.startsWith('/content/inbox')} 
             collapsed={true}
           >
             Content
+          </NavItem>
+          
+          <NavItem 
+            href="/content/inbox" 
+            icon={<Inbox className="h-4 w-4" />} 
+            isActive={location.startsWith('/content/inbox')} 
+            collapsed={true}
+          >
+            Inbox
           </NavItem>
           
           <NavItem 
