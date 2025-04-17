@@ -671,81 +671,64 @@ export function SecondarySidebar() {
     // Default content sidebar - showing CMS Collections directly
     return (
       <div className="p-3">
-        <div className="mb-2">
-          <div className="flex items-center justify-between mb-1">
-            <div className="flex items-center">
-              <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">CMS Collections</h2>
+        <div className="space-y-4">
+          <div className="space-y-3">
+            {/* Primary Actions */}
+            <div className="space-y-0.5">
+              <SideNavItemWithBadge 
+                href="/content/all"
+                isActive={isActiveUrl('/content/all') || location === '/content'}
+                icon={<Folder className="h-3.5 w-3.5" />}
+                badgeText="24"
+                primary={true}
+              >
+                All CMS Posts
+              </SideNavItemWithBadge>
             </div>
-            <div className="relative group">
-              <div className="p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer">
-                <Plus className="h-3.5 w-3.5 text-gray-400" />
-              </div>
-              <div className="absolute right-0 mt-1 w-40 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                <div className="py-1">
-                  <a href="#" className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                    <FileBox className="h-3 w-3 mr-2 text-gray-500" />
-                    <span>Create new CMS</span>
-                  </a>
-                  <a href="#" className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                    <Plus className="h-3 w-3 mr-2 text-gray-500" />
-                    <span>Add custom view</span>
-                  </a>
-                </div>
-              </div>
+
+            {/* Content Types - More Compact */}
+            <div className="space-y-0.5 border-t border-gray-100 dark:border-gray-700 pt-2">
+          <SideNavItem 
+                href="/content/events"
+                isActive={isActiveUrl('/content/events')}
+                icon={<Calendar className="h-3.5 w-3.5" />}
+              >
+                Events
+              </SideNavItem>
+              
+              <SideNavItem 
+                href="/content/discussions"
+                isActive={isActiveUrl('/content/discussions')}
+                icon={<MessageSquare className="h-3.5 w-3.5" />}
+              >
+                Discussion
+              </SideNavItem>
+              
+              <SideNavItem 
+                href="/content/articles"
+                isActive={isActiveUrl('/content/articles')}
+                icon={<FileText className="h-3.5 w-3.5" />}
+              >
+                Articles
+              </SideNavItem>
+              
+              <SideNavItem 
+                href="/content/questions"
+                isActive={isActiveUrl('/content/questions')}
+                icon={<HelpCircle className="h-3.5 w-3.5" />}
+              >
+                Questions
+              </SideNavItem>
+              
+              <SideNavItem 
+                href="/content/wishlist"
+                isActive={isActiveUrl('/content/wishlist')}
+                icon={<Star className="h-3.5 w-3.5" />}
+              >
+                Wishlist
+              </SideNavItem>
             </div>
           </div>
-        </div>
-        
-        <div className="space-y-1">
-          <SideNavItem 
-            href="/content/posts"
-            isActive={isActiveUrl('/content/posts') || location === '/content'}
-          >
-            Posts
-          </SideNavItem>
-          
-          <SideNavItem 
-            href="/content/pages"
-            isActive={isActiveUrl('/content/pages')}
-          >
-            Pages
-          </SideNavItem>
-          
-          <SideNavItem 
-            href="/content/products"
-            isActive={isActiveUrl('/content/products')}
-          >
-            Products
-          </SideNavItem>
-          
-          <SideNavItem 
-            href="/content/tags"
-            isActive={isActiveUrl('/content/tags')}
-          >
-            Tags
-          </SideNavItem>
-          
-          <SideNavItem 
-            href="/content/categories"
-            isActive={isActiveUrl('/content/categories')}
-          >
-            Categories
-          </SideNavItem>
-          
-          <SideNavItem 
-            href="/content/comments"
-            isActive={isActiveUrl('/content/comments')}
-          >
-            Comments
-          </SideNavItem>
-          
-          <SideNavItemWithBadge 
-            href="/content/activity"
-            isActive={isActiveUrl('/content/activity')}
-            badgeText="12"
-          >
-            Activity Hub
-          </SideNavItemWithBadge>
         </div>
       </div>
     );
