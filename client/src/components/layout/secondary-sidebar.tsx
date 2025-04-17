@@ -495,102 +495,90 @@ export function SecondarySidebar() {
     // For the Inbox page
     if (isActiveUrl('/inbox') || location.startsWith('/inbox/')) {
       return (
-        <div className="p-4">
-          <div className="mb-4">
+        <div className="p-3">
+          <div className="mb-3">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-medium text-gray-900 dark:text-gray-100">Inbox</h2>
-              <div className="flex h-5 items-center justify-center rounded-full bg-primary-50 dark:bg-primary-900/30 px-2 text-xs font-medium text-primary-600 dark:text-primary-400">12 new</div>
+              <h2 className="text-sm font-medium text-gray-800 dark:text-gray-200">Inbox</h2>
+              <span className="inline-flex h-5 items-center justify-center rounded-full bg-primary-50 dark:bg-primary-900/30 px-1.5 text-[10px] font-medium text-primary-600 dark:text-primary-400">12</span>
             </div>
           </div>
           
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Overview Section */}
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400">Overview</h3>
+              <div className="flex items-center justify-between mb-1.5">
+                <h3 className="text-[11px] uppercase tracking-wide font-medium text-gray-500 dark:text-gray-400">Overview</h3>
               </div>
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 <SideNavItem 
                   href="/inbox/all-activity"
                   isActive={isActiveUrl('/inbox/all-activity') || location === '/inbox'}
-                  icon={<Inbox className="h-4 w-4" />}
+                  icon={<Inbox className="h-3.5 w-3.5" />}
                 >
                   All Activity
-                  <span className="ml-auto">
-                    <span className="bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-xs font-medium rounded-full px-1.5 py-0.5">12</span>
-                  </span>
+                  <span className="ml-auto flex h-4 min-w-4 items-center justify-center rounded-full bg-primary-50 dark:bg-primary-900/30 px-1 text-[10px] font-medium text-primary-600 dark:text-primary-400">12</span>
                 </SideNavItem>
                 <SideNavItem 
                   href="/inbox/unread"
                   isActive={isActiveUrl('/inbox/unread')}
-                  icon={<MessageCircle className="h-4 w-4" />}
+                  icon={<MessageCircle className="h-3.5 w-3.5" />}
                 >
                   Unread
-                  <span className="ml-auto">
-                    <span className="bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-xs font-medium rounded-full px-1.5 py-0.5">5</span>
-                  </span>
+                  <span className="ml-auto flex h-4 min-w-4 items-center justify-center rounded-full bg-primary-50 dark:bg-primary-900/30 px-1 text-[10px] font-medium text-primary-600 dark:text-primary-400">5</span>
                 </SideNavItem>
               </div>
             </div>
 
             {/* Interactions Group */}
             <div>
-              <h3 className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">Interactions</h3>
-              <div className="space-y-1">
+              <h3 className="mb-1.5 text-[11px] uppercase tracking-wide font-medium text-gray-500 dark:text-gray-400">Interactions</h3>
+              <div className="space-y-0.5">
                 <SideNavItem 
                   href="/inbox/comments"
                   isActive={isActiveUrl('/inbox/comments')}
-                  icon={<MessageSquare className="h-4 w-4" />}
+                  icon={<MessageSquare className="h-3.5 w-3.5" />}
                 >
                   Comments & Replies
-                  <span className="ml-auto">
-                    <span className="bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs rounded-full px-1.5 py-0.5">24</span>
-                  </span>
+                  <span className="ml-auto flex h-4 min-w-4 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 px-1 text-[10px] text-gray-500 dark:text-gray-400">24</span>
                 </SideNavItem>
                 
                 <SideNavItem 
                   href="/inbox/reactions"
                   isActive={isActiveUrl('/inbox/reactions')}
-                  icon={<ThumbsUp className="h-4 w-4" />}
+                  icon={<ThumbsUp className="h-3.5 w-3.5" />}
                 >
                   Reactions
-                  <span className="ml-auto">
-                    <span className="bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs rounded-full px-1.5 py-0.5">8</span>
-                  </span>
+                  <span className="ml-auto flex h-4 min-w-4 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 px-1 text-[10px] text-gray-500 dark:text-gray-400">8</span>
                 </SideNavItem>
                 
                 <SideNavItem 
                   href="/inbox/mentions"
                   isActive={isActiveUrl('/inbox/mentions')}
-                  icon={<AtSign className="h-4 w-4" />}
+                  icon={<AtSign className="h-3.5 w-3.5" />}
                 >
                   Mentions
-                  <span className="ml-auto">
-                    <span className="bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs rounded-full px-1.5 py-0.5">3</span>
-                  </span>
+                  <span className="ml-auto flex h-4 min-w-4 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 px-1 text-[10px] text-gray-500 dark:text-gray-400">3</span>
                 </SideNavItem>
               </div>
             </div>
 
             {/* Management Group */}
             <div>
-              <h3 className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">Management</h3>
-              <div className="space-y-1">
+              <h3 className="mb-1.5 text-[11px] uppercase tracking-wide font-medium text-gray-500 dark:text-gray-400">Management</h3>
+              <div className="space-y-0.5">
                 <SideNavItem 
                   href="/inbox/reports"
                   isActive={isActiveUrl('/inbox/reports')}
-                  icon={<Flag className="h-4 w-4" />}
+                  icon={<Flag className="h-3.5 w-3.5" />}
                 >
                   Reports & Moderation
-                  <span className="ml-auto">
-                    <span className="bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs rounded-full px-1.5 py-0.5">5</span>
-                  </span>
+                  <span className="ml-auto flex h-4 min-w-4 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 px-1 text-[10px] text-gray-500 dark:text-gray-400">5</span>
                 </SideNavItem>
                 
                 <SideNavItem 
                   href="/inbox/rsvps"
                   isActive={isActiveUrl('/inbox/rsvps')}
-                  icon={<CalendarCheck className="h-4 w-4" />}
+                  icon={<CalendarCheck className="h-3.5 w-3.5" />}
                 >
                   RSVPs
                 </SideNavItem>
@@ -598,56 +586,57 @@ export function SecondarySidebar() {
                 <SideNavItem 
                   href="/inbox/forms"
                   isActive={isActiveUrl('/inbox/forms')}
-                  icon={<ClipboardList className="h-4 w-4" />}
+                  icon={<ClipboardList className="h-3.5 w-3.5" />}
                 >
                   Form Submissions
                 </SideNavItem>
               </div>
             </div>
 
-            {/* Content Types Group with Collapsible */}
+            {/* Content Types Group with Accordion */}
             <div>
-              <Collapsible defaultOpen={location.includes('/inbox/cms/')}>
-                <CollapsibleTrigger className="flex w-full items-center justify-between mb-2">
-                  <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400">Content Types</h3>
-                  <ChevronDown className="h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform duration-200 data-[state=open]:rotate-180" />
-                </CollapsibleTrigger>
-                <CollapsibleContent className="pt-1">
-                  <div className="space-y-1 pl-1">
-                    <SideNavItem 
-                      href="/inbox/cms/articles"
-                      isActive={isActiveUrl('/inbox/cms/articles')}
-                      icon={<FileText className="h-4 w-4" />}
-                    >
-                      Articles
-                    </SideNavItem>
-                    
-                    <SideNavItem 
-                      href="/inbox/cms/events"
-                      isActive={isActiveUrl('/inbox/cms/events')}
-                      icon={<Calendar className="h-4 w-4" />}
-                    >
-                      Events
-                    </SideNavItem>
-                    
-                    <SideNavItem 
-                      href="/inbox/cms/questions"
-                      isActive={isActiveUrl('/inbox/cms/questions')}
-                      icon={<HelpCircle className="h-4 w-4" />}
-                    >
-                      Questions
-                    </SideNavItem>
-                    
-                    <SideNavItem 
-                      href="/inbox/cms/wishlist"
-                      isActive={isActiveUrl('/inbox/cms/wishlist')}
-                      icon={<Star className="h-4 w-4" />}
-                    >
-                      Wishlist
-                    </SideNavItem>
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
+              <Accordion type="single" collapsible defaultValue={location.includes('/inbox/cms/') ? 'cms' : undefined}>
+                <AccordionItem value="cms" className="border-0">
+                  <AccordionTrigger className="flex items-center py-1 px-0 hover:no-underline">
+                    <h3 className="text-[11px] uppercase tracking-wide font-medium text-gray-500 dark:text-gray-400">Content Types</h3>
+                  </AccordionTrigger>
+                  <AccordionContent className="pt-1 pb-0">
+                    <div className="space-y-1 pl-2">
+                      <SideNavItem 
+                        href="/inbox/cms/articles"
+                        isActive={isActiveUrl('/inbox/cms/articles')}
+                        icon={<FileText className="h-3.5 w-3.5" />}
+                      >
+                        Articles
+                      </SideNavItem>
+                      
+                      <SideNavItem 
+                        href="/inbox/cms/events"
+                        isActive={isActiveUrl('/inbox/cms/events')}
+                        icon={<Calendar className="h-3.5 w-3.5" />}
+                      >
+                        Events
+                      </SideNavItem>
+                      
+                      <SideNavItem 
+                        href="/inbox/cms/questions"
+                        isActive={isActiveUrl('/inbox/cms/questions')}
+                        icon={<HelpCircle className="h-3.5 w-3.5" />}
+                      >
+                        Questions
+                      </SideNavItem>
+                      
+                      <SideNavItem 
+                        href="/inbox/cms/wishlist"
+                        isActive={isActiveUrl('/inbox/cms/wishlist')}
+                        icon={<Star className="h-3.5 w-3.5" />}
+                      >
+                        Wishlist
+                      </SideNavItem>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </div>
           </div>
         </div>
@@ -730,9 +719,7 @@ export function SecondarySidebar() {
             isActive={isActiveUrl('/content/activity')}
           >
             Activity Hub
-            <span className="ml-auto">
-              <span className="bg-gray-100 dark:bg-gray-700 text-xs rounded-full px-2 py-0.5">12</span>
-            </span>
+            <span className="ml-auto flex h-4 min-w-4 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 px-1 text-[10px] text-gray-500 dark:text-gray-400">12</span>
           </SideNavItem>
         </div>
       </div>
