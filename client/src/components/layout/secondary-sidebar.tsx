@@ -49,6 +49,8 @@ import {
   SquareMousePointer,
   SquareDashedBottomCode,
   Settings2,
+  DatabaseZap,
+  AppWindowMac,
   // Icons for inbox sidebar
   Inbox,
   MessageCircle,
@@ -277,7 +279,10 @@ function MinimalItem({
             <DropdownMenuContent className="w-36 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
               <div className="py-0.5">
                 {showHideOption && (
-                  <DropdownMenuItem onClick={toggleHidden} className="flex items-center px-2 py-0.5 text-[11px] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <DropdownMenuItem
+                    onClick={toggleHidden}
+                    className="flex items-center px-2 py-0.5 text-[11px] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
                     <Eye className="h-3 w-3 mr-1.5 text-gray-500" />
                     <span>Show</span>
                   </DropdownMenuItem>
@@ -313,8 +318,17 @@ function MinimalItem({
         )}
         style={{ paddingLeft: level === 0 ? "12px" : `${level * 10 + 16}px` }}
       >
-        <div className="flex items-center flex-1">
-          <span className={cn("flex-shrink-0 mr-1.5", iconColor)}>{icon}</span>
+        <div className="flex items-center flex-1 gap-1.5">
+          <div className="flex items-center gap-1.5">
+            <div className="relative">
+              <span className={cn("flex-shrink-0", iconColor)}>{icon}</span>
+              <div className="absolute -bottom-1 -right-1">
+                <Database
+                  className={`h-2.5 w-2.5 text-${iconColor.split("text-")[1]}`}
+                />
+              </div>
+            </div>
+          </div>
           <Link href={path}>
             <span className={cn("font-medium", iconColor)}>{displayName}</span>
           </Link>
@@ -328,7 +342,10 @@ function MinimalItem({
           <DropdownMenuContent className="w-36 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
             <div className="py-0.5">
               {showHideOption && (
-                <DropdownMenuItem onClick={toggleHidden} className="flex items-center px-2 py-0.5 text-[11px] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                <DropdownMenuItem
+                  onClick={toggleHidden}
+                  className="flex items-center px-2 py-0.5 text-[11px] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
                   {hidden ? (
                     <>
                       <Eye className="h-3 w-3 mr-1.5 text-gray-500" />
@@ -899,7 +916,8 @@ export function SecondarySidebar() {
 
         <SideNavItem
           href="/settings/billing"
-          isActive={isActiveUrl("/settings/billing")}        >
+          isActive={isActiveUrl("/settings/billing")}
+        >
           Billing
         </SideNavItem>
 
@@ -1010,7 +1028,7 @@ export function SecondarySidebar() {
                 <MinimalItem
                   name="Feed"
                   path="/design-studio/spaces/feed"
-                  icon={<FileCode2 className="h-3.5 w-3.5" />}
+                  icon={<AppWindowMac className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
                   inSpaces={true}
                 />
@@ -1748,7 +1766,8 @@ export function SecondarySidebar() {
                               communityLeftSidebar.style.opacity = "1";
                               communityLeftSidebar.style.backgroundColor =
                                 "rgba(229, 231, 235, 0.1)";
-                              communityLeftSidebar.style.borderRight = "1px solid var(--border)";
+                              communityLeftSidebar.style.borderRight =
+                                "1px solid var(--border)";
                               communityLeftSidebar.style.width = "9rem";
                             } else {
                               communityLeftSidebar.style.transform =
