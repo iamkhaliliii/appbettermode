@@ -76,9 +76,10 @@ interface SideNavItemProps {
   children: React.ReactNode;
   isActive?: boolean;
   badge?: string;
+  className?: string;
 }
 
-function SideNavItem({ href, icon, children, isActive = false, badge }: SideNavItemProps) {
+function SideNavItem({ href, icon, children, isActive = false, badge, className }: SideNavItemProps) {
   return (
     <Link href={href}>
       <div
@@ -86,7 +87,8 @@ function SideNavItem({ href, icon, children, isActive = false, badge }: SideNavI
           "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
           isActive 
             ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-md" 
-            : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded"
+            : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded",
+          className
         )}
         style={{paddingLeft: "10px", paddingRight: "10px"}}
       >
@@ -477,190 +479,159 @@ export function SecondarySidebar() {
     // For the Inbox page
     if (isActiveUrl('/inbox') || location.startsWith('/inbox/')) {
       return (
-        <div className="p-3">
-          <div className="mb-2">
-            <div className="flex items-center justify-between mb-1">
-              <div className="flex items-center">
-                <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Messages</h2>
-              </div>
+        <div className="p-4">
+          <div className="mb-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-medium text-gray-900 dark:text-gray-100">Inbox</h2>
+              <div className="flex h-5 items-center justify-center rounded-full bg-primary-50 dark:bg-primary-900/30 px-2 text-xs font-medium text-primary-600 dark:text-primary-400">12 new</div>
             </div>
           </div>
           
-          <div className="space-y-5">
-            {/* All Activity Section with Counter */}
-            <div className="relative">
-              <div className="flex items-center justify-between mb-2.5 px-1">
-                <h3 className="text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Overview</h3>
-                <div className="flex items-center space-x-1">
-                  <span className="flex h-[18px] items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/30 px-2 text-[11px] font-medium text-blue-600 dark:text-blue-400">12 new</span>
-                </div>
+          <div className="space-y-6">
+            {/* Overview Section */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400">Overview</h3>
               </div>
-              <div>
+              <div className="space-y-1">
                 <SideNavItem 
                   href="/inbox/all-activity"
                   isActive={isActiveUrl('/inbox/all-activity') || location === '/inbox'}
-                  className="group relative"
+                  icon={<Inbox className="h-4 w-4" />}
                 >
-                  <div className="flex items-center">
-                    <div className={`mr-2 h-1.5 w-1.5 rounded-full ${isActiveUrl('/inbox/all-activity') ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
-                    All Activity
-                  </div>
+                  All Activity
+                  <span className="ml-auto">
+                    <span className="bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-xs font-medium rounded-full px-1.5 py-0.5">12</span>
+                  </span>
                 </SideNavItem>
                 <SideNavItem 
                   href="/inbox/unread"
                   isActive={isActiveUrl('/inbox/unread')}
-                  className="group relative"
+                  icon={<MessageCircle className="h-4 w-4" />}
                 >
-                  <div className="flex items-center">
-                    <div className={`mr-2 h-1.5 w-1.5 rounded-full ${isActiveUrl('/inbox/unread') ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
-                    Unread
-                  </div>
+                  Unread
+                  <span className="ml-auto">
+                    <span className="bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-xs font-medium rounded-full px-1.5 py-0.5">5</span>
+                  </span>
                 </SideNavItem>
               </div>
             </div>
 
             {/* Interactions Group */}
             <div>
-              <h3 className="px-1 mb-2.5 text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Interactions</h3>
-              <div className="space-y-0.5">
+              <h3 className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">Interactions</h3>
+              <div className="space-y-1">
                 <SideNavItem 
                   href="/inbox/comments"
                   isActive={isActiveUrl('/inbox/comments')}
-                  className="group"
+                  icon={<MessageSquare className="h-4 w-4" />}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className={`mr-2 h-1.5 w-1.5 rounded-full ${isActiveUrl('/inbox/comments') ? 'bg-blue-500' : 'bg-transparent'}`} />
-                      Comments & Replies
-                    </div>
-                    <span className="text-[10px] text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300">24</span>
-                  </div>
+                  Comments & Replies
+                  <span className="ml-auto">
+                    <span className="bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs rounded-full px-1.5 py-0.5">24</span>
+                  </span>
                 </SideNavItem>
                 
                 <SideNavItem 
                   href="/inbox/reactions"
                   isActive={isActiveUrl('/inbox/reactions')}
-                  className="group"
+                  icon={<ThumbsUp className="h-4 w-4" />}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className={`mr-2 h-1.5 w-1.5 rounded-full ${isActiveUrl('/inbox/reactions') ? 'bg-blue-500' : 'bg-transparent'}`} />
-                      Reactions
-                    </div>
-                    <span className="text-[10px] text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300">8</span>
-                  </div>
+                  Reactions
+                  <span className="ml-auto">
+                    <span className="bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs rounded-full px-1.5 py-0.5">8</span>
+                  </span>
                 </SideNavItem>
                 
                 <SideNavItem 
                   href="/inbox/mentions"
                   isActive={isActiveUrl('/inbox/mentions')}
-                  className="group"
+                  icon={<AtSign className="h-4 w-4" />}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className={`mr-2 h-1.5 w-1.5 rounded-full ${isActiveUrl('/inbox/mentions') ? 'bg-blue-500' : 'bg-transparent'}`} />
-                      Mentions
-                    </div>
-                    <span className="text-[10px] text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300">3</span>
-                  </div>
+                  Mentions
+                  <span className="ml-auto">
+                    <span className="bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs rounded-full px-1.5 py-0.5">3</span>
+                  </span>
                 </SideNavItem>
               </div>
             </div>
 
             {/* Management Group */}
             <div>
-              <h3 className="px-1 mb-2.5 text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Management</h3>
-              <div className="space-y-0.5">
+              <h3 className="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">Management</h3>
+              <div className="space-y-1">
                 <SideNavItem 
                   href="/inbox/reports"
                   isActive={isActiveUrl('/inbox/reports')}
-                  className="group"
+                  icon={<Flag className="h-4 w-4" />}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className={`mr-2 h-1.5 w-1.5 rounded-full ${isActiveUrl('/inbox/reports') ? 'bg-blue-500' : 'bg-transparent'}`} />
-                      Reports & Moderation
-                    </div>
-                    <span className="text-[10px] text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300">5</span>
-                  </div>
+                  Reports & Moderation
+                  <span className="ml-auto">
+                    <span className="bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs rounded-full px-1.5 py-0.5">5</span>
+                  </span>
                 </SideNavItem>
                 
                 <SideNavItem 
                   href="/inbox/rsvps"
                   isActive={isActiveUrl('/inbox/rsvps')}
-                  className="group"
+                  icon={<CalendarCheck className="h-4 w-4" />}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className={`mr-2 h-1.5 w-1.5 rounded-full ${isActiveUrl('/inbox/rsvps') ? 'bg-blue-500' : 'bg-transparent'}`} />
-                      RSVPs
-                    </div>
-                  </div>
+                  RSVPs
                 </SideNavItem>
                 
                 <SideNavItem 
                   href="/inbox/forms"
                   isActive={isActiveUrl('/inbox/forms')}
-                  className="group"
+                  icon={<ClipboardList className="h-4 w-4" />}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className={`mr-2 h-1.5 w-1.5 rounded-full ${isActiveUrl('/inbox/forms') ? 'bg-blue-500' : 'bg-transparent'}`} />
-                      Form Submissions
-                    </div>
-                  </div>
+                  Form Submissions
                 </SideNavItem>
               </div>
             </div>
 
-            {/* Content Types Group */}
+            {/* Content Types Group with Collapsible */}
             <div>
-              <h3 className="px-1 mb-2.5 text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Content Types</h3>
-              <div className="space-y-0.5">
-                <SideNavItem 
-                  href="/inbox/cms/articles"
-                  isActive={isActiveUrl('/inbox/cms/articles')}
-                  className="group pl-3"
-                >
-                  <div className="flex items-center">
-                    <div className={`mr-2 h-px w-3 ${isActiveUrl('/inbox/cms/articles') ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
-                    Articles
+              <Collapsible defaultOpen={location.includes('/inbox/cms/')}>
+                <CollapsibleTrigger className="flex w-full items-center justify-between mb-2">
+                  <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400">Content Types</h3>
+                  <ChevronDown className="h-4 w-4 text-gray-500 dark:text-gray-400 transition-transform duration-200 data-[state=open]:rotate-180" />
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pt-1">
+                  <div className="space-y-1 pl-1">
+                    <SideNavItem 
+                      href="/inbox/cms/articles"
+                      isActive={isActiveUrl('/inbox/cms/articles')}
+                      icon={<FileText className="h-4 w-4" />}
+                    >
+                      Articles
+                    </SideNavItem>
+                    
+                    <SideNavItem 
+                      href="/inbox/cms/events"
+                      isActive={isActiveUrl('/inbox/cms/events')}
+                      icon={<Calendar className="h-4 w-4" />}
+                    >
+                      Events
+                    </SideNavItem>
+                    
+                    <SideNavItem 
+                      href="/inbox/cms/questions"
+                      isActive={isActiveUrl('/inbox/cms/questions')}
+                      icon={<HelpCircle className="h-4 w-4" />}
+                    >
+                      Questions
+                    </SideNavItem>
+                    
+                    <SideNavItem 
+                      href="/inbox/cms/wishlist"
+                      isActive={isActiveUrl('/inbox/cms/wishlist')}
+                      icon={<Star className="h-4 w-4" />}
+                    >
+                      Wishlist
+                    </SideNavItem>
                   </div>
-                </SideNavItem>
-                
-                <SideNavItem 
-                  href="/inbox/cms/events"
-                  isActive={isActiveUrl('/inbox/cms/events')}
-                  className="group pl-3"
-                >
-                  <div className="flex items-center">
-                    <div className={`mr-2 h-px w-3 ${isActiveUrl('/inbox/cms/events') ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
-                    Events
-                  </div>
-                </SideNavItem>
-                
-                <SideNavItem 
-                  href="/inbox/cms/questions"
-                  isActive={isActiveUrl('/inbox/cms/questions')}
-                  className="group pl-3"
-                >
-                  <div className="flex items-center">
-                    <div className={`mr-2 h-px w-3 ${isActiveUrl('/inbox/cms/questions') ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
-                    Questions
-                  </div>
-                </SideNavItem>
-                
-                <SideNavItem 
-                  href="/inbox/cms/wishlist"
-                  isActive={isActiveUrl('/inbox/cms/wishlist')}
-                  className="group pl-3"
-                >
-                  <div className="flex items-center">
-                    <div className={`mr-2 h-px w-3 ${isActiveUrl('/inbox/cms/wishlist') ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
-                    Wishlist
-                  </div>
-                </SideNavItem>
-              </div>
+                </CollapsibleContent>
+              </Collapsible>
             </div>
           </div>
         </div>
