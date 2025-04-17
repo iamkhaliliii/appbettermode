@@ -1,6 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { NavigationItem } from "@/components/ui/navigation-item";
 import {
   BarChart,
   TrendingUp,
