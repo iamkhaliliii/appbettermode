@@ -575,242 +575,231 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
         {/* Filter UI */}
         {showFilters && (
           <div className="border-b border-gray-200 dark:border-gray-700">
-            <Tabs 
-              defaultValue="status" 
-              value={activeFilterCategory}
-              onValueChange={(value) => setActiveFilterCategory(value as FilterCategory)}
-              className="w-full"
-            >
-              <div className="px-3 pt-2">
-                <TabsList className="w-full h-7 bg-gray-100 dark:bg-gray-700/80 grid grid-cols-5 rounded-[0.4rem] p-0.5">
-                  <TabsTrigger value="status" className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0">
-                    <CheckCircle2 className="h-3 w-3 mr-1" />
-                    Status
-                  </TabsTrigger>
-                  <TabsTrigger value="type" className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0">
-                    <MessageSquare className="h-3 w-3 mr-1" />
-                    Type
-                  </TabsTrigger>
-                  <TabsTrigger value="space" className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0">
-                    <Boxes className="h-3 w-3 mr-1" />
-                    Space
-                  </TabsTrigger>
-                  <TabsTrigger value="cms" className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0">
-                    <Database className="h-3 w-3 mr-1" />
-                    CMS
-                  </TabsTrigger>
-                  <TabsTrigger value="time" className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0">
-                    <Calendar className="h-3 w-3 mr-1" />
-                    Time
-                  </TabsTrigger>
-                </TabsList>
-              </div>
-              
-              <div className="p-3">
-                {activeFilterCategory === 'status' && (
-                  <div className="grid grid-cols-3 gap-2">
-                    <Button
-                      variant={activeStatusFilter === 'all' ? 'secondary-gray' : 'ghost'}
-                      size="sm"
-                      className="h-8 text-xs rounded-md flex justify-center items-center"
+            <div className="px-3 pt-2 pb-3">
+              <div className="w-full h-7 bg-gray-100 dark:bg-gray-700/80 grid grid-cols-5 rounded-[0.4rem] p-0.5">
+                {/* Status filter */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant={activeFilterCategory === 'status' ? "secondary" : "ghost"}
+                      className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0 w-full"
+                      onClick={() => setActiveFilterCategory('status')}
+                    >
+                      <CheckCircle2 className="h-3 w-3 mr-1" />
+                      Status
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="min-w-[180px]">
+                    <DropdownMenuItem 
+                      className="text-xs"
                       onClick={() => setActiveStatusFilter('all')}
                     >
-                      <span className="flex items-center justify-center">
+                      <span className="flex items-center">
                         <Bell className="h-3.5 w-3.5 mr-2 text-gray-500" />
                         All
+                        {activeStatusFilter === 'all' && <Check className="h-3 w-3 ml-auto" />}
                       </span>
-                    </Button>
-                    <Button
-                      variant={activeStatusFilter === 'unread' ? 'secondary-gray' : 'ghost'}
-                      size="sm"
-                      className="h-8 text-xs rounded-md flex justify-center items-center"
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      className="text-xs"
                       onClick={() => setActiveStatusFilter('unread')}
                     >
-                      <span className="flex items-center justify-center">
-                        <CheckCircle2 className="h-3.5 w-3.5 mr-2 text-blue-500" />
-                        Unread
-                        {unreadCount > 0 && (
+                      <span className="flex items-center w-full justify-between">
+                        <span className="flex items-center">
+                          <CheckCircle2 className="h-3.5 w-3.5 mr-2 text-blue-500" />
+                          Unread
+                        </span>
+                        {unreadCount > 0 ? (
                           <span className="ml-1.5 h-4 min-w-4 px-1 flex items-center justify-center text-[10px] font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 rounded-full">
                             {unreadCount}
                           </span>
-                        )}
+                        ) : activeStatusFilter === 'unread' ? (
+                          <Check className="h-3 w-3" />
+                        ) : null}
                       </span>
-                    </Button>
-                    <Button
-                      variant={activeStatusFilter === 'read' ? 'secondary-gray' : 'ghost'}
-                      size="sm"
-                      className="h-8 text-xs rounded-md flex justify-center items-center"
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      className="text-xs"
                       onClick={() => setActiveStatusFilter('read')}
                     >
-                      <span className="flex items-center justify-center">
+                      <span className="flex items-center">
                         <Check className="h-3.5 w-3.5 mr-2 text-green-500" />
                         Read
+                        {activeStatusFilter === 'read' && <Check className="h-3 w-3 ml-auto" />}
                       </span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Type filter */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant={activeFilterCategory === 'type' ? "secondary" : "ghost"}
+                      className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0 w-full"
+                      onClick={() => setActiveFilterCategory('type')}
+                    >
+                      <MessageSquare className="h-3 w-3 mr-1" />
+                      Type
                     </Button>
-                  </div>
-                )}
-                
-                {activeFilterCategory === 'type' && (
-                  <div>
-                    <div className="mb-2">
-                      <Button
-                        variant={activeTypeFilter === null ? 'secondary-gray' : 'ghost'}
-                        size="sm"
-                        className="h-6 text-xs w-full justify-start"
-                        onClick={() => setActiveTypeFilter(null)}
-                      >
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="min-w-[180px]">
+                    <DropdownMenuItem 
+                      className="text-xs"
+                      onClick={() => setActiveTypeFilter(null)}
+                    >
+                      <span className="flex items-center">
                         <Bell className="h-3.5 w-3.5 mr-2" />
                         All types
-                      </Button>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      {availableTypes.map(type => (
-                        <Button
-                          key={type}
-                          variant={activeTypeFilter === type ? 'secondary-gray' : 'ghost'}
-                          size="sm"
-                          className="h-8 text-xs rounded-md justify-start"
-                          onClick={() => setActiveTypeFilter(activeTypeFilter === type ? null : type)}
-                        >
+                        {activeTypeFilter === null && <Check className="h-3 w-3 ml-auto" />}
+                      </span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    {availableTypes.map(type => (
+                      <DropdownMenuItem
+                        key={type}
+                        className="text-xs"
+                        onClick={() => setActiveTypeFilter(activeTypeFilter === type ? null : type)}
+                      >
+                        <span className="flex items-center w-full justify-between">
                           <span className="flex items-center">
                             {getTypeIconComponent(type)}
                             {type.charAt(0).toUpperCase() + type.slice(1)}
                           </span>
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                {activeFilterCategory === 'space' && (
-                  <div className="space-y-2">
-                    <Button
-                      variant={activeSpaceFilter === null ? 'secondary-gray' : 'ghost'}
-                      size="sm"
-                      className="h-7 text-xs w-full justify-between"
+                          {activeTypeFilter === type && <Check className="h-3 w-3" />}
+                        </span>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Space filter */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant={activeFilterCategory === 'space' ? "secondary" : "ghost"}
+                      className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0 w-full"
+                      onClick={() => setActiveFilterCategory('space')}
+                    >
+                      <Boxes className="h-3 w-3 mr-1" />
+                      Space
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="min-w-[200px]">
+                    <DropdownMenuItem 
+                      className="text-xs"
                       onClick={() => setActiveSpaceFilter(null)}
                     >
                       <span className="flex items-center">
                         <Boxes className="h-3.5 w-3.5 mr-2" />
                         All spaces
+                        {activeSpaceFilter === null && <Check className="h-3 w-3 ml-auto" />}
                       </span>
-                      {activeSpaceFilter === null && <Check className="h-3.5 w-3.5" />}
-                    </Button>
-                    
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button 
-                          variant="secondary-gray" 
-                          size="sm" 
-                          className="h-8 text-xs w-full justify-between"
-                        >
-                          <span className="flex items-center">
-                            <Boxes className="h-3.5 w-3.5 mr-2 text-purple-400" />
-                            {activeSpaceFilter || 'Select space'}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    {availableSpaces.map(space => (
+                      <DropdownMenuItem
+                        key={space}
+                        className="text-xs"
+                        onClick={() => setActiveSpaceFilter(activeSpaceFilter === space ? null : space)}
+                      >
+                        <span className="flex items-center w-full justify-between">
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-300">
+                            <Boxes className="h-2.5 w-2.5 mr-1" />
+                            {space}
                           </span>
-                          <ChevronRight className="h-3.5 w-3.5 rotate-90" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-full">
-                        {availableSpaces.map(space => (
-                          <DropdownMenuItem
-                            key={space}
-                            className="text-xs flex items-center justify-between"
-                            onClick={() => setActiveSpaceFilter(activeSpaceFilter === space ? null : space)}
-                          >
-                            <span className="inline-flex items-center">
-                              <span className="inline-flex items-center px-1.5 py-0.5 mr-2 rounded-full text-xs bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-300">
-                                <Boxes className="h-2.5 w-2.5 mr-1" />
-                                {space}
-                              </span>
-                            </span>
-                            {activeSpaceFilter === space && <Check className="h-3 w-3" />}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                )}
-                
-                {activeFilterCategory === 'cms' && (
-                  <div className="space-y-2">
-                    <Button
-                      variant={activeCmsFilter === null ? 'secondary-gray' : 'ghost'}
-                      size="sm"
-                      className="h-7 text-xs w-full justify-between"
+                          {activeSpaceFilter === space && <Check className="h-3 w-3" />}
+                        </span>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* CMS filter */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant={activeFilterCategory === 'cms' ? "secondary" : "ghost"}
+                      className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0 w-full"
+                      onClick={() => setActiveFilterCategory('cms')}
+                    >
+                      <Database className="h-3 w-3 mr-1" />
+                      CMS
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="min-w-[200px]">
+                    <DropdownMenuItem 
+                      className="text-xs"
                       onClick={() => setActiveCmsFilter(null)}
                     >
                       <span className="flex items-center">
                         <Database className="h-3.5 w-3.5 mr-2" />
                         All CMS types
+                        {activeCmsFilter === null && <Check className="h-3 w-3 ml-auto" />}
                       </span>
-                      {activeCmsFilter === null && <Check className="h-3.5 w-3.5" />}
-                    </Button>
-                    
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button 
-                          variant="secondary-gray" 
-                          size="sm" 
-                          className="h-8 text-xs w-full justify-between"
-                        >
-                          <span className="flex items-center">
-                            <Database className="h-3.5 w-3.5 mr-2 text-gray-400" />
-                            {activeCmsFilter || 'Select CMS type'}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    {availableCmsTypes.map(cmsType => (
+                      <DropdownMenuItem
+                        key={cmsType}
+                        className="text-xs"
+                        onClick={() => setActiveCmsFilter(activeCmsFilter === cmsType ? null : cmsType)}
+                      >
+                        <span className="flex items-center w-full justify-between">
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                            <Database className="h-2.5 w-2.5 mr-1" />
+                            {cmsType}
                           </span>
-                          <ChevronRight className="h-3.5 w-3.5 rotate-90" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-full">
-                        {availableCmsTypes.map(cmsType => (
-                          <DropdownMenuItem
-                            key={cmsType}
-                            className="text-xs flex items-center justify-between"
-                            onClick={() => setActiveCmsFilter(activeCmsFilter === cmsType ? null : cmsType)}
-                          >
-                            <span className="inline-flex items-center">
-                              <span className="inline-flex items-center px-1.5 py-0.5 mr-2 rounded-full text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
-                                <Database className="h-2.5 w-2.5 mr-1" />
-                                {cmsType}
-                              </span>
-                            </span>
-                            {activeCmsFilter === cmsType && <Check className="h-3 w-3" />}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                )}
-                
-                {activeFilterCategory === 'time' && (
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button
-                      variant={activeTimeFilter === null ? 'secondary-gray' : 'ghost'}
-                      size="sm"
-                      className="h-7 text-xs col-span-2 justify-start"
+                          {activeCmsFilter === cmsType && <Check className="h-3 w-3" />}
+                        </span>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Time filter */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant={activeFilterCategory === 'time' ? "secondary" : "ghost"}
+                      className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0 w-full"
+                      onClick={() => setActiveFilterCategory('time')}
+                    >
+                      <Calendar className="h-3 w-3 mr-1" />
+                      Time
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="min-w-[180px]">
+                    <DropdownMenuItem 
+                      className="text-xs"
                       onClick={() => setActiveTimeFilter(null)}
                     >
-                      <Calendar className="h-3.5 w-3.5 mr-2" />
-                      All time
-                    </Button>
+                      <span className="flex items-center">
+                        <Calendar className="h-3.5 w-3.5 mr-2" />
+                        All time
+                        {activeTimeFilter === null && <Check className="h-3 w-3 ml-auto" />}
+                      </span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
                     {Object.entries(timePeriods).map(([value, label]) => (
-                      <Button
+                      <DropdownMenuItem
                         key={value}
-                        variant={activeTimeFilter === value ? 'secondary-gray' : 'ghost'}
-                        size="sm"
-                        className="h-8 text-xs rounded-md justify-start"
+                        className="text-xs"
                         onClick={() => setActiveTimeFilter(activeTimeFilter === value ? null : value)}
                       >
-                        <span className="flex items-center">
-                          <Calendar className="h-3.5 w-3.5 mr-1.5 text-gray-400" />
-                          {label}
+                        <span className="flex items-center w-full justify-between">
+                          <span className="flex items-center">
+                            <Calendar className="h-3.5 w-3.5 mr-1.5 text-gray-400" />
+                            {label}
+                          </span>
+                          {activeTimeFilter === value && <Check className="h-3 w-3" />}
                         </span>
-                      </Button>
+                      </DropdownMenuItem>
                     ))}
-                  </div>
-                )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
-            </Tabs>
+            </div>
           </div>
         )}
         
