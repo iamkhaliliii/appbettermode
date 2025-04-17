@@ -889,8 +889,7 @@ export function SecondarySidebar() {
 
       <div className="space-y-1">
         <SideNavItem
-          href<replit_final_file>
-          "/settings/my-details"
+          href="/settings/my-details"
           isActive={
             isActiveUrl("/settings/my-details") || location === "/settings"
           }
