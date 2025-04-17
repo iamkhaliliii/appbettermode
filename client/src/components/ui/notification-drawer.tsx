@@ -527,10 +527,11 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
         </DrawerHeader>
         
         {/* Active filters display */}
-        <div className="px-3 py-1.5 border-b border-gray-100 dark:border-gray-700">
-          <div className="flex items-start">
-            <div className="flex-1 flex flex-wrap gap-1 items-center">
-              {/* Add Filter badge */}
+        {(showFilterMenu || getFilterCount() > 0) && (
+          <div className="px-3 py-1.5 border-b border-gray-100 dark:border-gray-700">
+            <div className="flex items-start">
+              <div className="flex-1 flex flex-wrap gap-1 items-center">
+                {/* Add Filter badge */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <div 
@@ -780,8 +781,8 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
             )}
           </div>
         </div>
+        )}
         
-
         
         <div className="max-h-[calc(100vh-4rem)] overflow-y-auto">
           {isLoading ? (
