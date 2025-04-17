@@ -603,15 +603,15 @@ export function NotificationDrawer({
                       </span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      className="text-xs px-2 py-1.5 text-gray-600 dark:text-gray-300 hover:bg-gray-50/50 dark:hover:bg-gray-800/50"
+                      className="text-xs"
                       onClick={() => {
                         setActiveStatusFilter("read");
                         setShowFilterDropdown(false);
                       }}
                     >
-                      <span className="flex items-center">
+                      <span className="flex items-center py-0.5">
                         <Check className="h-3 w-3 mr-1.5 text-gray-400" />
-                        Read
+                        <span className="text-gray-600 dark:text-gray-300">Read</span>
                         {activeStatusFilter === "read" && (
                           <Check className="h-2.5 w-2.5 ml-auto text-gray-500" />
                         )}
@@ -825,7 +825,8 @@ export function NotificationDrawer({
                 {/* Add Filter button */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <div className="inline-flex items-center h-5 text-[11px]  text-gray-500 dark:text-gray-400 pl-1.5 pr-1.5 py-0 cursor-pointer hover:text-gray-800 dark:hover:text-gray-300">
+                    <div className="inline-flex items-center h-5 text-[10px] rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300 pl-1.5 pr-1.5 py-0 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900/30">
+                      <Filter className="h-2.5 w-2.5 mr-1" />
                       <span>+ Filter</span>
                     </div>
                   </DropdownMenuTrigger>
@@ -879,11 +880,11 @@ export function NotificationDrawer({
                             setShowFilterDropdown(false);
                           }}
                         >
-                          <span className="flex items-center">
-                            <Check className="h-3.5 w-3.5 mr-2 text-green-500" />
-                            Read
+                          <span className="flex items-center py-0.5">
+                            <Check className="h-3 w-3 mr-1.5 text-gray-400" />
+                            <span className="text-gray-600 dark:text-gray-300">Read</span>
                             {activeStatusFilter === "read" && (
-                              <Check className="h-3 w-3 ml-auto" />
+                              <Check className="h-2.5 w-2.5 ml-auto text-gray-500" />
                             )}
                           </span>
                         </DropdownMenuItem>
