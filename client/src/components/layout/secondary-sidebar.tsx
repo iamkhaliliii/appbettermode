@@ -283,40 +283,21 @@ function MinimalItem({
         </div>
 
         {showDropdown && (
-          <div className="absolute right-0 mt-1 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-[100]">
-            <div className="py-1 text-xs">
-              {showHideOption && (
-                <a
-                  href="#"
-                  className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                  onClick={toggleHidden}
-                >
-                  <Eye className="mr-2 h-3 w-3" />
-                  <span>Unhide</span>
-                </a>
-              )}
-              <a
-                href="#"
-                className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <Pencil className="mr-2 h-3 w-3" />
-                <span>Rename</span>
-              </a>
-              <a
-                href="#"
-                className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <Pencil className="mr-2 h-3 w-3" />
-                <span>Edit</span>
-              </a>
-              <a
-                href="#"
-                className="flex items-center px-3 py-1 text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <Trash2 className="mr-2 h-3 w-3" />
-                <span>Delete</span>
-              </a>
-            </div>
+          <div className="absolute right-0 mt-0.5 w-[70px] bg-white dark:bg-gray-800 rounded-[4px] shadow-sm border border-gray-100 dark:border-gray-700 z-[100] py-0.5">
+            {showHideOption && (
+              <button onClick={toggleHidden} className="w-full flex items-center px-2 py-1 text-[11px] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                <EyeOff className="mr-1.5 h-3 w-3 text-gray-400" />
+                Hide
+              </button>
+            )}
+            <button className="w-full flex items-center px-2 py-1 text-[11px] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+              <Pencil className="mr-1.5 h-3 w-3 text-gray-400" />
+              Edit
+            </button>
+            <button className="w-full flex items-center px-2 py-1 text-[11px] text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10">
+              <Trash2 className="mr-1.5 h-3 w-3 text-red-400" />
+              Delete
+            </button>
           </div>
         )}
       </div>
@@ -350,40 +331,21 @@ function MinimalItem({
       </div>
 
       {showDropdown && (
-        <div className="absolute right-0 mt-1 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-[100]">
-          <div className="py-1 text-xs">
-            {showHideOption && (
-              <a
-                href="#"
-                className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                onClick={toggleHidden}
-              >
-                <EyeOff className="mr-2 h-3 w-3" />
-                <span>Hide</span>
-              </a>
-            )}
-            <a
-              href="#"
-              className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-              <Pencil className="mr-2 h-3 w-3" />
-              <span>Rename</span>
-            </a>
-            <a
-              href="#"
-              className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-              <Pencil className="mr-2 h-3 w-3" />
-              <span>Edit</span>
-            </a>
-            <a
-              href="#"
-              className="flex items-center px-3 py-1 text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-              <Trash2 className="mr-2 h-3 w-3" />
-              <span>Delete</span>
-            </a>
-          </div>
+        <div className="absolute right-0 mt-0.5 w-[70px] bg-white dark:bg-gray-800 rounded-[4px] shadow-sm border border-gray-100 dark:border-gray-700 z-[100] py-0.5">
+          {showHideOption && (
+            <button onClick={toggleHidden} className="w-full flex items-center px-2 py-1 text-[11px] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+              <EyeOff className="mr-1.5 h-3 w-3 text-gray-400" />
+              Hide
+            </button>
+          )}
+          <button className="w-full flex items-center px-2 py-1 text-[11px] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+            <Pencil className="mr-1.5 h-3 w-3 text-gray-400" />
+            Edit
+          </button>
+          <button className="w-full flex items-center px-2 py-1 text-[11px] text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10">
+            <Trash2 className="mr-1.5 h-3 w-3 text-red-400" />
+            Delete
+          </button>
         </div>
       )}
     </div>
@@ -974,8 +936,7 @@ export function SecondarySidebar() {
         ? "collections"
         : location.includes("/design-studio/templates")
           ? "templates"
-          : location.includes("/design-studio/utility")
-            ? "utility"
+          : location.includes("/design-studio/utility            ? "utility"
             : "";
 
     return (
