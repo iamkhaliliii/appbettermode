@@ -274,25 +274,27 @@ function MinimalItem({
                 <MoreHorizontal className="h-3 w-3 text-gray-400" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[70px]">
-              {showHideOption && (
-                <DropdownMenuItem onClick={toggleHidden}>
-                  <Eye className="mr-1.5 h-3 w-3" />
-                  Show
+            <DropdownMenuContent className="w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
+              <div className="py-1">
+                {showHideOption && (
+                  <DropdownMenuItem className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <Eye className="h-3 w-3 mr-2 text-gray-500" />
+                    <span>Show</span>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <Pencil className="h-3 w-3 mr-2 text-gray-500" />
+                  <span>Rename</span>
                 </DropdownMenuItem>
-              )}
-              <DropdownMenuItem>
-                <Pencil className="mr-1.5 h-3 w-3" />
-                Rename
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Settings2 className="mr-1.5 h-3 w-3" />
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-red-500 focus:text-red-500">
-                <Trash2 className="mr-1.5 h-3 w-3" />
-                Delete
-              </DropdownMenuItem>
+                <DropdownMenuItem className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <Settings2 className="h-3 w-3 mr-2 text-gray-500" />
+                  <span>Edit</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex items-center px-3 py-1.5 text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10">
+                  <Trash2 className="h-3 w-3 mr-2 text-red-500" />
+                  <span>Delete</span>
+                </DropdownMenuItem>
+              </div>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -413,19 +415,21 @@ function TreeFolder({
                 <MoreHorizontal className="h-3 w-3 text-gray-400" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[70px]">
-              <DropdownMenuItem>
-                <Pencil className="mr-1.5 h-3 w-3" />
-                Rename
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Settings2 className="mr-1.5 h-3 w-3" />
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-red-500 focus:text-red-500">
-                <Trash2 className="mr-1.5 h-3 w-3" />
-                Delete
-              </DropdownMenuItem>
+            <DropdownMenuContent className="w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
+              <div className="py-1">
+                <DropdownMenuItem className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <Pencil className="h-3 w-3 mr-2 text-gray-500" />
+                  <span>Rename</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <Settings2 className="h-3 w-3 mr-2 text-gray-500" />
+                  <span>Edit</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex items-center px-3 py-1.5 text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10">
+                  <Trash2 className="h-3 w-3 mr-2 text-red-500" />
+                  <span>Delete</span>
+                </DropdownMenuItem>
+              </div>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
