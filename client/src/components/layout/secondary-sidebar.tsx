@@ -868,8 +868,7 @@ export function SecondarySidebar() {
         <div className="mb-3">
           <div className="space-y-2">
             <div className="flex items-center justify-between mb-2">
-              <h2 className="text-xs font-normal text-gray-400 dark:text-gray500 capitalize">Design studio```javascript
-<h2></h2>
+              <h2 className="text-xs font-normal text-gray-400 dark:text-gray500 capitalize">Design studio</h2>
             </div>
 
             <div className="relative w-full mb-2">
