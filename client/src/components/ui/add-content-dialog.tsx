@@ -59,20 +59,20 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
       >
         <div className="flex flex-col md:flex-row">
           {/* Left side with heading */}
-          <div className="bg-gray-50 dark:bg-gray-850 p-8 md:w-1/3 flex flex-col justify-center">
-            <DialogHeader className="items-start text-left space-y-2">
-              <DialogTitle className="text-2xl font-semibold text-gray-900 dark:text-white tracking-tight">
+          <div className="bg-gray-50 dark:bg-gray-850 p-10 md:w-1/3 flex flex-col justify-center border-b md:border-b-0 md:border-r border-gray-100 dark:border-gray-800">
+            <DialogHeader className="items-start text-left space-y-3">
+              <DialogTitle className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
                 What do you want to add?
               </DialogTitle>
-              <DialogDescription className="text-base text-gray-500 dark:text-gray-400">
-                Choose an option to enhance your site
+              <DialogDescription className="text-base text-gray-500 dark:text-gray-400 leading-relaxed">
+                Choose an option to enhance your site experience
               </DialogDescription>
             </DialogHeader>
           </div>
           
           {/* Right side with options */}
-          <div className="md:w-2/3 p-6">
-            <div className="space-y-4">
+          <div className="md:w-2/3 p-8">
+            <div className="space-y-5">
               <OptionCard
                 icon={<PlusCircle className="h-6 w-6 text-gray-500 dark:text-gray-400" />}
                 title="I want to let people post something"
