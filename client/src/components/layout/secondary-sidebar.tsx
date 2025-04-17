@@ -731,13 +731,12 @@ export function SecondarySidebar() {
 
             {/* Divider and Custom View */}
             <div className="border-t border-gray-100 dark:border-gray-700 mt-2 pt-2">
-              <SideNavItem 
-                href="/content/custom-view"
-                isActive={isActiveUrl('/content/custom-view')}
-                icon={<Plus className="h-3.5 w-3.5" />}
-              >
-                Add custom view
-              </SideNavItem>
+              <Link href="/content/custom-view">
+                <div className="flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150 px-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 rounded">
+                  <Plus className="h-3.5 w-3.5 mr-2" />
+                  <span className="font-normal">Add custom view</span>
+                </div>
+              </Link>
             </div>
           </div>
         </div>
