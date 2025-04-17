@@ -728,6 +728,17 @@ export function SecondarySidebar() {
                 Wishlist
               </SideNavItem>
             </div>
+
+            {/* Divider and Custom View */}
+            <div className="border-t border-gray-100 dark:border-gray-700 mt-2 pt-2">
+              <SideNavItem 
+                href="/content/custom-view"
+                isActive={isActiveUrl('/content/custom-view')}
+                icon={<Plus className="h-3.5 w-3.5" />}
+              >
+                Add custom view
+              </SideNavItem>
+            </div>
           </div>
         </div>
       </div>
