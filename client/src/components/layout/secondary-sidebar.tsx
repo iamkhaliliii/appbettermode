@@ -36,7 +36,18 @@ import {
   ChevronRight,
   MessageSquare,
   Edit,
-  Check
+  Check,
+  // Icons for inbox sidebar
+  Inbox,
+  MessageCircle,
+  ThumbsUp,
+  AtSign,
+  Flag,
+  CalendarCheck,
+  FileText,
+  Calendar,
+  HelpCircle,
+  Star
 } from "lucide-react";
 // Custom MiniToggle component replaces Switch
 import { Separator } from "@/components/ui/separator";
@@ -46,6 +57,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger
+} from "@/components/ui/collapsible";
 import { useState } from "react";
 
 // Minimal Toggle Switch Component
