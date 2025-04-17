@@ -38,6 +38,7 @@ import {
   MessageSquare,
   Edit,
   Check,
+  Dock,
   // Icons for inbox sidebar
   Inbox,
   MessageCircle,
