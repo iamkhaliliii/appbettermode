@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Database, AppWindowMac, ChevronRight } from "lucide-react";
+import { MessageSquare, HelpCircle, Calendar, BookOpen, ArrowRight, ChevronRight } from "lucide-react";
 
 interface AddContentDialogProps {
   open: boolean;
@@ -73,18 +73,40 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
           {/* Right side with options */}
           <div className="md:w-[60%] p-10">
             <div className="space-y-6">
-              <OptionCard
-                icon={<Database className="h-7 w-7 text-[rgb(166,148,255)] dark:text-[rgb(166,148,255)] transition-transform group-hover:scale-110 duration-200" />}
-                title="I want to let people post something"
-                description="Events, jobs, questions, ideas, and more. Enable your community to contribute content."
-                onClick={() => onOpenChange(false)}
-              />
-              
-              <OptionCard
-                icon={<AppWindowMac className="h-7 w-7 text-blue-400 dark:text-blue-400 transition-transform group-hover:scale-110 duration-200" />}
-                title="I want to create a new page"
-                description="Homepage, explore page, faculty landing page, or any other structural content for your site."
-                onClick={() => onOpenChange(false)}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <OptionCard
+                  icon={<MessageSquare className="h-7 w-7 text-purple-500 dark:text-purple-400 transition-transform group-hover:scale-110 duration-200" />}
+                  title="Discussion"
+                  description="Create spaces for open discussions and conversations"
+                  onClick={() => onOpenChange(false)}
+                />
+                
+                <OptionCard
+                  icon={<HelpCircle className="h-7 w-7 text-blue-500 dark:text-blue-400 transition-transform group-hover:scale-110 duration-200" />}
+                  title="Q&A"
+                  description="Enable knowledge sharing through questions and answers"
+                  onClick={() => onOpenChange(false)}
+                />
+
+                <OptionCard
+                  icon={<Calendar className="h-7 w-7 text-emerald-500 dark:text-emerald-400 transition-transform group-hover:scale-110 duration-200" />}
+                  title="Event"
+                  description="Schedule and manage upcoming events and activities"
+                  onClick={() => onOpenChange(false)}
+                />
+
+                <OptionCard
+                  icon={<BookOpen className="h-7 w-7 text-amber-500 dark:text-amber-400 transition-transform group-hover:scale-110 duration-200" />}
+                  title="Knowledge Base"
+                  description="Build a comprehensive library of guides and documentation"
+                  onClick={() => onOpenChange(false)}
+                />
+              </div>
+
+              <div className="mt-4 flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+                <ArrowRight className="h-4 w-4" />
+                <span>Scroll to see more content types</span>
+              </div>
               />
             </div>
             
