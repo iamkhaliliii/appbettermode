@@ -933,11 +933,12 @@ export function SecondarySidebar() {
     const defaultExpanded = location.includes("/design-studio/spaces")
       ? "spaces"
       : location.includes("/design-studio/collections")
-        ? "collections"
-        : location.includes("/design-studio/templates")
-          ? "templates"
-          : location.includes("/design-studio/utility")
-            ? "utility"
+      ? "collections"
+      : location.includes("/design-studio/templates")
+      ? "templates"
+      : location.includes("/design-studio/utility")
+```javascript
+? "utility"
             : "";
 
     return (
@@ -1778,7 +1779,7 @@ export function SecondarySidebar() {
                     id="footer-section"
                     className="flex items-center justify-between py-1.5 px-2 rounded-md group transition-colors duration-150"
                   >
-                    <div className="flex items-center gap-15">
+                    <div className="flex items-center gap1.5">
                       <Columns className="h-4 w-4 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">
                         Footer
