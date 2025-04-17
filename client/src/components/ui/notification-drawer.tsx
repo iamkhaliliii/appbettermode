@@ -514,7 +514,10 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                   <DropdownMenuContent side="right" align="start" className="min-w-[180px]">
                     <DropdownMenuItem 
                       className="text-xs"
-                      onClick={() => setActiveStatusFilter('unread')}
+                      onClick={() => {
+                        setActiveStatusFilter('unread');
+                        setShowFilterDropdown(false);
+                      }}
                     >
                       <span className="flex items-center w-full justify-between">
                         <span className="flex items-center">
@@ -532,7 +535,10 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                     </DropdownMenuItem>
                     <DropdownMenuItem 
                       className="text-xs"
-                      onClick={() => setActiveStatusFilter('read')}
+                      onClick={() => {
+                        setActiveStatusFilter('read');
+                        setShowFilterDropdown(false);
+                      }}
                     >
                       <span className="flex items-center">
                         <Check className="h-3.5 w-3.5 mr-2 text-green-500" />
@@ -559,7 +565,10 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                       <DropdownMenuItem
                         key={type}
                         className="text-xs"
-                        onClick={() => setActiveTypeFilter(activeTypeFilter === type ? null : type)}
+                        onClick={() => {
+                          setActiveTypeFilter(activeTypeFilter === type ? null : type);
+                          setShowFilterDropdown(false);
+                        }}
                       >
                         <span className="flex items-center w-full justify-between">
                           <span className="flex items-center">
@@ -589,7 +598,10 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                       <DropdownMenuItem
                         key={space}
                         className="text-xs"
-                        onClick={() => setActiveSpaceFilter(activeSpaceFilter === space ? null : space)}
+                        onClick={() => {
+                          setActiveSpaceFilter(activeSpaceFilter === space ? null : space);
+                          setShowFilterDropdown(false);
+                        }}
                       >
                         <span className="flex items-center w-full justify-between">
                           <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-300">
@@ -619,7 +631,10 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                       <DropdownMenuItem
                         key={cmsType}
                         className="text-xs"
-                        onClick={() => setActiveCmsFilter(activeCmsFilter === cmsType ? null : cmsType)}
+                        onClick={() => {
+                          setActiveCmsFilter(activeCmsFilter === cmsType ? null : cmsType);
+                          setShowFilterDropdown(false);
+                        }}
                       >
                         <span className="flex items-center w-full justify-between">
                           <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-300">
@@ -649,7 +664,10 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                       <DropdownMenuItem
                         key={value}
                         className="text-xs"
-                        onClick={() => setActiveTimeFilter(activeTimeFilter === value ? null : value)}
+                        onClick={() => {
+                          setActiveTimeFilter(activeTimeFilter === value ? null : value);
+                          setShowFilterDropdown(false);
+                        }}
                       >
                         <span className="flex items-center w-full justify-between">
                           <span className="flex items-center">
