@@ -1,7 +1,15 @@
-
 import React from "react";
-import { Image, Box, Settings, MoreHorizontal, Pencil, EyeOff, Edit, Trash2 } from "lucide-react";
-import { 
+import {
+  Image,
+  Box,
+  Settings,
+  MoreHorizontal,
+  Pencil,
+  EyeOff,
+  Edit,
+  Trash2,
+} from "lucide-react";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -14,17 +22,26 @@ interface NavigationItemProps {
   iconColor?: string;
 }
 
-export function NavigationItem({ icon = <Image />, title, iconColor = "amber", className }: NavigationItemProps & { className?: string }) {
-  const isDisabled = className?.includes('pointer-events-none');
+export function NavigationItem({
+  icon = <Image />,
+  title,
+  iconColor = "amber",
+  className,
+}: NavigationItemProps & { className?: string }) {
+  const isDisabled = className?.includes("pointer-events-none");
   return (
-    <div className={`group relative flex items-center justify-between gap-2 py-1.5 px-2 text-xs hover:bg-gray-50/50 dark:hover:bg-gray-800/50 rounded cursor-pointer 
-      ${className || ''} 
-      ${isDisabled ? 'after:absolute after:inset-0 after:bg-gray-100/30 dark:after:bg-gray-800/30 after:rounded' : ''}`}>
+    <div
+      className={`group relative flex items-center justify-between gap-2 py-1.5 px-2 text-xs hover:bg-gray-50/50 dark:hover:bg-gray-800/50 rounded cursor-pointer 
+      ${className || ""} 
+      ${isDisabled ? "after:absolute after:inset-0 after:bg-gray-100/30 dark:after:bg-gray-800/30 after:rounded" : ""}`}
+    >
       <div className="flex items-center gap-1.5">
-        <div className={`relative bg-${iconColor}-50/50 dark:bg-${iconColor}-900/20 p-0.5 rounded border border-${iconColor}-200 dark:border-${iconColor}-600`}>
+        <div className={`relative`}>
           {icon}
           <div className="absolute -bottom-1 -right-1">
-            <Box className={`h-2.5 w-2.5 text-${iconColor}-500 dark:text-${iconColor}-400`} />
+            <Box
+              className={`h-2.5 w-2.5 text-${iconColor}-500 dark:text-${iconColor}-400`}
+            />
           </div>
         </div>
         <span className={`dark:text-${iconColor}-200 text-${iconColor}-600/80`}>
