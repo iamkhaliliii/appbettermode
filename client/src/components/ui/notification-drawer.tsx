@@ -603,17 +603,27 @@ export function NotificationDrawer({
                       </span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      className="text-xs"
+                      className={cn(
+                        "text-xs px-2 py-1.5 rounded-sm",
+                        activeStatusFilter === "read"
+                          ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-300"
+                          : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                      )}
                       onClick={() => {
                         setActiveStatusFilter("read");
                         setShowFilterDropdown(false);
                       }}
                     >
                       <span className="flex items-center">
-                        <Check className="h-3.5 w-3.5 mr-2 text-green-500" />
+                        <Check className={cn(
+                          "h-3 w-3 mr-1.5",
+                          activeStatusFilter === "read"
+                            ? "text-blue-500"
+                            : "text-gray-400"
+                        )} />
                         Read
                         {activeStatusFilter === "read" && (
-                          <Check className="h-3 w-3 ml-auto" />
+                          <Check className="h-2.5 w-2.5 ml-auto text-blue-500" />
                         )}
                       </span>
                     </DropdownMenuItem>
