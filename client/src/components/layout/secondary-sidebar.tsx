@@ -48,6 +48,7 @@ import {
   Logs,
   SquareMousePointer,
   SquareDashedBottomCode,
+  Settings2,
   // Icons for inbox sidebar
   Inbox,
   MessageCircle,
@@ -339,7 +340,7 @@ function MinimalItem({
             </button>
           )}
           <button className="w-full flex items-center px-2 py-1 text-[11px] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50">
-            <Pencil className="mr-1.5 h-3 w-3 text-gray-400" />
+            <Settings2 className="mr-1.5 h-3 w-3 text-gray-400" />
             Edit
           </button>
           <button className="w-full flex items-center px-2 py-1 text-[11px] text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10">
