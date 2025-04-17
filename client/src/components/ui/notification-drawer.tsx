@@ -451,6 +451,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
   };
 
   const DropdownMenu = DropdownMenuPrimitive.Root;
+  DropdownMenu.displayName = 'DropdownMenu';
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="right">
@@ -487,8 +488,8 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
               <span>Read all</span>
             </Button>
 
-            <DropdownMenu open={showFilterDropdown} onOpenChange={setShowFilterDropdown}>
-              <DropdownMenuTrigger asChild>
+            <DropdownMenuPrimitive.Root open={showFilterDropdown} onOpenChange={setShowFilterDropdown}>
+              <DropdownMenuPrimitive.Trigger asChild>
                 <Button
                   variant={getFilterCount() > 0 ? "secondary-color" : "ghost"}
                   size="icon"
@@ -497,10 +498,10 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                 >
                   <Filter className="h-3.5 w-3.5" />
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="min-w-[200px]">
-                <DropdownMenuLabel className="text-xs">Filter by</DropdownMenuLabel>
-                <DropdownMenuSeparator />
+              </DropdownMenuPrimitive.Trigger>
+              <DropdownMenuPrimitive.Content align="start" className="min-w-[200px]">
+                <DropdownMenuPrimitive.Label className="text-xs">Filter by</DropdownMenuPrimitive.Label>
+                <DropdownMenuPrimitive.Separator />
 
                 {/* Status filter option */}
                 <DropdownMenu>
