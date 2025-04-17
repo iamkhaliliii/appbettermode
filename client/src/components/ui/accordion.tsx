@@ -1,7 +1,6 @@
 import * as React from "react"
 import * as AccordionPrimitive from "@radix-ui/react-accordion"
-import { ChevronRight } from "lucide-react"
-import { ChevronDown } from "lucide-react"
+import { ChevronRight, ChevronDown, Dock } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
