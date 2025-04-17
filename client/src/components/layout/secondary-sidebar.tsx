@@ -1113,76 +1113,71 @@ export function SecondarySidebar() {
           <AccordionItem value="navigation" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
               <div className="flex items-center">
-                <Dock className="h-4 w-4 mr-2 text-gray-500" />
                 <span className="font-medium text-sm">Navigation Sections</span>
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-1 pb-1">
-              <div className="space-y-0.5">
-                  <div 
-                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
-                  >
+              <Accordion type="single" collapsible className="space-y-0.5">
+                <AccordionItem value="header" className="border-0">
+                  <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
                     <div className="flex items-center gap-2">
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
                       <PanelTop className="h-3.5 w-3.5 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Header</span>
                     </div>
-                    <div>
-                      <MiniToggle
-                        isActive={false}
-                        onChange={() => {}} 
-                      />
+                    <div className="ml-auto">
+                      <MiniToggle isActive={false} onChange={() => {}} />
                     </div>
-                  </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pl-8">
+                    Content for header
+                  </AccordionContent>
+                </AccordionItem>
 
-                  <div 
-                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
-                  >
+                <AccordionItem value="right-sidebar" className="border-0">
+                  <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
                     <div className="flex items-center gap-2">
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
                       <PanelRight className="h-3.5 w-3.5 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Right Sidebar</span>
                     </div>
-                    <div>
-                      <MiniToggle
-                        isActive={false}
-                        onChange={() => {}} 
-                      />
+                    <div className="ml-auto">
+                      <MiniToggle isActive={false} onChange={() => {}} />
                     </div>
-                  </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pl-8">
+                    Content for right sidebar
+                  </AccordionContent>
+                </AccordionItem>
 
-                  <div 
-                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
-                  >
+                <AccordionItem value="left-sidebar" className="border-0">
+                  <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
                     <div className="flex items-center gap-2">
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
                       <PanelLeft className="h-3.5 w-3.5 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Left Sidebar</span>
                     </div>
-                    <div>
-                      <MiniToggle
-                        isActive={false}
-                        onChange={() => {}} 
-                      />
+                    <div className="ml-auto">
+                      <MiniToggle isActive={false} onChange={() => {}} />
                     </div>
-                  </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pl-8">
+                    Content for left sidebar
+                  </AccordionContent>
+                </AccordionItem>
 
-                  <div 
-                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
-                  >
+                <AccordionItem value="footer" className="border-0">
+                  <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
                     <div className="flex items-center gap-2">
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
                       <PanelBottom className="h-3.5 w-3.5 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Footer</span>
                     </div>
-                    <div>
-                      <MiniToggle
-                        isActive={false}
-                        onChange={() => {}} 
-                      />
+                    <div className="ml-auto">
+                      <MiniToggle isActive={false} onChange={() => {}} />
                     </div>
-                  </div>
-                </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pl-8">
+                    Content for footer
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </AccordionContent>
           </AccordionItem>
 
