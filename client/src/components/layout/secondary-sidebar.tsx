@@ -249,7 +249,7 @@ function MinimalItem({
 
   if (hidden) {
     return (
-      <div className="relative">
+      <div className="relative group">
         <div
           className={cn(
             "flex items-center px-2 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded opacity-50",
@@ -262,10 +262,10 @@ function MinimalItem({
           <EyeOff className="h-3 w-3 mr-1 text-gray-400" />
           <span className="font-medium text-gray-400">{displayName}</span>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <div className="ml-auto opacity-0 group-hover:opacity-100">
+            <DropdownMenuTrigger>
+              <button className="ml-auto opacity-0 group-hover:opacity-100">
                 <MoreHorizontal className="h-3 w-3 text-gray-400" />
-              </div>
+              </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[70px]">
               {showHideOption && (
@@ -290,7 +290,7 @@ function MinimalItem({
   }
 
   return (
-    <div className="relative">
+    <div className="relative group">
       <div
         className={cn(
           "flex items-center px-2 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded",
@@ -305,10 +305,10 @@ function MinimalItem({
           <span className={cn("font-medium", iconColor)}>{displayName}</span>
         </Link>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <div className="ml-auto opacity-0 group-hover:opacity-100">
+          <DropdownMenuTrigger>
+            <button className="ml-auto opacity-0 group-hover:opacity-100">
               <MoreHorizontal className="h-3 w-3 text-gray-400" />
-            </div>
+            </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-[70px]">
             {showHideOption && (
