@@ -1455,6 +1455,7 @@ export function SecondarySidebar() {
               </div>
             </div>
           </div>
+        </Accordion>
 
           <div className="h-px bg-gray-100 dark:bg-gray-700 mx-1"></div>
 
