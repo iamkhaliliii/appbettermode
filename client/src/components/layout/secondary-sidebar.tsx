@@ -1164,7 +1164,7 @@ export function SecondarySidebar() {
                     </div>
                     <div className="group relative flex items-center justify-between gap-2 py-1.5 px-2 text-xs hover:bg-gray-50/50 dark:hover:bg-gray-800/50 rounded cursor-pointer">
                       <div className="flex items-center gap-2">
-                        <div className="relative bg-amber-50/30 dark:bg-amber-900/10 p-2 rounded">
+                        <div className="relative bg-amber-50/50 dark:bg-amber-900/20 p-2 rounded border border-amber-100/50 dark:border-amber-700/30">
                           <Image className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
                           <div className="absolute bottom-0.5 right-0.5">
                             <Box className="h-2 w-2 text-amber-600/60 dark:text-amber-400/60" />
