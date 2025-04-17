@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { PlusCircle, FileText, ChevronRight } from "lucide-react";
+import { Database, AppWindowMac, ChevronRight } from "lucide-react";
 
 interface AddContentDialogProps {
   open: boolean;
@@ -74,14 +74,14 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
           <div className="md:w-[60%] p-10">
             <div className="space-y-6">
               <OptionCard
-                icon={<PlusCircle className="h-7 w-7 text-indigo-500 dark:text-indigo-400 transition-transform group-hover:scale-110 duration-200" />}
+                icon={<Database className="h-7 w-7 text-[rgb(166,148,255)] dark:text-[rgb(166,148,255)] transition-transform group-hover:scale-110 duration-200" />}
                 title="I want to let people post something"
                 description="Events, jobs, questions, ideas, and more. Enable your community to contribute content."
                 onClick={() => onOpenChange(false)}
               />
               
               <OptionCard
-                icon={<FileText className="h-7 w-7 text-emerald-500 dark:text-emerald-400 transition-transform group-hover:scale-110 duration-200" />}
+                icon={<AppWindowMac className="h-7 w-7 text-blue-400 dark:text-blue-400 transition-transform group-hover:scale-110 duration-200" />}
                 title="I want to create a new page"
                 description="Homepage, explore page, faculty landing page, or any other structural content for your site."
                 onClick={() => onOpenChange(false)}
