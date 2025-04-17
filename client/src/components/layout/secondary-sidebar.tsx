@@ -272,8 +272,8 @@ function MinimalItem({
             <DropdownMenuContent className="w-[70px]">
               {showHideOption && (
                 <DropdownMenuItem onClick={toggleHidden}>
-                  <EyeOff className="mr-1.5 h-3 w-3" />
-                  Hide
+                  <Eye className="mr-1.5 h-3 w-3" />
+                  Show
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem>
