@@ -1,5 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 import { 
   BarChart, 
   TrendingUp, 
@@ -62,7 +63,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger
 } from "@/components/ui/collapsible";
-import { useState } from "react";
 
 // Minimal Toggle Switch Component
 const MiniToggle = ({ isActive: initialActive = false, onChange }: { isActive?: boolean; onChange: (state: boolean) => void }) => {
@@ -95,18 +95,27 @@ interface SideNavItemProps {
   className?: string;
 }
 
+interface SideNavItemWithBadgeProps {
+  href: string;
+  icon?: React.ReactNode;
+  children: React.ReactNode;
+  isActive?: boolean;
+  badgeText: string;
+  primary?: boolean;
+  className?: string;
+}
+
 function SideNavItem({ href, icon, children, isActive = false, badge, className }: SideNavItemProps) {
   return (
     <Link href={href}>
       <div
         className={cn(
-          "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
+          "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150 px-2.5",
           isActive 
             ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-md" 
             : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded",
           className
         )}
-        style={{paddingLeft: "10px", paddingRight: "10px"}}
       >
         {icon && (
           <span className={cn(
@@ -119,16 +128,52 @@ function SideNavItem({ href, icon, children, isActive = false, badge, className 
           </span>
         )}
         <span className="font-medium">{children}</span>
-        {badge && (
+      </div>
+    </Link>
+  );
+}
+
+function SideNavItemWithBadge({ 
+  href, 
+  icon, 
+  children, 
+  isActive = false, 
+  badgeText,
+  primary = false,
+  className 
+}: SideNavItemWithBadgeProps) {
+  return (
+    <Link href={href}>
+      <div
+        className={cn(
+          "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150 px-2.5",
+          isActive 
+            ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-md" 
+            : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded",
+          className
+        )}
+      >
+        {icon && (
           <span className={cn(
-            "ml-auto text-[10px] px-1.5 py-0.5 rounded-full",
-            isActive
-              ? "bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200"
-              : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+            "flex-shrink-0 mr-2 text-[14px]",
+            isActive 
+              ? "text-gray-900 dark:text-white" 
+              : "text-gray-600 dark:text-gray-400"
           )}>
-            {badge}
+            {icon}
           </span>
         )}
+        <span className="font-medium">{children}</span>
+        <span 
+          className={cn(
+            "ml-auto flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-medium",
+            primary
+              ? "bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400"
+              : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400"
+          )}
+        >
+          {badgeText}
+        </span>
       </div>
     </Link>
   );
@@ -510,22 +555,24 @@ export function SecondarySidebar() {
                 <h3 className="text-[11px] uppercase tracking-wide font-medium text-gray-500 dark:text-gray-400">Overview</h3>
               </div>
               <div className="space-y-0.5">
-                <SideNavItem 
+                <SideNavItemWithBadge 
                   href="/inbox/all-activity"
                   isActive={isActiveUrl('/inbox/all-activity') || location === '/inbox'}
                   icon={<Inbox className="h-3.5 w-3.5" />}
+                  badgeText="12"
+                  primary={true}
                 >
                   All Activity
-                  <span className="ml-auto flex h-4 min-w-4 items-center justify-center rounded-full bg-primary-50 dark:bg-primary-900/30 px-1 text-[10px] font-medium text-primary-600 dark:text-primary-400">12</span>
-                </SideNavItem>
-                <SideNavItem 
+                </SideNavItemWithBadge>
+                <SideNavItemWithBadge 
                   href="/inbox/unread"
                   isActive={isActiveUrl('/inbox/unread')}
                   icon={<MessageCircle className="h-3.5 w-3.5" />}
+                  badgeText="5"
+                  primary={true}
                 >
                   Unread
-                  <span className="ml-auto flex h-4 min-w-4 items-center justify-center rounded-full bg-primary-50 dark:bg-primary-900/30 px-1 text-[10px] font-medium text-primary-600 dark:text-primary-400">5</span>
-                </SideNavItem>
+                </SideNavItemWithBadge>
               </div>
             </div>
 
