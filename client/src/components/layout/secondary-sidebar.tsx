@@ -1161,17 +1161,17 @@ export function SecondarySidebar() {
                     <div className="flex items-center gap-2 py-1.5 px-2 text-xs text-gray-500">
                       Navigation
                     </div>
-                    <div className="group relative flex items-center justify-between gap-2 py-1 px-1.5 text-[11px] hover:bg-gray-50/50 dark:hover:bg-gray-800/50 rounded cursor-pointer">
-                      <div className="flex items-center gap-1.5">
-                        <Image className="h-3 w-3 text-[#F2E088]" />
-                        <span className="text-[#F2E088]">Logo</span>
+                    <div className="group relative flex items-center justify-between gap-2 py-1.5 px-2 text-xs hover:bg-gray-50/50 dark:hover:bg-gray-800/50 rounded cursor-pointer">
+                      <div className="flex items-center gap-2">
+                        <Image className="h-3.5 w-3.5 dark:text-[#F2E088] text-amber-500" />
+                        <span className="dark:text-[#F2E088] text-amber-500">Logo</span>
                       </div>
-                      <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button className="p-0.5 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded">
-                          <Settings className="h-2.5 w-2.5 text-gray-400" />
+                          <Settings className="h-3 w-3 text-gray-400" />
                         </button>
                         <button className="p-0.5 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded">
-                          <MoreHorizontal className="h-2.5 w-2.5 text-gray-400" />
+                          <MoreHorizontal className="h-3 w-3 text-gray-400" />
                         </button>
                       </div>
                     </div>
