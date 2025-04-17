@@ -486,106 +486,179 @@ export function SecondarySidebar() {
             </div>
           </div>
           
-          <div className="space-y-6">
-            {/* Activity Section */}
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-xs font-medium text-gray-900 dark:text-gray-100">Activity</h3>
-                <span className="text-[10px] bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full">12 new</span>
+          <div className="space-y-5">
+            {/* All Activity Section with Counter */}
+            <div className="relative">
+              <div className="flex items-center justify-between mb-2.5 px-1">
+                <h3 className="text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Overview</h3>
+                <div className="flex items-center space-x-1">
+                  <span className="flex h-[18px] items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/30 px-2 text-[11px] font-medium text-blue-600 dark:text-blue-400">12 new</span>
+                </div>
               </div>
-              <div className="space-y-0.5">
+              <div>
                 <SideNavItem 
                   href="/inbox/all-activity"
                   isActive={isActiveUrl('/inbox/all-activity') || location === '/inbox'}
+                  className="group relative"
                 >
-                  All Activity
+                  <div className="flex items-center">
+                    <div className={`mr-2 h-1.5 w-1.5 rounded-full ${isActiveUrl('/inbox/all-activity') ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
+                    All Activity
+                  </div>
                 </SideNavItem>
                 <SideNavItem 
                   href="/inbox/unread"
                   isActive={isActiveUrl('/inbox/unread')}
+                  className="group relative"
                 >
-                  Unread
+                  <div className="flex items-center">
+                    <div className={`mr-2 h-1.5 w-1.5 rounded-full ${isActiveUrl('/inbox/unread') ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
+                    Unread
+                  </div>
                 </SideNavItem>
               </div>
             </div>
 
-            {/* Interactions Section */}
+            {/* Interactions Group */}
             <div>
-              <h3 className="text-xs font-medium text-gray-900 dark:text-gray-100 mb-3">Interactions</h3>
+              <h3 className="px-1 mb-2.5 text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Interactions</h3>
               <div className="space-y-0.5">
                 <SideNavItem 
                   href="/inbox/comments"
                   isActive={isActiveUrl('/inbox/comments')}
+                  className="group"
                 >
-                  Comments & Replies
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div className={`mr-2 h-1.5 w-1.5 rounded-full ${isActiveUrl('/inbox/comments') ? 'bg-blue-500' : 'bg-transparent'}`} />
+                      Comments & Replies
+                    </div>
+                    <span className="text-[10px] text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300">24</span>
+                  </div>
                 </SideNavItem>
+                
                 <SideNavItem 
                   href="/inbox/reactions"
                   isActive={isActiveUrl('/inbox/reactions')}
+                  className="group"
                 >
-                  Reactions
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div className={`mr-2 h-1.5 w-1.5 rounded-full ${isActiveUrl('/inbox/reactions') ? 'bg-blue-500' : 'bg-transparent'}`} />
+                      Reactions
+                    </div>
+                    <span className="text-[10px] text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300">8</span>
+                  </div>
                 </SideNavItem>
+                
                 <SideNavItem 
                   href="/inbox/mentions"
                   isActive={isActiveUrl('/inbox/mentions')}
+                  className="group"
                 >
-                  Mentions
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div className={`mr-2 h-1.5 w-1.5 rounded-full ${isActiveUrl('/inbox/mentions') ? 'bg-blue-500' : 'bg-transparent'}`} />
+                      Mentions
+                    </div>
+                    <span className="text-[10px] text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300">3</span>
+                  </div>
                 </SideNavItem>
               </div>
             </div>
 
-            {/* Management Section */}
+            {/* Management Group */}
             <div>
-              <h3 className="text-xs font-medium text-gray-900 dark:text-gray-100 mb-3">Management</h3>
+              <h3 className="px-1 mb-2.5 text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Management</h3>
               <div className="space-y-0.5">
                 <SideNavItem 
                   href="/inbox/reports"
                   isActive={isActiveUrl('/inbox/reports')}
+                  className="group"
                 >
-                  Reports & Moderation
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div className={`mr-2 h-1.5 w-1.5 rounded-full ${isActiveUrl('/inbox/reports') ? 'bg-blue-500' : 'bg-transparent'}`} />
+                      Reports & Moderation
+                    </div>
+                    <span className="text-[10px] text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300">5</span>
+                  </div>
                 </SideNavItem>
+                
                 <SideNavItem 
                   href="/inbox/rsvps"
                   isActive={isActiveUrl('/inbox/rsvps')}
+                  className="group"
                 >
-                  RSVPs
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div className={`mr-2 h-1.5 w-1.5 rounded-full ${isActiveUrl('/inbox/rsvps') ? 'bg-blue-500' : 'bg-transparent'}`} />
+                      RSVPs
+                    </div>
+                  </div>
                 </SideNavItem>
+                
                 <SideNavItem 
                   href="/inbox/forms"
                   isActive={isActiveUrl('/inbox/forms')}
+                  className="group"
                 >
-                  Form Submissions
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div className={`mr-2 h-1.5 w-1.5 rounded-full ${isActiveUrl('/inbox/forms') ? 'bg-blue-500' : 'bg-transparent'}`} />
+                      Form Submissions
+                    </div>
+                  </div>
                 </SideNavItem>
               </div>
             </div>
 
-            {/* Content Types Section */}
+            {/* Content Types Group */}
             <div>
-              <h3 className="text-xs font-medium text-gray-900 dark:text-gray-100 mb-3">Content Types</h3>
+              <h3 className="px-1 mb-2.5 text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Content Types</h3>
               <div className="space-y-0.5">
                 <SideNavItem 
                   href="/inbox/cms/articles"
                   isActive={isActiveUrl('/inbox/cms/articles')}
+                  className="group pl-3"
                 >
-                  Articles
+                  <div className="flex items-center">
+                    <div className={`mr-2 h-px w-3 ${isActiveUrl('/inbox/cms/articles') ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
+                    Articles
+                  </div>
                 </SideNavItem>
+                
                 <SideNavItem 
                   href="/inbox/cms/events"
                   isActive={isActiveUrl('/inbox/cms/events')}
+                  className="group pl-3"
                 >
-                  Events
+                  <div className="flex items-center">
+                    <div className={`mr-2 h-px w-3 ${isActiveUrl('/inbox/cms/events') ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
+                    Events
+                  </div>
                 </SideNavItem>
+                
                 <SideNavItem 
                   href="/inbox/cms/questions"
                   isActive={isActiveUrl('/inbox/cms/questions')}
+                  className="group pl-3"
                 >
-                  Questions
+                  <div className="flex items-center">
+                    <div className={`mr-2 h-px w-3 ${isActiveUrl('/inbox/cms/questions') ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
+                    Questions
+                  </div>
                 </SideNavItem>
+                
                 <SideNavItem 
                   href="/inbox/cms/wishlist"
                   isActive={isActiveUrl('/inbox/cms/wishlist')}
+                  className="group pl-3"
                 >
-                  Wishlist
+                  <div className="flex items-center">
+                    <div className={`mr-2 h-px w-3 ${isActiveUrl('/inbox/cms/wishlist') ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
+                    Wishlist
+                  </div>
                 </SideNavItem>
               </div>
             </div>
