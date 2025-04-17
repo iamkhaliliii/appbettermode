@@ -237,29 +237,19 @@ function MinimalItem({
   inSpaces = false,
 }: MinimalItemProps) {
   const [location] = useLocation();
-  const [showDropdown, setShowDropdown] = useState(false);
   const [hidden, setHidden] = useState(isHidden);
   const isActive = location === path;
 
-  // Format the name to remove file extension
   const displayName = name.includes(".") ? name.split(".")[0] : name;
-
-  // Only show hide/unhide for files in Spaces section
   const showHideOption = inSpaces && isFile;
 
-  const toggleHidden = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const toggleHidden = () => {
     setHidden(!hidden);
-    setShowDropdown(false);
   };
 
-  if (hidden && !showDropdown)
+  if (hidden) {
     return (
-      <div
-        className="relative group"
-        onMouseLeave={() => setShowDropdown(false)}
-      >
+      <div className="relative">
         <div
           className={cn(
             "flex items-center px-2 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded opacity-50",
@@ -271,41 +261,36 @@ function MinimalItem({
         >
           <EyeOff className="h-3 w-3 mr-1 text-gray-400" />
           <span className="font-medium text-gray-400">{displayName}</span>
-          <div
-            className="ml-auto opacity-0 group-hover:opacity-100"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setShowDropdown(!showDropdown);
-            }}
-          >
-            <MoreHorizontal className="h-3 w-3 text-gray-400" />
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="ml-auto opacity-0 group-hover:opacity-100">
+                <MoreHorizontal className="h-3 w-3 text-gray-400" />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-[70px]">
+              {showHideOption && (
+                <DropdownMenuItem onClick={toggleHidden}>
+                  <EyeOff className="mr-1.5 h-3 w-3" />
+                  Hide
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem>
+                <Pencil className="mr-1.5 h-3 w-3" />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-red-500 focus:text-red-500">
+                <Trash2 className="mr-1.5 h-3 w-3" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-
-        {showDropdown && (
-          <div className="absolute right-0 mt-0.5 w-[70px] bg-white dark:bg-gray-800 rounded-[4px] shadow-sm border border-gray-100 dark:border-gray-700 z-[100] py-0.5">
-            {showHideOption && (
-              <button onClick={toggleHidden} className="w-full flex items-center px-2 py-1 text-[11px] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                <EyeOff className="mr-1.5 h-3 w-3 text-gray-400" />
-                Hide
-              </button>
-            )}
-            <button className="w-full flex items-center px-2 py-1 text-[11px] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50">
-              <Pencil className="mr-1.5 h-3 w-3 text-gray-400" />
-              Edit
-            </button>
-            <button className="w-full flex items-center px-2 py-1 text-[11px] text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10">
-              <Trash2 className="mr-1.5 h-3 w-3 text-red-400" />
-              Delete
-            </button>
-          </div>
-        )}
       </div>
     );
+  }
 
   return (
-    <div className="relative group" onMouseLeave={() => setShowDropdown(false)}>
+    <div className="relative">
       <div
         className={cn(
           "flex items-center px-2 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded",
@@ -319,36 +304,30 @@ function MinimalItem({
         <Link href={path}>
           <span className={cn("font-medium", iconColor)}>{displayName}</span>
         </Link>
-        <div
-          className="ml-auto opacity-0 group-hover:opacity-100"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setShowDropdown(!showDropdown);
-          }}
-        >
-          <MoreHorizontal className="h-3 w-3 text-gray-400" />
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div className="ml-auto opacity-0 group-hover:opacity-100">
+              <MoreHorizontal className="h-3 w-3 text-gray-400" />
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-[70px]">
+            {showHideOption && (
+              <DropdownMenuItem onClick={toggleHidden}>
+                <EyeOff className="mr-1.5 h-3 w-3" />
+                Hide
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuItem>
+              <Settings2 className="mr-1.5 h-3 w-3" />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem className="text-red-500 focus:text-red-500">
+              <Trash2 className="mr-1.5 h-3 w-3" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
-
-      {showDropdown && (
-        <div className="absolute right-0 mt-0.5 w-[70px] bg-white dark:bg-gray-800 rounded-[4px] shadow-sm border border-gray-100 dark:border-gray-700 z-[100] py-0.5">
-          {showHideOption && (
-            <button onClick={toggleHidden} className="w-full flex items-center px-2 py-1 text-[11px] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50">
-              <EyeOff className="mr-1.5 h-3 w-3 text-gray-400" />
-              Hide
-            </button>
-          )}
-          <button className="w-full flex items-center px-2 py-1 text-[11px] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50">
-            <Settings2 className="mr-1.5 h-3 w-3 text-gray-400" />
-            Edit
-          </button>
-          <button className="w-full flex items-center px-2 py-1 text-[11px] text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10">
-            <Trash2 className="mr-1.5 h-3 w-3 text-red-400" />
-            Delete
-          </button>
-        </div>
-      )}
     </div>
   );
 }
