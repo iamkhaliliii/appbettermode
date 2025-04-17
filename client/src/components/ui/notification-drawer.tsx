@@ -533,7 +533,7 @@ export function NotificationDrawer({
               )}
             </DrawerTitle>
           </div>
-          <div className="flex items-center space-x-1">
+          <div className="flex items-center -space-x-0.5">
             <Button
               variant="ghost"
               size="sm"
