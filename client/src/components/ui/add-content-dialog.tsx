@@ -19,19 +19,19 @@ interface OptionCardProps {
 function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
   return (
     <motion.div
-      whileHover={{ scale: 1.01, y: -1 }}
-      whileTap={{ scale: 0.99 }}
-      transition={{ type: "spring", stiffness: 300, damping: 15 }}
+      whileHover={{ scale: 1.005, y: -2 }}
+      whileTap={{ scale: 0.995 }}
+      transition={{ type: "spring", stiffness: 200, damping: 20 }}
       role="button"
       tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => e.key === 'Enter' && onClick()}
-      className="flex items-start p-7 rounded-2xl border border-gray-100/30 dark:border-gray-800/30
-        hover:border-gray-200/50 dark:hover:border-gray-700/50
-        bg-white/30 dark:bg-gray-900/30 backdrop-blur-xl
-        hover:bg-white/50 dark:hover:bg-gray-800/50
-        shadow-sm hover:shadow-lg dark:shadow-gray-950/20
-        transition-all duration-500 cursor-pointer group"
+      className="flex items-start p-8 rounded-3xl border border-gray-100/20 dark:border-gray-800/20
+        hover:border-gray-200/30 dark:hover:border-gray-700/30
+        bg-white/20 dark:bg-gray-900/20 backdrop-blur-2xl
+        hover:bg-white/30 dark:hover:bg-gray-800/30
+        shadow-none hover:shadow-xl dark:shadow-gray-950/10
+        transition-all duration-700 cursor-pointer group"
     >
       <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-white to-gray-50/80 
         dark:from-gray-800 dark:to-gray-900/80 flex items-center justify-center mr-6
@@ -59,12 +59,12 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
 export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[800px] bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl
-        shadow-2xl rounded-3xl p-0 overflow-hidden border-0">
+      <DialogContent className="sm:max-w-[900px] bg-white/80 dark:bg-gray-900/80 backdrop-blur-3xl
+        shadow-2xl rounded-[2rem] p-0 overflow-hidden border-0">
         <div className="flex flex-col md:flex-row">
-          <div className="bg-gradient-to-br from-gray-50/80 to-gray-100/30 dark:from-gray-850/80 dark:to-gray-800/30 
-            p-10 md:w-[45%] flex flex-col justify-center border-b md:border-b-0 md:border-r 
-            border-gray-100/50 dark:border-gray-800/50">
+          <div className="bg-gradient-to-br from-gray-50/60 to-gray-100/20 dark:from-gray-850/60 dark:to-gray-800/20 
+            p-12 md:w-[45%] flex flex-col justify-center border-b md:border-b-0 md:border-r 
+            border-gray-100/30 dark:border-gray-800/30">
             <DialogHeader className="items-start text-left space-y-3">
               <DialogTitle className="text-3xl font-semibold tracking-tight 
                 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 
