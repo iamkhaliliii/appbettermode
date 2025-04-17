@@ -260,9 +260,13 @@ function MinimalItem({
           style={{ paddingLeft: level === 0 ? "12px" : `${level * 10 + 16}px` }}
         >
           <div className="flex items-center">
-            <span className={cn("flex-shrink-0 mr-1.5", iconColor)}>{icon}</span>
-            <EyeOff className="h-3 w-3 mr-1 text-gray-400" />
+            <span
+              className={cn("flex-shrink-0 mr-1.5 text-gray-400", iconColor)}
+            >
+              {icon}
+            </span>
             <span className="font-medium text-gray-400">{displayName}</span>
+            <EyeOff className="h-4 pl-1 w-4 mr-1 text-gray-400" />
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger>
@@ -926,10 +930,11 @@ export function SecondarySidebar() {
     const defaultExpanded = location.includes("/design-studio/spaces")
       ? "spaces"
       : location.includes("/design-studio/collections")
-      ? "collections"
-      : location.includes("/design-studio/templates")
-      ? "templates"
-      : location.includes("/design-studio/utility")  ? "utility"
+        ? "collections"
+        : location.includes("/design-studio/templates")
+          ? "templates"
+          : location.includes("/design-studio/utility")
+            ? "utility"
             : "";
 
     return (
@@ -968,7 +973,8 @@ export function SecondarySidebar() {
               <div className="flex items-center justify-between w-full">
                 <div className="flex items-center">
                   <Files className="h-4 w-4 mr-2 text-gray-500" />
-                  <span className="font-medium text-sm">Spaces</span></div>
+                  <span className="font-medium text-sm">Spaces</span>
+                </div>
                 <div className="relative ml-6">
                   <button
                     onClick={(e) => {
