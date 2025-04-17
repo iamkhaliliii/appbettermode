@@ -1189,21 +1189,21 @@ export function SecondarySidebar() {
                               <MoreHorizontal className="h-3 w-3 text-gray-400" />
                             </button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-28">
-                            <DropdownMenuItem className="flex items-center text-xs cursor-pointer">
-                              <Pencil className="h-3 w-3 mr-1.5 text-gray-500" />
+                          <DropdownMenuContent align="end" className="w-24 p-0.5 shadow-sm">
+                            <DropdownMenuItem className="flex items-center text-[11px] py-1 px-1.5 rounded-sm cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/70">
+                              <Pencil className="h-3 w-3 mr-1 text-gray-400" />
                               <span>Rename</span>
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="flex items-center text-xs cursor-pointer">
-                              <EyeOff className="h-3 w-3 mr-1.5 text-gray-500" />
+                            <DropdownMenuItem className="flex items-center text-[11px] py-1 px-1.5 rounded-sm cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/70">
+                              <EyeOff className="h-3 w-3 mr-1 text-gray-400" />
                               <span>Hide</span>
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="flex items-center text-xs cursor-pointer">
-                              <Edit className="h-3 w-3 mr-1.5 text-gray-500" />
+                            <DropdownMenuItem className="flex items-center text-[11px] py-1 px-1.5 rounded-sm cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/70">
+                              <Edit className="h-3 w-3 mr-1 text-gray-400" />
                               <span>Edit</span>
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="flex items-center text-xs cursor-pointer text-red-500">
-                              <Trash2 className="h-3 w-3 mr-1.5 text-red-500" />
+                            <DropdownMenuItem className="flex items-center text-[11px] py-1 px-1.5 rounded-sm cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/70 text-red-500">
+                              <Trash2 className="h-3 w-3 mr-1 text-red-400" />
                               <span>Delete</span>
                             </DropdownMenuItem>
                           </DropdownMenuContent>
