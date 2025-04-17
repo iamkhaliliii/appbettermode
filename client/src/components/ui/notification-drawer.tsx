@@ -15,7 +15,7 @@ import {
   AtSign, Bell, Circle, CheckCircle, Settings, Search,
   Filter, CheckCircle2, BookOpen, Database, LayoutDashboard,
   Users, Boxes, Calendar, FileText, ClipboardCheck, FormInput,
-  Check
+  Check, X
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -360,11 +360,19 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
         <Badge 
           key="status" 
           variant="outline" 
-          className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800"
+          className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800 pr-1"
         >
           <span className="flex items-center">
             <CheckCircle2 className="h-3 w-3 mr-1" />
             {activeStatusFilter === 'unread' ? 'Unread' : 'Read'}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-4 w-4 ml-1 rounded-full hover:bg-blue-100 dark:hover:bg-blue-800/50"
+              onClick={() => setActiveStatusFilter('all')}
+            >
+              <X className="h-2.5 w-2.5" />
+            </Button>
           </span>
         </Badge>
       );
@@ -375,11 +383,19 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
         <Badge 
           key="type" 
           variant="outline" 
-          className="bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800"
+          className="bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800 pr-1"
         >
           <span className="flex items-center">
             {getTypeIconComponent(activeTypeFilter)}
             {activeTypeFilter.charAt(0).toUpperCase() + activeTypeFilter.slice(1)}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-4 w-4 ml-1 rounded-full hover:bg-purple-100 dark:hover:bg-purple-800/50"
+              onClick={() => setActiveTypeFilter(null)}
+            >
+              <X className="h-2.5 w-2.5" />
+            </Button>
           </span>
         </Badge>
       );
@@ -390,11 +406,19 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
         <Badge 
           key="space" 
           variant="outline" 
-          className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800"
+          className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800 pr-1"
         >
           <span className="flex items-center">
             <Boxes className="h-3 w-3 mr-1" />
             {activeSpaceFilter}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-4 w-4 ml-1 rounded-full hover:bg-green-100 dark:hover:bg-green-800/50"
+              onClick={() => setActiveSpaceFilter(null)}
+            >
+              <X className="h-2.5 w-2.5" />
+            </Button>
           </span>
         </Badge>
       );
@@ -405,11 +429,19 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
         <Badge 
           key="cms" 
           variant="outline" 
-          className="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800"
+          className="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800 pr-1"
         >
           <span className="flex items-center">
             <Database className="h-3 w-3 mr-1" />
             {activeCmsFilter}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-4 w-4 ml-1 rounded-full hover:bg-amber-100 dark:hover:bg-amber-800/50"
+              onClick={() => setActiveCmsFilter(null)}
+            >
+              <X className="h-2.5 w-2.5" />
+            </Button>
           </span>
         </Badge>
       );
@@ -420,11 +452,19 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
         <Badge 
           key="time" 
           variant="outline" 
-          className="bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600"
+          className="bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 pr-1"
         >
           <span className="flex items-center">
             <Calendar className="h-3 w-3 mr-1" />
             {timePeriods[activeTimeFilter]}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-4 w-4 ml-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600"
+              onClick={() => setActiveTimeFilter(null)}
+            >
+              <X className="h-2.5 w-2.5" />
+            </Button>
           </span>
         </Badge>
       );
@@ -647,28 +687,48 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                     <Button
                       variant={activeSpaceFilter === null ? 'secondary-gray' : 'ghost'}
                       size="sm"
-                      className="h-6 text-xs w-full justify-start"
+                      className="h-7 text-xs w-full justify-between"
                       onClick={() => setActiveSpaceFilter(null)}
                     >
-                      <Boxes className="h-3.5 w-3.5 mr-2" />
-                      All spaces
+                      <span className="flex items-center">
+                        <Boxes className="h-3.5 w-3.5 mr-2" />
+                        All spaces
+                      </span>
+                      {activeSpaceFilter === null && <Check className="h-3.5 w-3.5" />}
                     </Button>
-                    <div className="max-h-40 overflow-y-auto pr-1 space-y-1">
-                      {availableSpaces.map(space => (
-                        <Button
-                          key={space}
-                          variant={activeSpaceFilter === space ? 'secondary-gray' : 'ghost'}
-                          size="sm"
-                          className="h-7 text-xs w-full justify-start"
-                          onClick={() => setActiveSpaceFilter(activeSpaceFilter === space ? null : space)}
+                    
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button 
+                          variant="secondary-gray" 
+                          size="sm" 
+                          className="h-8 text-xs w-full justify-between"
                         >
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-300">
-                            <Boxes className="h-3 w-3 mr-1.5 text-purple-400" />
-                            {space}
+                          <span className="flex items-center">
+                            <Boxes className="h-3.5 w-3.5 mr-2 text-purple-400" />
+                            {activeSpaceFilter || 'Select space'}
                           </span>
+                          <ChevronRight className="h-3.5 w-3.5 rotate-90" />
                         </Button>
-                      ))}
-                    </div>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-full">
+                        {availableSpaces.map(space => (
+                          <DropdownMenuItem
+                            key={space}
+                            className="text-xs flex items-center justify-between"
+                            onClick={() => setActiveSpaceFilter(activeSpaceFilter === space ? null : space)}
+                          >
+                            <span className="inline-flex items-center">
+                              <span className="inline-flex items-center px-1.5 py-0.5 mr-2 rounded-full text-xs bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-300">
+                                <Boxes className="h-2.5 w-2.5 mr-1" />
+                                {space}
+                              </span>
+                            </span>
+                            {activeSpaceFilter === space && <Check className="h-3 w-3" />}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 )}
                 
@@ -677,28 +737,48 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                     <Button
                       variant={activeCmsFilter === null ? 'secondary-gray' : 'ghost'}
                       size="sm"
-                      className="h-6 text-xs w-full justify-start"
+                      className="h-7 text-xs w-full justify-between"
                       onClick={() => setActiveCmsFilter(null)}
                     >
-                      <Database className="h-3.5 w-3.5 mr-2" />
-                      All CMS types
+                      <span className="flex items-center">
+                        <Database className="h-3.5 w-3.5 mr-2" />
+                        All CMS types
+                      </span>
+                      {activeCmsFilter === null && <Check className="h-3.5 w-3.5" />}
                     </Button>
-                    <div className="max-h-40 overflow-y-auto pr-1 space-y-1">
-                      {availableCmsTypes.map(cmsType => (
-                        <Button
-                          key={cmsType}
-                          variant={activeCmsFilter === cmsType ? 'secondary-gray' : 'ghost'}
-                          size="sm"
-                          className="h-7 text-xs w-full justify-start"
-                          onClick={() => setActiveCmsFilter(activeCmsFilter === cmsType ? null : cmsType)}
+                    
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button 
+                          variant="secondary-gray" 
+                          size="sm" 
+                          className="h-8 text-xs w-full justify-between"
                         >
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
-                            <Database className="h-3 w-3 mr-1.5 text-gray-400" />
-                            {cmsType}
+                          <span className="flex items-center">
+                            <Database className="h-3.5 w-3.5 mr-2 text-gray-400" />
+                            {activeCmsFilter || 'Select CMS type'}
                           </span>
+                          <ChevronRight className="h-3.5 w-3.5 rotate-90" />
                         </Button>
-                      ))}
-                    </div>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-full">
+                        {availableCmsTypes.map(cmsType => (
+                          <DropdownMenuItem
+                            key={cmsType}
+                            className="text-xs flex items-center justify-between"
+                            onClick={() => setActiveCmsFilter(activeCmsFilter === cmsType ? null : cmsType)}
+                          >
+                            <span className="inline-flex items-center">
+                              <span className="inline-flex items-center px-1.5 py-0.5 mr-2 rounded-full text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                                <Database className="h-2.5 w-2.5 mr-1" />
+                                {cmsType}
+                              </span>
+                            </span>
+                            {activeCmsFilter === cmsType && <Check className="h-3 w-3" />}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 )}
                 
