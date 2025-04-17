@@ -1172,13 +1172,13 @@ export function SecondarySidebar() {
                     {/* Logo Item */}
                     <div className="group relative flex items-center justify-between gap-2 py-1.5 px-2 text-xs hover:bg-gray-50/50 dark:hover:bg-gray-800/50 rounded cursor-pointer">
                       <div className="flex items-center gap-1.5">
-                        <div className="relative bg-amber-50/50 dark:bg-amber-900/20 p-0.5 rounded border border-amber-200 dark:border-amber-600">
-                          <Image className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
+                        <div className="relative bg-primary-50/50 dark:bg-primary-900/20 p-0.5 rounded border border-primary-200 dark:border-primary-600">
+                          <Image className="h-3.5 w-3.5 dark:text-primary-200 text-primary-600/80" />
                           <div className="absolute -bottom-1 -right-1">
-                            <Box className="h-2.5 w-2.5 text-amber-500 dark:text-amber-400" />
+                            <Box className="h-2.5 w-2.5 text-primary-500 dark:text-primary-400" />
                           </div>
                         </div>
-                        <span className="dark:text-amber-200 text-amber-600/80">Logo</span>
+                        <span className="dark:text-primary-200 text-primary-600/80">Logo</span>
                       </div>
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button className="p-0.5 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded">
@@ -1215,13 +1215,13 @@ export function SecondarySidebar() {
                     {/* Navigation Item */}
                     <div className="group relative flex items-center justify-between gap-2 py-1.5 px-2 text-xs hover:bg-gray-50/50 dark:hover:bg-gray-800/50 rounded cursor-pointer">
                       <div className="flex items-center gap-1.5">
-                        <div className="relative bg-blue-50/50 dark:bg-blue-900/20 p-0.5 rounded border border-blue-200 dark:border-blue-600">
-                          <Layout className="h-3.5 w-3.5 dark:text-blue-200 text-blue-600/80" />
+                        <div className="relative bg-primary-50/50 dark:bg-primary-900/20 p-0.5 rounded border border-primary-200 dark:border-primary-600">
+                          <Layout className="h-3.5 w-3.5 dark:text-primary-200 text-primary-600/80" />
                           <div className="absolute -bottom-1 -right-1">
-                            <Box className="h-2.5 w-2.5 text-blue-500 dark:text-blue-400" />
+                            <Box className="h-2.5 w-2.5 text-primary-500 dark:text-primary-400" />
                           </div>
                         </div>
-                        <span className="dark:text-blue-200 text-blue-600/80">Navigation</span>
+                        <span className="dark:text-primary-200 text-primary-600/80">Navigation</span>
                       </div>
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button className="p-0.5 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded">
@@ -1258,13 +1258,13 @@ export function SecondarySidebar() {
                     {/* Search Item */}
                     <div className="group relative flex items-center justify-between gap-2 py-1.5 px-2 text-xs hover:bg-gray-50/50 dark:hover:bg-gray-800/50 rounded cursor-pointer">
                       <div className="flex items-center gap-1.5">
-                        <div className="relative bg-green-50/50 dark:bg-green-900/20 p-0.5 rounded border border-green-200 dark:border-green-600">
-                          <Search className="h-3.5 w-3.5 dark:text-green-200 text-green-600/80" />
+                        <div className="relative bg-primary-50/50 dark:bg-primary-900/20 p-0.5 rounded border border-primary-200 dark:border-primary-600">
+                          <Search className="h-3.5 w-3.5 dark:text-primary-200 text-primary-600/80" />
                           <div className="absolute -bottom-1 -right-1">
-                            <Box className="h-2.5 w-2.5 text-green-500 dark:text-green-400" />
+                            <Box className="h-2.5 w-2.5 text-primary-500 dark:text-primary-400" />
                           </div>
                         </div>
-                        <span className="dark:text-green-200 text-green-600/80">Search</span>
+                        <span className="dark:text-primary-200 text-primary-600/80">Search</span>
                       </div>
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button className="p-0.5 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded">
@@ -1301,13 +1301,13 @@ export function SecondarySidebar() {
                     {/* User Menu Item */}
                     <div className="group relative flex items-center justify-between gap-2 py-1.5 px-2 text-xs hover:bg-gray-50/50 dark:hover:bg-gray-800/50 rounded cursor-pointer">
                       <div className="flex items-center gap-1.5">
-                        <div className="relative bg-purple-50/50 dark:bg-purple-900/20 p-0.5 rounded border border-purple-200 dark:border-purple-600">
-                          <Users className="h-3.5 w-3.5 dark:text-purple-200 text-purple-600/80" />
+                        <div className="relative bg-primary-50/50 dark:bg-primary-900/20 p-0.5 rounded border border-primary-200 dark:border-primary-600">
+                          <Users className="h-3.5 w-3.5 dark:text-primary-200 text-primary-600/80" />
                           <div className="absolute -bottom-1 -right-1">
-                            <Box className="h-2.5 w-2.5 text-purple-500 dark:text-purple-400" />
+                            <Box className="h-2.5 w-2.5 text-primary-500 dark:text-primary-400" />
                           </div>
                         </div>
-                        <span className="dark:text-purple-200 text-purple-600/80">User Menu</span>
+                        <span className="dark:text-primary-200 text-primary-600/80">User Menu</span>
                       </div>
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button className="p-0.5 hover:bg-gray-100/50 dark:hover:bg-gray-700/50 rounded">
