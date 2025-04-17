@@ -67,13 +67,13 @@ import {
 // Minimal Toggle Switch Component
 const MiniToggle = ({ isActive: initialActive = false, onChange }: { isActive?: boolean; onChange: (state: boolean) => void }) => {
   const [isActive, setIsActive] = useState(initialActive);
-  
+
   const handleToggle = () => {
     const newState = !isActive;
     setIsActive(newState);
     onChange(newState);
   };
-  
+
   return (
     <div 
       className={`relative h-4 w-8 rounded-full cursor-pointer transition-colors ${isActive ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-700'}`}
@@ -205,20 +205,20 @@ function MinimalItem({
   const [showDropdown, setShowDropdown] = useState(false);
   const [hidden, setHidden] = useState(isHidden);
   const isActive = location === path;
-  
+
   // Format the name to remove file extension
   const displayName = name.includes('.') ? name.split('.')[0] : name;
-  
+
   // Only show hide/unhide for files in Spaces section
   const showHideOption = inSpaces && isFile;
-  
+
   const toggleHidden = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setHidden(!hidden);
     setShowDropdown(false);
   };
-  
+
   if (hidden && !showDropdown) return (
     <div className="relative group" onMouseLeave={() => setShowDropdown(false)}>
       <div
@@ -243,7 +243,7 @@ function MinimalItem({
           <MoreHorizontal className="h-3 w-3 text-gray-400" />
         </div>
       </div>
-      
+
       {showDropdown && (
         <div className="absolute right-0 mt-1 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-[100]">
           <div className="py-1 text-xs">
@@ -270,7 +270,7 @@ function MinimalItem({
       )}
     </div>
   );
-  
+
   return (
     <div className="relative group" onMouseLeave={() => setShowDropdown(false)}>
       <div
@@ -299,7 +299,7 @@ function MinimalItem({
           <MoreHorizontal className="h-3 w-3 text-gray-400" />
         </div>
       </div>
-      
+
       {showDropdown && (
         <div className="absolute right-0 mt-1 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-[100]">
           <div className="py-1 text-xs">
@@ -342,13 +342,13 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
   const [location] = useLocation();
   const [showDropdown, setShowDropdown] = useState(false);
   const isActive = location === path;
-  
+
   const handleToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setExpanded(!expanded);
   };
-  
+
   return (
     <div className="folder-tree-item">
       <div className="relative group" onMouseLeave={() => setShowDropdown(false)}>
@@ -387,7 +387,7 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
             <MoreHorizontal className="h-3 w-3 text-gray-400" />
           </div>
         </div>
-        
+
         {showDropdown && (
           <div className="absolute right-0 mt-1 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-[100]">
             <div className="py-1 text-xs">
@@ -407,7 +407,7 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
           </div>
         )}
       </div>
-      
+
       {expanded && children && (
         <div>
           {children}
@@ -420,16 +420,16 @@ function TreeFolder({ name, path, level = 0, isExpanded = false, children }: Tre
 export function SecondarySidebar() {
   const [location] = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   // Helper function to check if a URL is active
   const isActiveUrl = (url: string): boolean => {
     if (location === url) return true;
     if (url.includes("/") && location.startsWith(url) && url !== '/content/activity' && url !== '/content/inbox') return true;
-    
+
     // Special case for content route handling root path
     if (url === '/content/posts' && location === '/content') return true;
     if (url === '/content/activity' && location === '/content/comments') return true;
-    
+
     return false;
   };
 
@@ -439,7 +439,7 @@ export function SecondarySidebar() {
         <h2 className="text-base font-medium text-gray-900 dark:text-white">Dashboard</h2>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Overview and quick actions</p>
       </div>
-      
+
       <div className="space-y-1">
         <SideNavItem 
           href="/dashboard" 
@@ -448,7 +448,7 @@ export function SecondarySidebar() {
         >
           Overview
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/dashboard/performance" 
           icon={<TrendingUp className="h-4 w-4" />} 
@@ -456,7 +456,7 @@ export function SecondarySidebar() {
         >
           Performance
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/dashboard/customers" 
           icon={<Users className="h-4 w-4" />} 
@@ -465,7 +465,7 @@ export function SecondarySidebar() {
         >
           Customers
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/dashboard/revenue" 
           icon={<DollarSign className="h-4 w-4" />} 
@@ -473,7 +473,7 @@ export function SecondarySidebar() {
         >
           Revenue
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/dashboard/inventory" 
           icon={<ShoppingBag className="h-4 w-4" />} 
@@ -481,7 +481,7 @@ export function SecondarySidebar() {
         >
           Inventory
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/dashboard/reports" 
           icon={<ClipboardList className="h-4 w-4" />} 
@@ -510,7 +510,7 @@ export function SecondarySidebar() {
               </div>
             </div>
           </div>
-          
+
           <div className="space-y-1">
             <SideNavItem 
               href="/content/inbox/unread"
@@ -518,14 +518,14 @@ export function SecondarySidebar() {
             >
               Unread
             </SideNavItem>
-            
+
             <SideNavItem 
               href="/content/inbox/important"
               isActive={isActiveUrl('/content/inbox/important')}
             >
               Important
             </SideNavItem>
-            
+
             <SideNavItem 
               href="/content/inbox/archived"
               isActive={isActiveUrl('/content/inbox/archived')}
@@ -536,13 +536,13 @@ export function SecondarySidebar() {
         </div>
       );
     }
-    
+
     // For the Inbox page
     if (isActiveUrl('/inbox') || location.startsWith('/inbox/')) {
       return (
         <div className="p-3">
-          
-          
+
+
           <div className="space-y-4">
             <div className="space-y-3">
               {/* Primary Actions */}
@@ -634,7 +634,7 @@ export function SecondarySidebar() {
                       >
                         Articles
                       </SideNavItem>
-                      
+
                       <SideNavItem 
                         href="/inbox/cms/events"
                         isActive={isActiveUrl('/inbox/cms/events')}
@@ -642,7 +642,7 @@ export function SecondarySidebar() {
                       >
                         Events
                       </SideNavItem>
-                      
+
                       <SideNavItem 
                         href="/inbox/cms/questions"
                         isActive={isActiveUrl('/inbox/cms/questions')}
@@ -650,7 +650,7 @@ export function SecondarySidebar() {
                       >
                         Questions
                       </SideNavItem>
-                      
+
                       <SideNavItem 
                         href="/inbox/cms/wishlist"
                         isActive={isActiveUrl('/inbox/cms/wishlist')}
@@ -695,7 +695,7 @@ export function SecondarySidebar() {
               >
                 Events
               </SideNavItem>
-              
+
               <SideNavItem 
                 href="/content/discussions"
                 isActive={isActiveUrl('/content/discussions')}
@@ -703,7 +703,7 @@ export function SecondarySidebar() {
               >
                 Discussion
               </SideNavItem>
-              
+
               <SideNavItem 
                 href="/content/articles"
                 isActive={isActiveUrl('/content/articles')}
@@ -711,7 +711,7 @@ export function SecondarySidebar() {
               >
                 Articles
               </SideNavItem>
-              
+
               <SideNavItem 
                 href="/content/questions"
                 isActive={isActiveUrl('/content/questions')}
@@ -719,7 +719,7 @@ export function SecondarySidebar() {
               >
                 Questions
               </SideNavItem>
-              
+
               <SideNavItem 
                 href="/content/wishlist"
                 isActive={isActiveUrl('/content/wishlist')}
@@ -756,7 +756,7 @@ export function SecondarySidebar() {
       <div className="mb-2">
         <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">People</h2>
       </div>
-      
+
       <div className="space-y-1">
         <SideNavItem 
           href="/people/members"
@@ -764,28 +764,28 @@ export function SecondarySidebar() {
         >
           Members
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/people/staff"
           isActive={isActiveUrl('/people/staff')}
         >
           Staff
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/people/invitations"
           isActive={isActiveUrl('/people/invitations')}
         >
           Invitations
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/people/profile-fields"
           isActive={isActiveUrl('/people/profile-fields')}
         >
           Profile fields
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/people/badges"
           isActive={isActiveUrl('/people/badges')}
@@ -801,7 +801,7 @@ export function SecondarySidebar() {
       <div className="mb-2">
         <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Settings</h2>
       </div>
-      
+
       <div className="space-y-1">
         <SideNavItem 
           href="/settings/my-details" 
@@ -809,42 +809,42 @@ export function SecondarySidebar() {
         >
           My details
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/settings/profile" 
           isActive={isActiveUrl('/settings/profile')} 
         >
           Profile
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/settings/password" 
           isActive={isActiveUrl('/settings/password')} 
         >
           Password
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/settings/team" 
           isActive={isActiveUrl('/settings/team')} 
         >
           Team
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/settings/billing" 
           isActive={isActiveUrl('/settings/billing')} 
         >
           Billing
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/settings/notifications" 
           isActive={isActiveUrl('/settings/notifications')} 
         >
           Notifications
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/settings/integrations" 
           isActive={isActiveUrl('/settings/integrations')} 
@@ -861,7 +861,7 @@ export function SecondarySidebar() {
                            location.includes('/design-studio/collections') ? 'collections' :
                            location.includes('/design-studio/templates') ? 'templates' :
                            location.includes('/design-studio/utility') ? 'utility' : '';
-  
+
     return (
       <div className="p-3">
         <div className="mb-3">
@@ -869,7 +869,7 @@ export function SecondarySidebar() {
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Design studio</h2>
             </div>
-            
+
             <div className="relative w-full mb-2">
               <div className="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
                 <Search className="w-3.5 h-3.5 text-gray-500" />
@@ -884,7 +884,7 @@ export function SecondarySidebar() {
             </div>
           </div>
         </div>
-        
+
         <Accordion type="single" collapsible defaultValue={defaultExpanded} className="space-y-1">
           <AccordionItem value="spaces" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
@@ -929,7 +929,7 @@ export function SecondarySidebar() {
                   iconColor="text-gray-500"
                   inSpaces={true}
                 />
-                
+
                 {/* Connect folder */}
                 <TreeFolder 
                   name="Connect" 
@@ -961,7 +961,7 @@ export function SecondarySidebar() {
                     inSpaces={true}
                   />
                 </TreeFolder>
-                
+
                 {/* Help Center folder */}
                 <TreeFolder 
                   name="Help Center" 
@@ -1041,14 +1041,14 @@ export function SecondarySidebar() {
                     inSpaces={true}
                   />
                 </TreeFolder>
-                
+
 
               </div>
             </AccordionContent>
           </AccordionItem>
-          
+
           <div className="h-px bg-gray-100 dark:bg-gray-700 mx-1"></div>
-          
+
           <AccordionItem value="collections" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
               <div className="flex items-center justify-between w-full">
@@ -1104,7 +1104,7 @@ export function SecondarySidebar() {
               </div>
             </AccordionContent>
           </AccordionItem>
-          
+
           <div className="h-px bg-gray-100 dark:bg-gray-700 mx-1"></div>
 
           {/* Navigation Sections */}
@@ -1116,76 +1116,76 @@ export function SecondarySidebar() {
               </div>
             </AccordionTrigger>
             <AccordionContent className="pt-1 pb-1">
-              <div className="space-y-1">
-                <div 
-                  className="flex items-center justify-between py-1.5 px-2 rounded-md group transition-colors duration-150"
-                >
-                  <div className="flex items-center gap-1.5">
-                    <Layout className="h-4 w-4 text-gray-500" />
-                    <span className="text-xs text-gray-600 dark:text-gray-300">Header</span>
+              <div className="space-y-0.5">
+                  <div 
+                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Layout className="h-3.5 w-3.5 text-gray-500" />
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Header</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MiniToggle
+                        isActive={false}
+                        onChange={() => {}} 
+                      />
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <MiniToggle
-                      isActive={false}
-                      onChange={() => {}} 
-                    />
-                    <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
-                  </div>
-                </div>
 
-                <div 
-                  className="flex items-center justify-between py-1.5 px-2 rounded-md group transition-colors duration-150"
-                >
-                  <div className="flex items-center gap-1.5">
-                    <PanelRight className="h-4 w-4 text-gray-500" />
-                    <span className="text-xs text-gray-600 dark:text-gray-300">Right Sidebar</span>
+                  <div 
+                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
+                  >
+                    <div className="flex items-center gap-2">
+                      <PanelRight className="h-3.5 w-3.5 text-gray-500" />
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Right Sidebar</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MiniToggle
+                        isActive={false}
+                        onChange={() => {}} 
+                      />
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <MiniToggle
-                      isActive={false}
-                      onChange={() => {}} 
-                    />
-                    <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
-                  </div>
-                </div>
 
-                <div 
-                  className="flex items-center justify-between py-1.5 px-2 rounded-md group transition-colors duration-150"
-                >
-                  <div className="flex items-center gap-1.5">
-                    <PanelLeft className="h-4 w-4 text-gray-500" />
-                    <span className="text-xs text-gray-600 dark:text-gray-300">Left Sidebar</span>
+                  <div 
+                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
+                  >
+                    <div className="flex items-center gap-2">
+                      <PanelLeft className="h-3.5 w-3.5 text-gray-500" />
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Left Sidebar</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MiniToggle
+                        isActive={false}
+                        onChange={() => {}} 
+                      />
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <MiniToggle
-                      isActive={false}
-                      onChange={() => {}} 
-                    />
-                    <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
-                  </div>
-                </div>
 
-                <div 
-                  className="flex items-center justify-between py-1.5 px-2 rounded-md group transition-colors duration-150"
-                >
-                  <div className="flex items-center gap-1.5">
-                    <Columns className="h-4 w-4 text-gray-500" />
-                    <span className="text-xs text-gray-600 dark:text-gray-300">Footer</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <MiniToggle
-                      isActive={false}
-                      onChange={() => {}} 
-                    />
-                    <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                  <div 
+                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Columns className="h-3.5 w-3.5 text-gray-500" />
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Footer</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MiniToggle
+                        isActive={false}
+                        onChange={() => {}} 
+                      />
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                    </div>
                   </div>
                 </div>
-              </div>
             </AccordionContent>
           </AccordionItem>
-          
+
           <div className="h-px bg-gray-100 dark:bg-gray-700 mx-1"></div>
-          
+
           <AccordionItem value="templates" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
               <div className="flex items-center justify-between w-full">
@@ -1227,9 +1227,9 @@ export function SecondarySidebar() {
               </div>
             </AccordionContent>
           </AccordionItem>
-          
+
           <div className="h-px bg-gray-100 dark:bg-gray-700 mx-1"></div>
-          
+
           <AccordionItem value="utility" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
               <div className="flex items-center">
@@ -1264,18 +1264,18 @@ export function SecondarySidebar() {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-        
+
 
       </div>
     );
   };
-  
+
   const renderAppearanceSidebar = () => (
     <div className="p-3">
       <div className="mb-2">
         <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Appearance</h2>
       </div>
-      
+
       <div className="space-y-1">
         <SideNavItem 
           href="/appearance/logos"
@@ -1283,21 +1283,21 @@ export function SecondarySidebar() {
         >
           Logos
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/appearance/themes"
           isActive={isActiveUrl('/appearance/themes')}
         >
           Themes
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/appearance/typographies"
           isActive={isActiveUrl('/appearance/typographies')}
         >
           Typographies
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/appearance/styles"
           isActive={isActiveUrl('/appearance/styles')}
@@ -1307,13 +1307,13 @@ export function SecondarySidebar() {
       </div>
     </div>
   );
-  
+
   const renderBillingSidebar = () => (
     <div className="p-3">
       <div className="mb-2">
         <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Billing</h2>
       </div>
-      
+
       <div className="space-y-1">
         <SideNavItem 
           href="/billing/summary"
@@ -1321,14 +1321,14 @@ export function SecondarySidebar() {
         >
           Summary
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/billing/subscription"
           isActive={isActiveUrl('/billing/subscription')}
         >
           Subscription plans
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/billing/usage"
           isActive={isActiveUrl('/billing/usage')}
@@ -1338,13 +1338,13 @@ export function SecondarySidebar() {
       </div>
     </div>
   );
-  
+
   const renderReportsSidebar = () => (
     <div className="p-3">
       <div className="mb-2">
         <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Reports</h2>
       </div>
-      
+
       <div className="space-y-1">
         <SideNavItem 
           href="/reports/overview"
@@ -1352,49 +1352,49 @@ export function SecondarySidebar() {
         >
           Overview
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/reports/engagement"
           isActive={isActiveUrl('/reports/engagement')}
         >
           Reach & Engagement
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/reports/people"
           isActive={isActiveUrl('/reports/people')}
         >
           People
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/reports/posts"
           isActive={isActiveUrl('/reports/posts')}
         >
           Posts
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/reports/spaces"
           isActive={isActiveUrl('/reports/spaces')}
         >
           Spaces
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/reports/messages"
           isActive={isActiveUrl('/reports/messages')}
         >
           Messages
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/reports/audit-logs"
           isActive={isActiveUrl('/reports/audit-logs')}
         >
           Audit logs
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/reports/email-logs"
           isActive={isActiveUrl('/reports/email-logs')}
@@ -1404,7 +1404,7 @@ export function SecondarySidebar() {
       </div>
     </div>
   );
-  
+
   const renderDesignStudioSpacesFeedSidebar = () => {
     return (
       <div className="p-2">
@@ -1420,7 +1420,7 @@ export function SecondarySidebar() {
               <ArrowLeft className="h-3 w-3" />
             </button>
           </div>
-          
+
           {/* Second line - icon/title on left, settings on right */}
           <div className="flex items-center justify-between py-1">
             <div className="flex items-center gap-1">
@@ -1429,7 +1429,7 @@ export function SecondarySidebar() {
               </div>
               <span className="text-lg font-bold text-gray-700 dark:text-gray-300 tracking-wide">Feed</span>
             </div>
-            
+
             <button 
               className="p-0.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded transition-colors"
               aria-label="Settings"
@@ -1438,11 +1438,11 @@ export function SecondarySidebar() {
             </button>
           </div>
         </div>
-        
+
         {/* Sections and Blocks - ultra minimal design */}
         <div>
           <div className="mt-2">
-            
+
             {/* Navigation Section with Toggles - Ultra minimal version */}
             <div className="mb-2">
               <div className="pb-1 pt-1 px-2">
@@ -1464,7 +1464,7 @@ export function SecondarySidebar() {
                   <ChevronRight id="layout-components-chevron" className="h-3.5 w-3.5 text-gray-400 transform transition-transform" />
                 </button>
               </div>
-              
+
               <div id="layout-components-content" className="pt-1 pb-0 px-1 hidden">
                 <div className="space-y-1">
                   {/* Header Navigation Row */}
@@ -1485,7 +1485,7 @@ export function SecondarySidebar() {
                           if (options) {
                             options.classList.toggle('hidden', !checked);
                           }
-                          
+
                           // Using only community elements now
                           // Also change the community header with animation
                           const communityHeader = document.getElementById('community-header');
@@ -1509,7 +1509,7 @@ export function SecondarySidebar() {
                       <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
                     </div>
                   </div>
-                  
+
                   {/* Right Sidebar Navigation Row */}
                   <div 
                     id="right-sidebar-section" 
@@ -1550,7 +1550,7 @@ export function SecondarySidebar() {
                       <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
                     </div>
                   </div>
-                  
+
                   {/* Left Sidebar Navigation Row */}
                   <div 
                     id="left-sidebar-section" 
@@ -1587,7 +1587,7 @@ export function SecondarySidebar() {
                       <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
                     </div>
                   </div>
-                  
+
                   {/* Footer Navigation Row */}
                   <div 
                     id="footer-section" 
@@ -1627,7 +1627,7 @@ export function SecondarySidebar() {
                 </div>
               </div>
             </div>
-            
+
             {/* Content Blocks section */}
             <div className="mt-3">
               <div className="pb-1 pt-1 px-2">
@@ -1650,7 +1650,7 @@ export function SecondarySidebar() {
                     </div>
                     <ChevronDown className="h-3.5 w-3.5 text-gray-400" />
                   </button>
-                  
+
                   {/* Dropdown for block options - Minimalist version */}
                   <div id="blocks-dropdown" className="absolute left-0 right-0 z-10 mt-1 hidden rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
                     <div className="py-1">
@@ -1690,7 +1690,7 @@ export function SecondarySidebar() {
       <div className="mb-2">
         <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">App store</h2>
       </div>
-      
+
       <div className="space-y-1">
         <SideNavItem 
           href="/app-store/integrations"
@@ -1698,7 +1698,7 @@ export function SecondarySidebar() {
         >
           Apps & Integrations
         </SideNavItem>
-        
+
         <SideNavItem 
           href="/app-store/addons"
           isActive={isActiveUrl('/app-store/addons')}
@@ -1711,7 +1711,7 @@ export function SecondarySidebar() {
 
   // Uncomment for debugging
   // console.log("Current location:", location);
-  
+
   const getSidebarForLocation = () => {
     if (location.startsWith('/content')) {
       return renderContentSidebar();
