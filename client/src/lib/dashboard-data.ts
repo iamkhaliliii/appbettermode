@@ -1,6 +1,3 @@
-// This file can be used to store and manage dashboard data
-// It can be expanded as needed when connecting to backend APIs
-
 export interface OverviewCardData {
   id: string;
   title: string;
@@ -27,12 +24,14 @@ export interface ActivityData {
 
 export interface NotificationData {
   id: string;
-  type: 'post' | 'comment' | 'reaction' | 'join' | 'mention' | 'system';
+  type: 'post' | 'comment' | 'reaction' | 'join' | 'mention' | 'report' | 'rsvp' | 'form' | 'system';
   username: string;
   action: string;
   target: string;
   space?: string;
+  cmsType?: string;
   time: string;
+  timeCategory: 'today' | 'yesterday' | 'this_week' | 'last_week' | 'this_month' | 'older';
   date?: string; // For showing Apr 8, etc.
   read: boolean;
   avatar: string;
@@ -112,73 +111,168 @@ export const getDashboardData = async () => {
       }
     ],
     notifications: [
+      // Today
       {
         id: 'notification-1',
         type: 'post' as const,
-        username: 'Support People',
-        action: 'posted in',
-        target: 'Bettermode Swags',
-        space: 'Support',
+        username: 'Sarah Chen',
+        action: 'posted new article in',
+        target: 'UI Design 101',
+        space: 'Design',
+        cmsType: 'Article',
         time: '2 hours ago',
+        timeCategory: 'today',
         read: false,
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       },
       {
         id: 'notification-2',
+        type: 'comment' as const,
+        username: 'Alex Rodriguez',
+        action: 'replied to your post in',
+        target: 'Weekly Team Updates',
+        space: 'Product',
+        cmsType: 'Post',
+        time: '4 hours ago',
+        timeCategory: 'today',
+        read: false,
+        avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+        commentContent: 'Great progress on the dashboard project! I think we should review the analytics section again before the final release.'
+      },
+      {
+        id: 'notification-3',
+        type: 'reaction' as const,
+        username: 'Emma Wilson',
+        action: 'reacted to your comment in',
+        target: 'Q2 Marketing Strategy',
+        space: 'Marketing',
+        cmsType: 'Document',
+        time: '5 hours ago',
+        timeCategory: 'today',
+        read: false,
+        avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+      },
+      
+      // Yesterday
+      {
+        id: 'notification-4',
         type: 'mention' as const,
         username: 'Mo Malayeri',
         action: 'mentioned you in',
         target: 'Create New View - Inbox',
-        date: 'Apr 8',
-        time: 'Apr 8',
+        space: 'Engineering',
+        cmsType: 'Task',
+        date: 'Yesterday',
+        time: 'Yesterday at 3:45 PM',
+        timeCategory: 'yesterday',
         read: false,
         avatar: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       },
       {
-        id: 'notification-3',
-        type: 'mention' as const,
-        username: 'Mo Malayeri',
-        action: 'mentioned you in',
-        target: 'Knowledge / Source Tab',
-        date: 'Apr 8',
-        time: 'Apr 8',
-        read: false,
-        avatar: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+        id: 'notification-5',
+        type: 'report' as const,
+        username: 'System',
+        action: 'generated monthly report for',
+        target: 'Community Engagement',
+        space: 'Analytics',
+        cmsType: 'Report',
+        date: 'Yesterday',
+        time: 'Yesterday at 11:30 AM',
+        timeCategory: 'yesterday',
+        read: true,
+        avatar: 'https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+      },
+      
+      // This Week
+      {
+        id: 'notification-6',
+        type: 'rsvp' as const,
+        username: 'Michael Brown',
+        action: 'confirmed attendance for',
+        target: 'Design Workshop',
+        space: 'Events',
+        cmsType: 'Event',
+        date: 'Mon',
+        time: 'Monday at 9:15 AM',
+        timeCategory: 'this_week',
+        read: true,
+        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       },
       {
-        id: 'notification-4',
+        id: 'notification-7',
+        type: 'form' as const,
+        username: 'Jessica Lee',
+        action: 'submitted form response in',
+        target: 'Customer Feedback',
+        space: 'Research',
+        cmsType: 'Form',
+        date: 'Mon',
+        time: 'Monday at 8:20 AM',
+        timeCategory: 'this_week',
+        read: true,
+        avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+      },
+      
+      // Last Week
+      {
+        id: 'notification-8',
         type: 'comment' as const,
         username: 'Mo Malayeri',
-        action: 'commented in',
+        action: 'commented on',
         target: 'Integrations (Bettermode)',
+        space: 'Platform',
+        cmsType: 'Feature',
         date: 'Apr 8',
         time: 'Apr 8',
-        read: false,
+        timeCategory: 'last_week',
+        read: true,
         avatar: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
         commentContent: 'What we didn\'t address is the mapping of the Sorena users with Bettermode staff. We need to find a way to address that',
         mentionedUser: 'Amir Khalili'
       },
       {
-        id: 'notification-5',
+        id: 'notification-9',
+        type: 'join' as const,
+        username: 'Daniel Kim',
+        action: 'joined',
+        target: 'Design Team',
+        space: 'People',
+        cmsType: 'Group',
+        date: 'Apr 7',
+        time: 'Apr 7',
+        timeCategory: 'last_week',
+        read: true,
+        avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+      },
+      
+      // Older
+      {
+        id: 'notification-10',
         type: 'mention' as const,
         username: 'Mo Malayeri',
         action: 'mentioned you in',
         target: 'Dashboard & Analytics Tab',
-        date: 'Apr 8',
-        time: 'Apr 8',
+        space: 'Admin',
+        cmsType: 'Discussion',
+        date: 'Mar 28',
+        time: 'Mar 28',
+        timeCategory: 'older',
         read: true,
         avatar: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       },
       {
-        id: 'notification-6',
-        type: 'mention' as const,
-        username: 'Mo Malayeri',
-        action: 'mentioned you in',
-        target: 'People Tab',
-        date: 'Apr 8',
-        time: 'Apr 8',
+        id: 'notification-11',
+        type: 'system' as const,
+        username: 'System',
+        action: 'performed security update on',
+        target: 'User Permissions',
+        space: 'Security',
+        cmsType: 'System',
+        date: 'Mar 25',
+        time: 'Mar 25',
+        timeCategory: 'older',
         read: true,
-        avatar: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       }
     ]
   };
