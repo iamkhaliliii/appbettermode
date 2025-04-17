@@ -1119,69 +1119,79 @@ export function SecondarySidebar() {
             </AccordionTrigger>
             <AccordionContent className="pt-1 pb-1">
               <div className="space-y-0.5">
-                  <div 
-                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
-                  >
-                    <div className="flex items-center gap-2">
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
-                      <PanelTop className="h-3.5 w-3.5 text-gray-500" />
-                      <span className="text-xs text-gray-600 dark:text-gray-300">Header</span>
-                    </div>
-                    <div>
-                      <MiniToggle
-                        isActive={false}
-                        onChange={() => {}} 
-                      />
-                    </div>
-                  </div>
+                  <Accordion type="single" collapsible className="space-y-0.5">
+                    <AccordionItem value="header" className="border-0">
+                      <AccordionTrigger className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800">
+                        <div className="flex items-center gap-2">
+                          <PanelTop className="h-3.5 w-3.5 text-gray-500" />
+                          <span className="text-xs text-gray-600 dark:text-gray-300">Header</span>
+                        </div>
+                        <div>
+                          <MiniToggle
+                            isActive={false}
+                            onChange={() => {}} 
+                          />
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="pl-8 py-1">
+                        <div className="text-xs text-gray-500">Header settings and options</div>
+                      </AccordionContent>
+                    </AccordionItem>
 
-                  <div 
-                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
-                  >
-                    <div className="flex items-center gap-2">
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
-                      <PanelRight className="h-3.5 w-3.5 text-gray-500" />
-                      <span className="text-xs text-gray-600 dark:text-gray-300">Right Sidebar</span>
-                    </div>
-                    <div>
-                      <MiniToggle
-                        isActive={false}
-                        onChange={() => {}} 
-                      />
-                    </div>
-                  </div>
+                    <AccordionItem value="right-sidebar" className="border-0">
+                      <AccordionTrigger className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800">
+                        <div className="flex items-center gap-2">
+                          <PanelRight className="h-3.5 w-3.5 text-gray-500" />
+                          <span className="text-xs text-gray-600 dark:text-gray-300">Right Sidebar</span>
+                        </div>
+                        <div>
+                          <MiniToggle
+                            isActive={false}
+                            onChange={() => {}} 
+                          />
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="pl-8 py-1">
+                        <div className="text-xs text-gray-500">Right sidebar settings and options</div>
+                      </AccordionContent>
+                    </AccordionItem>
 
-                  <div 
-                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
-                  >
-                    <div className="flex items-center gap-2">
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
-                      <PanelLeft className="h-3.5 w-3.5 text-gray-500" />
-                      <span className="text-xs text-gray-600 dark:text-gray-300">Left Sidebar</span>
-                    </div>
-                    <div>
-                      <MiniToggle
-                        isActive={false}
-                        onChange={() => {}} 
-                      />
-                    </div>
-                  </div>
+                    <AccordionItem value="left-sidebar" className="border-0">
+                      <AccordionTrigger className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800">
+                        <div className="flex items-center gap-2">
+                          <PanelLeft className="h-3.5 w-3.5 text-gray-500" />
+                          <span className="text-xs text-gray-600 dark:text-gray-300">Left Sidebar</span>
+                        </div>
+                        <div>
+                          <MiniToggle
+                            isActive={false}
+                            onChange={() => {}} 
+                          />
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="pl-8 py-1">
+                        <div className="text-xs text-gray-500">Left sidebar settings and options</div>
+                      </AccordionContent>
+                    </AccordionItem>
 
-                  <div 
-                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
-                  >
-                    <div className="flex items-center gap-2">
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
-                      <PanelBottom className="h-3.5 w-3.5 text-gray-500" />
-                      <span className="text-xs text-gray-600 dark:text-gray-300">Footer</span>
-                    </div>
-                    <div>
-                      <MiniToggle
-                        isActive={false}
-                        onChange={() => {}} 
-                      />
-                    </div>
-                  </div>
+                    <AccordionItem value="footer" className="border-0">
+                      <AccordionTrigger className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800">
+                        <div className="flex items-center gap-2">
+                          <PanelBottom className="h-3.5 w-3.5 text-gray-500" />
+                          <span className="text-xs text-gray-600 dark:text-gray-300">Footer</span>
+                        </div>
+                        <div>
+                          <MiniToggle
+                            isActive={false}
+                            onChange={() => {}} 
+                          />
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="pl-8 py-1">
+                        <div className="text-xs text-gray-500">Footer settings and options</div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                 </div>
             </AccordionContent>
           </AccordionItem>
