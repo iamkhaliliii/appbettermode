@@ -1258,9 +1258,9 @@ export function SecondarySidebar() {
             >
               <div className="flex items-center justify-between w-full">
                 <div className="flex items-center">
-                  <Layout className="h-4 w-4 mr-2 text-gray-500" />
+                  <Dock className="h-4 w-4 mr-2 text-gray-500" />
                   <span className="font-medium text-sm">
-                    Navigation Sections
+                    Navigation & Frames
                   </span>
                 </div>
                 <ChevronDown
