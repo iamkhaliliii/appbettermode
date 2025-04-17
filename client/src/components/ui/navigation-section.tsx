@@ -23,7 +23,7 @@ export function NavigationSection({
   const wrappedChildren = React.Children.map(children, child => {
     if (React.isValidElement(child)) {
       return React.cloneElement(child, {
-        className: `${child.props.className || ''} ${!isActive ? 'opacity-50 pointer-events-none' : ''}`
+        className: `${child.props.className || ''} ${!isActive ? 'opacity-40 pointer-events-none grayscale cursor-not-allowed bg-gray-100/50 dark:bg-gray-800/50' : ''}`
       });
     }
     return child;
