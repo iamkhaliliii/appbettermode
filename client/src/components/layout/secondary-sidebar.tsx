@@ -10,6 +10,7 @@ import {
   ClipboardList, 
   Settings, 
   Lock,
+  Image,
   ChevronDown,
   Files,
   Layout,
