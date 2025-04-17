@@ -1137,9 +1137,9 @@ export function SecondarySidebar() {
                     className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
                   >
                     <div className="flex items-center gap-2">
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
                       <PanelRight className="h-3.5 w-3.5 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Right Sidebar</span>
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400 ml-1" />
                     </div>
                     <div>
                       <MiniToggle
@@ -1153,9 +1153,9 @@ export function SecondarySidebar() {
                     className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
                   >
                     <div className="flex items-center gap-2">
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
                       <PanelLeft className="h-3.5 w-3.5 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Left Sidebar</span>
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400 ml-1" />
                     </div>
                     <div>
                       <MiniToggle
@@ -1169,9 +1169,9 @@ export function SecondarySidebar() {
                     className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
                   >
                     <div className="flex items-center gap-2">
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
                       <Columns className="h-3.5 w-3.5 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Footer</span>
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400 ml-1" />
                     </div>
                     <div>
                       <MiniToggle
