@@ -19,8 +19,8 @@ function Router() {
       <Route path="/" component={() => <Redirect to="/content" />} />
       <Route path="/content" component={Content} />
       <Route path="/content/:section" component={Content} />
-      <Route path="/inbox" component={() => <Content section="inbox" />} />
-      <Route path="/inbox/:subsection" component={(params) => <Content section="inbox" subsection={params.subsection} />} />
+      <Route path="/inbox" component={Content} />
+      <Route path="/inbox/:section" component={Content} />
       {/* Compatibility redirects for old routes */}
       <Route path="/content/comments" component={() => <Redirect to="/content/activity" />} />
       <Route path="/content/tags" component={() => <Redirect to="/content" />} />
