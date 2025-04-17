@@ -9,6 +9,7 @@ interface NavigationSectionProps {
   icon: React.ReactNode;
   defaultActive?: boolean;
   children?: React.ReactNode;
+  onToggleChange?: (isActive: boolean) => void;
 }
 
 export function NavigationSection({ 

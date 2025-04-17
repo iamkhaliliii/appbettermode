@@ -14,9 +14,9 @@ interface NavigationItemProps {
   iconColor?: string;
 }
 
-export function NavigationItem({ icon = <Image />, title, iconColor = "amber" }: NavigationItemProps) {
+export function NavigationItem({ icon = <Image />, title, iconColor = "amber", className }: NavigationItemProps & { className?: string }) {
   return (
-    <div className="group relative flex items-center justify-between gap-2 py-1.5 px-2 text-xs hover:bg-gray-50/50 dark:hover:bg-gray-800/50 rounded cursor-pointer">
+    <div className={`group relative flex items-center justify-between gap-2 py-1.5 px-2 text-xs hover:bg-gray-50/50 dark:hover:bg-gray-800/50 rounded cursor-pointer ${className || ''}`}>
       <div className="flex items-center gap-1.5">
         <div className={`relative bg-${iconColor}-50/50 dark:bg-${iconColor}-900/20 p-0.5 rounded border border-${iconColor}-200 dark:border-${iconColor}-600`}>
           {icon}
