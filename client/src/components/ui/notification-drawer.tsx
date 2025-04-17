@@ -456,7 +456,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
   >((props, ref) => (
     <DropdownMenuPrimitive.Root {...props} ref={ref} onSelect={()=>setShowFilterDropdown(false)}/>
   ));
-  DropdownMenu.displayName = DropdownMenuPrimitive.Root.displayName;
+  DropdownMenu.displayName = "DropdownMenu";
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="right">
