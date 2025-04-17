@@ -436,7 +436,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="right">
       <DrawerContent className="right-0 left-auto w-full sm:w-[350px] max-w-full rounded-l-lg border-l border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 h-full">
-        <DrawerHeader className="px-3 py-2 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+        <DrawerHeader className="px-3 py-2 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-white to-gray-50 dark:from-gray-800 dark:to-gray-800/80 flex items-center justify-between">
           <div className="flex items-center">
             <Button 
               variant="ghost" 
@@ -446,21 +446,30 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
             >
               <ChevronRight className="h-3.5 w-3.5" />
             </Button>
-            <DrawerTitle className="text-base font-medium">Inbox</DrawerTitle>
+            <DrawerTitle className="text-base font-medium flex items-center">
+              <Bell className="h-3.5 w-3.5 mr-1.5 text-gray-400" />
+              Inbox
+              {unreadCount > 0 && (
+                <span className="ml-2 h-5 min-w-5 px-1 flex items-center justify-center text-[10px] font-medium bg-blue-500 text-white rounded-full">
+                  {unreadCount}
+                </span>
+              )}
+            </DrawerTitle>
           </div>
           <div className="flex items-center space-x-1">
             <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-7 w-7"
+              variant="secondary-gray"
+              size="sm"
+              className="h-7 px-2 text-xs rounded-md"
               onClick={markAllAsRead}
               title="Mark all as read"
             >
-              <Check className="h-3.5 w-3.5" />
+              <Check className="h-3 w-3 mr-1.5" />
+              <span>Read all</span>
             </Button>
             
             <Button
-              variant={getFilterCount() > 0 ? "secondary-gray" : "ghost"}
+              variant={getFilterCount() > 0 ? "secondary-color" : "ghost"}
               size="icon"
               className="h-7 w-7 relative"
               onClick={() => setShowFilters(!showFilters)}
@@ -468,7 +477,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
             >
               <Filter className="h-3.5 w-3.5" />
               {getFilterCount() > 0 && (
-                <span className="absolute -top-1 -right-1 h-3.5 w-3.5 bg-blue-500 text-white text-[9px] font-semibold flex items-center justify-center rounded-full">
+                <span className="absolute -top-1 -right-1 h-4 w-4 bg-blue-500 text-white text-[9px] font-semibold flex items-center justify-center rounded-full">
                   {getFilterCount()}
                 </span>
               )}
@@ -489,7 +498,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                     Configure notification preferences
                   </span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="text-xs">
+                <DropdownMenuItem className="text-xs" onClick={markAllAsRead}>
                   <span className="flex items-center">
                     <CheckCircle className="h-3.5 w-3.5 mr-1.5" />
                     Mark all as read
@@ -502,19 +511,22 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
         
         {/* Active filters display */}
         {getFilterCount() > 0 && (
-          <div className="px-3 py-2 border-b border-gray-100 dark:border-gray-700 bg-gray-50/30 dark:bg-gray-800/20">
+          <div className="px-3 py-2 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-gray-50/70 to-blue-50/20 dark:from-gray-800/40 dark:to-blue-900/10">
             <div className="flex items-center justify-between">
-              <div className="text-xs text-gray-500 dark:text-gray-400">Active filters:</div>
+              <div className="text-xs font-medium text-gray-500 dark:text-gray-400 flex items-center">
+                <Filter className="h-3 w-3 mr-1.5 text-gray-400" />
+                Active filters
+              </div>
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="h-5 text-[10px] px-1.5"
+                className="h-5 text-[10px] px-1.5 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
                 onClick={clearAllFilters}
               >
                 Clear all
               </Button>
             </div>
-            <div className="flex flex-wrap gap-1 mt-1.5">
+            <div className="flex flex-wrap gap-1.5 mt-2">
               {renderActiveFilters()}
             </div>
           </div>
@@ -530,135 +542,175 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
               className="w-full"
             >
               <div className="px-3 pt-2">
-                <TabsList className="w-full h-8 bg-gray-100 dark:bg-gray-700 grid grid-cols-5">
-                  <TabsTrigger value="status" className="text-[10px] h-6">Status</TabsTrigger>
-                  <TabsTrigger value="type" className="text-[10px] h-6">Type</TabsTrigger>
-                  <TabsTrigger value="space" className="text-[10px] h-6">Space</TabsTrigger>
-                  <TabsTrigger value="cms" className="text-[10px] h-6">CMS</TabsTrigger>
-                  <TabsTrigger value="time" className="text-[10px] h-6">Time</TabsTrigger>
+                <TabsList className="w-full h-7 bg-gray-100 dark:bg-gray-700/80 grid grid-cols-5 rounded-[0.4rem] p-0.5">
+                  <TabsTrigger value="status" className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0">
+                    <CheckCircle2 className="h-3 w-3 mr-1" />
+                    Status
+                  </TabsTrigger>
+                  <TabsTrigger value="type" className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0">
+                    <MessageSquare className="h-3 w-3 mr-1" />
+                    Type
+                  </TabsTrigger>
+                  <TabsTrigger value="space" className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0">
+                    <Boxes className="h-3 w-3 mr-1" />
+                    Space
+                  </TabsTrigger>
+                  <TabsTrigger value="cms" className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0">
+                    <Database className="h-3 w-3 mr-1" />
+                    CMS
+                  </TabsTrigger>
+                  <TabsTrigger value="time" className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0">
+                    <Calendar className="h-3 w-3 mr-1" />
+                    Time
+                  </TabsTrigger>
                 </TabsList>
               </div>
               
               <div className="p-3">
                 {activeFilterCategory === 'status' && (
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="grid grid-cols-3 gap-2">
                     <Button
                       variant={activeStatusFilter === 'all' ? 'secondary-gray' : 'ghost'}
                       size="sm"
-                      className="h-7 text-xs"
+                      className="h-8 text-xs rounded-md flex justify-center items-center"
                       onClick={() => setActiveStatusFilter('all')}
                     >
-                      All
+                      <span className="flex items-center justify-center">
+                        <Bell className="h-3.5 w-3.5 mr-2 text-gray-500" />
+                        All
+                      </span>
                     </Button>
                     <Button
                       variant={activeStatusFilter === 'unread' ? 'secondary-gray' : 'ghost'}
                       size="sm"
-                      className="h-7 text-xs"
+                      className="h-8 text-xs rounded-md flex justify-center items-center"
                       onClick={() => setActiveStatusFilter('unread')}
                     >
-                      <CheckCircle2 className="h-3 w-3 mr-1" />
-                      Unread
-                      <span className="ml-1 text-[10px] font-normal bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 rounded-full px-1">
-                        {unreadCount}
+                      <span className="flex items-center justify-center">
+                        <CheckCircle2 className="h-3.5 w-3.5 mr-2 text-blue-500" />
+                        Unread
+                        {unreadCount > 0 && (
+                          <span className="ml-1.5 h-4 min-w-4 px-1 flex items-center justify-center text-[10px] font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 rounded-full">
+                            {unreadCount}
+                          </span>
+                        )}
                       </span>
                     </Button>
                     <Button
                       variant={activeStatusFilter === 'read' ? 'secondary-gray' : 'ghost'}
                       size="sm"
-                      className="h-7 text-xs"
+                      className="h-8 text-xs rounded-md flex justify-center items-center"
                       onClick={() => setActiveStatusFilter('read')}
                     >
-                      <Check className="h-3 w-3 mr-1" />
-                      Read
+                      <span className="flex items-center justify-center">
+                        <Check className="h-3.5 w-3.5 mr-2 text-green-500" />
+                        Read
+                      </span>
                     </Button>
                   </div>
                 )}
                 
                 {activeFilterCategory === 'type' && (
-                  <div className="flex flex-wrap gap-1.5">
-                    <Button
-                      variant={activeTypeFilter === null ? 'secondary-gray' : 'ghost'}
-                      size="sm"
-                      className="h-7 text-xs"
-                      onClick={() => setActiveTypeFilter(null)}
-                    >
-                      All types
-                    </Button>
-                    {availableTypes.map(type => (
+                  <div>
+                    <div className="mb-2">
                       <Button
-                        key={type}
-                        variant={activeTypeFilter === type ? 'secondary-gray' : 'ghost'}
+                        variant={activeTypeFilter === null ? 'secondary-gray' : 'ghost'}
                         size="sm"
-                        className="h-7 text-xs"
-                        onClick={() => setActiveTypeFilter(activeTypeFilter === type ? null : type)}
+                        className="h-6 text-xs w-full justify-start"
+                        onClick={() => setActiveTypeFilter(null)}
                       >
-                        <span className="flex items-center">
-                          {getTypeIconComponent(type)}
-                          {type.charAt(0).toUpperCase() + type.slice(1)}
-                        </span>
+                        <Bell className="h-3.5 w-3.5 mr-2" />
+                        All types
                       </Button>
-                    ))}
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {availableTypes.map(type => (
+                        <Button
+                          key={type}
+                          variant={activeTypeFilter === type ? 'secondary-gray' : 'ghost'}
+                          size="sm"
+                          className="h-8 text-xs rounded-md justify-start"
+                          onClick={() => setActiveTypeFilter(activeTypeFilter === type ? null : type)}
+                        >
+                          <span className="flex items-center">
+                            {getTypeIconComponent(type)}
+                            {type.charAt(0).toUpperCase() + type.slice(1)}
+                          </span>
+                        </Button>
+                      ))}
+                    </div>
                   </div>
                 )}
                 
                 {activeFilterCategory === 'space' && (
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="space-y-2">
                     <Button
                       variant={activeSpaceFilter === null ? 'secondary-gray' : 'ghost'}
                       size="sm"
-                      className="h-7 text-xs"
+                      className="h-6 text-xs w-full justify-start"
                       onClick={() => setActiveSpaceFilter(null)}
                     >
+                      <Boxes className="h-3.5 w-3.5 mr-2" />
                       All spaces
                     </Button>
-                    {availableSpaces.map(space => (
-                      <Button
-                        key={space}
-                        variant={activeSpaceFilter === space ? 'secondary-gray' : 'ghost'}
-                        size="sm"
-                        className="h-7 text-xs"
-                        onClick={() => setActiveSpaceFilter(activeSpaceFilter === space ? null : space)}
-                      >
-                        <Boxes className="h-3 w-3 mr-1.5 text-gray-400" />
-                        {space}
-                      </Button>
-                    ))}
+                    <div className="max-h-40 overflow-y-auto pr-1 space-y-1">
+                      {availableSpaces.map(space => (
+                        <Button
+                          key={space}
+                          variant={activeSpaceFilter === space ? 'secondary-gray' : 'ghost'}
+                          size="sm"
+                          className="h-7 text-xs w-full justify-start"
+                          onClick={() => setActiveSpaceFilter(activeSpaceFilter === space ? null : space)}
+                        >
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-300">
+                            <Boxes className="h-3 w-3 mr-1.5 text-purple-400" />
+                            {space}
+                          </span>
+                        </Button>
+                      ))}
+                    </div>
                   </div>
                 )}
                 
                 {activeFilterCategory === 'cms' && (
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="space-y-2">
                     <Button
                       variant={activeCmsFilter === null ? 'secondary-gray' : 'ghost'}
                       size="sm"
-                      className="h-7 text-xs"
+                      className="h-6 text-xs w-full justify-start"
                       onClick={() => setActiveCmsFilter(null)}
                     >
+                      <Database className="h-3.5 w-3.5 mr-2" />
                       All CMS types
                     </Button>
-                    {availableCmsTypes.map(cmsType => (
-                      <Button
-                        key={cmsType}
-                        variant={activeCmsFilter === cmsType ? 'secondary-gray' : 'ghost'}
-                        size="sm"
-                        className="h-7 text-xs"
-                        onClick={() => setActiveCmsFilter(activeCmsFilter === cmsType ? null : cmsType)}
-                      >
-                        <Database className="h-3 w-3 mr-1.5 text-gray-400" />
-                        {cmsType}
-                      </Button>
-                    ))}
+                    <div className="max-h-40 overflow-y-auto pr-1 space-y-1">
+                      {availableCmsTypes.map(cmsType => (
+                        <Button
+                          key={cmsType}
+                          variant={activeCmsFilter === cmsType ? 'secondary-gray' : 'ghost'}
+                          size="sm"
+                          className="h-7 text-xs w-full justify-start"
+                          onClick={() => setActiveCmsFilter(activeCmsFilter === cmsType ? null : cmsType)}
+                        >
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                            <Database className="h-3 w-3 mr-1.5 text-gray-400" />
+                            {cmsType}
+                          </span>
+                        </Button>
+                      ))}
+                    </div>
                   </div>
                 )}
                 
                 {activeFilterCategory === 'time' && (
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="grid grid-cols-2 gap-2">
                     <Button
                       variant={activeTimeFilter === null ? 'secondary-gray' : 'ghost'}
                       size="sm"
-                      className="h-7 text-xs"
+                      className="h-7 text-xs col-span-2 justify-start"
                       onClick={() => setActiveTimeFilter(null)}
                     >
+                      <Calendar className="h-3.5 w-3.5 mr-2" />
                       All time
                     </Button>
                     {Object.entries(timePeriods).map(([value, label]) => (
@@ -666,11 +718,13 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                         key={value}
                         variant={activeTimeFilter === value ? 'secondary-gray' : 'ghost'}
                         size="sm"
-                        className="h-7 text-xs"
+                        className="h-8 text-xs rounded-md justify-start"
                         onClick={() => setActiveTimeFilter(activeTimeFilter === value ? null : value)}
                       >
-                        <Calendar className="h-3 w-3 mr-1.5 text-gray-400" />
-                        {label}
+                        <span className="flex items-center">
+                          <Calendar className="h-3.5 w-3.5 mr-1.5 text-gray-400" />
+                          {label}
+                        </span>
                       </Button>
                     ))}
                   </div>
