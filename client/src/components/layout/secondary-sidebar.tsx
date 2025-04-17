@@ -486,82 +486,101 @@ export function SecondarySidebar() {
             </div>
           </div>
           
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <SideNavItem 
-                href="/inbox/all-activity"
-                isActive={isActiveUrl('/inbox/all-activity') || location === '/inbox'}
-              >
-                All Activity
-              </SideNavItem>
-              
-              <SideNavItem 
-                href="/inbox/comments"
-                isActive={isActiveUrl('/inbox/comments')}
-              >
-                Comments & Replies
-              </SideNavItem>
-              
-              <SideNavItem 
-                href="/inbox/reports"
-                isActive={isActiveUrl('/inbox/reports')}
-              >
-                Reports & Moderation
-              </SideNavItem>
-              
-              <SideNavItem 
-                href="/inbox/reactions"
-                isActive={isActiveUrl('/inbox/reactions')}
-              >
-                Reactions
-              </SideNavItem>
-              
-              <SideNavItem 
-                href="/inbox/mentions"
-                isActive={isActiveUrl('/inbox/mentions')}
-              >
-                Mentions
-              </SideNavItem>
-              
-              <SideNavItem 
-                href="/inbox/rsvps"
-                isActive={isActiveUrl('/inbox/rsvps')}
-              >
-                RSVPs
-              </SideNavItem>
-              
-              <SideNavItem 
-                href="/inbox/forms"
-                isActive={isActiveUrl('/inbox/forms')}
-              >
-                Form Submissions
-              </SideNavItem>
+          <div className="space-y-6">
+            {/* Activity Section */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-xs font-medium text-gray-900 dark:text-gray-100">Activity</h3>
+                <span className="text-[10px] bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full">12 new</span>
+              </div>
+              <div className="space-y-0.5">
+                <SideNavItem 
+                  href="/inbox/all-activity"
+                  isActive={isActiveUrl('/inbox/all-activity') || location === '/inbox'}
+                >
+                  All Activity
+                </SideNavItem>
+                <SideNavItem 
+                  href="/inbox/unread"
+                  isActive={isActiveUrl('/inbox/unread')}
+                >
+                  Unread
+                </SideNavItem>
+              </div>
             </div>
 
+            {/* Interactions Section */}
             <div>
-              <h3 className="text-xs font-normal text-gray-400 dark:text-gray-500 px-2 mb-2">By Content Type (CMS)</h3>
-              <div className="space-y-1">
+              <h3 className="text-xs font-medium text-gray-900 dark:text-gray-100 mb-3">Interactions</h3>
+              <div className="space-y-0.5">
+                <SideNavItem 
+                  href="/inbox/comments"
+                  isActive={isActiveUrl('/inbox/comments')}
+                >
+                  Comments & Replies
+                </SideNavItem>
+                <SideNavItem 
+                  href="/inbox/reactions"
+                  isActive={isActiveUrl('/inbox/reactions')}
+                >
+                  Reactions
+                </SideNavItem>
+                <SideNavItem 
+                  href="/inbox/mentions"
+                  isActive={isActiveUrl('/inbox/mentions')}
+                >
+                  Mentions
+                </SideNavItem>
+              </div>
+            </div>
+
+            {/* Management Section */}
+            <div>
+              <h3 className="text-xs font-medium text-gray-900 dark:text-gray-100 mb-3">Management</h3>
+              <div className="space-y-0.5">
+                <SideNavItem 
+                  href="/inbox/reports"
+                  isActive={isActiveUrl('/inbox/reports')}
+                >
+                  Reports & Moderation
+                </SideNavItem>
+                <SideNavItem 
+                  href="/inbox/rsvps"
+                  isActive={isActiveUrl('/inbox/rsvps')}
+                >
+                  RSVPs
+                </SideNavItem>
+                <SideNavItem 
+                  href="/inbox/forms"
+                  isActive={isActiveUrl('/inbox/forms')}
+                >
+                  Form Submissions
+                </SideNavItem>
+              </div>
+            </div>
+
+            {/* Content Types Section */}
+            <div>
+              <h3 className="text-xs font-medium text-gray-900 dark:text-gray-100 mb-3">Content Types</h3>
+              <div className="space-y-0.5">
                 <SideNavItem 
                   href="/inbox/cms/articles"
                   isActive={isActiveUrl('/inbox/cms/articles')}
                 >
                   Articles
                 </SideNavItem>
-                
                 <SideNavItem 
                   href="/inbox/cms/events"
                   isActive={isActiveUrl('/inbox/cms/events')}
                 >
                   Events
                 </SideNavItem>
-                
                 <SideNavItem 
                   href="/inbox/cms/questions"
                   isActive={isActiveUrl('/inbox/cms/questions')}
                 >
                   Questions
                 </SideNavItem>
-                
                 <SideNavItem 
                   href="/inbox/cms/wishlist"
                   isActive={isActiveUrl('/inbox/cms/wishlist')}
