@@ -609,11 +609,11 @@ export function NotificationDrawer({
                         setShowFilterDropdown(false);
                       }}
                     >
-                      <span className="flex items-center">
-                        <Check className="h-3.5 w-3.5 mr-2 text-green-500" />
-                        Read
+                      <span className="flex items-center py-0.5">
+                        <Check className="h-3 w-3 mr-1.5 text-gray-400" />
+                        <span className="text-gray-600 dark:text-gray-300">Read</span>
                         {activeStatusFilter === "read" && (
-                          <Check className="h-3 w-3 ml-auto" />
+                          <Check className="h-2.5 w-2.5 ml-auto text-gray-500" />
                         )}
                       </span>
                     </DropdownMenuItem>
@@ -880,11 +880,11 @@ export function NotificationDrawer({
                             setShowFilterDropdown(false);
                           }}
                         >
-                          <span className="flex items-center">
-                            <Check className="h-3.5 w-3.5 mr-2 text-green-500" />
-                            Read
+                          <span className="flex items-center py-0.5">
+                            <Check className="h-3 w-3 mr-1.5 text-gray-400" />
+                            <span className="text-gray-600 dark:text-gray-300">Read</span>
                             {activeStatusFilter === "read" && (
-                              <Check className="h-3 w-3 ml-auto" />
+                              <Check className="h-2.5 w-2.5 ml-auto text-gray-500" />
                             )}
                           </span>
                         </DropdownMenuItem>
