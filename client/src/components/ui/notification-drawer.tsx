@@ -1,21 +1,25 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { 
   Drawer, 
   DrawerContent, 
   DrawerHeader, 
   DrawerTitle, 
-  DrawerFooter 
+  DrawerFooter, 
+  DrawerDescription
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { NotificationData } from "@/lib/dashboard-data";
 import { getNotifications } from "@/lib/dashboard-data";
 import { 
   ChevronRight, MessageSquare, ThumbsUp, UserPlus, 
-  AtSign, Bell, Circle, ChevronLeft, MoreVertical, Search
+  AtSign, Bell, Circle, ChevronLeft, MoreVertical, Search,
+  Filter, CheckCircle2, BookOpen, Database, LayoutDashboard,
+  Users, Boxes
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 interface NotificationDrawerProps {
   open: boolean;
@@ -28,9 +32,39 @@ interface NotificationGroupProps {
 }
 
 const NotificationItem = ({ notification }: { notification: NotificationData }) => {
-  // Based on the screenshot layout
+  // Get icon based on notification type
+  const getTypeIcon = () => {
+    switch (notification.type) {
+      case 'post':
+        return <Database className="h-3.5 w-3.5 text-blue-500" />;
+      case 'comment':
+        return <MessageSquare className="h-3.5 w-3.5 text-green-500" />;
+      case 'reaction':
+        return <ThumbsUp className="h-3.5 w-3.5 text-purple-500" />;
+      case 'join':
+        return <UserPlus className="h-3.5 w-3.5 text-emerald-500" />;
+      case 'mention':
+        return <AtSign className="h-3.5 w-3.5 text-orange-500" />;
+      case 'system':
+        return <Bell className="h-3.5 w-3.5 text-gray-500" />;
+      default:
+        return <MessageSquare className="h-3.5 w-3.5 text-gray-500" />;
+    }
+  };
+  
   return (
-    <div className={`py-3 px-4 border-b border-gray-100 dark:border-gray-700 ${!notification.read ? 'bg-gray-50/50 dark:bg-gray-800/30' : ''}`}>
+    <div 
+      className={cn(
+        "py-3 px-4 border-b border-gray-100 dark:border-gray-700",
+        !notification.read ? 'bg-blue-50/50 dark:bg-blue-900/10' : '',
+        "relative"
+      )}
+    >
+      {/* Unread indicator */}
+      {!notification.read && (
+        <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-blue-500"></div>
+      )}
+      
       {/* User avatar on the left */}
       <div className="flex items-start mb-1.5">
         <div className="flex-shrink-0 mr-3">
@@ -40,15 +74,54 @@ const NotificationItem = ({ notification }: { notification: NotificationData }) 
             className="h-6 w-6 rounded-full"
           />
         </div>
+        
         <div className="flex-1">
-          <p className="text-sm text-gray-900 dark:text-gray-100 leading-tight">
-            <span className="font-medium">{notification.username}</span> {notification.action}
-          </p>
-          <div className="flex items-center mt-1">
+          {/* Main notification text - more minimal */}
+          <div className="flex items-center">
+            <p className="text-sm text-gray-900 dark:text-gray-100 leading-tight">
+              <span className="font-medium">{notification.username}</span>
+              {' '}
+              <span className="text-gray-500 dark:text-gray-400">{notification.action}</span>
+            </p>
+            
+            {!notification.read && (
+              <div className="ml-2 h-2 w-2 rounded-full bg-blue-500"></div>
+            )}
+          </div>
+          
+          {/* Target with icon */}
+          <div className="flex items-center mt-1.5">
             <Circle className="h-2 w-2 mr-1.5 text-gray-400" fill="currentColor" />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {notification.target}
-            </span>
+            <div className="flex items-center">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300 mr-1.5">
+                {notification.target}
+              </span>
+              
+              {/* Badges for CMS and Space */}
+              <div className="flex items-center gap-1">
+                {notification.space && (
+                  <Badge 
+                    variant="outline" 
+                    className="py-0 h-4 text-[10px] px-1.5 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400"
+                  >
+                    <span className="flex items-center">
+                      <Boxes className="h-2 w-2 mr-0.5 text-gray-400" />
+                      {notification.space}
+                    </span>
+                  </Badge>
+                )}
+                
+                <Badge 
+                  variant="outline" 
+                  className="py-0 h-4 text-[10px] px-1.5 bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-700 text-purple-600 dark:text-purple-400"
+                >
+                  <span className="flex items-center">
+                    {getTypeIcon()}
+                    <span className="ml-0.5 capitalize">{notification.type}</span>
+                  </span>
+                </Badge>
+              </div>
+            </div>
           </div>
           
           {/* Owner section if needed */}
@@ -141,10 +214,31 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
     queryKey: ["notifications"],
     queryFn: getNotifications,
   });
+  
+  // Filter state
+  const [showFilterMenu, setShowFilterMenu] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<'all' | 'unread' | 'read'>('all');
+  const [typeFilter, setTypeFilter] = useState<string | null>(null);
+  
+  // Apply filters to notifications
+  const filteredNotifications = useMemo(() => {
+    if (!notifications) return [];
+    
+    return notifications.filter(notification => {
+      // Apply read/unread filter
+      if (activeFilter === 'unread' && notification.read) return false;
+      if (activeFilter === 'read' && !notification.read) return false;
+      
+      // Apply type filter
+      if (typeFilter && notification.type !== typeFilter) return false;
+      
+      return true;
+    });
+  }, [notifications, activeFilter, typeFilter]);
 
   // Group notifications by time period
   const groupedNotifications = () => {
-    if (!notifications) return {};
+    if (!filteredNotifications.length) return {};
     
     const groups: Record<string, NotificationData[]> = {
       'Bettermode Swags': [],
@@ -152,7 +246,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
       'Older': []
     };
     
-    notifications.forEach(notification => {
+    filteredNotifications.forEach(notification => {
       if (notification.id === 'notification-1') {
         groups['Bettermode Swags'].push(notification);
       } else if (['notification-2', 'notification-3', 'notification-4'].includes(notification.id)) {
@@ -162,10 +256,23 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
       }
     });
     
-    return groups;
+    // Remove empty groups
+    return Object.fromEntries(Object.entries(groups).filter(([_, notifications]) => notifications.length > 0));
   };
   
   const groups = groupedNotifications();
+  
+  // Calculate counts for filter badges
+  const unreadCount = notifications?.filter(n => !n.read).length || 0;
+  const readCount = notifications?.filter(n => n.read).length || 0;
+  
+  // Determine available notification types for filter
+  const availableTypes = useMemo(() => {
+    if (!notifications) return [];
+    const types = new Set<string>();
+    notifications.forEach(n => types.add(n.type));
+    return Array.from(types);
+  }, [notifications]);
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="left">
@@ -186,11 +293,99 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
             <Button variant="ghost" size="icon" className="h-8 w-8">
               <Search className="h-4 w-4" />
             </Button>
+            <Button 
+              variant={showFilterMenu ? "secondary-gray" : "ghost"} 
+              size="icon" 
+              className={cn("h-8 w-8", showFilterMenu && "bg-gray-100 dark:bg-gray-700")}
+              onClick={() => setShowFilterMenu(!showFilterMenu)}
+            >
+              <Filter className="h-4 w-4" />
+              {unreadCount > 0 && !showFilterMenu && (
+                <span className="absolute -top-1 -right-1 h-3 w-3 bg-blue-500 rounded-full"></span>
+              )}
+            </Button>
             <Button variant="ghost" size="icon" className="h-8 w-8">
               <MoreVertical className="h-4 w-4" />
             </Button>
           </div>
         </DrawerHeader>
+        
+        {/* Filter menu */}
+        {showFilterMenu && (
+          <div className="px-4 py-2 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 space-y-2">
+            <DrawerDescription className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
+              Filter by status
+            </DrawerDescription>
+            <div className="flex items-center gap-2 mb-3">
+              <Button
+                variant={activeFilter === 'all' ? 'secondary-gray' : 'ghost'}
+                size="sm"
+                className="h-7 text-xs"
+                onClick={() => setActiveFilter('all')}
+              >
+                All
+                <Badge className="ml-1 bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300">
+                  {notifications?.length || 0}
+                </Badge>
+              </Button>
+              <Button
+                variant={activeFilter === 'unread' ? 'secondary-gray' : 'ghost'}
+                size="sm"
+                className="h-7 text-xs"
+                onClick={() => setActiveFilter('unread')}
+              >
+                Unread
+                <Badge className="ml-1 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+                  {unreadCount}
+                </Badge>
+              </Button>
+              <Button
+                variant={activeFilter === 'read' ? 'secondary-gray' : 'ghost'}
+                size="sm"
+                className="h-7 text-xs"
+                onClick={() => setActiveFilter('read')}
+              >
+                Read
+                <Badge className="ml-1 bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300">
+                  {readCount}
+                </Badge>
+              </Button>
+            </div>
+            
+            <DrawerDescription className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
+              Filter by type
+            </DrawerDescription>
+            <div className="flex flex-wrap items-center gap-2 mb-1">
+              <Button
+                variant={typeFilter === null ? 'secondary-gray' : 'ghost'}
+                size="sm"
+                className="h-7 text-xs"
+                onClick={() => setTypeFilter(null)}
+              >
+                All types
+              </Button>
+              {availableTypes.map(type => (
+                <Button
+                  key={type}
+                  variant={typeFilter === type ? 'secondary-gray' : 'ghost'}
+                  size="sm"
+                  className="h-7 text-xs"
+                  onClick={() => setTypeFilter(type === typeFilter ? null : type)}
+                >
+                  <span className="flex items-center">
+                    {type === 'post' && <Database className="h-3 w-3 mr-1 text-blue-500" />}
+                    {type === 'comment' && <MessageSquare className="h-3 w-3 mr-1 text-green-500" />}
+                    {type === 'mention' && <AtSign className="h-3 w-3 mr-1 text-orange-500" />}
+                    {type === 'reaction' && <ThumbsUp className="h-3 w-3 mr-1 text-purple-500" />}
+                    {type === 'join' && <UserPlus className="h-3 w-3 mr-1 text-emerald-500" />}
+                    {type === 'system' && <Bell className="h-3 w-3 mr-1 text-gray-500" />}
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </span>
+                </Button>
+              ))}
+            </div>
+          </div>
+        )}
         
         <div className="max-h-[calc(100vh-4rem)] overflow-y-auto">
           {isLoading ? (
@@ -199,22 +394,34 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
               <NotificationSkeleton />
               <NotificationSkeleton />
             </>
-          ) : notifications?.length ? (
+          ) : filteredNotifications.length > 0 ? (
             <>
               {Object.entries(groups).map(([title, groupNotifications]) => (
-                groupNotifications.length > 0 && (
-                  <NotificationGroup 
-                    key={title} 
-                    title={title} 
-                    notifications={groupNotifications} 
-                  />
-                )
+                <NotificationGroup 
+                  key={title} 
+                  title={title} 
+                  notifications={groupNotifications} 
+                />
               ))}
             </>
           ) : (
             <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
               <Bell className="h-10 w-10 text-gray-300 dark:text-gray-600 mb-3" strokeWidth={1.5} />
-              <p className="text-sm text-gray-500 dark:text-gray-400">No notifications yet</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {(notifications?.length ?? 0) > 0 ? 'No notifications match your filters' : 'No notifications yet'}
+              </p>
+              {(notifications?.length ?? 0) > 0 && (
+                <Button 
+                  variant="ghost" 
+                  className="mt-2 text-xs h-8"
+                  onClick={() => {
+                    setActiveFilter('all');
+                    setTypeFilter(null);
+                  }}
+                >
+                  Clear filters
+                </Button>
+              )}
             </div>
           )}
         </div>
