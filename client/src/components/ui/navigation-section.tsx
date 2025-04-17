@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { MiniToggle } from "./mini-toggle";
 import { NavigationItem } from "./navigation-item";
@@ -17,6 +17,17 @@ export function NavigationSection({
   defaultActive = false,
   children 
 }: NavigationSectionProps) {
+  const [isActive, setIsActive] = useState(defaultActive);
+
+  const wrappedChildren = React.Children.map(children, child => {
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child, {
+        className: `${child.props.className || ''} ${!isActive ? 'opacity-50 pointer-events-none' : ''}`
+      });
+    }
+    return child;
+  });
+
   return (
     <div className="relative group">
       <div className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
@@ -41,11 +52,11 @@ export function NavigationSection({
           </span>
         </div>
         <div>
-          <MiniToggle isActive={defaultActive} onChange={() => {}} />
+          <MiniToggle isActive={isActive} onChange={setIsActive} />
         </div>
       </div>
       <div className="hidden pl-6 pr-2 space-y-0.5">
-        {children}
+        {wrappedChildren}
       </div>
     </div>
   );
