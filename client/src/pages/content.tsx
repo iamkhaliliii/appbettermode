@@ -776,20 +776,96 @@ export default function Content() {
   // Show appropriate content based on section
   const getTitle = () => {
     switch(section) {
-      case 'CMS':
-        return 'CMS Collections';
       case 'activity':
         return 'Activity Hub';
+      case 'inbox':
+        return 'Inbox';
       default:
-        return 'Content Management';
+        return 'CMS Collections';
     }
   };
   
-  // For the CMS section, we want to show a detailed table view
-  if (section === 'CMS') {
+  // For the Inbox section
+  if (section === 'inbox') {
     return (
       <DashboardLayout>
-        <div className="max-w-7xl mx-auto">
+        <div className="px-4 md:px-6 py-4 md:py-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Inbox</h1>
+              <p className="text-gray-500 dark:text-gray-400 mt-1">Manage your messages and notifications</p>
+            </div>
+          </div>
+          
+          <div className="space-y-6">
+            <Card className="border-border dark:border-border">
+              <CardHeader className="pb-5">
+                <CardTitle>Messages</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-6">
+                  <p className="text-gray-500 dark:text-gray-400 mb-4">
+                    Your inbox is empty. Messages will appear here.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+  
+  // For the Activity Hub section
+  if (section === 'activity') {
+    return (
+      <DashboardLayout>
+        <div className="px-4 md:px-6 py-4 md:py-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Activity Hub</h1>
+              <p className="text-gray-500 dark:text-gray-400 mt-1">Monitor recent activities and updates</p>
+            </div>
+          </div>
+          
+          <div className="space-y-6">
+            <Card className="border-border dark:border-border">
+              <CardHeader className="pb-5">
+                <CardTitle>Recent Activities</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {[1, 2, 3, 4, 5].map((item) => (
+                    <div key={item} className="flex items-start pb-4 border-b border-gray-100 dark:border-gray-800 last:border-0 last:pb-0">
+                      <div className="flex-shrink-0 w-9 h-9 mr-3 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-700 dark:text-primary-300">
+                        {item % 2 === 0 ? <MessageSquare className="h-4 w-4" /> : <FileText className="h-4 w-4" />}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-gray-800 dark:text-gray-200 font-medium">
+                          {item % 2 === 0 ? 'New comment added' : 'Content updated'}
+                        </p>
+                        <p className="text-gray-500 dark:text-gray-400 text-sm">
+                          {item % 2 === 0 ? 'A new comment was added to a post' : 'A content page was updated'}
+                        </p>
+                        <p className="text-gray-400 dark:text-gray-500 text-xs mt-1">
+                          {`${item * 2} minutes ago`}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+  
+  // For the default CMS view (now at root /content path)
+  return (
+    <DashboardLayout>
+      <div className="max-w-7xl mx-auto">
           {/* Content container with padding */}
           <div className="px-2 py-3 pb-1.5 sm:px-3 sm:py-4 sm:pb-2">
             <div className="mb-3 flex flex-row items-center justify-between gap-3">
@@ -1142,138 +1218,3 @@ export default function Content() {
     );
   }
 
-  // For other content sections, show the regular content view
-  return (
-    <DashboardLayout>
-      <div className="max-w-7xl mx-auto p-4">
-        <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-foreground dark:text-foreground">{getTitle()}</h1>
-          <p className="mt-1 text-sm text-muted-foreground dark:text-muted-foreground">
-            {section === 'activity' ? 'Track user activities and engagement' : 
-             'Manage all your content in one place'}
-          </p>
-        </div>
-
-        {/* Content Header with Filters */}
-        <div className="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div className="relative w-full md:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search content..." 
-              className="pl-9 bg-background dark:bg-background border-border dark:border-border w-full" 
-            />
-          </div>
-          
-          <div className="flex items-center gap-3 w-full md:w-auto">
-            <Button variant="secondary-gray" size="sm" className="bg-secondary dark:bg-secondary border-border dark:border-border text-foreground dark:text-foreground">
-              <Filter className="h-4 w-4 mr-1" />
-              Filter
-              <ChevronDown className="h-3 w-3 ml-1 opacity-60" />
-            </Button>
-            
-            <Button variant="default" size="sm">
-              <Plus className="h-4 w-4 mr-1" />
-              Add New
-            </Button>
-          </div>
-        </div>
-
-        {/* Content Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {[1, 2, 3, 4, 5, 6].map((item) => (
-            <ContentCard 
-              key={item}
-              title={`Content Item ${item}`}
-              type={item % 2 === 0 ? 'Article' : 'Page'}
-              status={item % 3 === 0 ? 'Draft' : 'Published'}
-              date={`April ${item + 8}, 2025`}
-            />
-          ))}
-        </div>
-
-        {/* Pagination */}
-        <div className="flex justify-between items-center py-4 border-t border-border dark:border-border">
-          <div className="text-sm text-muted-foreground dark:text-muted-foreground">
-            Showing <span className="font-medium text-foreground dark:text-foreground">1-6</span> of <span className="font-medium text-foreground dark:text-foreground">24</span> items
-          </div>
-          <div className="flex gap-2">
-            <Button variant="secondary-gray" size="sm" className="bg-secondary dark:bg-secondary border-border dark:border-border">
-              Previous
-            </Button>
-            <Button variant="secondary-gray" size="sm" className="bg-secondary dark:bg-secondary border-border dark:border-border">
-              Next
-            </Button>
-          </div>
-        </div>
-      </div>
-    </DashboardLayout>
-  );
-}
-
-interface ContentCardProps {
-  title: string;
-  type: string;
-  status: string;
-  date: string;
-}
-
-function ContentCard({ title, type, status, date }: ContentCardProps) {
-  return (
-    <Card className="overflow-hidden">
-      <CardHeader className="bg-secondary dark:bg-secondary px-5 py-4 border-b border-border dark:border-border flex flex-row justify-between items-center">
-        <CardTitle className="text-base font-medium text-foreground dark:text-foreground">{title}</CardTitle>
-        <Button variant="ghost" size="icon" className="h-8 w-8">
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
-      </CardHeader>
-      <CardContent className="p-5">
-        <div className="text-sm text-muted-foreground dark:text-muted-foreground space-y-3">
-          <div className="flex justify-between">
-            <span>Type:</span>
-            <span className="font-medium text-foreground dark:text-foreground">{type}</span>
-          </div>
-          <div className="flex justify-between items-center">
-            <span>Status:</span>
-            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-              status === 'Published' ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : 
-              status === 'Draft' ? 'bg-slate-100 text-slate-700 dark:bg-slate-800/50 dark:text-slate-300' :
-              status === 'Schedule' ? 'bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300' :
-              'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'
-            }`}>
-              {status === 'Published' && (
-                <svg className="mr-1 h-2 w-2 text-blue-500 dark:text-blue-400" fill="currentColor" viewBox="0 0 8 8">
-                  <circle cx="4" cy="4" r="3" />
-                </svg>
-              )}
-              {status === 'Draft' && (
-                <svg className="mr-1 h-2 w-2 text-slate-500 dark:text-slate-400" fill="currentColor" viewBox="0 0 8 8">
-                  <circle cx="4" cy="4" r="3" />
-                </svg>
-              )}
-              {status === 'Schedule' && (
-                <svg className="mr-1 h-2 w-2 text-purple-500 dark:text-purple-400" fill="currentColor" viewBox="0 0 8 8">
-                  <circle cx="4" cy="4" r="3" />
-                </svg>
-              )}
-              {status === 'Pending review' && (
-                <svg className="mr-1 h-2 w-2 text-amber-500 dark:text-amber-400" fill="currentColor" viewBox="0 0 8 8">
-                  <circle cx="4" cy="4" r="3" />
-                </svg>
-              )}
-              {status}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span>Last Updated:</span>
-            <span className="font-medium text-foreground dark:text-foreground">{date}</span>
-          </div>
-        </div>
-        <div className="mt-4 pt-3 border-t border-border dark:border-border">
-          <Button variant="link-color" className="p-0 h-auto text-sm">
-            Edit Content
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}

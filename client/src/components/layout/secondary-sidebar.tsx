@@ -361,10 +361,10 @@ export function SecondarySidebar() {
   // Helper function to check if a URL is active
   const isActiveUrl = (url: string): boolean => {
     if (location === url) return true;
-    if (url.includes("/") && location.startsWith(url) && url !== '/content/CMS' && url !== '/content/activity') return true;
+    if (url.includes("/") && location.startsWith(url) && url !== '/content/activity' && url !== '/content/inbox') return true;
     
-    // Special case for our renamed routes
-    if (url === '/content/CMS' && location === '/content/posts') return true;
+    // Special case for content route handling root path
+    if (url === '/content/posts' && location === '/content') return true;
     if (url === '/content/activity' && location === '/content/comments') return true;
     
     return false;
@@ -431,131 +431,129 @@ export function SecondarySidebar() {
   );
 
   const renderContentSidebar = () => {
-    // If we're on the CMS page, show post types
-    if (isActiveUrl('/content/CMS')) {
+    // For the Inbox page
+    if (isActiveUrl('/content/inbox')) {
       return (
         <div className="p-3">
           <div className="mb-2">
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center">
-                <Link href="/content">
-                  <ArrowLeft className="h-3.5 w-3.5 text-gray-400 mr-1.5" />
-                </Link>
-                <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">CMS Collections</h2>
+                <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Inbox</h2>
               </div>
               <div className="relative group">
                 <div className="p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer">
                   <Plus className="h-3.5 w-3.5 text-gray-400" />
-                </div>
-                <div className="absolute right-0 mt-1 w-40 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                  <div className="py-1">
-                    <a href="#" className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                      <FileBox className="h-3 w-3 mr-2 text-gray-500" />
-                      <span>Create new CMS</span>
-                    </a>
-                    <a href="#" className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                      <Plus className="h-3 w-3 mr-2 text-gray-500" />
-                      <span>Add custom view</span>
-                    </a>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
           
           <div className="space-y-1">
-            <div
-              className={cn(
-                "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
-                "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-md"
-              )}
-              style={{paddingLeft: "10px", paddingRight: "10px"}}
+            <SideNavItem 
+              href="/content/inbox/unread"
+              isActive={isActiveUrl('/content/inbox/unread') || location === '/content/inbox'}
             >
-              <span className="font-medium">All Post types</span>
-              <span className="ml-auto px-2 py-0.5 bg-white dark:bg-gray-600 text-xs rounded-full">10</span>
-            </div>
+              Unread
+            </SideNavItem>
             
-            <div
-              className={cn(
-                "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
-                "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded"
-              )}
-              style={{paddingLeft: "10px", paddingRight: "10px"}}
+            <SideNavItem 
+              href="/content/inbox/important"
+              isActive={isActiveUrl('/content/inbox/important')}
             >
-              <span className="font-medium">Discussions</span>
-              <span className="ml-auto px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-xs rounded-full">14</span>
-            </div>
+              Important
+            </SideNavItem>
             
-            <div
-              className={cn(
-                "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
-                "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded"
-              )}
-              style={{paddingLeft: "10px", paddingRight: "10px"}}
+            <SideNavItem 
+              href="/content/inbox/archived"
+              isActive={isActiveUrl('/content/inbox/archived')}
             >
-              <span className="font-medium">Wishlist</span>
-              <span className="ml-auto px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-xs rounded-full">5</span>
-            </div>
-            
-            <div
-              className={cn(
-                "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
-                "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded"
-              )}
-              style={{paddingLeft: "10px", paddingRight: "10px"}}
-            >
-              <span className="font-medium">Jobs</span>
-              <span className="ml-auto px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-xs rounded-full">324</span>
-            </div>
+              Archived
+            </SideNavItem>
           </div>
-          
-
         </div>
       );
     }
     
-    // Default content sidebar for other content sections
+    // Default content sidebar - showing CMS Collections directly
     return (
       <div className="p-3">
         <div className="mb-2">
-          <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">Content</h2>
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center">
+              <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">CMS Collections</h2>
+            </div>
+            <div className="relative group">
+              <div className="p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer">
+                <Plus className="h-3.5 w-3.5 text-gray-400" />
+              </div>
+              <div className="absolute right-0 mt-1 w-40 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                <div className="py-1">
+                  <a href="#" className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <FileBox className="h-3 w-3 mr-2 text-gray-500" />
+                    <span>Create new CMS</span>
+                  </a>
+                  <a href="#" className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <Plus className="h-3 w-3 mr-2 text-gray-500" />
+                    <span>Add custom view</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         
         <div className="space-y-1">
-          <Link href="/content/CMS">
-            <div
-              className={cn(
-                "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
-                isActiveUrl('/content/CMS')
-                  ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-md" 
-                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded"
-              )}
-              style={{paddingLeft: "10px", paddingRight: "10px"}}
-            >
-              <span className="font-medium">CMS Collections</span>
-              <span className="ml-auto">
-                <ChevronRight className="h-4 w-4 text-gray-400" />
-              </span>
-            </div>
-          </Link>
-
-          <Link href="/content/activity">
-            <div
-              className={cn(
-                "flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150",
-                isActiveUrl('/content/activity')
-                  ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white font-medium rounded-md" 
-                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100 rounded"
-              )}
-              style={{paddingLeft: "10px", paddingRight: "10px"}}
-            >
-              <span className="font-medium">Activity Hub</span>
-              <span className="ml-auto flex items-center gap-2">
-                <span className="bg-gray-100 dark:bg-gray-700 text-xs rounded-full px-2 py-0.5">12</span>
-                <ChevronRight className="h-4 w-4 text-gray-400" />
-              </span>
-            </div>
-          </Link>
+          <SideNavItem 
+            href="/content/posts"
+            isActive={isActiveUrl('/content/posts') || location === '/content'}
+          >
+            Posts
+          </SideNavItem>
+          
+          <SideNavItem 
+            href="/content/pages"
+            isActive={isActiveUrl('/content/pages')}
+          >
+            Pages
+          </SideNavItem>
+          
+          <SideNavItem 
+            href="/content/products"
+            isActive={isActiveUrl('/content/products')}
+          >
+            Products
+          </SideNavItem>
+          
+          <SideNavItem 
+            href="/content/tags"
+            isActive={isActiveUrl('/content/tags')}
+          >
+            Tags
+          </SideNavItem>
+          
+          <SideNavItem 
+            href="/content/categories"
+            isActive={isActiveUrl('/content/categories')}
+          >
+            Categories
+          </SideNavItem>
+          
+          <SideNavItem 
+            href="/content/comments"
+            isActive={isActiveUrl('/content/comments')}
+          >
+            Comments
+          </SideNavItem>
+          
+          <SideNavItem 
+            href="/content/activity"
+            isActive={isActiveUrl('/content/activity')}
+          >
+            Activity Hub
+            <span className="ml-auto">
+              <span className="bg-gray-100 dark:bg-gray-700 text-xs rounded-full px-2 py-0.5">12</span>
+            </span>
+          </SideNavItem>
         </div>
       </div>
     );
