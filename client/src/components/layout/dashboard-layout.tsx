@@ -70,14 +70,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Main content area with 3-column layout */}
       <div className="flex-1 flex flex-col md:flex-row">
         {/* Main Sidebar - hidden on mobile, always collapsed otherwise */}
-        {!isMobile && <div className="w-12 flex-shrink-0">
+        <div className={`${isMobile ? 'hidden' : 'w-12 flex-shrink-0'}`}>
           <MainSidebar collapsed={true} />
-        </div>}
+        </div>
         
         {/* Secondary Sidebar - hidden on mobile, always visible otherwise */}
-        {!isMobile && <div className="w-64 flex-shrink-0">
+        <div className={`${isMobile ? 'hidden' : 'w-64 flex-shrink-0'}`}>
           <SecondarySidebar />
-        </div>}
+        </div>
         
         {/* Main Content */}
         <main className="flex-1 bg-gray-50 dark:bg-gray-900 overflow-y-auto min-h-[calc(100vh-4rem)]">
