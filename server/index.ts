@@ -66,17 +66,5 @@ app.use((req, res, next) => {
     reusePort: true,
   }, () => {
     log(`serving on port ${port}`);
-  }).on('error', (e: any) => {
-    if (e.code === 'EADDRINUSE') {
-      log(`Port ${port} is in use, retrying in 1 second...`);
-      setTimeout(() => {
-        server.close();
-        server.listen({
-          port,
-          host: "0.0.0.0",
-          reusePort: true,
-        });
-      }, 1000);
-    }
   });
 })();
