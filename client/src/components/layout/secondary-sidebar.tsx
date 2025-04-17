@@ -1171,7 +1171,7 @@ export function SecondarySidebar() {
                   >
                     <div className="flex items-center gap-2">
                       <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
-                      <Columns className="h-3.5 w-3.5 text-gray-500" />
+                      <PanelBottom className="h-3.5 w-3.5 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Footer</span>
                     </div>
                     <div>
