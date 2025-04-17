@@ -56,6 +56,7 @@ export function NavigationSection({
             {title}
           </span>
         </div>
+        </div>
         <div onClick={e => e.stopPropagation()}>
           <MiniToggle isActive={isActive} onChange={setIsActive} />
         </div>
