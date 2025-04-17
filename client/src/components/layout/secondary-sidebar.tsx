@@ -580,32 +580,32 @@ export function SecondarySidebar() {
             <div>
               <h3 className="mb-1.5 text-[11px] uppercase tracking-wide font-medium text-gray-500 dark:text-gray-400">Interactions</h3>
               <div className="space-y-0.5">
-                <SideNavItem 
+                <SideNavItemWithBadge 
                   href="/inbox/comments"
                   isActive={isActiveUrl('/inbox/comments')}
                   icon={<MessageSquare className="h-3.5 w-3.5" />}
+                  badgeText="24"
                 >
                   Comments & Replies
-                  <span className="ml-auto flex h-4 min-w-4 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 px-1 text-[10px] text-gray-500 dark:text-gray-400">24</span>
-                </SideNavItem>
+                </SideNavItemWithBadge>
                 
-                <SideNavItem 
+                <SideNavItemWithBadge 
                   href="/inbox/reactions"
                   isActive={isActiveUrl('/inbox/reactions')}
                   icon={<ThumbsUp className="h-3.5 w-3.5" />}
+                  badgeText="8"
                 >
                   Reactions
-                  <span className="ml-auto flex h-4 min-w-4 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 px-1 text-[10px] text-gray-500 dark:text-gray-400">8</span>
-                </SideNavItem>
+                </SideNavItemWithBadge>
                 
-                <SideNavItem 
+                <SideNavItemWithBadge 
                   href="/inbox/mentions"
                   isActive={isActiveUrl('/inbox/mentions')}
                   icon={<AtSign className="h-3.5 w-3.5" />}
+                  badgeText="3"
                 >
                   Mentions
-                  <span className="ml-auto flex h-4 min-w-4 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 px-1 text-[10px] text-gray-500 dark:text-gray-400">3</span>
-                </SideNavItem>
+                </SideNavItemWithBadge>
               </div>
             </div>
 
@@ -613,14 +613,14 @@ export function SecondarySidebar() {
             <div>
               <h3 className="mb-1.5 text-[11px] uppercase tracking-wide font-medium text-gray-500 dark:text-gray-400">Management</h3>
               <div className="space-y-0.5">
-                <SideNavItem 
+                <SideNavItemWithBadge 
                   href="/inbox/reports"
                   isActive={isActiveUrl('/inbox/reports')}
                   icon={<Flag className="h-3.5 w-3.5" />}
+                  badgeText="5"
                 >
                   Reports & Moderation
-                  <span className="ml-auto flex h-4 min-w-4 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 px-1 text-[10px] text-gray-500 dark:text-gray-400">5</span>
-                </SideNavItem>
+                </SideNavItemWithBadge>
                 
                 <SideNavItem 
                   href="/inbox/rsvps"
@@ -761,13 +761,13 @@ export function SecondarySidebar() {
             Comments
           </SideNavItem>
           
-          <SideNavItem 
+          <SideNavItemWithBadge 
             href="/content/activity"
             isActive={isActiveUrl('/content/activity')}
+            badgeText="12"
           >
             Activity Hub
-            <span className="ml-auto flex h-4 min-w-4 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 px-1 text-[10px] text-gray-500 dark:text-gray-400">12</span>
-          </SideNavItem>
+          </SideNavItemWithBadge>
         </div>
       </div>
     );
