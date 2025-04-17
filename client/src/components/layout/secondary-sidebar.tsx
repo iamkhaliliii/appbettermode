@@ -257,9 +257,10 @@ function MinimalItem({
               ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
               : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800",
           )}
-          style={{ paddingLeft: `${level * 10 + 4}px` }}
+          style={{ paddingLeft: level === 0 ? "12px" : `${level * 10 + 16}px` }}
         >
           <div className="flex items-center">
+            <span className={cn("flex-shrink-0 mr-1.5", iconColor)}>{icon}</span>
             <EyeOff className="h-3 w-3 mr-1 text-gray-400" />
             <span className="font-medium text-gray-400">{displayName}</span>
           </div>
