@@ -1110,21 +1110,43 @@ export function SecondarySidebar() {
           <div className="h-px bg-gray-100 dark:bg-gray-700 mx-1"></div>
 
           {/* Navigation Sections */}
-          <AccordionItem value="navigation" className="border-0">
-            <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
-              <div className="flex items-center">
-                <Dock className="h-4 w-4 mr-2 text-gray-500" />
-                <span className="font-medium text-sm">Navigation Sections</span>
+          <div className="border-0">
+            <div 
+              className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline cursor-pointer"
+              onClick={() => {
+                const content = document.getElementById('navigation-content');
+                const chevron = document.getElementById('navigation-chevron');
+                if (content && chevron) {
+                  content.classList.toggle('hidden');
+                  chevron.style.transform = content.classList.contains('hidden') ? 'rotate(-90deg)' : 'rotate(0deg)';
+                }
+              }}
+            >
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center">
+                  <Layout className="h-4 w-4 mr-2 text-gray-500" />
+                  <span className="font-medium text-sm">Navigation Sections</span>
+                </div>
+                <ChevronDown id="navigation-chevron" className="h-3.5 w-3.5 text-gray-400 transition-transform duration-200" />
               </div>
-            </AccordionTrigger>
-            <AccordionContent className="pt-1 pb-1">
+            </div>
+            <div id="navigation-content" className="pt-1 pb-1">
               <div className="space-y-0.5">
+                <div className="relative">
                   <div 
-                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+                    onClick={(e) => {
+                      const content = e.currentTarget.nextElementSibling;
+                      const chevron = e.currentTarget.querySelector('.chevron-icon');
+                      if (content && chevron) {
+                        content.classList.toggle('hidden');
+                        chevron.style.transform = content.classList.contains('hidden') ? 'rotate(-90deg)' : 'rotate(0deg)';
+                      }
+                    }}
                   >
                     <div className="flex items-center gap-2">
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
-                      <PanelTop className="h-3.5 w-3.5 text-gray-500" />
+                      <ChevronDown className="chevron-icon h-3.5 w-3.5 text-gray-400 transition-transform duration-200" />
+                      <Layout className="h-3.5 w-3.5 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Header</span>
                     </div>
                     <div>
@@ -1134,12 +1156,30 @@ export function SecondarySidebar() {
                       />
                     </div>
                   </div>
+                  <div className="hidden pl-6 pr-2 space-y-0.5">
+                    <div className="flex items-center gap-2 py-1.5 px-2 text-xs text-gray-500">
+                      Navigation
+                    </div>
+                    <div className="flex items-center gap-2 py-1.5 px-2 text-xs text-gray-500">
+                      Logo
+                    </div>
+                  </div>
+                </div>
 
+                <div className="relative">
                   <div 
-                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+                    onClick={(e) => {
+                      const content = e.currentTarget.nextElementSibling;
+                      const chevron = e.currentTarget.querySelector('.chevron-icon');
+                      if (content && chevron) {
+                        content.classList.toggle('hidden');
+                        chevron.style.transform = content.classList.contains('hidden') ? 'rotate(-90deg)' : 'rotate(0deg)';
+                      }
+                    }}
                   >
                     <div className="flex items-center gap-2">
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                      <ChevronDown className="chevron-icon h-3.5 w-3.5 text-gray-400 transition-transform duration-200" />
                       <PanelRight className="h-3.5 w-3.5 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Right Sidebar</span>
                     </div>
@@ -1150,12 +1190,27 @@ export function SecondarySidebar() {
                       />
                     </div>
                   </div>
+                  <div className="hidden pl-6 pr-2 space-y-0.5">
+                    <div className="flex items-center gap-2 py-1.5 px-2 text-xs text-gray-500">
+                      Content
+                    </div>
+                  </div>
+                </div>
 
+                <div className="relative">
                   <div 
-                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+                    onClick={(e) => {
+                      const content = e.currentTarget.nextElementSibling;
+                      const chevron = e.currentTarget.querySelector('.chevron-icon');
+                      if (content && chevron) {
+                        content.classList.toggle('hidden');
+                        chevron.style.transform = content.classList.contains('hidden') ? 'rotate(-90deg)' : 'rotate(0deg)';
+                      }
+                    }}
                   >
                     <div className="flex items-center gap-2">
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                      <ChevronDown className="chevron-icon h-3.5 w-3.5 text-gray-400 transition-transform duration-200" />
                       <PanelLeft className="h-3.5 w-3.5 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Left Sidebar</span>
                     </div>
@@ -1166,13 +1221,28 @@ export function SecondarySidebar() {
                       />
                     </div>
                   </div>
+                  <div className="hidden pl-6 pr-2 space-y-0.5">
+                    <div className="flex items-center gap-2 py-1.5 px-2 text-xs text-gray-500">
+                      Menu
+                    </div>
+                  </div>
+                </div>
 
+                <div className="relative">
                   <div 
-                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+                    onClick={(e) => {
+                      const content = e.currentTarget.nextElementSibling;
+                      const chevron = e.currentTarget.querySelector('.chevron-icon');
+                      if (content && chevron) {
+                        content.classList.toggle('hidden');
+                        chevron.style.transform = content.classList.contains('hidden') ? 'rotate(-90deg)' : 'rotate(0deg)';
+                      }
+                    }}
                   >
                     <div className="flex items-center gap-2">
-                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
-                      <PanelBottom className="h-3.5 w-3.5 text-gray-500" />
+                      <ChevronDown className="chevron-icon h-3.5 w-3.5 text-gray-400 transition-transform duration-200" />
+                      <Layout className="h-3.5 w-3.5 text-gray-500" />
                       <span className="text-xs text-gray-600 dark:text-gray-300">Footer</span>
                     </div>
                     <div>
@@ -1182,9 +1252,18 @@ export function SecondarySidebar() {
                       />
                     </div>
                   </div>
+                  <div className="hidden pl-6 pr-2 space-y-0.5">
+                    <div className="flex items-center gap-2 py-1.5 px-2 text-xs text-gray-500">
+                      Links
+                    </div>
+                    <div className="flex items-center gap-2 py-1.5 px-2 text-xs text-gray-500">
+                      Copyright
+                    </div>
+                  </div>
                 </div>
-            </AccordionContent>
-          </AccordionItem>
+              </div>
+            </div>
+          </div>
 
           <div className="h-px bg-gray-100 dark:bg-gray-700 mx-1"></div>
 
