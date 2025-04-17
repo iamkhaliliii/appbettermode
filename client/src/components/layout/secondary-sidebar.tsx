@@ -1016,11 +1016,20 @@ export function SecondarySidebar() {
                   <Files className="h-4 w-4 mr-2 text-gray-500" />
                   <span className="font-medium text-sm">Spaces</span>
                 </div>
-                <div className="relative group ml-6">
-                  <div className="p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer">
+                <div className="relative ml-6">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const dropdown = e.currentTarget.nextElementSibling;
+                      if (dropdown) {
+                        dropdown.classList.toggle("hidden");
+                      }
+                    }}
+                    className="p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer"
+                  >
                     <Plus className="h-3 w-3 text-gray-400" />
-                  </div>
-                  <div className="absolute right-0 mt-1 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                  </button>
+                  <div className="absolute right-0 mt-1 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 hidden z-50">
                     <div className="py-1">
                       <a
                         href="#"
@@ -1187,11 +1196,20 @@ export function SecondarySidebar() {
                   <Database className="h-4 w-4 mr-2 text-gray-500" />
                   <span className="font-medium text-sm">CMS Pages</span>
                 </div>
-                <div className="relative group ml-6">
-                  <div className="p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer">
+                <div className="relative ml-6">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const dropdown = e.currentTarget.nextElementSibling;
+                      if (dropdown) {
+                        dropdown.classList.toggle("hidden");
+                      }
+                    }}
+                    className="p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer"
+                  >
                     <Plus className="h-3 w-3 text-gray-400" />
-                  </div>
-                  <div className="absolute right-0 mt-1 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                  </button>
+                  <div className="absolute right-0 mt-1 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 hidden z-50">
                     <div className="py-1">
                       <a
                         href="#"
@@ -1344,11 +1362,20 @@ export function SecondarySidebar() {
                   <Layers2 className="h-4 w-4 mr-2 text-gray-500" />
                   <span className="font-medium text-sm">Templates</span>
                 </div>
-                <div className="relative group ml-6">
-                  <div className="p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer">
+                <div className="relative ml-6">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const dropdown = e.currentTarget.nextElementSibling;
+                      if (dropdown) {
+                        dropdown.classList.toggle("hidden");
+                      }
+                    }}
+                    className="p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer"
+                  >
                     <Plus className="h-3 w-3 text-gray-400" />
-                  </div>
-                  <div className="absolute right-0 mt-1 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                  </button>
+                  <div className="absolute right-0 mt-1 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 hidden z-50">
                     <div className="py-1">
                       <a
                         href="#"
