@@ -937,9 +937,7 @@ export function SecondarySidebar() {
       ? "collections"
       : location.includes("/design-studio/templates")
       ? "templates"
-      : location.includes("/design-studio/utility")
-```javascript
-? "utility"
+      : location.includes("/design-studio/utility")  ? "utility"
             : "";
 
     return (

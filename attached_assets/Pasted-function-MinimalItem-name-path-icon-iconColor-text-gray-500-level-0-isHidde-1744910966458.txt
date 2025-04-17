@@ -1,0 +1,126 @@
+function MinimalItem({
+  name,
+  path,
+  icon,
+  iconColor = "text-gray-500",
+  level = 0,
+  isHidden = false,
+  isFile = true,
+  inSpaces = false,
+}: MinimalItemProps) {
+  const [location] = useLocation();
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [hidden, setHidden] = useState(isHidden);
+  const isActive = location === path;
+
+  // Format the name to remove file extension
+  const displayName = name.includes(".") ? name.split(".")[0] : name;
+
+  // Only show hide/unhide for files in Spaces section
+  const showHideOption = inSpaces && isFile;
+
+  const toggleHidden = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setHidden(!hidden);
+    setShowDropdown(false);
+  };
+
+  if (hidden && !showDropdown)
+    return (
+      <div
+        className="relative group"
+        onMouseLeave={() => setShowDropdown(false)}
+      >
+        <div
+          className={cn(
+            "flex items-center px-2 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded opacity-50",
+            isActive
+              ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
+              : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800",
+          )}
+          style={{ paddingLeft: `${level * 10 + 4}px` }}
+        >
+          <EyeOff className="h-3 w-3 mr-1 text-gray-400" />
+          <span className="font-medium text-gray-400">{displayName}</span>
+          <div
+            className="ml-auto opacity-0 group-hover:opacity-100"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setShowDropdown(!showDropdown);
+            }}
+          >
+            <MoreHorizontal className="h-3 w-3 text-gray-400" />
+          </div>
+        </div>
+
+        {showDropdown && (
+          <div className="absolute right-0 mt-0.5 w-[70px] bg-white dark:bg-gray-800 rounded-[4px] shadow-sm border border-gray-100 dark:border-gray-700 z-[100] py-0.5">
+            {showHideOption && (
+              <button onClick={toggleHidden} className="w-full flex items-center px-2 py-1 text-[11px] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                <EyeOff className="mr-1.5 h-3 w-3 text-gray-400" />
+                Hide
+              </button>
+            )}
+            <button className="w-full flex items-center px-2 py-1 text-[11px] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+              <Pencil className="mr-1.5 h-3 w-3 text-gray-400" />
+              Edit
+            </button>
+            <button className="w-full flex items-center px-2 py-1 text-[11px] text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10">
+              <Trash2 className="mr-1.5 h-3 w-3 text-red-400" />
+              Delete
+            </button>
+          </div>
+        )}
+      </div>
+    );
+
+  return (
+    <div className="relative group" onMouseLeave={() => setShowDropdown(false)}>
+      <div
+        className={cn(
+          "flex items-center px-2 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded",
+          isActive
+            ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
+            : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800",
+        )}
+        style={{ paddingLeft: level === 0 ? "12px" : `${level * 10 + 16}px` }}
+      >
+        <span className={cn("flex-shrink-0 mr-1.5", iconColor)}>{icon}</span>
+        <Link href={path}>
+          <span className={cn("font-medium", iconColor)}>{displayName}</span>
+        </Link>
+        <div
+          className="ml-auto opacity-0 group-hover:opacity-100"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowDropdown(!showDropdown);
+          }}
+        >
+          <MoreHorizontal className="h-3 w-3 text-gray-400" />
+        </div>
+      </div>
+
+      {showDropdown && (
+        <div className="absolute right-0 mt-0.5 w-[70px] bg-white dark:bg-gray-800 rounded-[4px] shadow-sm border border-gray-100 dark:border-gray-700 z-[100] py-0.5">
+          {showHideOption && (
+            <button onClick={toggleHidden} className="w-full flex items-center px-2 py-1 text-[11px] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+              <EyeOff className="mr-1.5 h-3 w-3 text-gray-400" />
+              Hide
+            </button>
+          )}
+          <button className="w-full flex items-center px-2 py-1 text-[11px] text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+            <Settings2 className="mr-1.5 h-3 w-3 text-gray-400" />
+            Edit
+          </button>
+          <button className="w-full flex items-center px-2 py-1 text-[11px] text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10">
+            <Trash2 className="mr-1.5 h-3 w-3 text-red-400" />
+            Delete
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
