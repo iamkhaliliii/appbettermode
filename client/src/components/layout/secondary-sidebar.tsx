@@ -1271,7 +1271,7 @@ export function SecondarySidebar() {
             </div>
             <div id="navigation-content" className="pt-1 pb-1">
               <div className="px-2 py-1 mb-2">
-                <p className="text-[10px] text-gray-400 dark:text-gray-500 italic">
+                <p className="text-[11px] text-gray-400 dark:text-gray-500 italic">
                   These navigation settings can be customized for each space individually
                 </p>
               </div>
