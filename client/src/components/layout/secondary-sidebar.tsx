@@ -252,18 +252,20 @@ function MinimalItem({
       <div className="relative group">
         <div
           className={cn(
-            "flex items-center px-2 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded opacity-50",
+            "flex items-center justify-between px-2 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded opacity-50",
             isActive
               ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
               : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800",
           )}
           style={{ paddingLeft: `${level * 10 + 4}px` }}
         >
-          <EyeOff className="h-3 w-3 mr-1 text-gray-400" />
-          <span className="font-medium text-gray-400">{displayName}</span>
+          <div className="flex items-center">
+            <EyeOff className="h-3 w-3 mr-1 text-gray-400" />
+            <span className="font-medium text-gray-400">{displayName}</span>
+          </div>
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <button className="ml-auto opacity-0 group-hover:opacity-100">
+              <button className="opacity-0 group-hover:opacity-100">
                 <MoreHorizontal className="h-3 w-3 text-gray-400" />
               </button>
             </DropdownMenuTrigger>
