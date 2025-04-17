@@ -1167,8 +1167,8 @@ export function SecondarySidebar() {
                         <div className="relative bg-amber-50/50 dark:bg-amber-900/20 p-1 rounded border border-amber-200 dark:border-amber-600">
                           <Image className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
                           <div className="absolute -bottom-1 -right-1">
-                            <div className="rounded-full bg-amber-600/90 dark:bg-amber-200 p-[2px]">
-                              <Box className="h-2 w-2 text-amber-50/70 dark:text-amber-900/30" />
+                            <div className="rounded-full bg-amber-600/90 dark:bg-amber-200 p-0.5">
+                              <Box className="h-2.5 w-2.5 text-amber-50/90 dark:text-amber-900/40" />
                             </div>
                           </div>
                         </div>
