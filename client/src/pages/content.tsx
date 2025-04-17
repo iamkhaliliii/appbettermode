@@ -324,6 +324,51 @@ export default function Content() {
     section = paramsContent?.section;
   }
   
+  // Define all state variables at the top level, regardless of section
+  // UI state
+  const [activeTab, setActiveTab] = useState<string>("all");
+  const [showPublishedOnly, setShowPublishedOnly] = useState<boolean>(false);
+  const [showStatusFilter, setShowStatusFilter] = useState<boolean>(false);
+  
+  // Table state
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
+
+  // Filter data for published content if needed
+  const filteredData = useMemo(() => {
+    if (showPublishedOnly) {
+      return data.filter(post => post.status === "Published");
+    }
+    return data;
+  }, [data, showPublishedOnly]);
+  
+  // Create table instance - we create this regardless of which section is active
+  const table = useReactTable({
+    data: filteredData,
+    columns,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 20,
+      },
+    },
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+    },
+  });
+  
   // For the Inbox section
   if (section === 'inbox') {
     return (
@@ -402,50 +447,6 @@ export default function Content() {
   }
   
   // For the default CMS view (now at root /content path)
-  // UI state
-  const [activeTab, setActiveTab] = useState<string>("all");
-  const [showPublishedOnly, setShowPublishedOnly] = useState<boolean>(false);
-  const [showStatusFilter, setShowStatusFilter] = useState<boolean>(false);
-  
-  // Table state
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
-
-  // Filter data for published content if needed
-  const filteredData = useMemo(() => {
-    if (showPublishedOnly) {
-      return data.filter(post => post.status === "Published");
-    }
-    return data;
-  }, [data, showPublishedOnly]);
-  
-  // Create table instance
-  const table = useReactTable({
-    data: filteredData,
-    columns,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    initialState: {
-      pagination: {
-        pageSize: 20,
-      },
-    },
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
-  });
-
   return (
     <DashboardLayout>
       <div className="max-w-7xl mx-auto">
