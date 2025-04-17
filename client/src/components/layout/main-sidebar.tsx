@@ -101,9 +101,86 @@ interface MainSidebarProps {
   collapsed?: boolean;
 }
 
+// Create a custom NavButton component for the Inbox icon that will open a drawer
+interface NavButtonProps {
+  icon: React.ReactNode;
+  children: React.ReactNode;
+  isActive?: boolean;
+  onClick: () => void;
+  badge?: string;
+}
+
+function NavButton({ 
+  icon, 
+  children, 
+  isActive,
+  onClick,
+  badge
+}: NavButtonProps) {
+  const navContent = (
+    <div
+      className={cn(
+        "flex items-center justify-center p-1.5 w-8 h-8 rounded-md relative",
+        isActive 
+          ? "bg-primary-200 dark:bg-primary-700 text-primary-800 dark:text-primary-100 shadow-[0_2px_4px_rgba(0,0,0,0.1)] dark:shadow-[0_2px_8px_rgba(20,20,40,0.5)] border border-primary-300 dark:border-primary-400 dark:ring-1 dark:ring-primary-400/30" 
+          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200"
+      )}
+    >
+      {isActive && (
+        <span className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1.5 h-6 bg-primary-600 dark:bg-primary-300 rounded-r-sm"></span>
+      )}
+      <span className={cn(
+        isActive 
+          ? "text-primary-800 dark:text-primary-100 font-bold" 
+          : "text-gray-500 dark:text-gray-400"
+      )}>
+        {icon}
+      </span>
+    </div>
+  );
+
+  return (
+    <Tooltip.Provider delayDuration={200}>
+      <Tooltip.Root>
+        <Tooltip.Trigger asChild>
+          <button onClick={onClick}>
+            {navContent}
+          </button>
+        </Tooltip.Trigger>
+        <Tooltip.Portal>
+          <Tooltip.Content
+            className="bg-gray-900 text-white px-2 py-1 rounded text-sm animate-in fade-in-50 data-[side=right]:slide-in-from-left-2"
+            side="right"
+            sideOffset={10}
+          >
+            <div className="flex items-center">
+              <span>{children}</span>
+              {badge && (
+                <span className="ml-2 bg-primary-50 text-primary-700 text-xs font-medium px-2 py-0.5 rounded-full">
+                  {badge}
+                </span>
+              )}
+            </div>
+            <Tooltip.Arrow className="fill-gray-900" />
+          </Tooltip.Content>
+        </Tooltip.Portal>
+      </Tooltip.Root>
+    </Tooltip.Provider>
+  );
+}
+
 export function MainSidebar({ collapsed = false }: MainSidebarProps) {
   const [location] = useLocation();
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [notificationDrawerOpen, setNotificationDrawerOpen] = useState(false);
+  
+  // Fetch unread notification count
+  const { data: notifications } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: getNotifications,
+  });
+  
+  const unreadCount = notifications?.filter(n => !n.read).length || 0;
   
   // Function to toggle dark mode
   const toggleDarkMode = () => {
@@ -125,14 +202,20 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
     <aside className="bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-[calc(100vh-3rem)] overflow-y-auto sticky top-12 w-12">
       <div className="px-1.5 py-3 h-full flex flex-col">
         <nav className="space-y-2 flex-grow flex flex-col items-center pt-1.5">
-          <NavItem 
-            href="/inbox" 
-            icon={<Inbox className="h-4 w-4" />} 
-            isActive={location.startsWith('/inbox')} 
-            collapsed={true}
-          >
-            Inbox
-          </NavItem>
+          <div className="relative">
+            {unreadCount > 0 && (
+              <div className="absolute -top-0.5 -right-0.5 flex items-center justify-center h-4 w-4 rounded-full bg-red-500 text-white text-[10px] font-medium z-10">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </div>
+            )}
+            <NavButton 
+              icon={<Inbox className="h-4 w-4" />} 
+              isActive={location.startsWith('/inbox') || notificationDrawerOpen}
+              onClick={() => setNotificationDrawerOpen(true)}
+            >
+              Inbox
+            </NavButton>
+          </div>
           
           <NavItem 
             href="/content" 
@@ -290,6 +373,12 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
           </Tooltip.Provider>
         </div>
       </div>
+      
+      {/* Notification Drawer */}
+      <NotificationDrawer 
+        open={notificationDrawerOpen} 
+        onOpenChange={setNotificationDrawerOpen} 
+      />
     </aside>
   );
 }

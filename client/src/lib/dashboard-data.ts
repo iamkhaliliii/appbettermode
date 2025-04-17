@@ -111,7 +111,7 @@ export const getDashboardData = async () => {
     notifications: [
       {
         id: 'notification-1',
-        type: 'post',
+        type: 'post' as const,
         username: 'Sara Ahmed',
         action: 'posted new',
         target: 'UI Framework Documentation',
@@ -122,7 +122,7 @@ export const getDashboardData = async () => {
       },
       {
         id: 'notification-2',
-        type: 'comment',
+        type: 'comment' as const,
         username: 'Michael Torres',
         action: 'replied to',
         target: 'Getting Started with Components',
@@ -133,7 +133,7 @@ export const getDashboardData = async () => {
       },
       {
         id: 'notification-3',
-        type: 'reaction',
+        type: 'reaction' as const,
         username: 'Emily Chen',
         action: 'reacted to',
         target: 'Design Tokens Implementation',
@@ -144,7 +144,7 @@ export const getDashboardData = async () => {
       },
       {
         id: 'notification-4',
-        type: 'join',
+        type: 'join' as const,
         username: 'Ryan Garcia',
         action: 'joined',
         target: 'Frontend Team',
@@ -155,7 +155,7 @@ export const getDashboardData = async () => {
       },
       {
         id: 'notification-5',
-        type: 'mention',
+        type: 'mention' as const,
         username: 'Lisa Wong',
         action: 'mentioned you in',
         target: 'Design System Components Discussion',
@@ -166,7 +166,7 @@ export const getDashboardData = async () => {
       },
       {
         id: 'notification-6',
-        type: 'system',
+        type: 'system' as const,
         username: 'System',
         action: 'updated',
         target: 'Design System Version 2.0 Released',
