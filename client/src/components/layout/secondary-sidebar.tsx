@@ -1269,42 +1269,18 @@ export function SecondarySidebar() {
             </div>
             <div id="navigation-content" className="pt-1 pb-1">
               <div className="space-y-0.5">
-                <div className="relative group">
-                  <div className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
-                    onClick={(e) => {
-                      const content = e.currentTarget.nextElementSibling;
-                      const chevron =
-                        e.currentTarget.querySelector(".chevron-icon");
-                      if (content && chevron) {
-                        content.classList.toggle("hidden");
-                        chevron.style.transform = content.classList.contains(
-                          "hidden",
-                        )
-                          ? "rotate(0deg)"
-                          : "rotate(90deg)";
-                      }
-                    }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <ChevronRight className="chevron-icon h-3.5 w-3.5 text-gray-400 transition-transform duration-200" />
-                      <PanelTop className="h-3.5 w-3.5 text-gray-500" />
-                      <span className="text-xs text-gray-600 dark:text-gray-300">
-                        Header
-                      </span>
-                    </div>
-                    <div>
-                      <MiniToggle isActive={true} onChange={() => {}} />
-                    </div>
-                  </div>
-                  <div className="hidden pl-6 pr-2 space-y-0.5">
-                    <NavigationItem
-                      icon={
-                        <AppWindow className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
-                      }
-                      title="Top Navigation"
-                    />
-                  </div>
-                </div>
+                <NavigationSection
+                  title="Header"
+                  icon={<PanelTop />}
+                  defaultActive={true}
+                >
+                  <NavigationItem
+                    icon={
+                      <AppWindow className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />
+                    }
+                    title="Top Navigation"
+                  />
+                </NavigationSection>
                 <div className="relative group">
                   <div
                     className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
