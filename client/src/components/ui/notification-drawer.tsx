@@ -554,7 +554,9 @@ export function NotificationDrawer({
                   className="h-7 w-7"
                   title="Filter notifications"
                 >
-                  <Filter className={`h-3.5 w-3.5 ${getFilterCount() > 0 ? "text-blue-500" : ""}`} />
+                  <Filter
+                    className={`h-3.5 w-3.5 ${getFilterCount() > 0 ? "text-blue-500" : ""}`}
+                  />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="min-w-[200px]">
@@ -609,7 +611,9 @@ export function NotificationDrawer({
                     >
                       <span className="flex items-center py-0.5">
                         <Check className="h-3 w-3 mr-1.5 text-gray-400" />
-                        <span className="text-gray-600 dark:text-gray-300">Read</span>
+                        <span className="text-gray-600 dark:text-gray-300">
+                          Read
+                        </span>
                         {activeStatusFilter === "read" && (
                           <Check className="h-2.5 w-2.5 ml-auto text-gray-500" />
                         )}
@@ -786,7 +790,7 @@ export function NotificationDrawer({
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-7 w-7">
+                <Button variant="ghost" size="icon" className="h-7 w-7 hover:bg-gray-100 dark:hover:bg-gray-800">
                   <Settings className="h-3.5 w-3.5" />
                 </Button>
               </DropdownMenuTrigger>
@@ -880,7 +884,9 @@ export function NotificationDrawer({
                         >
                           <span className="flex items-center py-0.5">
                             <Check className="h-3 w-3 mr-1.5 text-gray-400" />
-                            <span className="text-gray-600 dark:text-gray-300">Read</span>
+                            <span className="text-gray-600 dark:text-gray-300">
+                              Read
+                            </span>
                             {activeStatusFilter === "read" && (
                               <Check className="h-2.5 w-2.5 ml-auto text-gray-500" />
                             )}
