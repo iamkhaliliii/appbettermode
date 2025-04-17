@@ -367,7 +367,6 @@ function TreeFolder({
 }: TreeFolderProps) {
   const [expanded, setExpanded] = useState(isExpanded);
   const [location] = useLocation();
-  const [showDropdown, setShowDropdown] = useState(false);
   const isActive = location === path;
 
   const handleToggle = (e: React.MouseEvent) => {
@@ -378,76 +377,58 @@ function TreeFolder({
 
   return (
     <div className="folder-tree-item">
-      <div
-        className="relative group"
-        onMouseLeave={() => setShowDropdown(false)}
-      >
+      <div className="relative group">
         <div
           className={cn(
-            "flex items-center px-2 py-1 text-xs my-0.5 transition-colors duration-150 rounded",
+            "flex items-center justify-between px-2 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded",
             isActive
               ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
               : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800",
           )}
           style={{ paddingLeft: level === 0 ? "12px" : `${level * 10 + 16}px` }}
         >
-          <span
-            className="w-4 h-4 mr-1 flex-shrink-0 flex items-center justify-center cursor-pointer"
-            onClick={handleToggle}
-          >
-            <ChevronDown
-              className={cn(
-                "h-3 w-3 text-gray-500 transition-transform",
-                expanded ? "transform rotate-0" : "transform -rotate-90",
-              )}
-            />
-          </span>
-          <div
-            className="flex items-center cursor-pointer"
-            onClick={handleToggle}
-          >
-            <Folder className="h-3.5 w-3.5 mr-1 text-gray-400" />
-            <span className="font-medium text-gray-500">{name}</span>
-          </div>
-          <div
-            className="ml-auto opacity-0 group-hover:opacity-100"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setShowDropdown(!showDropdown);
-            }}
-          >
-            <MoreHorizontal className="h-3 w-3 text-gray-400" />
-          </div>
-        </div>
-
-        {showDropdown && (
-          <div className="absolute right-0 mt-1 w-28 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-[100]">
-            <div className="py-1 text-xs">
-              <a
-                href="#"
-                className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <Pencil className="mr-2 h-3 w-3" />
-                <span>Rename</span>
-              </a>
-              <a
-                href="#"
-                className="flex items-center px-3 py-1 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <Pencil className="mr-2 h-3 w-3" />
-                <span>Edit</span>
-              </a>
-              <a
-                href="#"
-                className="flex items-center px-3 py-1 text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <Trash2 className="mr-2 h-3 w-3" />
-                <span>Delete</span>
-              </a>
+          <div className="flex items-center flex-1">
+            <span
+              className="w-4 h-4 mr-1 flex-shrink-0 flex items-center justify-center cursor-pointer"
+              onClick={handleToggle}
+            >
+              <ChevronDown
+                className={cn(
+                  "h-3 w-3 text-gray-500 transition-transform",
+                  expanded ? "transform rotate-0" : "transform -rotate-90",
+                )}
+              />
+            </span>
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={handleToggle}
+            >
+              <Folder className="h-3.5 w-3.5 mr-1 text-gray-400" />
+              <span className="font-medium text-gray-500">{name}</span>
             </div>
           </div>
-        )}
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <button className="opacity-0 group-hover:opacity-100">
+                <MoreHorizontal className="h-3 w-3 text-gray-400" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-[70px]">
+              <DropdownMenuItem>
+                <Pencil className="mr-1.5 h-3 w-3" />
+                Rename
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Settings2 className="mr-1.5 h-3 w-3" />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-red-500 focus:text-red-500">
+                <Trash2 className="mr-1.5 h-3 w-3" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       {expanded && children && <div>{children}</div>}
