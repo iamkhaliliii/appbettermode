@@ -869,7 +869,7 @@ export function SecondarySidebar() {
         <div className="mb-3">
           <div className="space-y-2">
             <div className="flex items-center justify-between mb-2">
-              <h2 className="text-xs font-normal text-gray-400 dark:textgray-500 capitalize">Design studio</h2>
+              <h2 className="text-xs font-normal text-gray-400 dark:text-gray500 capitalize">Design studio</h2>
             </div>
 
             <div className="relative w-full mb-2">
@@ -1132,7 +1132,7 @@ export function SecondarySidebar() {
             </div>
             <div id="navigation-content" className="pt-1 pb-1">
               <div className="space-y-0.5">
-                <div className="relative group">
+                <div className="relative">
                   <div 
                     className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
                     onClick={(e) => {
@@ -1166,7 +1166,7 @@ export function SecondarySidebar() {
                   </div>
                 </div>
 
-                <div className="relative group">
+                <div className="relative">
                   <div 
                     className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
                     onClick={(e) => {
@@ -1197,7 +1197,7 @@ export function SecondarySidebar() {
                   </div>
                 </div>
 
-                <div className="relative group">
+                <div className="relative">
                   <div 
                     className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
                     onClick={(e) => {
@@ -1228,7 +1228,7 @@ export function SecondarySidebar() {
                   </div>
                 </div>
 
-                <div className="relative group">
+                <div className="relative">
                   <div 
                     className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
                     onClick={(e) => {
@@ -1708,53 +1708,53 @@ export function SecondarySidebar() {
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Content Blocks section */}
-          <div className="mt-3">
-            <div className="pb-1 pt-1 px-2">
-              <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400 capitalize">Sections and Blocks</h4>
-            </div>
-            <div className="pt-1 pb-0 px-1">
-              <div className="relative">
-                <button
-                  className="flex items-center justify-between w-full py-1.5 px-2 text-xs border border-gray-200 dark:border-gray-700 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-100"
-                  onClick={() => {
-                    const dropdown = document.getElementById('blocks-dropdown');
-                    if (dropdown) {
-                      dropdown.classList.toggle('hidden');
-                    }
-                  }}
-                >
-                  <div className="flex items-center">
-                    <Plus className="h-4 w-4 mr-1.5 text-gray-500" />
-                    <span>Add Block</span>
-                  </div>
-                  <ChevronDown className="h-3.5 w-3.5 text-gray-400" />
-                </button>
+            {/* Content Blocks section */}
+            <div className="mt-3">
+              <div className="pb-1 pt-1 px-2">
+                <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400 capitalize">Sections and Blocks</h4>
+              </div>
+              <div className="pt-1 pb-0 px-1">
+                <div className="relative">
+                  <button
+                    className="flex items-center justify-between w-full py-1.5 px-2 text-xs border border-gray-200 dark:border-gray-700 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-100"
+                    onClick={() => {
+                      const dropdown = document.getElementById('blocks-dropdown');
+                      if (dropdown) {
+                        dropdown.classList.toggle('hidden');
+                      }
+                    }}
+                  >
+                    <div className="flex items-center">
+                      <Plus className="h-4 w-4 mr-1.5 text-gray-500" />
+                      <span>Add Block</span>
+                    </div>
+                    <ChevronDown className="h-3.5 w-3.5 text-gray-400" />
+                  </button>
 
-                {/* Dropdown for block options - Minimalist version */}
-                <div id="blocks-dropdown" className="absolute left-0 right-0 z-10 mt-1 hidden rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
-                  <div className="py-1">
-                    <div className="flex items-center gap-1.5 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-300">
-                      <File className="h-3.5 w-3.5 text-gray-500" />
-                      <span>Text</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-300">
-                      <Eye className="h-3.5 w-3.5 text-gray-500" />
-                      <span>Image</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-300">
-                      <Pencil className="h-3.5 w-3.5 text-gray-500" />
-                      <span>Video</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-300">
-                      <FileBox className="h-3.5 w-3.5 text-gray-500" />
-                      <span>Button</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-300">
-                      <FileCog className="h-3.5 w-3.5 text-gray-500" />
-                      <span>Form</span>
+                  {/* Dropdown for block options - Minimalist version */}
+                  <div id="blocks-dropdown" className="absolute left-0 right-0 z-10 mt-1 hidden rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
+                    <div className="py-1">
+                      <div className="flex items-center gap-1.5 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-300">
+                        <File className="h-3.5 w-3.5 text-gray-500" />
+                        <span>Text</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-300">
+                        <Eye className="h-3.5 w-3.5 text-gray-500" />
+                        <span>Image</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-300">
+                        <Pencil className="h-3.5 w-3.5 text-gray-500" />
+                        <span>Video</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-300">
+                        <FileBox className="h-3.5 w-3.5 text-gray-500" />
+                        <span>Button</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 px-2 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-800/70 cursor-pointer text-gray-600 dark:text-gray-300">
+                        <FileCog className="h-3.5 w-3.5 text-gray-500" />
+                        <span>Form</span>
+                      </div>
                     </div>
                   </div>
                 </div>
