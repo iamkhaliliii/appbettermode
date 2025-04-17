@@ -300,10 +300,12 @@ function MinimalItem({
         )}
         style={{ paddingLeft: level === 0 ? "12px" : `${level * 10 + 16}px` }}
       >
-        <span className={cn("flex-shrink-0 mr-1.5", iconColor)}>{icon}</span>
-        <Link href={path}>
-          <span className={cn("font-medium", iconColor)}>{displayName}</span>
-        </Link>
+        <div className="flex items-center flex-1">
+          <span className={cn("flex-shrink-0 mr-1.5", iconColor)}>{icon}</span>
+          <Link href={path}>
+            <span className={cn("font-medium", iconColor)}>{displayName}</span>
+          </Link>
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger>
             <button className="ml-auto opacity-0 group-hover:opacity-100">
