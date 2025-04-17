@@ -6,6 +6,7 @@ import NotFound from "@/pages/not-found";
 import Content from "@/pages/content";
 import Settings from "@/pages/settings";
 import People from "@/pages/people";
+import Inbox from "@/pages/inbox";
 import DesignStudio from "@/pages/design-studio-simple";
 import DesignStudioSpacesFeed from "@/pages/design-studio-spaces-feed";
 import Appearance from "@/pages/appearance";
