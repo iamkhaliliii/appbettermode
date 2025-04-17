@@ -1106,6 +1106,85 @@ export function SecondarySidebar() {
           </AccordionItem>
           
           <div className="h-px bg-gray-100 dark:bg-gray-700 mx-1"></div>
+
+          {/* Navigation Sections */}
+          <AccordionItem value="navigation" className="border-0">
+            <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
+              <div className="flex items-center">
+                <Layout className="h-4 w-4 mr-2 text-gray-500" />
+                <span className="font-medium text-sm">Navigation Sections</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="pt-1 pb-1">
+              <div className="space-y-1">
+                <div 
+                  className="flex items-center justify-between py-1.5 px-2 rounded-md group transition-colors duration-150"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <Layout className="h-4 w-4 text-gray-500" />
+                    <span className="text-xs text-gray-600 dark:text-gray-300">Header</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <MiniToggle
+                      isActive={false}
+                      onChange={() => {}} 
+                    />
+                    <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                  </div>
+                </div>
+
+                <div 
+                  className="flex items-center justify-between py-1.5 px-2 rounded-md group transition-colors duration-150"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <PanelRight className="h-4 w-4 text-gray-500" />
+                    <span className="text-xs text-gray-600 dark:text-gray-300">Right Sidebar</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <MiniToggle
+                      isActive={false}
+                      onChange={() => {}} 
+                    />
+                    <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                  </div>
+                </div>
+
+                <div 
+                  className="flex items-center justify-between py-1.5 px-2 rounded-md group transition-colors duration-150"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <PanelLeft className="h-4 w-4 text-gray-500" />
+                    <span className="text-xs text-gray-600 dark:text-gray-300">Left Sidebar</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <MiniToggle
+                      isActive={false}
+                      onChange={() => {}} 
+                    />
+                    <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                  </div>
+                </div>
+
+                <div 
+                  className="flex items-center justify-between py-1.5 px-2 rounded-md group transition-colors duration-150"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <Columns className="h-4 w-4 text-gray-500" />
+                    <span className="text-xs text-gray-600 dark:text-gray-300">Footer</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <MiniToggle
+                      isActive={false}
+                      onChange={() => {}} 
+                    />
+                    <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                  </div>
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+          
+          <div className="h-px bg-gray-100 dark:bg-gray-700 mx-1"></div>
           
           <AccordionItem value="templates" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
