@@ -1110,71 +1110,81 @@ export function SecondarySidebar() {
           <div className="h-px bg-gray-100 dark:bg-gray-700 mx-1"></div>
 
           {/* Navigation Sections */}
-          <div className="border-0">
-            <div className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300">
+          <AccordionItem value="navigation" className="border-0">
+            <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
               <div className="flex items-center">
-                <PanelTop className="h-4 w-4 mr-2 text-gray-500" />
+                <Dock className="h-4 w-4 mr-2 text-gray-500" />
                 <span className="font-medium text-sm">Navigation Sections</span>
               </div>
-            </div>
-            <div className="pt-1 pb-1">
+            </AccordionTrigger>
+            <AccordionContent className="pt-1 pb-1">
               <div className="space-y-0.5">
-                <TreeFolder name="Header" path="/design-studio/navigation/header" level={0}>
-                  <MinimalItem 
-                    name="Navigation" 
-                    path="/design-studio/navigation/header/nav"
-                    icon={<PanelTop className="h-3.5 w-3.5" />}
-                    iconColor="text-gray-500"
-                    level={1}
-                  />
-                  <MinimalItem 
-                    name="Logo" 
-                    path="/design-studio/navigation/header/logo"
-                    icon={<PanelTop className="h-3.5 w-3.5" />}
-                    iconColor="text-gray-500"
-                    level={1}
-                  />
-                </TreeFolder>
+                  <div 
+                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
+                  >
+                    <div className="flex items-center gap-2">
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                      <PanelTop className="h-3.5 w-3.5 text-gray-500" />
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Header</span>
+                    </div>
+                    <div>
+                      <MiniToggle
+                        isActive={false}
+                        onChange={() => {}} 
+                      />
+                    </div>
+                  </div>
 
-                <TreeFolder name="Right Sidebar" path="/design-studio/navigation/right-sidebar" level={0}>
-                  <MinimalItem 
-                    name="Content" 
-                    path="/design-studio/navigation/right-sidebar/content"
-                    icon={<PanelRight className="h-3.5 w-3.5" />}
-                    iconColor="text-gray-500"
-                    level={1}
-                  />
-                </TreeFolder>
+                  <div 
+                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
+                  >
+                    <div className="flex items-center gap-2">
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                      <PanelRight className="h-3.5 w-3.5 text-gray-500" />
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Right Sidebar</span>
+                    </div>
+                    <div>
+                      <MiniToggle
+                        isActive={false}
+                        onChange={() => {}} 
+                      />
+                    </div>
+                  </div>
 
-                <TreeFolder name="Left Sidebar" path="/design-studio/navigation/left-sidebar" level={0}>
-                  <MinimalItem 
-                    name="Menu" 
-                    path="/design-studio/navigation/left-sidebar/menu"
-                    icon={<PanelLeft className="h-3.5 w-3.5" />}
-                    iconColor="text-gray-500"
-                    level={1}
-                  />
-                </TreeFolder>
+                  <div 
+                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
+                  >
+                    <div className="flex items-center gap-2">
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                      <PanelLeft className="h-3.5 w-3.5 text-gray-500" />
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Left Sidebar</span>
+                    </div>
+                    <div>
+                      <MiniToggle
+                        isActive={false}
+                        onChange={() => {}} 
+                      />
+                    </div>
+                  </div>
 
-                <TreeFolder name="Footer" path="/design-studio/navigation/footer" level={0}>
-                  <MinimalItem 
-                    name="Links" 
-                    path="/design-studio/navigation/footer/links"
-                    icon={<PanelBottom className="h-3.5 w-3.5" />}
-                    iconColor="text-gray-500"
-                    level={1}
-                  />
-                  <MinimalItem 
-                    name="Copyright" 
-                    path="/design-studio/navigation/footer/copyright"
-                    icon={<PanelBottom className="h-3.5 w-3.5" />}
-                    iconColor="text-gray-500"
-                    level={1}
-                  />
-                </TreeFolder>
-              </div>
-            </div>
-          </div>
+                  <div 
+                    className="flex items-center justify-between py-1.5 px-2.5 rounded-md group transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-800"
+                  >
+                    <div className="flex items-center gap-2">
+                      <ChevronRight className="h-3.5 w-3.5 text-gray-400" />
+                      <PanelBottom className="h-3.5 w-3.5 text-gray-500" />
+                      <span className="text-xs text-gray-600 dark:text-gray-300">Footer</span>
+                    </div>
+                    <div>
+                      <MiniToggle
+                        isActive={false}
+                        onChange={() => {}} 
+                      />
+                    </div>
+                  </div>
+                </div>
+            </AccordionContent>
+          </AccordionItem>
 
           <div className="h-px bg-gray-100 dark:bg-gray-700 mx-1"></div>
 
