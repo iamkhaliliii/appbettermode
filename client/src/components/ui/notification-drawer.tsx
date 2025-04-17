@@ -397,12 +397,12 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
       filters.push(
         <div 
           key="space" 
-          className="inline-flex items-center h-5 text-[10px] rounded-full bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300 pl-1.5 pr-1 py-0"
+          className="inline-flex items-center h-5 text-[10px] rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300 pl-1.5 pr-1 py-0"
         >
-          <Boxes className="h-2.5 w-2.5 mr-1 text-purple-500" />
+          <Boxes className="h-2.5 w-2.5 mr-1 text-blue-400" />
           <span className="mr-1">{activeSpaceFilter}</span>
           <span
-            className="cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-800/50 rounded-full h-3.5 w-3.5 inline-flex items-center justify-center"
+            className="cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-800/50 rounded-full h-3.5 w-3.5 inline-flex items-center justify-center" 
             onClick={() => setActiveSpaceFilter(null)}
           >
             <X className="h-2 w-2" />
@@ -415,12 +415,12 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
       filters.push(
         <div 
           key="cms" 
-          className="inline-flex items-center h-5 text-[10px] rounded-full bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 pl-1.5 pr-1 py-0"
+          className="inline-flex items-center h-5 text-[10px] rounded-full bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300 pl-1.5 pr-1 py-0"
         >
-          <Database className="h-2.5 w-2.5 mr-1 text-gray-500" />
+          <Database className="h-2.5 w-2.5 mr-1 text-purple-400" />
           <span className="mr-1">{activeCmsFilter}</span>
           <span
-            className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full h-3.5 w-3.5 inline-flex items-center justify-center"
+            className="cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-800/50 rounded-full h-3.5 w-3.5 inline-flex items-center justify-center"
             onClick={() => setActiveCmsFilter(null)}
           >
             <X className="h-2 w-2" />
@@ -625,7 +625,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                     <DropdownMenuTrigger asChild>
                       <div className="flex items-center justify-between px-2 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer rounded-sm">
                         <span className="flex items-center">
-                          <Boxes className="h-3.5 w-3.5 mr-2 text-purple-500" />
+                          <Boxes className="h-3.5 w-3.5 mr-2 text-blue-400" />
                           Space
                         </span>
                         <ChevronRight className="h-3 w-3" />
@@ -640,8 +640,8 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                           onClick={() => setActiveSpaceFilter(activeSpaceFilter === space ? null : space)}
                         >
                           <span className="flex items-center w-full justify-between">
-                            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-300">
-                              <Boxes className="h-2.5 w-2.5 mr-1" />
+                            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-300">
+                              <Boxes className="h-2.5 w-2.5 mr-1 text-blue-400" />
                               {space}
                             </span>
                             {activeSpaceFilter === space && <Check className="h-3 w-3" />}
@@ -656,7 +656,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                     <DropdownMenuTrigger asChild>
                       <div className="flex items-center justify-between px-2 py-1.5 text-xs hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer rounded-sm">
                         <span className="flex items-center">
-                          <Database className="h-3.5 w-3.5 mr-2 text-gray-500" />
+                          <Database className="h-3.5 w-3.5 mr-2 text-purple-400" />
                           CMS
                         </span>
                         <ChevronRight className="h-3 w-3" />
@@ -671,8 +671,8 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                           onClick={() => setActiveCmsFilter(activeCmsFilter === cmsType ? null : cmsType)}
                         >
                           <span className="flex items-center w-full justify-between">
-                            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
-                              <Database className="h-2.5 w-2.5 mr-1" />
+                            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-300">
+                              <Database className="h-2.5 w-2.5 mr-1 text-purple-400" />
                               {cmsType}
                             </span>
                             {activeCmsFilter === cmsType && <Check className="h-3 w-3" />}
