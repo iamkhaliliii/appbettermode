@@ -541,12 +541,7 @@ export function SecondarySidebar() {
     if (isActiveUrl('/inbox') || location.startsWith('/inbox/')) {
       return (
         <div className="p-3">
-          <div className="mb-3">
-            <div className="flex items-center justify-between">
-              <h2 className="text-sm font-medium text-gray-800 dark:text-gray-200">Inbox</h2>
-              <span className="inline-flex h-5 items-center justify-center rounded-full bg-primary-50 dark:bg-primary-900/30 px-1.5 text-[10px] font-medium text-primary-600 dark:text-primary-400">12</span>
-            </div>
-          </div>
+          
           
           <div className="space-y-4">
             {/* Overview Section */}
