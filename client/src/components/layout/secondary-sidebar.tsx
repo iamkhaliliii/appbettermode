@@ -1034,6 +1034,7 @@ export function SecondarySidebar() {
                   icon={<AppWindowMac className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
                   inSpaces={true}
+                  decorationIcon={<Database />}
                 />
                 <MinimalItem
                   name="Explore"
