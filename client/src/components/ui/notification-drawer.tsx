@@ -43,7 +43,7 @@ interface NotificationGroupProps {
 
 const NotificationItem = ({ notification }: { notification: NotificationData }) => {
   // Get icon based on notification type
-  const getTypeIcon = () => {
+  const getItemIcon = () => {
     switch (notification.type) {
       case 'post':
         return <Database className="h-3 w-3 text-blue-500" />;
@@ -325,29 +325,31 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
     setActiveTimeFilter(null);
   };
   
-  // Get type icon
-  const getTypeIconComponent = (type: string) => {
+  // Get type icon with custom classes
+  const getTypeIconComponent = (type: string, customClass?: string) => {
+    const baseClass = customClass || "h-3.5 w-3.5 mr-1.5";
+    
     switch (type) {
       case 'post':
-        return <Database className="h-3.5 w-3.5 mr-1.5 text-blue-500" />;
+        return <Database className={`${baseClass} text-blue-500`} />;
       case 'comment':
-        return <MessageSquare className="h-3.5 w-3.5 mr-1.5 text-green-500" />;
+        return <MessageSquare className={`${baseClass} text-green-500`} />;
       case 'reaction':
-        return <ThumbsUp className="h-3.5 w-3.5 mr-1.5 text-purple-500" />;
+        return <ThumbsUp className={`${baseClass} text-purple-500`} />;
       case 'join':
-        return <UserPlus className="h-3.5 w-3.5 mr-1.5 text-emerald-500" />;
+        return <UserPlus className={`${baseClass} text-emerald-500`} />;
       case 'mention':
-        return <AtSign className="h-3.5 w-3.5 mr-1.5 text-orange-500" />;
+        return <AtSign className={`${baseClass} text-orange-500`} />;
       case 'report':
-        return <FileText className="h-3.5 w-3.5 mr-1.5 text-red-500" />;
+        return <FileText className={`${baseClass} text-red-500`} />;
       case 'rsvp':
-        return <Calendar className="h-3.5 w-3.5 mr-1.5 text-indigo-500" />;
+        return <Calendar className={`${baseClass} text-indigo-500`} />;
       case 'form':
-        return <FormInput className="h-3.5 w-3.5 mr-1.5 text-amber-500" />;
+        return <FormInput className={`${baseClass} text-amber-500`} />;
       case 'system':
-        return <Bell className="h-3.5 w-3.5 mr-1.5 text-gray-500" />;
+        return <Bell className={`${baseClass} text-gray-500`} />;
       default:
-        return null;
+        return <MessageSquare className={`${baseClass} text-gray-500`} />;
     }
   };
   
@@ -357,116 +359,91 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
     
     if (activeStatusFilter !== 'all') {
       filters.push(
-        <Badge 
+        <div 
           key="status" 
-          variant="outline" 
-          className="bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800 pr-1"
+          className="inline-flex items-center h-5 text-[10px] rounded-full bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 pl-1.5 pr-1 py-0"
         >
-          <span className="flex items-center">
-            <CheckCircle2 className="h-3 w-3 mr-1" />
-            {activeStatusFilter === 'unread' ? 'Unread' : 'Read'}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-4 w-4 ml-1 rounded-full hover:bg-blue-100 dark:hover:bg-blue-800/50"
-              onClick={() => setActiveStatusFilter('all')}
-            >
-              <X className="h-2.5 w-2.5" />
-            </Button>
+          <CheckCircle2 className="h-2.5 w-2.5 mr-1 text-blue-500" />
+          <span className="mr-1">{activeStatusFilter === 'unread' ? 'Unread' : 'Read'}</span>
+          <span 
+            className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full h-3.5 w-3.5 inline-flex items-center justify-center"
+            onClick={() => setActiveStatusFilter('all')}
+          >
+            <X className="h-2 w-2" />
           </span>
-        </Badge>
+        </div>
       );
     }
     
     if (activeTypeFilter) {
       filters.push(
-        <Badge 
+        <div 
           key="type" 
-          variant="outline" 
-          className="bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800 pr-1"
+          className="inline-flex items-center h-5 text-[10px] rounded-full bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 pl-1.5 pr-1 py-0"
         >
-          <span className="flex items-center">
-            {getTypeIconComponent(activeTypeFilter)}
-            {activeTypeFilter.charAt(0).toUpperCase() + activeTypeFilter.slice(1)}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-4 w-4 ml-1 rounded-full hover:bg-purple-100 dark:hover:bg-purple-800/50"
-              onClick={() => setActiveTypeFilter(null)}
-            >
-              <X className="h-2.5 w-2.5" />
-            </Button>
+          {getTypeIconComponent(activeTypeFilter, "h-2.5 w-2.5 mr-1")}
+          <span className="mr-1">{activeTypeFilter.charAt(0).toUpperCase() + activeTypeFilter.slice(1)}</span>
+          <span
+            className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full h-3.5 w-3.5 inline-flex items-center justify-center"
+            onClick={() => setActiveTypeFilter(null)}
+          >
+            <X className="h-2 w-2" />
           </span>
-        </Badge>
+        </div>
       );
     }
     
     if (activeSpaceFilter) {
       filters.push(
-        <Badge 
+        <div 
           key="space" 
-          variant="outline" 
-          className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800 pr-1"
+          className="inline-flex items-center h-5 text-[10px] rounded-full bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300 pl-1.5 pr-1 py-0"
         >
-          <span className="flex items-center">
-            <Boxes className="h-3 w-3 mr-1" />
-            {activeSpaceFilter}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-4 w-4 ml-1 rounded-full hover:bg-green-100 dark:hover:bg-green-800/50"
-              onClick={() => setActiveSpaceFilter(null)}
-            >
-              <X className="h-2.5 w-2.5" />
-            </Button>
+          <Boxes className="h-2.5 w-2.5 mr-1 text-purple-500" />
+          <span className="mr-1">{activeSpaceFilter}</span>
+          <span
+            className="cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-800/50 rounded-full h-3.5 w-3.5 inline-flex items-center justify-center"
+            onClick={() => setActiveSpaceFilter(null)}
+          >
+            <X className="h-2 w-2" />
           </span>
-        </Badge>
+        </div>
       );
     }
     
     if (activeCmsFilter) {
       filters.push(
-        <Badge 
+        <div 
           key="cms" 
-          variant="outline" 
-          className="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800 pr-1"
+          className="inline-flex items-center h-5 text-[10px] rounded-full bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 pl-1.5 pr-1 py-0"
         >
-          <span className="flex items-center">
-            <Database className="h-3 w-3 mr-1" />
-            {activeCmsFilter}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-4 w-4 ml-1 rounded-full hover:bg-amber-100 dark:hover:bg-amber-800/50"
-              onClick={() => setActiveCmsFilter(null)}
-            >
-              <X className="h-2.5 w-2.5" />
-            </Button>
+          <Database className="h-2.5 w-2.5 mr-1 text-gray-500" />
+          <span className="mr-1">{activeCmsFilter}</span>
+          <span
+            className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full h-3.5 w-3.5 inline-flex items-center justify-center"
+            onClick={() => setActiveCmsFilter(null)}
+          >
+            <X className="h-2 w-2" />
           </span>
-        </Badge>
+        </div>
       );
     }
     
     if (activeTimeFilter) {
       filters.push(
-        <Badge 
+        <div 
           key="time" 
-          variant="outline" 
-          className="bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 pr-1"
+          className="inline-flex items-center h-5 text-[10px] rounded-full bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 pl-1.5 pr-1 py-0"
         >
-          <span className="flex items-center">
-            <Calendar className="h-3 w-3 mr-1" />
-            {timePeriods[activeTimeFilter]}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-4 w-4 ml-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600"
-              onClick={() => setActiveTimeFilter(null)}
-            >
-              <X className="h-2.5 w-2.5" />
-            </Button>
+          <Calendar className="h-2.5 w-2.5 mr-1 text-gray-500" />
+          <span className="mr-1">{timePeriods[activeTimeFilter]}</span>
+          <span
+            className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full h-3.5 w-3.5 inline-flex items-center justify-center"
+            onClick={() => setActiveTimeFilter(null)}
+          >
+            <X className="h-2 w-2" />
           </span>
-        </Badge>
+        </div>
       );
     }
     
@@ -551,23 +528,20 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
         
         {/* Active filters display */}
         {getFilterCount() > 0 && (
-          <div className="px-3 py-2 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-gray-50/70 to-blue-50/20 dark:from-gray-800/40 dark:to-blue-900/10">
-            <div className="flex items-center justify-between">
-              <div className="text-xs font-medium text-gray-500 dark:text-gray-400 flex items-center">
-                <Filter className="h-3 w-3 mr-1.5 text-gray-400" />
-                Active filters
+          <div className="px-3 py-1.5 border-b border-gray-100 dark:border-gray-700">
+            <div className="flex items-start">
+              <div className="flex-1 flex flex-wrap gap-1 items-center">
+                {renderActiveFilters()}
               </div>
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="h-5 text-[10px] px-1.5 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
+                className="h-5 shrink-0 text-[10px] px-1 -mt-0.5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                 onClick={clearAllFilters}
               >
-                Clear all
+                <X className="h-3 w-3 mr-0.5" />
+                <span>Clear</span>
               </Button>
-            </div>
-            <div className="flex flex-wrap gap-1.5 mt-2">
-              {renderActiveFilters()}
             </div>
           </div>
         )}
@@ -581,7 +555,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button 
-                      variant={activeFilterCategory === 'status' ? "secondary" : "ghost"}
+                      variant={activeFilterCategory === 'status' ? "secondary-gray" : "ghost"}
                       className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0 w-full"
                       onClick={() => setActiveFilterCategory('status')}
                     >
@@ -635,7 +609,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button 
-                      variant={activeFilterCategory === 'type' ? "secondary" : "ghost"}
+                      variant={activeFilterCategory === 'type' ? "secondary-gray" : "ghost"}
                       className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0 w-full"
                       onClick={() => setActiveFilterCategory('type')}
                     >
@@ -677,7 +651,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button 
-                      variant={activeFilterCategory === 'space' ? "secondary" : "ghost"}
+                      variant={activeFilterCategory === 'space' ? "secondary-gray" : "ghost"}
                       className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0 w-full"
                       onClick={() => setActiveFilterCategory('space')}
                     >
@@ -719,7 +693,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button 
-                      variant={activeFilterCategory === 'cms' ? "secondary" : "ghost"}
+                      variant={activeFilterCategory === 'cms' ? "secondary-gray" : "ghost"}
                       className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0 w-full"
                       onClick={() => setActiveFilterCategory('cms')}
                     >
@@ -761,7 +735,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button 
-                      variant={activeFilterCategory === 'time' ? "secondary" : "ghost"}
+                      variant={activeFilterCategory === 'time' ? "secondary-gray" : "ghost"}
                       className="text-[10px] h-6 rounded-[0.3rem] px-1 py-0 w-full"
                       onClick={() => setActiveFilterCategory('time')}
                     >
