@@ -728,8 +728,6 @@ export function SecondarySidebar() {
                 Wishlist
               </SideNavItem>
 
-              <div className="border-t border-gray-100 dark:border-gray-700 my-2"></div>
-              
               <Link href="/content/new-cms">
                 <div className="flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150 px-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 rounded">
                   <Plus className="h-3.5 w-3.5 mr-2" />
