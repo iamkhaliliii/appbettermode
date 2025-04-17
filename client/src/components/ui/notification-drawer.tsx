@@ -450,13 +450,7 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
     return filters;
   };
 
-  const DropdownMenu = React.forwardRef<
-    React.ElementRef<typeof DropdownMenuPrimitive.Root>,
-    React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Root>
-  >((props, ref) => (
-    <DropdownMenuPrimitive.Root {...props} ref={ref} onSelect={()=>setShowFilterDropdown(false)}/>
-  ));
-  DropdownMenu.displayName = "DropdownMenu";
+  const DropdownMenu = DropdownMenuPrimitive.Root;
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="right">
