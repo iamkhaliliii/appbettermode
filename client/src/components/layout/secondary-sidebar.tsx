@@ -486,34 +486,90 @@ export function SecondarySidebar() {
             </div>
           </div>
           
-          <div className="space-y-1">
-            <SideNavItem 
-              href="/inbox/unread"
-              isActive={isActiveUrl('/inbox/unread') || location === '/inbox'}
-            >
-              Unread
-            </SideNavItem>
-            
-            <SideNavItem 
-              href="/inbox/all"
-              isActive={isActiveUrl('/inbox/all')}
-            >
-              All Messages
-            </SideNavItem>
-            
-            <SideNavItem 
-              href="/inbox/sent"
-              isActive={isActiveUrl('/inbox/sent')}
-            >
-              Sent
-            </SideNavItem>
-            
-            <SideNavItem 
-              href="/inbox/archived"
-              isActive={isActiveUrl('/inbox/archived')}
-            >
-              Archived
-            </SideNavItem>
+          <div className="space-y-4">
+            <div className="space-y-1">
+              <SideNavItem 
+                href="/inbox/all-activity"
+                isActive={isActiveUrl('/inbox/all-activity') || location === '/inbox'}
+              >
+                All Activity
+              </SideNavItem>
+              
+              <SideNavItem 
+                href="/inbox/comments"
+                isActive={isActiveUrl('/inbox/comments')}
+              >
+                Comments & Replies
+              </SideNavItem>
+              
+              <SideNavItem 
+                href="/inbox/reports"
+                isActive={isActiveUrl('/inbox/reports')}
+              >
+                Reports & Moderation
+              </SideNavItem>
+              
+              <SideNavItem 
+                href="/inbox/reactions"
+                isActive={isActiveUrl('/inbox/reactions')}
+              >
+                Reactions
+              </SideNavItem>
+              
+              <SideNavItem 
+                href="/inbox/mentions"
+                isActive={isActiveUrl('/inbox/mentions')}
+              >
+                Mentions
+              </SideNavItem>
+              
+              <SideNavItem 
+                href="/inbox/rsvps"
+                isActive={isActiveUrl('/inbox/rsvps')}
+              >
+                RSVPs
+              </SideNavItem>
+              
+              <SideNavItem 
+                href="/inbox/forms"
+                isActive={isActiveUrl('/inbox/forms')}
+              >
+                Form Submissions
+              </SideNavItem>
+            </div>
+
+            <div>
+              <h3 className="text-xs font-normal text-gray-400 dark:text-gray-500 px-2 mb-2">By Content Type (CMS)</h3>
+              <div className="space-y-1">
+                <SideNavItem 
+                  href="/inbox/cms/articles"
+                  isActive={isActiveUrl('/inbox/cms/articles')}
+                >
+                  Articles
+                </SideNavItem>
+                
+                <SideNavItem 
+                  href="/inbox/cms/events"
+                  isActive={isActiveUrl('/inbox/cms/events')}
+                >
+                  Events
+                </SideNavItem>
+                
+                <SideNavItem 
+                  href="/inbox/cms/questions"
+                  isActive={isActiveUrl('/inbox/cms/questions')}
+                >
+                  Questions
+                </SideNavItem>
+                
+                <SideNavItem 
+                  href="/inbox/cms/wishlist"
+                  isActive={isActiveUrl('/inbox/cms/wishlist')}
+                >
+                  Wishlist
+                </SideNavItem>
+              </div>
+            </div>
           </div>
         </div>
       );
