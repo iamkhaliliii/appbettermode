@@ -48,8 +48,7 @@ import {
   FileText,
   Calendar,
   HelpCircle,
-  Star,
-  Dock
+  Star
 } from "lucide-react";
 // Custom MiniToggle component replaces Switch
 import { Separator } from "@/components/ui/separator";
@@ -1112,7 +1111,7 @@ export function SecondarySidebar() {
           <AccordionItem value="navigation" className="border-0">
             <AccordionTrigger className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline">
               <div className="flex items-center">
-                <Dock className="h-4 w-4 mr-2 text-gray-500" />
+                <Layout className="h-4 w-4 mr-2 text-gray-500" />
                 <span className="font-medium text-sm">Navigation Sections</span>
               </div>
             </AccordionTrigger>
