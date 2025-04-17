@@ -488,16 +488,11 @@ export function NotificationDrawer({ open, onOpenChange }: NotificationDrawerPro
             <Button
               variant={getFilterCount() > 0 ? "secondary-color" : "ghost"}
               size="icon"
-              className="h-7 w-7 relative"
+              className="h-7 w-7"
               onClick={() => setShowFilterMenu(!showFilterMenu)}
               title="Filter notifications"
             >
               <Filter className="h-3.5 w-3.5" />
-              {getFilterCount() > 0 && (
-                <span className="absolute -top-1 -right-1 h-4 w-4 bg-blue-500 text-white text-[9px] font-semibold flex items-center justify-center rounded-full">
-                  {getFilterCount()}
-                </span>
-              )}
             </Button>
             
             <DropdownMenu>
