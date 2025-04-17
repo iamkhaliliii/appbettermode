@@ -33,8 +33,11 @@ export interface NotificationData {
   target: string;
   space?: string;
   time: string;
+  date?: string; // For showing Apr 8, etc.
   read: boolean;
   avatar: string;
+  commentContent?: string;
+  mentionedUser?: string;
 }
 
 // These could be populated from API calls in a real application
@@ -112,67 +115,70 @@ export const getDashboardData = async () => {
       {
         id: 'notification-1',
         type: 'post' as const,
-        username: 'Sara Ahmed',
-        action: 'posted new',
-        target: 'UI Framework Documentation',
-        space: 'Design System',
-        time: '5 min ago',
+        username: 'Support People',
+        action: 'posted in',
+        target: 'Bettermode Swags',
+        space: 'Support',
+        time: '2 hours ago',
         read: false,
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       },
       {
         id: 'notification-2',
-        type: 'comment' as const,
-        username: 'Michael Torres',
-        action: 'replied to',
-        target: 'Getting Started with Components',
-        space: 'Documentation',
-        time: '2 hours ago',
+        type: 'mention' as const,
+        username: 'Mo Malayeri',
+        action: 'mentioned you in',
+        target: 'Create New View - Inbox',
+        date: 'Apr 8',
+        time: 'Apr 8',
         read: false,
-        avatar: 'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+        avatar: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       },
       {
         id: 'notification-3',
-        type: 'reaction' as const,
-        username: 'Emily Chen',
-        action: 'reacted to',
-        target: 'Design Tokens Implementation',
-        space: 'Technical',
-        time: '5 hours ago',
+        type: 'mention' as const,
+        username: 'Mo Malayeri',
+        action: 'mentioned you in',
+        target: 'Knowledge / Source Tab',
+        date: 'Apr 8',
+        time: 'Apr 8',
         read: false,
-        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+        avatar: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       },
       {
         id: 'notification-4',
-        type: 'join' as const,
-        username: 'Ryan Garcia',
-        action: 'joined',
-        target: 'Frontend Team',
-        space: 'Teams',
-        time: '1 day ago',
-        read: true,
-        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+        type: 'comment' as const,
+        username: 'Mo Malayeri',
+        action: 'commented in',
+        target: 'Integrations (Bettermode)',
+        date: 'Apr 8',
+        time: 'Apr 8',
+        read: false,
+        avatar: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+        commentContent: 'What we didn\'t address is the mapping of the Sorena users with Bettermode staff. We need to find a way to address that',
+        mentionedUser: 'Amir Khalili'
       },
       {
         id: 'notification-5',
         type: 'mention' as const,
-        username: 'Lisa Wong',
+        username: 'Mo Malayeri',
         action: 'mentioned you in',
-        target: 'Design System Components Discussion',
-        space: 'Design',
-        time: '2 days ago',
+        target: 'Dashboard & Analytics Tab',
+        date: 'Apr 8',
+        time: 'Apr 8',
         read: true,
-        avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+        avatar: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       },
       {
         id: 'notification-6',
-        type: 'system' as const,
-        username: 'System',
-        action: 'updated',
-        target: 'Design System Version 2.0 Released',
-        time: '3 days ago',
+        type: 'mention' as const,
+        username: 'Mo Malayeri',
+        action: 'mentioned you in',
+        target: 'People Tab',
+        date: 'Apr 8',
+        time: 'Apr 8',
         read: true,
-        avatar: 'https://images.unsplash.com/photo-1563237023-b1e970526dcb?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+        avatar: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       }
     ]
   };
