@@ -536,12 +536,11 @@ export function NotificationDrawer({
           <div className="flex items-center space-x-1">
             <Button
               variant="ghost"
-              size="icon"
-              className="h-7 w-7"
+              size="sm"
+              className="h-7 px-2 text-xs rounded-md"
               onClick={markAllAsRead}
-              title="Mark all as read"
             >
-              <Check className="h-3.5 w-3.5" />
+              Read all
             </Button>
 
             <DropdownMenu
