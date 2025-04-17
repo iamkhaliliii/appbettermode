@@ -57,8 +57,11 @@ export function NavigationSection({
           </span>
         </div>
         </div>
-        <div onClick={e => e.stopPropagation()}>
+        <div onClick={e => e.stopPropagation()} className="flex items-center gap-1.5">
           <MiniToggle isActive={isActive} onChange={setIsActive} />
+          {isActive && (
+            <div className="text-gray-400 text-xs font-medium">+</div>
+          )}
         </div>
       </div>
       <div className="hidden pl-6 pr-2 space-y-0.5 content-section">
