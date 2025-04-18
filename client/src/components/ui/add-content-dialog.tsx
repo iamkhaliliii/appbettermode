@@ -73,7 +73,7 @@ export function AddContentDialog({
                   ].map((badge, index) => (
                     <span
                       key={index}
-                      className="px-2.5 py-1.5 text-xs font-medium rounded-lg flex items-center gap-2
+                      className="px-2.5 py-1.5 text-xs font-medium rounded-lg flex items-center gap-2 whitespace-nowrap
                       bg-purple-500/10 text-purple-600 dark:text-purple-300"
                     >
                       {badge.icon}
@@ -98,7 +98,7 @@ export function AddContentDialog({
                     I want to create a new page
                   </h3>
                 </div>
-                <div className="flex gap-2 overflow-x-auto pl-14 no-scrollbar">
+                <div className="flex flex-wrap gap-2 pl-14">
                   {[
                     { icon: <File className="h-3.5 w-3.5" />, label: "Homepage" },
                     { icon: <File className="h-3.5 w-3.5" />, label: "Explore Page" },
