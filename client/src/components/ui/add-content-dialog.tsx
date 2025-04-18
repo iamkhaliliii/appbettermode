@@ -184,7 +184,7 @@ export function AddContentDialog({
                         </span>
                       </div>
                     </div>
-                    <div className="relative mt-1.5 w-full h-[30px]">
+                    <div className="relative mt-6 w-full h-[30px]">
                       <div className="absolute inset-x-0 flex items-center justify-center gap-1.5 pb-4 overflow-x-auto mask-fade-x scrollbar-hide">
                         <span className="shrink-0 px-3 py-1.5 text-[11px] bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-2">
                           <Database className="h-3.5 w-3.5 opacity-50" />
