@@ -111,9 +111,7 @@ export function AddContentDialog({
             <div className="space-y-8">
               <OptionCard
                 icon={
-                  <div className="p-1.5 rounded-md bg-purple-50/80 dark:bg-purple-950/30 ring-1 ring-purple-200/50 dark:ring-purple-800/30 group-hover:ring-purple-300 dark:group-hover:ring-purple-700/50 transition-all duration-500">
-                    <Database className="h-3 w-3 text-purple-500/90 dark:text-purple-400/90 transition-transform group-hover:scale-105 duration-500" />
-                  </div>
+                  <Database className="h-3.5 w-3.5 text-purple-500/90 dark:text-purple-400/90 transition-transform group-hover:scale-105 duration-500" />
                 }
                 title="I want to let people post something"
                 description={
@@ -193,9 +191,7 @@ export function AddContentDialog({
 
               <OptionCard
                 icon={
-                  <div className="p-1.5 rounded-md bg-blue-50/80 dark:bg-blue-950/30 ring-1 ring-blue-200/50 dark:ring-blue-800/30 group-hover:ring-blue-300 dark:group-hover:ring-blue-700/50 transition-all duration-500">
-                    <AppWindowMac className="h-3 w-3 text-blue-500/90 dark:text-blue-400/90 transition-transform group-hover:scale-105 duration-500" />
-                  </div>
+                  <AppWindowMac className="h-3.5 w-3.5 text-blue-500/90 dark:text-blue-400/90 transition-transform group-hover:scale-105 duration-500" />
                 }
                 title="New Page"
                 description={
