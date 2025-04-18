@@ -26,10 +26,10 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
       tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => e.key === 'Enter' && onClick()}
-      className="flex items-start p-8 rounded-3xl border border-gray-50/10 dark:border-gray-800/10
-        hover:border-gray-100/20 dark:hover:border-gray-700/20
-        bg-white/10 dark:bg-gray-900/10 backdrop-blur-xl
-        hover:bg-white/20 dark:hover:bg-gray-800/20
+      className="flex items-start p-8 rounded-3xl border border-white/5 dark:border-gray-800/5
+        hover:border-white/10 dark:hover:border-gray-700/10
+        bg-white/5 dark:bg-gray-900/5 backdrop-blur-xl
+        hover:bg-white/10 dark:hover:bg-gray-800/10
         shadow-none hover:shadow-lg dark:shadow-gray-950/5
         transition-all duration-700 cursor-pointer group"
     >
@@ -59,10 +59,10 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
 export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[900px] bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl
+      <DialogContent className="sm:max-w-[900px] bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl
         shadow-xl rounded-[2rem] p-0 overflow-hidden border-0">
         <div className="flex flex-col md:flex-row">
-          <div className="bg-gradient-to-br from-gray-50/40 to-gray-100/10 dark:from-gray-850/40 dark:to-gray-800/10 
+          <div className="bg-gradient-to-br from-white/30 to-white/5 dark:from-gray-850/40 dark:to-gray-800/10 
             p-12 md:w-[45%] flex flex-col justify-center border-b md:border-b-0 md:border-r 
             border-gray-100/30 dark:border-gray-800/30">
             <DialogHeader className="items-start text-left space-y-3">
