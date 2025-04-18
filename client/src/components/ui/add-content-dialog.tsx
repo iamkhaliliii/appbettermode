@@ -114,7 +114,7 @@ export function AddContentDialog({
                 icon={
                   <Database className="h-3.5 w-3.5 text-purple-500/90 dark:text-purple-400/90 transition-transform group-hover:scale-105 duration-500" />
                 }
-                title="I want to create a new page"
+                title="I want to let people post something"
                 description={
                   <div className="space-y-2">
                     <p>
