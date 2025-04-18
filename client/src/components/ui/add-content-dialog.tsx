@@ -93,21 +93,12 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
                     <p>Define a new type of content to expand your platform's capabilities</p>
                     <div className="relative mt-1.5 w-[calc(100%+3rem)] -ml-6">
                       <div className="flex items-center justify-center gap-1 pb-1 px-6 overflow-x-auto mask-fade-x scrollbar-hide">
-                        <span className="shrink-0 px-2 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Discussion</span>
-                        <span className="shrink-0 px-2 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Q&A</span>
-                        <span className="shrink-0 px-2 py-1 text-xs bg-green-500/5 text-green-500/70 dark:text-green-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Knowledge Base</span>
-                        <span className="shrink-0 px-2 py-1 text-xs bg-yellow-500/5 text-yellow-500/70 dark:text-yellow-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Idea & Feedback</span>
-                        <span className="shrink-0 px-2 py-1 text-xs bg-orange-500/5 text-orange-500/70 dark:text-orange-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Changelog</span>
-                        <span className="shrink-0 px-2 py-1 text-xs bg-red-500/5 text-red-500/70 dark:text-red-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Product Update</span>
-                        <span className="shrink-0 px-2 py-1 text-xs bg-pink-500/5 text-pink-500/70 dark:text-pink-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Roadmap</span>
-                        <span className="shrink-0 px-2 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Announcements</span>
-                        <span className="shrink-0 px-2 py-1 text-xs bg-indigo-500/5 text-indigo-500/70 dark:text-indigo-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Wiki</span>
-                        <span className="shrink-0 px-2 py-1 text-xs bg-cyan-500/5 text-cyan-500/70 dark:text-cyan-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Member Directory</span>
-                        <span className="shrink-0 px-2 py-1 text-xs bg-teal-500/5 text-teal-500/70 dark:text-teal-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Event</span>
-                        <span className="shrink-0 px-2 py-1 text-xs bg-emerald-500/5 text-emerald-500/70 dark:text-emerald-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Course</span>
-                        <span className="shrink-0 px-2 py-1 text-xs bg-green-500/5 text-green-500/70 dark:text-green-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Jobs</span>
-                        <span className="shrink-0 px-2 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Speakers</span>
-                        <span className="shrink-0 px-2 py-1 text-xs bg-violet-500/5 text-violet-500/70 dark:text-violet-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Article</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Blog Posts</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Products</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-green-500/5 text-green-500/70 dark:text-green-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Team Members</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-amber-500/5 text-amber-500/70 dark:text-amber-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Press</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-rose-500/5 text-rose-500/70 dark:text-rose-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />News</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-indigo-500/5 text-indigo-500/70 dark:text-indigo-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Events</span>
                       </div>
                     </div>
                   </div>
