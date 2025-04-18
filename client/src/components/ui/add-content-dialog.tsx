@@ -86,12 +86,12 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
                 description={
                   <div className="space-y-2">
                     <p>Define a new type of content to expand your platform's capabilities</p>
-                    <div className="flex gap-1.5 mt-1">
-                      <span className="px-1.5 text-[9px] text-purple-500/70 dark:text-purple-400/70">Blog Posts</span>
-                      <span className="text-[9px] text-gray-300">·</span>
-                      <span className="px-1.5 text-[9px] text-blue-500/70 dark:text-blue-400/70">Products</span>
-                      <span className="text-[9px] text-gray-300">·</span>
-                      <span className="px-1.5 text-[9px] text-green-500/70 dark:text-green-400/70">Team Members</span>
+                    <div className="inline-flex items-center gap-1 mt-1.5">
+                      <span className="text-[10px] text-purple-500/90 dark:text-purple-400/90 tracking-tight">Blog Posts</span>
+                      <span className="text-[8px] text-gray-300/50">•</span>
+                      <span className="text-[10px] text-blue-500/90 dark:text-blue-400/90 tracking-tight">Products</span>
+                      <span className="text-[8px] text-gray-300/50">•</span>
+                      <span className="text-[10px] text-green-500/90 dark:text-green-400/90 tracking-tight">Team Members</span>
                     </div>
                   </div>
                 }
@@ -104,12 +104,12 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
                 description={
                   <div className="space-y-2">
                     <p>Design and create a new page in your site's structure</p>
-                    <div className="flex gap-1.5 mt-1">
-                      <span className="px-1.5 text-[9px] text-amber-500/70 dark:text-amber-400/70">Landing</span>
-                      <span className="text-[9px] text-gray-300">·</span>
-                      <span className="px-1.5 text-[9px] text-rose-500/70 dark:text-rose-400/70">About Us</span>
-                      <span className="text-[9px] text-gray-300">·</span>
-                      <span className="px-1.5 text-[9px] text-indigo-500/70 dark:text-indigo-400/70">Contact</span>
+                    <div className="inline-flex items-center gap-1 mt-1.5">
+                      <span className="text-[10px] text-amber-500/90 dark:text-amber-400/90 tracking-tight">Landing</span>
+                      <span className="text-[8px] text-gray-300/50">•</span>
+                      <span className="text-[10px] text-rose-500/90 dark:text-rose-400/90 tracking-tight">About Us</span>
+                      <span className="text-[8px] text-gray-300/50">•</span>
+                      <span className="text-[10px] text-indigo-500/90 dark:text-indigo-400/90 tracking-tight">Contact</span>
                     </div>
                   </div>
                 }
