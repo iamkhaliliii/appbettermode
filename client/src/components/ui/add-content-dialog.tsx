@@ -125,10 +125,12 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
                   <div className="space-y-2.5">
                     <div className="text-sm text-gray-600 dark:text-gray-300">Design and create a new page in your site's structure</div>
                     <div className="relative mt-2 w-full overflow-hidden">
-                      <div className="flex items-center gap-1.5 pb-1 overflow-x-auto mask-fade-x scrollbar-hide">
-                        <span className="shrink-0 px-2 py-1 text-xs bg-amber-500/5 text-amber-500/70 dark:text-amber-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />Landing</span>
-                        <span className="shrink-0 px-2 py-1 text-xs bg-rose-500/5 text-rose-500/70 dark:text-rose-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />About Us</span>
-                        <span className="shrink-0 px-2 py-1 text-xs bg-indigo-500/5 text-indigo-500/70 dark:text-indigo-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />Contact</span>
+                      <div className="flex items-center gap-1.5 pb-1 overflow-hidden mask-fade-x">
+                        <div className="flex items-center gap-1.5 infinite-slide">
+                          <div className="flex items-center gap-1.5 min-w-max">
+                            <span className="shrink-0 px-2 py-1 text-xs bg-amber-500/5 text-amber-500/70 dark:text-amber-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />Landing</span>
+                            <span className="shrink-0 px-2 py-1 text-xs bg-rose-500/5 text-rose-500/70 dark:text-rose-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />About Us</span>
+                            <span className="shrink-0 px-2 py-1 text-xs bg-indigo-500/5 text-indigo-500/70 dark:text-indigo-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />Contact</span>
                         <span className="shrink-0 px-2 py-1 text-xs bg-sky-500/5 text-sky-500/70 dark:text-sky-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />Features</span>
                         <span className="shrink-0 px-2 py-1 text-xs bg-emerald-500/5 text-emerald-500/70 dark:text-emerald-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />Blog</span>
                       </div>
