@@ -99,7 +99,7 @@ export function AddContentDialog({
                 dark:from-white dark:via-gray-200 dark:to-gray-300 
                 bg-clip-text text-transparent"
               >
-                Create New
+                What do you want to add to your site?
               </DialogTitle>
               <DialogDescription className="text-base text-gray-600 dark:text-gray-300 leading-relaxed">
                 Choose what you'd like to create and we'll guide you through the
