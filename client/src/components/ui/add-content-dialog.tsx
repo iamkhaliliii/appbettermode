@@ -48,15 +48,16 @@ function ContentOption({
       whileHover={{ scale: 1.005, y: -2 }}
       whileTap={{ scale: 0.995 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      className="rounded-xl border border-white/15 dark:border-gray-800/15 
-                bg-white/8 dark:bg-gray-900/8 backdrop-blur-xl p-6 cursor-pointer
-                shadow-sm hover:shadow-md transition-all duration-200"
+      className="rounded-2xl border border-white/20 dark:border-gray-800/20 
+                bg-white/10 dark:bg-gray-900/10 backdrop-blur-xl p-7 cursor-pointer
+                shadow-lg hover:shadow-xl hover:border-white/30 dark:hover:border-gray-700/30 
+                transition-all duration-300 ease-in-out"
       onClick={onClick}
     >
       <div className="flex items-center gap-4 mb-4">
-        <div className={`h-12 w-12 rounded-xl flex items-center justify-center 
+        <div className={`h-14 w-14 rounded-2xl flex items-center justify-center 
                       bg-gradient-to-br ${iconBgFrom} ${iconBgTo} 
-                      ring-1 ${iconRing}`}>
+                      ring-1 ${iconRing} shadow-inner`}>
           {React.cloneElement(icon as React.ReactElement, { 
             className: `h-5 w-5 ${iconColor}` 
           })}
@@ -70,9 +71,9 @@ function ContentOption({
         {badges.map((badge, index) => (
           <span
             key={index}
-            className={`px-3 py-1.5 text-sm font-medium rounded-lg flex items-center gap-2 
+            className={`px-3.5 py-2 text-sm font-medium rounded-lg flex items-center gap-2 
                       whitespace-nowrap ${badgeBgColor} ${badgeTextColor}
-                      shadow-sm transition-colors duration-150 hover:opacity-90`}
+                      shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md`}
           >
             {badge.icon}
             {badge.label}
@@ -90,8 +91,8 @@ export function AddContentDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="sm:max-w-[920px] bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl
-                  shadow-xl rounded-[2rem] p-0 overflow-hidden border-0"
+        className="sm:max-w-[920px] bg-white/95 dark:bg-gray-900/95 backdrop-blur-3xl
+                  shadow-2xl rounded-[2.5rem] p-0 overflow-hidden border-0"
       >
         <div className="flex flex-col md:flex-row">
           <div
