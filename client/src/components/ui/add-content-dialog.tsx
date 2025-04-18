@@ -149,7 +149,8 @@ export function AddContentDialog({
                 badges={[
                   { icon: <File className="h-3.5 w-3.5" />, label: "Homepage" },
                   { icon: <File className="h-3.5 w-3.5" />, label: "Explore" },
-                  { icon: <Star className="h-3.5 w-3.5" />, label: "Wishlist" },
+                  { icon: <MessageSquare className="h-3.5 w-3.5" />, label: "Feed" },
+                  { icon: <File className="h-3.5 w-3.5" />, label: "Landing" },
                   { icon: <Plus className="h-3.5 w-3.5" />, label: "More" }
                 ]}
                 badgeBgColor="bg-blue-500/5"
