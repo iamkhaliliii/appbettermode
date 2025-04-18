@@ -124,33 +124,16 @@
 .mask-fade-x {
   mask-image: linear-gradient(to right, 
     transparent,
-    black 0.5%,
-    black 99.5%,
+    black 20%,
+    black 80%,
     transparent 100%
   );
   -webkit-mask-image: linear-gradient(to right,
     transparent,
-    black 0.5%,
-    black 99.5%,
+    black 20%,
+    black 80%,
     transparent 100%
   );
-}
-
-@keyframes slide {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-100%);
-  }
-}
-
-.infinite-slide {
-  animation: slide 15s linear infinite;
-}
-
-.infinite-slide:hover {
-  animation-play-state: paused;
 }
 
   .scrollbar-minimal::-webkit-scrollbar-thumb {

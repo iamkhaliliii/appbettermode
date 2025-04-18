@@ -89,28 +89,16 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
                 icon={<Database className="h-7 w-7 text-purple-500 dark:text-purple-400 transition-transform group-hover:scale-110 duration-500" />}
                 title="Content Type"
                 description={
-                  <div className="space-y-2.5">
-                    <div className="text-sm text-gray-600 dark:text-gray-300">Define a new type of content to expand your platform's capabilities</div>
-                    <div className="relative mt-2 w-full overflow-hidden">
-                      <div className="flex items-center gap-1.5 pb-1 overflow-hidden mask-fade-x">
-                        <div className="flex items-center gap-1.5 infinite-slide">
-                          <div className="flex items-center gap-1 min-w-max">
-                            <span className="shrink-0 px-2 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Blog Posts</span>
-                            <span className="shrink-0 px-2 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Products</span>
-                            <span className="shrink-0 px-2 py-1 text-xs bg-green-500/5 text-green-500/70 dark:text-green-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Team Members</span>
-                            <span className="shrink-0 px-2 py-1 text-xs bg-amber-500/5 text-amber-500/70 dark:text-amber-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Press</span>
-                            <span className="shrink-0 px-2 py-1 text-xs bg-rose-500/5 text-rose-500/70 dark:text-rose-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />News</span>
-                            <span className="shrink-0 px-2 py-1 text-xs bg-indigo-500/5 text-indigo-500/70 dark:text-indigo-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Events</span>
-                          </div>
-                          <div className="flex items-center gap-1 min-w-max">
-                            <span className="shrink-0 px-2 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Blog Posts</span>
-                            <span className="shrink-0 px-2 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Products</span>
-                            <span className="shrink-0 px-2 py-1 text-xs bg-green-500/5 text-green-500/70 dark:text-green-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Team Members</span>
-                            <span className="shrink-0 px-2 py-1 text-xs bg-amber-500/5 text-amber-500/70 dark:text-amber-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Press</span>
-                            <span className="shrink-0 px-2 py-1 text-xs bg-rose-500/5 text-rose-500/70 dark:text-rose-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />News</span>
-                            <span className="shrink-0 px-2 py-1 text-xs bg-indigo-500/5 text-indigo-500/70 dark:text-indigo-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Events</span>
-                          </div>
-                        </div>
+                  <div className="space-y-2">
+                    <p>Define a new type of content to expand your platform's capabilities</p>
+                    <div className="relative mt-1.5 w-[calc(100%+3rem)] -ml-6">
+                      <div className="flex items-center justify-center gap-1 pb-1 px-6 overflow-x-auto mask-fade-x scrollbar-hide">
+                        <span className="shrink-0 px-2 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Blog Posts</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Products</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-green-500/5 text-green-500/70 dark:text-green-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Team Members</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-amber-500/5 text-amber-500/70 dark:text-amber-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Press</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-rose-500/5 text-rose-500/70 dark:text-rose-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />News</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-indigo-500/5 text-indigo-500/70 dark:text-indigo-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Events</span>
                       </div>
                     </div>
                   </div>
@@ -122,15 +110,13 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
                 icon={<AppWindowMac className="h-7 w-7 text-blue-500 dark:text-blue-400 transition-transform group-hover:scale-110 duration-500" />}
                 title="New Page"
                 description={
-                  <div className="space-y-2.5">
-                    <div className="text-sm text-gray-600 dark:text-gray-300">Design and create a new page in your site's structure</div>
-                    <div className="relative mt-2 w-full overflow-hidden">
-                      <div className="flex items-center gap-1.5 pb-1 overflow-hidden mask-fade-x">
-                        <div className="flex items-center gap-1.5 infinite-slide">
-                          <div className="flex items-center gap-1.5 min-w-max">
-                            <span className="shrink-0 px-2 py-1 text-xs bg-amber-500/5 text-amber-500/70 dark:text-amber-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />Landing</span>
-                            <span className="shrink-0 px-2 py-1 text-xs bg-rose-500/5 text-rose-500/70 dark:text-rose-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />About Us</span>
-                            <span className="shrink-0 px-2 py-1 text-xs bg-indigo-500/5 text-indigo-500/70 dark:text-indigo-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />Contact</span>
+                  <div className="space-y-2">
+                    <p>Design and create a new page in your site's structure</p>
+                    <div className="relative mt-1.5 w-[calc(100%+3rem)] -ml-6">
+                      <div className="flex items-center justify-center gap-1 pb-1 px-6 overflow-x-auto mask-fade-x scrollbar-hide">
+                        <span className="shrink-0 px-2 py-1 text-xs bg-amber-500/5 text-amber-500/70 dark:text-amber-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />Landing</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-rose-500/5 text-rose-500/70 dark:text-rose-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />About Us</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-indigo-500/5 text-indigo-500/70 dark:text-indigo-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />Contact</span>
                         <span className="shrink-0 px-2 py-1 text-xs bg-sky-500/5 text-sky-500/70 dark:text-sky-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />Features</span>
                         <span className="shrink-0 px-2 py-1 text-xs bg-emerald-500/5 text-emerald-500/70 dark:text-emerald-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />Blog</span>
                       </div>
