@@ -39,15 +39,8 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
         transition-all duration-700 cursor-pointer group"
     >
       <div className="p-6 flex items-start">
-        <div
-          className="h-10 w-10 rounded-lg bg-gradient-to-br from-white to-gray-50/80 
-          dark:from-gray-800 dark:to-gray-900/80 flex items-center justify-center mr-4
-          shadow-sm group-hover:shadow-md transition-all duration-500"
-        >
-          {icon}
-        </div>
         <div className="flex-1">
-          <h3 className="font-medium text-sm text-gray-900 dark:text-white tracking-tight">
+          <h3 className="text-base font-semibold text-gray-900 dark:text-white tracking-tight leading-snug">
             {title}
           </h3>
           <div className="text-xs text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">
