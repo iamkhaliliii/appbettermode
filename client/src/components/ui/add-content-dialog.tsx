@@ -157,23 +157,23 @@ export function AddContentDialog({
                 description={
                   <div className="space-y-2">
                     <p>Design and create a new page in your site's structure</p>
-                    <div className="relative mt-1.5 w-full h-[30px]">
-                      <div className="absolute inset-x-0 flex items-center justify-center gap-1.5 pb-4 overflow-x-auto mask-fade-x scrollbar-hide">
-                        <span className="shrink-0 px-2 py-1 text-xs font-medium bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-md flex items-center gap-1.5 shadow-sm transition-colors hover:bg-blue-500/20">
-                          <File className="h-3 w-3" />
+                    <div className="relative mt-3 w-full">
+                      <div className="flex flex-wrap items-center justify-center gap-2">
+                        <span className="shrink-0 px-3 py-1.5 text-sm font-medium bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-lg flex items-center gap-2 shadow-sm transition-colors hover:bg-blue-500/20 cursor-pointer">
+                          <File className="h-4 w-4" />
                           Homepage
                         </span>
-                        <span className="shrink-0 px-2 py-1 text-xs font-medium bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-md flex items-center gap-1.5 shadow-sm transition-colors hover:bg-blue-500/20">
-                          <File className="h-3 w-3" />
+                        <span className="shrink-0 px-3 py-1.5 text-sm font-medium bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-lg flex items-center gap-2 shadow-sm transition-colors hover:bg-blue-500/20 cursor-pointer">
+                          <File className="h-4 w-4" />
                           Explore Page
                         </span>
-                        <span className="shrink-0 px-2 py-1 text-xs font-medium bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-md flex items-center gap-1.5 shadow-sm transition-colors hover:bg-blue-500/20">
-                          <File className="h-3 w-3" />
+                        <span className="shrink-0 px-3 py-1.5 text-sm font-medium bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-lg flex items-center gap-2 shadow-sm transition-colors hover:bg-blue-500/20 cursor-pointer">
+                          <File className="h-4 w-4" />
                           Faculty Landing
                         </span>
-                        <span className="shrink-0 px-2 py-1 text-xs font-medium bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-md flex items-center gap-1.5 shadow-sm transition-colors hover:bg-blue-500/20">
-                          <File className="h-3 w-3" />
-                          More Pages...
+                        <span className="shrink-0 px-3 py-1.5 text-sm font-medium bg-gray-500/10 text-gray-600 dark:text-gray-300 rounded-lg flex items-center gap-2 shadow-sm cursor-pointer">
+                          <Plus className="h-4 w-4" />
+                          More Pages
                         </span>
                       </div>
                     </div>
