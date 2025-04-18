@@ -83,9 +83,7 @@ function ContentOption({
           </span>
         ))}
         {extraText && (
-          <div className="pl-16 mt-2">
-            <span className="text-xs text-gray-500 dark:text-gray-400">{extraText}</span>
-          </div>
+          <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">{extraText}</span>
         )}
       </div>
     </motion.div>
