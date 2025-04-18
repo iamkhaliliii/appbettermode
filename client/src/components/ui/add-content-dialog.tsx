@@ -12,7 +12,7 @@ interface AddContentDialogProps {
 interface OptionCardProps {
   icon: React.ReactNode;
   title: string;
-  description: string;
+  description: React.ReactNode;
   onClick: () => void;
 }
 
@@ -83,14 +83,32 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
               <OptionCard
                 icon={<Database className="h-7 w-7 text-purple-500 dark:text-purple-400 transition-transform group-hover:scale-110 duration-500" />}
                 title="Content Type"
-                description="Define a new type of content to expand your platform's capabilities"
+                description={
+                  <div className="space-y-2">
+                    <p>Define a new type of content to expand your platform's capabilities</p>
+                    <div className="flex gap-2 mt-1">
+                      <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-300 rounded text-[10px]">Blog Posts</span>
+                      <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-300 rounded text-[10px]">Products</span>
+                      <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-300 rounded text-[10px]">Team Members</span>
+                    </div>
+                  </div>
+                }
                 onClick={() => onOpenChange(false)}
               />
               
               <OptionCard
                 icon={<AppWindowMac className="h-7 w-7 text-blue-500 dark:text-blue-400 transition-transform group-hover:scale-110 duration-500" />}
                 title="New Page"
-                description="Design and create a new page in your site's structure"
+                description={
+                  <div className="space-y-2">
+                    <p>Design and create a new page in your site's structure</p>
+                    <div className="flex gap-2 mt-1">
+                      <span className="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/20 text-amber-600 dark:text-amber-300 rounded text-[10px]">Landing</span>
+                      <span className="px-2 py-0.5 bg-rose-100 dark:bg-rose-900/20 text-rose-600 dark:text-rose-300 rounded text-[10px]">About Us</span>
+                      <span className="px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-300 rounded text-[10px]">Contact</span>
+                    </div>
+                  </div>
+                }
                 onClick={() => onOpenChange(false)}
               />
             </div>
