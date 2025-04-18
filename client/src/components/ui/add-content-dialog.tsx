@@ -26,11 +26,11 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
       tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => e.key === 'Enter' && onClick()}
-      className="flex items-start p-8 rounded-3xl border border-gray-100/20 dark:border-gray-800/20
-        hover:border-gray-200/30 dark:hover:border-gray-700/30
-        bg-white/20 dark:bg-gray-900/20 backdrop-blur-2xl
-        hover:bg-white/30 dark:hover:bg-gray-800/30
-        shadow-none hover:shadow-xl dark:shadow-gray-950/10
+      className="flex items-start p-8 rounded-3xl border border-gray-50/10 dark:border-gray-800/10
+        hover:border-gray-100/20 dark:hover:border-gray-700/20
+        bg-white/10 dark:bg-gray-900/10 backdrop-blur-xl
+        hover:bg-white/20 dark:hover:bg-gray-800/20
+        shadow-none hover:shadow-lg dark:shadow-gray-950/5
         transition-all duration-700 cursor-pointer group"
     >
       <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-white to-gray-50/80 
@@ -59,10 +59,10 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
 export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[900px] bg-white/80 dark:bg-gray-900/80 backdrop-blur-3xl
-        shadow-2xl rounded-[2rem] p-0 overflow-hidden border-0">
+      <DialogContent className="sm:max-w-[900px] bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl
+        shadow-xl rounded-[2rem] p-0 overflow-hidden border-0">
         <div className="flex flex-col md:flex-row">
-          <div className="bg-gradient-to-br from-gray-50/60 to-gray-100/20 dark:from-gray-850/60 dark:to-gray-800/20 
+          <div className="bg-gradient-to-br from-gray-50/40 to-gray-100/10 dark:from-gray-850/40 dark:to-gray-800/10 
             p-12 md:w-[45%] flex flex-col justify-center border-b md:border-b-0 md:border-r 
             border-gray-100/30 dark:border-gray-800/30">
             <DialogHeader className="items-start text-left space-y-3">
