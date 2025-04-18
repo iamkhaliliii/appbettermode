@@ -86,10 +86,12 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
                 description={
                   <div className="space-y-2">
                     <p>Define a new type of content to expand your platform's capabilities</p>
-                    <div className="flex gap-2 mt-1">
-                      <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-300 rounded text-[10px]">Blog Posts</span>
-                      <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-300 rounded text-[10px]">Products</span>
-                      <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-300 rounded text-[10px]">Team Members</span>
+                    <div className="flex gap-1.5 mt-1">
+                      <span className="px-1.5 text-[9px] text-purple-500/70 dark:text-purple-400/70">Blog Posts</span>
+                      <span className="text-[9px] text-gray-300">·</span>
+                      <span className="px-1.5 text-[9px] text-blue-500/70 dark:text-blue-400/70">Products</span>
+                      <span className="text-[9px] text-gray-300">·</span>
+                      <span className="px-1.5 text-[9px] text-green-500/70 dark:text-green-400/70">Team Members</span>
                     </div>
                   </div>
                 }
@@ -102,10 +104,12 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
                 description={
                   <div className="space-y-2">
                     <p>Design and create a new page in your site's structure</p>
-                    <div className="flex gap-2 mt-1">
-                      <span className="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/20 text-amber-600 dark:text-amber-300 rounded text-[10px]">Landing</span>
-                      <span className="px-2 py-0.5 bg-rose-100 dark:bg-rose-900/20 text-rose-600 dark:text-rose-300 rounded text-[10px]">About Us</span>
-                      <span className="px-2 py-0.5 bg-indigo-100 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-300 rounded text-[10px]">Contact</span>
+                    <div className="flex gap-1.5 mt-1">
+                      <span className="px-1.5 text-[9px] text-amber-500/70 dark:text-amber-400/70">Landing</span>
+                      <span className="text-[9px] text-gray-300">·</span>
+                      <span className="px-1.5 text-[9px] text-rose-500/70 dark:text-rose-400/70">About Us</span>
+                      <span className="text-[9px] text-gray-300">·</span>
+                      <span className="px-1.5 text-[9px] text-indigo-500/70 dark:text-indigo-400/70">Contact</span>
                     </div>
                   </div>
                 }
