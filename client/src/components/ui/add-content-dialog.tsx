@@ -50,7 +50,7 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
           {title}
         </h3>
       </div>
-      
+
       <div className="flex items-center gap-3">
         <div className="flex gap-2">
           <span className="shrink-0 px-3 py-1.5 text-sm font-medium bg-purple-500/10 text-purple-600 dark:text-purple-300 rounded-lg flex items-center gap-2">
@@ -159,25 +159,25 @@ export function AddContentDialog({
                     <p>Design and create a new page in your site's structure</p>
                     <div className="relative mt-1.5 w-full h-[30px]">
                       <div className="absolute inset-x-0 flex items-center justify-center gap-1.5 pb-4 overflow-x-auto mask-fade-x scrollbar-hide">
-                        <span className="shrink-0 px-3 py-1.5 text-[11px] bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-2">
-                          <File className="h-3.5 w-3.5 opacity-50" />
-                          Landing
+                        <span className="shrink-0 px-2 py-1 text-[11px] bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-md flex items-center gap-1">
+                          <File className="h-3 w-3" />
+                          Homepage
                         </span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1.5">
-                          <File className="h-3 w-3 opacity-50" />
+                        <span className="shrink-0 px-2 py-1 text-[11px] bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-md flex items-center gap-1">
+                          <File className="h-3 w-3" />
+                          Explore
+                        </span>
+                        <span className="shrink-0 px-2 py-1 text-[11px] bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-md flex items-center gap-1">
+                          <File className="h-3 w-3" />
+                          Faculty Landing
+                        </span>
+                        <span className="shrink-0 px-2 py-1 text-[11px] bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-md flex items-center gap-1">
+                          <File className="h-3 w-3" />
                           About Us
                         </span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1.5">
-                          <File className="h-3 w-3 opacity-50" />
-                          Contact
-                        </span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1.5">
-                          <File className="h-3 w-3 opacity-50" />
-                          Features
-                        </span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1.5">
-                          <File className="h-3 w-3 opacity-50" />
-                          Blog
+                        <span className="shrink-0 px-2 py-1 text-[11px] bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-md flex items-center gap-1">
+                          <File className="h-3 w-3" />
+                          More Pages
                         </span>
                       </div>
                     </div>
