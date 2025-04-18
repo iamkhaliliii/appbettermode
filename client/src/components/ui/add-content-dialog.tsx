@@ -110,17 +110,22 @@ export function AddContentDialog({
           <div className="md:w-[55%] p-12">
             <div className="space-y-8">
               <OptionCard
-                icon={
-                  <Database className="h-7 w-7 text-purple-500 dark:text-purple-400 transition-transform group-hover:scale-110 duration-500" />
-                }
-                title="Content Type"
+                icon={null}
+                title="Create Post"
                 description={
-                  <div className="space-y-2">
-                    <p>
-                      Define a new type of content to expand your platform's
-                      capabilities
-                    </p>
-                    <div className="relative mt-1.5 w-full h-[30px]">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <input
+                        type="text"
+                        placeholder="Post title"
+                        className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50"
+                      />
+                      <textarea
+                        placeholder="Write your post content..."
+                        className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 min-h-[100px]"
+                      />
+                    </div>
+                    <div className="relative w-full h-[30px]">
                       <div className="absolute inset-x-0 flex items-center justify-center gap-1.5 pb-4 overflow-x-auto mask-fade-x scrollbar-hide">
                         <span className="shrink-0 px-3 py-1.5 text-[11px] bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-2">
                           <Database className="h-3.5 w-3.5 opacity-50" />
