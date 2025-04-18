@@ -182,7 +182,7 @@ export function AddContentDialog({
 
               <OptionCard
                 icon={
-                  <AppWindowMac className="h-7 w-7 text-blue-500 dark:text-blue-400 transition-transform group-hover:scale-110 duration-500" />
+                  <AppWindowMac className="h-4 w-4 text-blue-500/70 dark:text-blue-400/70 transition-transform group-hover:scale-105 duration-500" />
                 }
                 title="New Page"
                 description={
