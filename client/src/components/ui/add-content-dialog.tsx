@@ -26,24 +26,24 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
       tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => e.key === 'Enter' && onClick()}
-      className="flex items-start p-10 rounded-3xl border border-white/5 dark:border-gray-800/5
+      className="flex items-start p-6 rounded-2xl border border-white/5 dark:border-gray-800/5
         hover:border-white/10 dark:hover:border-gray-700/10
         bg-white/5 dark:bg-gray-900/5 backdrop-blur-xl
         hover:bg-white/10 dark:hover:bg-gray-800/10
         shadow-none hover:shadow-lg dark:shadow-gray-950/5
         transition-all duration-700 cursor-pointer group"
     >
-      <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-white to-gray-50/80 
-        dark:from-gray-800 dark:to-gray-900/80 flex items-center justify-center mr-6
+      <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-white to-gray-50/80 
+        dark:from-gray-800 dark:to-gray-900/80 flex items-center justify-center mr-4
         shadow-sm group-hover:shadow-md transition-all duration-500">
         {icon}
       </div>
       
       <div className="flex-1">
-        <h3 className="font-medium text-base text-gray-900 dark:text-white tracking-tight">
+        <h3 className="font-medium text-sm text-gray-900 dark:text-white tracking-tight">
           {title}
         </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 leading-relaxed">
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">
           {description}
         </p>
       </div>
