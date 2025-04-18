@@ -39,8 +39,15 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
         transition-all duration-700 cursor-pointer group"
     >
       <div className="p-6 flex items-start">
+        <div
+          className="h-10 w-10 rounded-lg bg-gradient-to-br from-white to-gray-50/80 
+          dark:from-gray-800 dark:to-gray-900/80 flex items-center justify-center mr-4
+          shadow-sm group-hover:shadow-md transition-all duration-500"
+        >
+          {icon}
+        </div>
         <div className="flex-1">
-          <h3 className="text-base font-semibold text-gray-900 dark:text-white tracking-tight leading-snug">
+          <h3 className="font-medium text-sm text-gray-900 dark:text-white tracking-tight">
             {title}
           </h3>
           <div className="text-xs text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">
@@ -103,8 +110,10 @@ export function AddContentDialog({
           <div className="md:w-[55%] p-12">
             <div className="space-y-8">
               <OptionCard
-                icon={null}
-                title="I want to let people post something"
+                icon={
+                  <Database className="h-7 w-7 text-purple-500 dark:text-purple-400 transition-transform group-hover:scale-110 duration-500" />
+                }
+                title="Content Type"
                 description={
                   <div className="space-y-2">
                     <p>
@@ -113,8 +122,8 @@ export function AddContentDialog({
                     </p>
                     <div className="relative mt-1.5 w-full h-[30px]">
                       <div className="absolute inset-x-0 flex items-center justify-center gap-1.5 pb-4 overflow-x-auto mask-fade-x scrollbar-hide">
-                        <span className="shrink-0 px-2 py-1 text-[10px] bg-purple-500/5 text-purple-500/50 dark:text-purple-400/50 rounded-full flex items-center gap-1.5">
-                          <Database className="h-2.5 w-2.5 opacity-40" />
+                        <span className="shrink-0 px-3 py-1.5 text-[11px] bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-2">
+                          <Database className="h-3.5 w-3.5 opacity-50" />
                           Discussion
                         </span>
                         <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
@@ -182,7 +191,7 @@ export function AddContentDialog({
 
               <OptionCard
                 icon={
-                  <AppWindowMac className="h-4 w-4 text-blue-500/70 dark:text-blue-400/70 transition-transform group-hover:scale-105 duration-500" />
+                  <AppWindowMac className="h-7 w-7 text-blue-500 dark:text-blue-400 transition-transform group-hover:scale-110 duration-500" />
                 }
                 title="New Page"
                 description={
