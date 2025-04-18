@@ -40,9 +40,10 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
     >
       <div className="p-6 flex items-start">
         <div
-          className="h-10 w-10 rounded-lg bg-gradient-to-br from-white to-gray-50/80 
-          dark:from-gray-800 dark:to-gray-900/80 flex items-center justify-center mr-4
-          shadow-sm group-hover:shadow-md transition-all duration-500"
+          className="h-8 w-8 rounded-md bg-gradient-to-br from-gray-50/40 to-white/30 
+          dark:from-gray-800/40 dark:to-gray-900/30 flex items-center justify-center mr-3.5
+          ring-1 ring-gray-200/50 dark:ring-gray-700/50 group-hover:ring-gray-300 dark:group-hover:ring-gray-600
+          transition-all duration-500"
         >
           {icon}
         </div>
