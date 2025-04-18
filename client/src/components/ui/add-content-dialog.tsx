@@ -25,7 +25,7 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
       tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => e.key === 'Enter' && onClick()}
-      className="w-full flex items-start p-6 rounded-2xl border border-white/5 dark:border-gray-800/5
+      className="flex items-start p-6 rounded-2xl border border-white/5 dark:border-gray-800/5
         hover:border-white/10 dark:hover:border-gray-700/10
         bg-white/5 dark:bg-gray-900/5 backdrop-blur-xl
         hover:bg-white/10 dark:hover:bg-gray-800/10
@@ -34,7 +34,7 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
     >
       <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-white to-gray-50/80 
         dark:from-gray-800 dark:to-gray-900/80 flex items-center justify-center mr-4
-        shadow-sm group-hover:shadow-md transition-all duration-500 opacity-60">
+        shadow-sm group-hover:shadow-md transition-all duration-500">
         {icon}
       </div>
 
