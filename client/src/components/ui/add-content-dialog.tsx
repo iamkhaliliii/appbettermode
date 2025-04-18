@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Database, AppWindowMac, ChevronRight } from "lucide-react";
+import { Database, AppWindowMac, ChevronRight, File } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface AddContentDialogProps {
@@ -86,13 +86,13 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
                   <div className="space-y-2">
                     <p>Define a new type of content to expand your platform's capabilities</p>
                     <div className="relative mt-1.5 w-[200px]">
-                      <div className="flex items-center gap-1 overflow-x-auto pb-1 mask-fade-x scrollbar-hide">
-                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full">Blog Posts</span>
-                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full">Products</span>
-                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-green-500/5 text-green-500/70 dark:text-green-400/70 rounded-full">Team Members</span>
-                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-amber-500/5 text-amber-500/70 dark:text-amber-400/70 rounded-full">Press</span>
-                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-rose-500/5 text-rose-500/70 dark:text-rose-400/70 rounded-full">News</span>
-                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-indigo-500/5 text-indigo-500/70 dark:text-indigo-400/70 rounded-full">Events</span>
+                      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 mask-fade-x scrollbar-hide">
+                        <span className="shrink-0 px-2 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3" />Blog Posts</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3" />Products</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-green-500/5 text-green-500/70 dark:text-green-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3" />Team Members</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-amber-500/5 text-amber-500/70 dark:text-amber-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3" />Press</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-rose-500/5 text-rose-500/70 dark:text-rose-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3" />News</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-indigo-500/5 text-indigo-500/70 dark:text-indigo-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3" />Events</span>
                       </div>
                     </div>
                   </div>
@@ -107,12 +107,12 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
                   <div className="space-y-2">
                     <p>Design and create a new page in your site's structure</p>
                     <div className="relative mt-1.5 w-[200px]">
-                      <div className="flex items-center gap-1 overflow-x-auto pb-1 mask-fade-x scrollbar-hide">
-                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-amber-500/5 text-amber-500/70 dark:text-amber-400/70 rounded-full">Landing</span>
-                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-rose-500/5 text-rose-500/70 dark:text-rose-400/70 rounded-full">About Us</span>
-                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-indigo-500/5 text-indigo-500/70 dark:text-indigo-400/70 rounded-full">Contact</span>
-                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-sky-500/5 text-sky-500/70 dark:text-sky-400/70 rounded-full">Features</span>
-                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-emerald-500/5 text-emerald-500/70 dark:text-emerald-400/70 rounded-full">Blog</span>
+                      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 mask-fade-x scrollbar-hide">
+                        <span className="shrink-0 px-2 py-1 text-xs bg-amber-500/5 text-amber-500/70 dark:text-amber-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3" />Landing</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-rose-500/5 text-rose-500/70 dark:text-rose-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3" />About Us</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-indigo-500/5 text-indigo-500/70 dark:text-indigo-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3" />Contact</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-sky-500/5 text-sky-500/70 dark:text-sky-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3" />Features</span>
+                        <span className="shrink-0 px-2 py-1 text-xs bg-emerald-500/5 text-emerald-500/70 dark:text-emerald-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3" />Blog</span>
                       </div>
                     </div>
                   </div>
