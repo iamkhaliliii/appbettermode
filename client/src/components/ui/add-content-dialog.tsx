@@ -66,7 +66,7 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
         </div>
       </div>
       <div
-        className="self-center ml-6 opacity-0 group-hover:opacity-100 transition-all duration-500 
+        className="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-500 
         translate-x-2 group-hover:translate-x-0"
       >
         <ChevronRight className="h-5 w-5 text-gray-400 dark:text-gray-500" />
