@@ -48,7 +48,7 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
           {icon}
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold text-[13px] text-gray-800 dark:text-white/90 tracking-tight leading-relaxed">
+          <h3 className="font-semibold text-[15px] text-gray-800 dark:text-white/95 tracking-tight leading-snug bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 dark:from-white dark:via-gray-100 dark:to-gray-200 bg-clip-text text-transparent">
             {title}
           </h3>
           <div className="text-xs text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">
