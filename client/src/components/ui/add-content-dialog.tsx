@@ -194,7 +194,7 @@ export function AddContentDialog({
                 icon={
                   <AppWindowMac className="h-3.5 w-3.5 text-blue-500/90 dark:text-blue-400/90 transition-transform group-hover:scale-105 duration-500" />
                 }
-                title="New Page"
+                title="I want to create a new page"
                 description={
                   <div className="space-y-2">
                     <p>Design and create a new page in your site's structure</p>
