@@ -91,8 +91,8 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
                 description={
                   <div className="space-y-2">
                     <p>Define a new type of content to expand your platform's capabilities</p>
-                    <div className="relative mt-1.5 w-full">
-                      <div className="flex flex-wrap items-center gap-1.5 pb-1">
+                    <div className="relative mt-1.5 w-[calc(100%+3rem)] -ml-6">
+                      <div className="flex items-center gap-1.5 pb-1 px-6 overflow-x-auto mask-fade-x scrollbar-hide">
                         <span className="shrink-0 px-2 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Blog Posts</span>
                         <span className="shrink-0 px-2 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Products</span>
                         <span className="shrink-0 px-2 py-1 text-xs bg-green-500/5 text-green-500/70 dark:text-green-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Team Members</span>
@@ -112,8 +112,8 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
                 description={
                   <div className="space-y-2">
                     <p>Design and create a new page in your site's structure</p>
-                    <div className="relative mt-1.5 w-full">
-                      <div className="flex flex-wrap items-center gap-1.5 pb-1">
+                    <div className="relative mt-1.5 w-[calc(100%+3rem)] -ml-6">
+                      <div className="flex items-center gap-1.5 pb-1 px-6 overflow-x-auto mask-fade-x scrollbar-hide">
                         <span className="shrink-0 px-2 py-1 text-xs bg-amber-500/5 text-amber-500/70 dark:text-amber-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />Landing</span>
                         <span className="shrink-0 px-2 py-1 text-xs bg-rose-500/5 text-rose-500/70 dark:text-rose-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />About Us</span>
                         <span className="shrink-0 px-2 py-1 text-xs bg-indigo-500/5 text-indigo-500/70 dark:text-indigo-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />Contact</span>

@@ -120,6 +120,22 @@
     background: transparent;
   }
 
+
+.mask-fade-x {
+  mask-image: linear-gradient(to right, 
+    transparent,
+    black 10%,
+    black 90%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent 100%
+  );
+}
+
   .scrollbar-minimal::-webkit-scrollbar-thumb {
     background-color: rgba(156, 163, 175, 0.15);
     border-radius: 20px;
