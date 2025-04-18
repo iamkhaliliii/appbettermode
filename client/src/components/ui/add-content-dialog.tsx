@@ -91,8 +91,8 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
                 description={
                   <div className="space-y-2">
                     <p>Define a new type of content to expand your platform's capabilities</p>
-                    <div className="relative mt-1.5 w-[calc(100%+3rem)] -ml-6">
-                      <div className="flex items-center gap-1.5 pb-1 pl-3 pr-6 overflow-x-auto mask-fade-x scrollbar-hide">
+                    <div className="relative mt-1.5 w-[calc(100%+3rem)] -ml-6 overflow-x-auto scrollbar-hide">
+                      <div className="flex items-center gap-1.5 pb-1 pl-3 pr-6 mask-fade-x">
                         <span className="shrink-0 px-2 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Blog Posts</span>
                         <span className="shrink-0 px-2 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Products</span>
                         <span className="shrink-0 px-2 py-1 text-xs bg-green-500/5 text-green-500/70 dark:text-green-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Team Members</span>
