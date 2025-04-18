@@ -59,7 +59,7 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
       </div>
 
       <div className="w-full">
-        <div className="flex flex-wrap gap-1.5 items-center">
+        <div className="flex flex-wrap gap-1.5 items-center p-6">
           {typeof description === "object" &&
             "props" in description &&
             description.props.children[1]}
