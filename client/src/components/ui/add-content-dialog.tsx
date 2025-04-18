@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import {
   Dialog,
@@ -29,6 +28,7 @@ interface ContentOptionProps {
   badgeBgColor: string;
   badgeTextColor: string;
   onClick: () => void;
+  extraText?: string; // Added extraText prop
 }
 
 function ContentOption({
@@ -42,6 +42,7 @@ function ContentOption({
   badgeBgColor,
   badgeTextColor,
   onClick,
+  extraText, // Use extraText prop
 }: ContentOptionProps) {
   return (
     <motion.div
@@ -66,7 +67,7 @@ function ContentOption({
           {title}
         </h3>
       </div>
-      
+
       <div className="flex flex-wrap gap-2.5 pl-16 mt-2">
         {badges.map((badge, index) => (
           <span
@@ -81,6 +82,11 @@ function ContentOption({
             {badge.label}
           </span>
         ))}
+        {extraText && (
+          <div className="pl-16 mt-2">
+            <span className="text-xs text-gray-500 dark:text-gray-400">{extraText}</span>
+          </div>
+        )}
       </div>
     </motion.div>
   );
@@ -132,11 +138,12 @@ export function AddContentDialog({
                   { icon: <MessageSquare className="h-3.5 w-3.5" />, label: "Discussion" },
                   { icon: <Star className="h-3.5 w-3.5" />, label: "Q&A" },
                   { icon: <Star className="h-3.5 w-3.5" />, label: "Wishlist" },
-                  { icon: <Plus className="h-3.5 w-3.5" />, label: "More" }
+                  //Removed Plus icon and "More" label
                 ]}
                 badgeBgColor="bg-purple-500/5"
                 badgeTextColor="text-purple-600/90 dark:text-purple-300/90"
                 onClick={() => onOpenChange(false)}
+                extraText={"and more"} // Added extraText
               />
 
               <ContentOption
@@ -151,11 +158,12 @@ export function AddContentDialog({
                   { icon: <File className="h-3.5 w-3.5" />, label: "Explore" },
                   { icon: <MessageSquare className="h-3.5 w-3.5" />, label: "Feed" },
                   { icon: <File className="h-3.5 w-3.5" />, label: "Landing" },
-                  { icon: <Plus className="h-3.5 w-3.5" />, label: "More" }
+                  //Removed Plus icon and "More" label
                 ]}
                 badgeBgColor="bg-blue-500/5"
                 badgeTextColor="text-blue-600/90 dark:text-blue-300/90"
                 onClick={() => onOpenChange(false)}
+                extraText={"and more"} // Added extraText
               />
             </div>
 
