@@ -31,46 +31,46 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
       tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => e.key === "Enter" && onClick()}
-      className="flex flex-col rounded-2xl border border-white/5 dark:border-gray-800/5
-        hover:border-white/10 dark:hover:border-gray-700/10
+      className="flex items-center justify-between px-5 py-4 rounded-xl border border-white/10 dark:border-gray-800/10
         bg-white/5 dark:bg-gray-900/5 backdrop-blur-xl
         hover:bg-white/10 dark:hover:bg-gray-800/10
-        shadow-none hover:shadow-lg dark:shadow-gray-950/5
-        transition-all duration-700 cursor-pointer group"
+        shadow-none hover:shadow-md dark:shadow-gray-950/5
+        transition-all duration-500 cursor-pointer group"
     >
-      <div className="p-6 flex items-start">
+      <div className="flex items-center gap-4">
         <div
-          className="h-8 w-8 rounded-md bg-gradient-to-br from-gray-50/40 to-white/30 
-          dark:from-gray-800/40 dark:to-gray-900/30 flex items-center justify-center mr-3.5
-          ring-1 ring-gray-200/50 dark:ring-gray-700/50 group-hover:ring-gray-300 dark:group-hover:ring-gray-600
+          className="h-10 w-10 rounded-lg bg-gradient-to-br from-purple-50/40 to-purple-100/30 
+          dark:from-purple-900/40 dark:to-purple-800/30 flex items-center justify-center
+          ring-1 ring-purple-200/50 dark:ring-purple-700/50 group-hover:ring-purple-300 dark:group-hover:ring-purple-600
           transition-all duration-500"
         >
           {icon}
         </div>
-        <div className="flex-1">
-          <h3 className="font-semibold text-[15px] text-gray-800 dark:text-white/95 tracking-tight leading-snug bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 dark:from-white dark:via-gray-100 dark:to-gray-200 bg-clip-text text-transparent">
-            {title}
-          </h3>
-          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">
-            {typeof description === "string"
-              ? description
-              : description.props.children[0]}
-          </div>
-        </div>
+        <h3 className="font-semibold text-base text-gray-800 dark:text-white/95">
+          {title}
+        </h3>
       </div>
-
-      <div className="w-full">
-        <div className="flex flex-wrap gap-1.5 items-center pb-4">
-          {typeof description === "object" &&
-            "props" in description &&
-            description.props.children[1]}
+      
+      <div className="flex items-center gap-3">
+        <div className="flex gap-2">
+          <span className="shrink-0 px-3 py-1.5 text-sm font-medium bg-purple-500/10 text-purple-600 dark:text-purple-300 rounded-lg flex items-center gap-2">
+            <Database className="h-4 w-4" />
+            Discussion
+          </span>
+          <span className="shrink-0 px-3 py-1.5 text-sm font-medium bg-purple-500/10 text-purple-600 dark:text-purple-300 rounded-lg flex items-center gap-2">
+            <MessageSquare className="h-4 w-4" />
+            Q&A
+          </span>
+          <span className="shrink-0 px-3 py-1.5 text-sm font-medium bg-purple-500/10 text-purple-600 dark:text-purple-300 rounded-lg flex items-center gap-2">
+            <Star className="h-4 w-4" />
+            Wishlist
+          </span>
+          <span className="shrink-0 px-3 py-1.5 text-sm font-medium bg-purple-500/10 text-purple-600 dark:text-purple-300 rounded-lg flex items-center gap-2">
+            <Calendar className="h-4 w-4" />
+            Event
+          </span>
         </div>
-      </div>
-      <div
-        className="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-500 
-        translate-x-2 group-hover:translate-x-0"
-      >
-        <ChevronRight className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+        <ChevronRight className="h-5 w-5 text-gray-400 dark:text-gray-500 opacity-0 group-hover:opacity-100 transition-all duration-500" />
       </div>
     </motion.div>
   );
