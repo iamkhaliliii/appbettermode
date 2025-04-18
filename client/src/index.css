@@ -136,6 +136,23 @@
   );
 }
 
+@keyframes slide {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.infinite-slide {
+  animation: slide 20s linear infinite;
+}
+
+.infinite-slide:hover {
+  animation-play-state: paused;
+}
+
   .scrollbar-minimal::-webkit-scrollbar-thumb {
     background-color: rgba(156, 163, 175, 0.15);
     border-radius: 20px;
