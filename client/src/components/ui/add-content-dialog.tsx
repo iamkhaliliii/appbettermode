@@ -19,9 +19,9 @@ interface OptionCardProps {
 function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
   return (
     <motion.div
-      whileHover={{ scale: 1.005, y: -2 }}
-      whileTap={{ scale: 0.995 }}
-      transition={{ type: "spring", stiffness: 200, damping: 20 }}
+      whileHover={{ scale: 1.002, y: -1 }}
+      whileTap={{ scale: 0.998 }}
+      transition={{ type: "spring", stiffness: 400, damping: 30 }}
       role="button"
       tabIndex={0}
       onClick={onClick}
