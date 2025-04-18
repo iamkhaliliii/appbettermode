@@ -122,15 +122,7 @@
   }
 }
 
-.mask-fade-sides {
-  mask-image: linear-gradient(to right, transparent 0%, black 25%, black 75%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 25%, black 75%, transparent 100%);
-}
-
-.badge {
-  @apply px-2 py-1 text-sm font-medium rounded-full; /* Adjust size as needed */
-}
-
-.button .badge {
-  @apply px-0; /* Remove horizontal padding inside button */
+.mask-fade-right {
+  mask-image: linear-gradient(to right, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
 }
