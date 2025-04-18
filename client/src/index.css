@@ -1,4 +1,19 @@
 
+.mask-fade-x {
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent 100%);
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
 @layer utilities {
   .scrollbar-hide {
     -ms-overflow-style: none;
