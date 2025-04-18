@@ -124,27 +124,63 @@ export function AddContentDialog({
                       <div className="absolute inset-x-0 flex items-center justify-center gap-1.5 pb-1 overflow-x-auto mask-fade-x scrollbar-hide">
                         <span className="shrink-0 px-3 py-1.5 text-[11px] bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-2">
                           <Database className="h-3.5 w-3.5 opacity-50" />
-                          Blog Posts
+                          Discussion
                         </span>
                         <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
                           <Database className="h-3 w-3 opacity-50" />
-                          Products
+                          Q&A
                         </span>
                         <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
                           <Database className="h-3 w-3 opacity-50" />
-                          Team Members
+                          Knowledge Base
                         </span>
                         <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
                           <Database className="h-3 w-3 opacity-50" />
-                          Press
+                          Ideas & Feedback
                         </span>
                         <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
                           <Database className="h-3 w-3 opacity-50" />
-                          News
+                          Changelog
                         </span>
                         <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
                           <Database className="h-3 w-3 opacity-50" />
-                          Events
+                          Product Update
+                        </span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
+                          <Database className="h-3 w-3 opacity-50" />
+                          Roadmap
+                        </span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
+                          <Database className="h-3 w-3 opacity-50" />
+                          Announcements
+                        </span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
+                          <Database className="h-3 w-3 opacity-50" />
+                          Wiki
+                        </span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
+                          <Database className="h-3 w-3 opacity-50" />
+                          Member Directory
+                        </span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
+                          <Database className="h-3 w-3 opacity-50" />
+                          Event
+                        </span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
+                          <Database className="h-3 w-3 opacity-50" />
+                          Course
+                        </span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
+                          <Database className="h-3 w-3 opacity-50" />
+                          Jobs
+                        </span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
+                          <Database className="h-3 w-3 opacity-50" />
+                          Speakers
+                        </span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
+                          <Database className="h-3 w-3 opacity-50" />
+                          Article
                         </span>
                       </div>
                     </div>
