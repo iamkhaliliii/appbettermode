@@ -110,10 +110,8 @@ export function AddContentDialog({
           <div className="md:w-[55%] p-12">
             <div className="space-y-8">
               <OptionCard
-                icon={
-                  <Database className="h-7 w-7 text-purple-500 dark:text-purple-400 transition-transform group-hover:scale-110 duration-500" />
-                }
-                title="Content Type"
+                icon={null}
+                title="I want to let people post something"
                 description={
                   <div className="space-y-2">
                     <p>
