@@ -90,7 +90,7 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
                 title="Content Type"
                 description={
                   <div className="space-y-2">
-                    <p>Define a new type of content to expand your platform's capabilities</p>
+                    <div className="text-sm">Define a new type of content to expand your platform's capabilities</div>
                     <div className="relative mt-1.5 w-[calc(100%+3rem)] -ml-6">
                       <div className="flex items-center gap-1 pb-1 px-6 overflow-hidden mask-fade-x">
                         <div className="flex items-center gap-1 infinite-slide">
