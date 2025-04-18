@@ -47,7 +47,7 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
           {icon}
         </div>
         <div className="flex-1">
-          <h3 className="font-medium text-sm text-gray-900 dark:text-white tracking-tight">
+          <h3 className="font-semibold text-[13px] text-gray-800 dark:text-white/90 tracking-tight leading-relaxed">
             {title}
           </h3>
           <div className="text-xs text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">
@@ -111,9 +111,9 @@ export function AddContentDialog({
             <div className="space-y-8">
               <OptionCard
                 icon={
-                  <Database className="h-7 w-7 text-purple-500 dark:text-purple-400 transition-transform group-hover:scale-110 duration-500" />
+                  <Database className="h-3.5 w-3.5 text-purple-500/80 dark:text-purple-400/80 transition-transform group-hover:scale-105 duration-300" />
                 }
-                title="Content Type"
+                title="I want to let people post something"
                 description={
                   <div className="space-y-2">
                     <p>
