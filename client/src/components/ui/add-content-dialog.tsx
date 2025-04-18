@@ -131,10 +131,11 @@ export function AddContentDialog({
                   { icon: <Calendar className="h-3.5 w-3.5" />, label: "Event" },
                   { icon: <MessageSquare className="h-3.5 w-3.5" />, label: "Discussion" },
                   { icon: <Star className="h-3.5 w-3.5" />, label: "Q&A" },
-                  { icon: <Plus className="h-3.5 w-3.5" />, label: "More CMS" }
+                  { icon: <Star className="h-3.5 w-3.5" />, label: "Wishlist" },
+                  { icon: <Plus className="h-3.5 w-3.5" />, label: "More" }
                 ]}
-                badgeBgColor="bg-purple-500/10"
-                badgeTextColor="text-purple-600 dark:text-purple-300"
+                badgeBgColor="bg-purple-500/5"
+                badgeTextColor="text-purple-600/90 dark:text-purple-300/90"
                 onClick={() => onOpenChange(false)}
               />
 
@@ -147,12 +148,12 @@ export function AddContentDialog({
                 title="I want to create a new page"
                 badges={[
                   { icon: <File className="h-3.5 w-3.5" />, label: "Homepage" },
-                  { icon: <File className="h-3.5 w-3.5" />, label: "Explore Page" },
-                  { icon: <File className="h-3.5 w-3.5" />, label: "Faculty Landing" },
-                  { icon: <Plus className="h-3.5 w-3.5" />, label: "More Pages" }
+                  { icon: <File className="h-3.5 w-3.5" />, label: "Explore" },
+                  { icon: <Star className="h-3.5 w-3.5" />, label: "Wishlist" },
+                  { icon: <Plus className="h-3.5 w-3.5" />, label: "More" }
                 ]}
-                badgeBgColor="bg-blue-500/10"
-                badgeTextColor="text-blue-600 dark:text-blue-300"
+                badgeBgColor="bg-blue-500/5"
+                badgeTextColor="text-blue-600/90 dark:text-blue-300/90"
                 onClick={() => onOpenChange(false)}
               />
             </div>
