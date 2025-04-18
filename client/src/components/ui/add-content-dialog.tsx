@@ -6,7 +6,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Database, AppWindowMac, ChevronRight, File } from "lucide-react";
+import { Database, AppWindowMac, ChevronRight, File, MessageSquare, Star, Calendar, Plus } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface AddContentDialogProps {
@@ -94,7 +94,7 @@ export function AddContentDialog({
           >
             <DialogHeader className="items-start text-left space-y-3">
               <DialogTitle
-                className="text-3xl font-semibold tracking-tight 
+                className="text-4xl font-semibold tracking-tight 
                 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 
                 dark:from-white dark:via-gray-200 dark:to-gray-300 
                 bg-clip-text text-transparent"
@@ -122,66 +122,26 @@ export function AddContentDialog({
                       capabilities
                     </p>
                     <div className="relative mt-1.5 w-full h-[30px]">
-                      <div className="absolute inset-x-0 flex items-center justify-center gap-1.5 pb-4 overflow-x-auto mask-fade-x scrollbar-hide">
-                        <span className="shrink-0 px-3 py-1.5 text-[11px] bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-2">
-                          <Database className="h-3.5 w-3.5 opacity-50" />
+                      <div className="absolute inset-x-0 flex items-center justify-start gap-2 pb-4 overflow-x-auto mask-fade-x scrollbar-hide px-2">
+                        <span className="shrink-0 px-3 py-2 text-sm font-medium bg-purple-500/10 text-purple-600 dark:text-purple-300 rounded-lg flex items-center gap-2 shadow-sm">
+                          <Database className="h-4 w-4" />
                           Discussion
                         </span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
-                          <Database className="h-3 w-3 opacity-50" />
+                        <span className="shrink-0 px-3 py-2 text-sm font-medium bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-lg flex items-center gap-2 shadow-sm">
+                          <MessageSquare className="h-4 w-4" />
                           Q&A
                         </span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
-                          <Database className="h-3 w-3 opacity-50" />
-                          Knowledge Base
+                        <span className="shrink-0 px-3 py-2 text-sm font-medium bg-amber-500/10 text-amber-600 dark:text-amber-300 rounded-lg flex items-center gap-2 shadow-sm">
+                          <Star className="h-4 w-4" />
+                          Wishlist
                         </span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
-                          <Database className="h-3 w-3 opacity-50" />
-                          Ideas & Feedback
-                        </span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
-                          <Database className="h-3 w-3 opacity-50" />
-                          Changelog
-                        </span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
-                          <Database className="h-3 w-3 opacity-50" />
-                          Product Update
-                        </span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
-                          <Database className="h-3 w-3 opacity-50" />
-                          Roadmap
-                        </span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
-                          <Database className="h-3 w-3 opacity-50" />
-                          Announcements
-                        </span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
-                          <Database className="h-3 w-3 opacity-50" />
-                          Wiki
-                        </span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
-                          <Database className="h-3 w-3 opacity-50" />
-                          Member Directory
-                        </span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
-                          <Database className="h-3 w-3 opacity-50" />
+                        <span className="shrink-0 px-3 py-2 text-sm font-medium bg-green-500/10 text-green-600 dark:text-green-300 rounded-lg flex items-center gap-2 shadow-sm">
+                          <Calendar className="h-4 w-4" />
                           Event
                         </span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
-                          <Database className="h-3 w-3 opacity-50" />
-                          Course
-                        </span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
-                          <Database className="h-3 w-3 opacity-50" />
-                          Jobs
-                        </span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
-                          <Database className="h-3 w-3 opacity-50" />
-                          Speakers
-                        </span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
-                          <Database className="h-3 w-3 opacity-50" />
-                          Article
+                        <span className="shrink-0 px-3 py-2 text-sm font-medium bg-gray-500/10 text-gray-600 dark:text-gray-300 rounded-lg flex items-center gap-2 shadow-sm">
+                          <Plus className="h-4 w-4" />
+                          More Types
                         </span>
                       </div>
                     </div>
