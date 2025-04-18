@@ -68,11 +68,11 @@ function ContentOption({
         </h3>
       </div>
 
-      <div className="flex flex-wrap gap-2 pl-12 mt-1.5">
+      <div className="flex flex-wrap gap-2.5 pl-16 mt-2">
         {badges.map((badge, index) => (
           <span
             key={index}
-            className={`px-2 py-1 text-xs font-medium rounded-md flex items-center gap-1 
+            className={`px-2.5 py-1.5 text-xs font-medium rounded-md flex items-center gap-1.5 
                       whitespace-nowrap ${badgeBgColor} ${badgeTextColor}
                       shadow-sm transition-all duration-200 hover:scale-102`}
           >
@@ -83,7 +83,7 @@ function ContentOption({
           </span>
         ))}
         {extraText && (
-          <span className="text-xs text-gray-500 dark:text-gray-400">{extraText}</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">{extraText}</span>
         )}
       </div>
     </motion.div>
