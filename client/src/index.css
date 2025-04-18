@@ -11,8 +11,8 @@
 
 @layer utilities {
   .mask-fade-x {
-    mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent 100%);
   }
 }
 
@@ -119,22 +119,6 @@
   .scrollbar-minimal::-webkit-scrollbar-track {
     background: transparent;
   }
-
-
-.mask-fade-x {
-  mask-image: linear-gradient(to right, 
-    transparent,
-    black 20%,
-    black 80%,
-    transparent 100%
-  );
-  -webkit-mask-image: linear-gradient(to right,
-    transparent,
-    black 20%,
-    black 80%,
-    transparent 100%
-  );
-}
 
   .scrollbar-minimal::-webkit-scrollbar-thumb {
     background-color: rgba(156, 163, 175, 0.15);
