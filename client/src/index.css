@@ -123,14 +123,12 @@
 
 .mask-fade-x {
   mask-image: linear-gradient(to right, 
-    transparent,
-    black 20%,
+    black 0%,
     black 80%,
     transparent 100%
   );
   -webkit-mask-image: linear-gradient(to right,
-    transparent,
-    black 20%,
+    black 0%,
     black 80%,
     transparent 100%
   );
