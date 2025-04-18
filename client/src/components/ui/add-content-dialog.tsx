@@ -86,13 +86,15 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
                 description={
                   <div className="space-y-2">
                     <p>Define a new type of content to expand your platform's capabilities</p>
-                    <div className="relative flex flex-nowrap gap-0 mt-1.5 overflow-hidden mask-fade-sides">
-                      <span className="py-1 text-[10px] font-medium bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full whitespace-nowrap">Blog Posts</span>
-                      <span className="py-1 text-[10px] font-medium bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full whitespace-nowrap">Products</span>
-                      <span className="py-1 text-[10px] font-medium bg-green-500/5 text-green-500/70 dark:text-green-400/70 rounded-full whitespace-nowrap">Team</span>
-                      <span className="py-1 text-[10px] font-medium bg-amber-500/5 text-amber-500/70 dark:text-amber-400/70 rounded-full whitespace-nowrap">Press</span>
-                      <span className="py-1 text-[10px] font-medium bg-rose-500/5 text-rose-500/70 dark:text-rose-400/70 rounded-full whitespace-nowrap">News</span>
-                      <span className="py-1 text-[10px] font-medium bg-indigo-500/5 text-indigo-500/70 dark:text-indigo-400/70 rounded-full whitespace-nowrap">Events</span>
+                    <div className="relative -mx-6 px-0 mt-1.5">
+                      <div className="flex flex-nowrap gap-2 overflow-hidden mask-fade-sides px-6">
+                        <span className="py-1 px-2.5 text-[10px] font-medium bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full whitespace-nowrap">Blog Posts</span>
+                        <span className="py-1 px-2.5 text-[10px] font-medium bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full whitespace-nowrap">Products</span>
+                        <span className="py-1 px-2.5 text-[10px] font-medium bg-green-500/5 text-green-500/70 dark:text-green-400/70 rounded-full whitespace-nowrap">Team</span>
+                        <span className="py-1 px-2.5 text-[10px] font-medium bg-amber-500/5 text-amber-500/70 dark:text-amber-400/70 rounded-full whitespace-nowrap">Press</span>
+                        <span className="py-1 px-2.5 text-[10px] font-medium bg-rose-500/5 text-rose-500/70 dark:text-rose-400/70 rounded-full whitespace-nowrap">News</span>
+                        <span className="py-1 px-2.5 text-[10px] font-medium bg-indigo-500/5 text-indigo-500/70 dark:text-indigo-400/70 rounded-full whitespace-nowrap">Events</span>
+                      </div>
                     </div>
                   </div>
                 }
