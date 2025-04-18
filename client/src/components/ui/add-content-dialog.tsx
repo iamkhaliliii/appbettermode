@@ -1,5 +1,11 @@
 import * as React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Database, AppWindowMac, ChevronRight, File } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -24,7 +30,7 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
       role="button"
       tabIndex={0}
       onClick={onClick}
-      onKeyDown={(e) => e.key === 'Enter' && onClick()}
+      onKeyDown={(e) => e.key === "Enter" && onClick()}
       className="flex flex-col rounded-2xl border border-white/5 dark:border-gray-800/5
         hover:border-white/10 dark:hover:border-gray-700/10
         bg-white/5 dark:bg-gray-900/5 backdrop-blur-xl
@@ -33,9 +39,11 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
         transition-all duration-700 cursor-pointer group"
     >
       <div className="p-6 flex items-start">
-        <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-white to-gray-50/80 
+        <div
+          className="h-10 w-10 rounded-lg bg-gradient-to-br from-white to-gray-50/80 
           dark:from-gray-800 dark:to-gray-900/80 flex items-center justify-center mr-4
-          shadow-sm group-hover:shadow-md transition-all duration-500">
+          shadow-sm group-hover:shadow-md transition-all duration-500"
+        >
           {icon}
         </div>
         <div className="flex-1">
@@ -43,42 +51,58 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
             {title}
           </h3>
           <div className="text-xs text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">
-            {typeof description === 'string' ? description : description.props.children[0]}
+            {typeof description === "string"
+              ? description
+              : description.props.children[0]}
           </div>
         </div>
       </div>
 
-      <div className="px-6 pb-6 w-full">
+      <div className="w-full">
         <div className="flex flex-wrap gap-1.5 items-center">
-          {typeof description === 'object' && 'props' in description && description.props.children[1]}
+          {typeof description === "object" &&
+            "props" in description &&
+            description.props.children[1]}
         </div>
       </div>
-      <div className="self-center ml-6 opacity-0 group-hover:opacity-100 transition-all duration-500 
-        translate-x-2 group-hover:translate-x-0">
+      <div
+        className="self-center ml-6 opacity-0 group-hover:opacity-100 transition-all duration-500 
+        translate-x-2 group-hover:translate-x-0"
+      >
         <ChevronRight className="h-5 w-5 text-gray-400 dark:text-gray-500" />
       </div>
     </motion.div>
   );
 }
 
-export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) {
+export function AddContentDialog({
+  open,
+  onOpenChange,
+}: AddContentDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[900px] bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl
-        shadow-xl rounded-[2rem] p-0 overflow-hidden border-0">
+      <DialogContent
+        className="sm:max-w-[900px] bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl
+        shadow-xl rounded-[2rem] p-0 overflow-hidden border-0"
+      >
         <div className="flex flex-col md:flex-row">
-          <div className="bg-gradient-to-br from-white/30 to-white/5 dark:from-gray-850/40 dark:to-gray-800/10 
+          <div
+            className="bg-gradient-to-br from-white/30 to-white/5 dark:from-gray-850/40 dark:to-gray-800/10 
             p-16 md:w-[45%] flex flex-col justify-center border-b md:border-b-0 md:border-r 
-            border-gray-100/30 dark:border-gray-800/30">
+            border-gray-100/30 dark:border-gray-800/30"
+          >
             <DialogHeader className="items-start text-left space-y-3">
-              <DialogTitle className="text-3xl font-semibold tracking-tight 
+              <DialogTitle
+                className="text-3xl font-semibold tracking-tight 
                 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 
                 dark:from-white dark:via-gray-200 dark:to-gray-300 
-                bg-clip-text text-transparent">
+                bg-clip-text text-transparent"
+              >
                 Create New
               </DialogTitle>
               <DialogDescription className="text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-                Choose what you'd like to create and we'll guide you through the process
+                Choose what you'd like to create and we'll guide you through the
+                process
               </DialogDescription>
             </DialogHeader>
           </div>
@@ -86,19 +110,42 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
           <div className="md:w-[55%] p-12">
             <div className="space-y-8">
               <OptionCard
-                icon={<Database className="h-7 w-7 text-purple-500 dark:text-purple-400 transition-transform group-hover:scale-110 duration-500" />}
+                icon={
+                  <Database className="h-7 w-7 text-purple-500 dark:text-purple-400 transition-transform group-hover:scale-110 duration-500" />
+                }
                 title="Content Type"
                 description={
                   <div className="space-y-2">
-                    <p>Define a new type of content to expand your platform's capabilities</p>
-                    <div className="relative mt-1.5 w-full h-[42px]">
+                    <p>
+                      Define a new type of content to expand your platform's
+                      capabilities
+                    </p>
+                    <div className="relative mt-1.5 w-full h-[30px]">
                       <div className="absolute inset-x-0 flex items-center justify-center gap-1.5 pb-1 overflow-x-auto mask-fade-x scrollbar-hide">
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5"><Database className="h-3 w-3 opacity-50" />Blog Posts</span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5"><Database className="h-3 w-3 opacity-50" />Products</span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5"><Database className="h-3 w-3 opacity-50" />Team Members</span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5"><Database className="h-3 w-3 opacity-50" />Press</span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5"><Database className="h-3 w-3 opacity-50" />News</span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5"><Database className="h-3 w-3 opacity-50" />Events</span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
+                          <Database className="h-3 w-3 opacity-50" />
+                          Blog Posts
+                        </span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
+                          <Database className="h-3 w-3 opacity-50" />
+                          Products
+                        </span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
+                          <Database className="h-3 w-3 opacity-50" />
+                          Team Members
+                        </span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
+                          <Database className="h-3 w-3 opacity-50" />
+                          Press
+                        </span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
+                          <Database className="h-3 w-3 opacity-50" />
+                          News
+                        </span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1.5">
+                          <Database className="h-3 w-3 opacity-50" />
+                          Events
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -107,18 +154,35 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
               />
 
               <OptionCard
-                icon={<AppWindowMac className="h-7 w-7 text-blue-500 dark:text-blue-400 transition-transform group-hover:scale-110 duration-500" />}
+                icon={
+                  <AppWindowMac className="h-7 w-7 text-blue-500 dark:text-blue-400 transition-transform group-hover:scale-110 duration-500" />
+                }
                 title="New Page"
                 description={
                   <div className="space-y-2">
                     <p>Design and create a new page in your site's structure</p>
                     <div className="relative mt-1.5 w-full h-[42px]">
                       <div className="absolute inset-x-0 flex items-center justify-center gap-1.5 pb-1 overflow-x-auto mask-fade-x scrollbar-hide">
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1.5"><File className="h-3 w-3 opacity-50" />Landing</span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1.5"><File className="h-3 w-3 opacity-50" />About Us</span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1.5"><File className="h-3 w-3 opacity-50" />Contact</span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1.5"><File className="h-3 w-3 opacity-50" />Features</span>
-                        <span className="shrink-0 px-2.5 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1.5"><File className="h-3 w-3 opacity-50" />Blog</span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1.5">
+                          <File className="h-3 w-3 opacity-50" />
+                          Landing
+                        </span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1.5">
+                          <File className="h-3 w-3 opacity-50" />
+                          About Us
+                        </span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1.5">
+                          <File className="h-3 w-3 opacity-50" />
+                          Contact
+                        </span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1.5">
+                          <File className="h-3 w-3 opacity-50" />
+                          Features
+                        </span>
+                        <span className="shrink-0 px-2.5 py-1 text-xs bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full flex items-center gap-1.5">
+                          <File className="h-3 w-3 opacity-50" />
+                          Blog
+                        </span>
                       </div>
                     </div>
                   </div>
