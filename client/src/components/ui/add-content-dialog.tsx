@@ -90,9 +90,9 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
                 title="Content Type"
                 description={
                   <div className="space-y-2">
-                    <div className="text-sm">Define a new type of content to expand your platform's capabilities</div>
-                    <div className="relative mt-1.5 w-[calc(100%+2rem)] -ml-4">
-                      <div className="flex items-center gap-1 pb-1 px-4 overflow-hidden mask-fade-x">
+                    <span className="text-sm block">Define a new type of content to expand your platform's capabilities</span>
+                    <div className="relative mt-1.5 w-[calc(100%+1rem)] -ml-2">
+                      <div className="flex items-center gap-1 pb-1 px-2 overflow-hidden mask-fade-x">
                         <div className="flex items-center gap-1 infinite-slide">
                           <div className="flex items-center gap-1 min-w-max">
                             <span className="shrink-0 px-2 py-1 text-xs bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full flex items-center gap-1"><Database className="h-3 w-3 opacity-50" />Blog Posts</span>
@@ -123,9 +123,9 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
                 title="New Page"
                 description={
                   <div className="space-y-2">
-                    <p>Design and create a new page in your site's structure</p>
-                    <div className="relative mt-1.5 w-[calc(100%+3rem)] -ml-6">
-                      <div className="flex items-center justify-center gap-1 pb-1 px-6 overflow-x-auto mask-fade-x scrollbar-hide">
+                    <span className="text-sm block">Design and create a new page in your site's structure</span>
+                    <div className="relative mt-1.5 w-[calc(100%+1rem)] -ml-2">
+                      <div className="flex items-center justify-start gap-1 pb-1 px-2 overflow-x-auto mask-fade-x scrollbar-hide">
                         <span className="shrink-0 px-2 py-1 text-xs bg-amber-500/5 text-amber-500/70 dark:text-amber-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />Landing</span>
                         <span className="shrink-0 px-2 py-1 text-xs bg-rose-500/5 text-rose-500/70 dark:text-rose-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />About Us</span>
                         <span className="shrink-0 px-2 py-1 text-xs bg-indigo-500/5 text-indigo-500/70 dark:text-indigo-400/70 rounded-full flex items-center gap-1"><File className="h-3 w-3 opacity-50" />Contact</span>
