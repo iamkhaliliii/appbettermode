@@ -110,75 +110,72 @@ export function AddContentDialog({
 
           <div className="md:w-[55%] p-8 md:p-12">
             <div className="space-y-6">
-              <OptionCard
+              <ContentCard
+                variant="content-type"
                 icon={
                   <Database className="h-4 w-4 text-purple-500/90 dark:text-purple-400/90 transition-transform group-hover:scale-110 duration-300" />
                 }
                 title="Add New Content Type"
-                description={
-                  <div className="space-y-3">
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      Choose from our pre-built content types or create a custom one
-                    </p>
-                    <div className="relative mt-2 w-full">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="shrink-0 px-3.5 py-2 text-sm font-medium bg-purple-500/10 hover:bg-purple-500/20 text-purple-600 dark:text-purple-300 rounded-xl flex items-center gap-2 shadow-sm transition-all duration-300 cursor-pointer">
-                          <Database className="h-4 w-4" />
-                          Discussion
-                        </span>
-                        <span className="shrink-0 px-3.5 py-2 text-sm font-medium bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-300 rounded-xl flex items-center gap-2 shadow-sm transition-all duration-300 cursor-pointer">
-                          <MessageSquare className="h-4 w-4" />
-                          Q&A
-                        </span>
-                        <span className="shrink-0 px-3.5 py-2 text-sm font-medium bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-300 rounded-xl flex items-center gap-2 shadow-sm transition-all duration-300 cursor-pointer">
-                          <Star className="h-4 w-4" />
-                          Wishlist
-                        </span>
-                        <span className="shrink-0 px-3.5 py-2 text-sm font-medium bg-green-500/10 hover:bg-green-500/20 text-green-600 dark:text-green-300 rounded-xl flex items-center gap-2 shadow-sm transition-all duration-300 cursor-pointer">
-                          <Calendar className="h-4 w-4" />
-                          Event
-                        </span>
-                        <span className="shrink-0 px-3 py-2 text-sm font-medium bg-gray-500/10 text-gray-600 dark:text-gray-300 rounded-lg flex items-center gap-2 shadow-sm">
-                          <Plus className="h-4 w-4" />
-                          More Types
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                }
+                description="Choose from our pre-built content types or create a custom one"
+                iconColor="purple"
+                badges={[
+                  {
+                    icon: <Database className="h-4 w-4" />,
+                    label: "Discussion",
+                    color: "purple"
+                  },
+                  {
+                    icon: <MessageSquare className="h-4 w-4" />,
+                    label: "Q&A",
+                    color: "blue"
+                  },
+                  {
+                    icon: <Star className="h-4 w-4" />,
+                    label: "Wishlist",
+                    color: "amber"
+                  },
+                  {
+                    icon: <Calendar className="h-4 w-4" />,
+                    label: "Event",
+                    color: "green"
+                  },
+                  {
+                    icon: <Plus className="h-4 w-4" />,
+                    label: "More Types"
+                  }
+                ]}
                 onClick={() => onOpenChange(false)}
               />
 
-              <OptionCard
+              <ContentCard
+                variant="page"
                 icon={
                   <AppWindowMac className="h-3.5 w-3.5 text-blue-500/90 dark:text-blue-400/90 transition-transform group-hover:scale-105 duration-500" />
                 }
                 title="I want to create a new page"
-                description={
-                  <div className="space-y-2">
-                    <p>Design and create a new page in your site's structure</p>
-                    <div className="relative mt-1.5 w-full h-[30px]">
-                      <div className="absolute inset-x-0 flex items-center justify-center gap-1.5 pb-4 overflow-x-auto mask-fade-x scrollbar-hide">
-                        <span className="shrink-0 px-2.5 py-1.5 text-[11px] bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-lg flex items-center gap-1.5 shadow-sm transition-colors hover:bg-blue-500/20">
-                          <File className="h-3 w-3" />
-                          Homepage
-                        </span>
-                        <span className="shrink-0 px-2.5 py-1.5 text-[11px] bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-lg flex items-center gap-1.5 shadow-sm transition-colors hover:bg-blue-500/20">
-                          <File className="h-3 w-3" />
-                          Explore Page
-                        </span>
-                        <span className="shrink-0 px-2.5 py-1.5 text-[11px] bg-blue-500/10 text-blue-600 dark:text-blue-300 rounded-lg flex items-center gap-1.5 shadow-sm transition-colors hover:bg-blue-500/20">
-                          <File className="h-3 w-3" />
-                          Faculty Landing
-                        </span>
-                        <span className="shrink-0 px-2.5 py-1.5 text-[11px] bg-gray-500/10 text-gray-600 dark:text-gray-300 rounded-lg flex items-center gap-1.5 shadow-sm">
-                          <Plus className="h-3 w-3" />
-                          More Pages
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                }
+                description="Design and create a new page in your site's structure"
+                iconColor="blue"
+                badges={[
+                  {
+                    icon: <File className="h-3 w-3" />,
+                    label: "Homepage",
+                    color: "blue"
+                  },
+                  {
+                    icon: <File className="h-3 w-3" />,
+                    label: "Explore Page",
+                    color: "blue"
+                  },
+                  {
+                    icon: <File className="h-3 w-3" />,
+                    label: "Faculty Landing",
+                    color: "blue"
+                  },
+                  {
+                    icon: <Plus className="h-3 w-3" />,
+                    label: "More Pages"
+                  }
+                ]}
                 onClick={() => onOpenChange(false)}
               />
             </div>
