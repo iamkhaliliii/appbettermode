@@ -126,12 +126,12 @@ export function AddContentDialog({
                 iconBgTo="to-purple-100/30"
                 iconRing="ring-purple-200/50 dark:ring-purple-700/50"
                 iconColor="text-purple-500/90 dark:text-purple-400/90"
-                title="I want to create a new page"
+                title="I want to let people post something"
                 badges={[
+                  { icon: <Calendar className="h-3.5 w-3.5" />, label: "Event" },
                   { icon: <MessageSquare className="h-3.5 w-3.5" />, label: "Discussion" },
                   { icon: <Star className="h-3.5 w-3.5" />, label: "Q&A" },
-                  { icon: <Calendar className="h-3.5 w-3.5" />, label: "Wishlist" },
-                  { icon: <Plus className="h-3.5 w-3.5" />, label: "Event" }
+                  { icon: <Plus className="h-3.5 w-3.5" />, label: "More CMS" }
                 ]}
                 badgeBgColor="bg-purple-500/10"
                 badgeTextColor="text-purple-600 dark:text-purple-300"
