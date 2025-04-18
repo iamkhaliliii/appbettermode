@@ -1,5 +1,16 @@
 
 @layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+
+@layer utilities {
   .mask-fade-x {
     mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
   }
