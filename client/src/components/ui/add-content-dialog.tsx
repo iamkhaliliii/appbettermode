@@ -86,12 +86,15 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
                 description={
                   <div className="space-y-2">
                     <p>Define a new type of content to expand your platform's capabilities</p>
-                    <div className="inline-flex items-center gap-1 mt-1.5">
-                      <span className="text-[10px] text-purple-500/90 dark:text-purple-400/90 tracking-tight">Blog Posts</span>
-                      <span className="text-[8px] text-gray-300/50">•</span>
-                      <span className="text-[10px] text-blue-500/90 dark:text-blue-400/90 tracking-tight">Products</span>
-                      <span className="text-[8px] text-gray-300/50">•</span>
-                      <span className="text-[10px] text-green-500/90 dark:text-green-400/90 tracking-tight">Team Members</span>
+                    <div className="relative mt-1.5 w-[200px]">
+                      <div className="flex items-center gap-1 overflow-x-auto pb-1 mask-fade-right">
+                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-purple-500/5 text-purple-500/70 dark:text-purple-400/70 rounded-full">Blog Posts</span>
+                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-blue-500/5 text-blue-500/70 dark:text-blue-400/70 rounded-full">Products</span>
+                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-green-500/5 text-green-500/70 dark:text-green-400/70 rounded-full">Team Members</span>
+                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-amber-500/5 text-amber-500/70 dark:text-amber-400/70 rounded-full">Press</span>
+                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-rose-500/5 text-rose-500/70 dark:text-rose-400/70 rounded-full">News</span>
+                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-indigo-500/5 text-indigo-500/70 dark:text-indigo-400/70 rounded-full">Events</span>
+                      </div>
                     </div>
                   </div>
                 }
@@ -104,12 +107,14 @@ export function AddContentDialog({ open, onOpenChange }: AddContentDialogProps) 
                 description={
                   <div className="space-y-2">
                     <p>Design and create a new page in your site's structure</p>
-                    <div className="inline-flex items-center gap-1 mt-1.5">
-                      <span className="text-[10px] text-amber-500/90 dark:text-amber-400/90 tracking-tight">Landing</span>
-                      <span className="text-[8px] text-gray-300/50">•</span>
-                      <span className="text-[10px] text-rose-500/90 dark:text-rose-400/90 tracking-tight">About Us</span>
-                      <span className="text-[8px] text-gray-300/50">•</span>
-                      <span className="text-[10px] text-indigo-500/90 dark:text-indigo-400/90 tracking-tight">Contact</span>
+                    <div className="relative mt-1.5 w-[200px]">
+                      <div className="flex items-center gap-1 overflow-x-auto pb-1 mask-fade-right">
+                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-amber-500/5 text-amber-500/70 dark:text-amber-400/70 rounded-full">Landing</span>
+                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-rose-500/5 text-rose-500/70 dark:text-rose-400/70 rounded-full">About Us</span>
+                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-indigo-500/5 text-indigo-500/70 dark:text-indigo-400/70 rounded-full">Contact</span>
+                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-sky-500/5 text-sky-500/70 dark:text-sky-400/70 rounded-full">Features</span>
+                        <span className="shrink-0 px-1.5 py-0.5 text-[9px] bg-emerald-500/5 text-emerald-500/70 dark:text-emerald-400/70 rounded-full">Blog</span>
+                      </div>
                     </div>
                   </div>
                 }
