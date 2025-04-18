@@ -48,14 +48,14 @@ function ContentOption({
       whileHover={{ scale: 1.005, y: -2 }}
       whileTap={{ scale: 0.995 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      className="rounded-2xl border border-white/20 dark:border-gray-800/20 
-                bg-white/10 dark:bg-gray-900/10 backdrop-blur-xl p-7 cursor-pointer
-                shadow-lg hover:shadow-xl hover:border-white/30 dark:hover:border-gray-700/30 
+      className="rounded-xl border border-white/20 dark:border-gray-800/20 
+                bg-white/10 dark:bg-gray-900/10 backdrop-blur-xl p-5 cursor-pointer
+                shadow-md hover:shadow-lg hover:border-white/30 dark:hover:border-gray-700/30 
                 transition-all duration-300 ease-in-out"
       onClick={onClick}
     >
       <div className="flex items-center gap-4 mb-4">
-        <div className={`h-14 w-14 rounded-2xl flex items-center justify-center 
+        <div className={`h-11 w-11 rounded-xl flex items-center justify-center 
                       bg-gradient-to-br ${iconBgFrom} ${iconBgTo} 
                       ring-1 ${iconRing} shadow-inner`}>
           {React.cloneElement(icon as React.ReactElement, { 
@@ -71,11 +71,13 @@ function ContentOption({
         {badges.map((badge, index) => (
           <span
             key={index}
-            className={`px-3.5 py-2 text-sm font-medium rounded-lg flex items-center gap-2 
+            className={`px-2.5 py-1.5 text-xs font-medium rounded-md flex items-center gap-1.5 
                       whitespace-nowrap ${badgeBgColor} ${badgeTextColor}
-                      shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md`}
+                      shadow-sm transition-all duration-200 hover:scale-102`}
           >
-            {badge.icon}
+            {React.cloneElement(badge.icon as React.ReactElement, { 
+              className: 'h-3 w-3' 
+            })}
             {badge.label}
           </span>
         ))}
