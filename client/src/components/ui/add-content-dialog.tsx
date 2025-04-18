@@ -25,18 +25,19 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
       tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => e.key === 'Enter' && onClick()}
-      className="flex items-start rounded-2xl border border-white/5 dark:border-gray-800/5
+      className="flex flex-col rounded-2xl border border-white/5 dark:border-gray-800/5
         hover:border-white/10 dark:hover:border-gray-700/10
         bg-white/5 dark:bg-gray-900/5 backdrop-blur-xl
         hover:bg-white/10 dark:hover:bg-gray-800/10
         shadow-none hover:shadow-lg dark:shadow-gray-950/5
         transition-all duration-700 cursor-pointer group"
     >
-      <div className="p-6 ">      <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-white to-gray-50/80 
-      dark:from-gray-800 dark:to-gray-900/80 flex items-center justify-center mr-4
-      shadow-sm group-hover:shadow-md transition-all duration-500">
-      {icon}
-    </div>
+      <div className="p-6 flex items-start">
+        <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-white to-gray-50/80 
+          dark:from-gray-800 dark:to-gray-900/80 flex items-center justify-center mr-4
+          shadow-sm group-hover:shadow-md transition-all duration-500">
+          {icon}
+        </div>
         <div className="flex-1">
           <h3 className="font-medium text-sm text-gray-900 dark:text-white tracking-tight">
             {title}
@@ -45,11 +46,16 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
             {description}
           </p>
         </div>
-    </div>
+      </div>
 
 
       
 
+      <div className="px-6 pb-6 w-full">
+        <div className="flex flex-wrap gap-1.5 items-center">
+          {typeof description === 'object' && 'props' in description && description.props.children[1]}
+        </div>
+      </div>
       <div className="self-center ml-6 opacity-0 group-hover:opacity-100 transition-all duration-500 
         translate-x-2 group-hover:translate-x-0">
         <ChevronRight className="h-5 w-5 text-gray-400 dark:text-gray-500" />
