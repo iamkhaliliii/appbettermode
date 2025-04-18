@@ -42,14 +42,11 @@ function OptionCard({ icon, title, description, onClick }: OptionCardProps) {
           <h3 className="font-medium text-sm text-gray-900 dark:text-white tracking-tight">
             {title}
           </h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">
-            {description}
-          </p>
+          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1.5 leading-relaxed">
+            {typeof description === 'string' ? description : description.props.children[0]}
+          </div>
         </div>
       </div>
-
-
-      
 
       <div className="px-6 pb-6 w-full">
         <div className="flex flex-wrap gap-1.5 items-center">
