@@ -85,7 +85,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"; // Import Dropdown components
-import { navigationItems } from "@/lib/navigationItems"; // Import navigation items
 
 // Minimal Toggle Switch Component
 const MiniToggle = ({
@@ -892,42 +891,54 @@ export function SecondarySidebar() {
 
       <div className="space-y-1">
         <SideNavItem
-          href="/settings/my-details"
-          isActive={
-            isActiveUrl("/settings/my-details") || location === "/settings"
-          }
+          href="/settings/site-settings"
+          isActive={isActiveUrl("/settings/site-settings") || location === "/settings"}
         >
-          My details
+          Site settings
         </SideNavItem>
 
         <SideNavItem
-          href="/settings/profile"
-          isActive={isActiveUrl("/settings/profile")}
+          href="/settings/authentication"
+          isActive={isActiveUrl("/settings/authentication")}
         >
-          Profile
+          Authentication
         </SideNavItem>
 
         <SideNavItem
-          href="/settings/password"
-          isActive={isActiveUrl("/settings/password")}
+          href="/settings/domain"
+          isActive={isActiveUrl("/settings/domain")}
         >
-          Password
+          Domain
         </SideNavItem>
 
         <SideNavItem
-          href="/settings/team"
-          isActive={isActiveUrl("/settings/team")}
+          href="/settings/search"
+          isActive={isActiveUrl("/settings/search")}
         >
-          Team
+          Search
         </SideNavItem>
 
         <SideNavItem
-          href="/settings/billing"
-          isActive={isActiveUrl("/settings/billing")}
+          href="/settings/messaging"
+          isActive={isActiveUrl("/settings/messaging")}
         >
-          Billing
+          Messaging
         </SideNavItem>
 
+        <SideNavItem
+          href="/settings/moderation"
+          isActive={isActiveUrl("/settings/moderation")}
+        >
+          Moderation
+        </SideNavItem>
+
+        <SideNavItem
+          href="/settings/localization"
+          isActive={isActiveUrl("/settings/localization")}
+        >
+          Localization
+        </SideNavItem>
+        
         <SideNavItem
           href="/settings/notifications"
           isActive={isActiveUrl("/settings/notifications")}
@@ -936,10 +947,17 @@ export function SecondarySidebar() {
         </SideNavItem>
 
         <SideNavItem
-          href="/settings/integrations"
-          isActive={isActiveUrl("/settings/integrations")}
+          href="/settings/seo-settings"
+          isActive={isActiveUrl("/settings/seo-settings")}
         >
-          Integrations
+          SEO settings
+        </SideNavItem>
+
+        <SideNavItem
+          href="/settings/security-privacy"
+          isActive={isActiveUrl("/settings/security-privacy")}
+        >
+          Security & Privacy
         </SideNavItem>
       </div>
     </div>
@@ -1401,7 +1419,8 @@ export function SecondarySidebar() {
                   icon={<File className="h-3.5 w-3.5" />}
                   iconColor="text-[#57ABFF]"
 
-                  decorationIcon={<Paintbrush />}/>
+                  decorationIcon={<Paintbrush />}
+                />
               </div>
             </AccordionContent>
           </AccordionItem>
@@ -1684,7 +1703,11 @@ export function SecondarySidebar() {
                       title="Menu"
                     />
                   </NavigationSection>
-                  <NavigationSection title="Footer" icon={<PanelBottom />} defaultActive={false}>
+                  <NavigationSection
+                    title="Footer"
+                    icon={<PanelBottom />}
+                    defaultActive={false}
+                  >
                     <NavigationItem
                       icon={<SquareDashedBottomCode className="h-3.5 w-3.5 dark:text-amber-200 text-amber-600/80" />}
                       title="FooterBlock"

@@ -13,6 +13,7 @@ import Appearance from "@/pages/appearance";
 import Billing from "@/pages/billing";
 import Reports from "@/pages/reports";
 import AppStore from "@/pages/app-store";
+import SearchResults from "@/pages/search-results";
 
 function Router() {
   return (
@@ -43,6 +44,8 @@ function Router() {
       <Route path="/reports/:section" component={Reports} />
       <Route path="/app-store" component={AppStore} />
       <Route path="/app-store/:section" component={AppStore} />
+      <Route path="/search" component={SearchResults} />
+      <Route path="/search/:query" component={SearchResults} />
       <Route component={NotFound} />
     </Switch>
   );
