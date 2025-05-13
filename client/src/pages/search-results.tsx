@@ -668,26 +668,36 @@ export default function SearchResults() {
             </div>
           </div>
           
-          {/* Right side icons */}
+          {/* Right side icons - REFINED */}
           <div className="flex items-center space-x-2">
-            <button className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800">
-              <span className="flag-icon flag-icon-us w-5 h-5 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">🇺🇸</span>
+            {/* Language Button */}
+            <button className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+              <span className="w-5 h-5 rounded-full flex items-center justify-center text-[1.2rem]">🇺🇸</span>
             </button>
-            <button className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800">
+            {/* Theme Toggle Button */}
+            <button className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
               <MoonIcon className="w-5 h-5" />
             </button>
-            <button className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 relative">
+            {/* Messages Button */}
+            <button className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors relative">
               <MessageSquareIcon className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] font-bold text-white flex items-center justify-center">1</span>
+              <span className="absolute w-[1.3rem] h-[1.3rem] top-0 right-0 transform translate-x-1/4 -translate-y-1/4 min-w-[16px] px-1 bg-red-500 text-white text-[8px] font-semibold rounded-full flex items-center justify-center leading-none border-2 border-white dark:border-gray-950">
+                1
+              </span>
             </button>
-            <button className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 relative">
+            {/* Notifications Button */}
+            <button className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors relative">
               <BellIcon className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full text-[10px] font-bold text-white flex items-center justify-center">24</span>
+              <span className="absolute w-[1.3rem] h-[1.3rem] top-0 right-0 transform translate-x-1/4 -translate-y-1/4 min-w-[16px] px-1 bg-red-500 text-white text-[8px] font-semibold rounded-full flex items-center justify-center leading-none border-2 border-white dark:border-gray-950">
+                24
+              </span>
             </button>
-            <button className="p-2 rounded-full bg-green-500 text-white">
+            {/* Add Button */}
+            <button className="p-2 rounded-full bg-green-500 dark:bg-green-800 text-white dark:text-gray-400 hover:bg-green-600 dark:hover:bg-green-600 transition-colors">
               <PlusIcon className="w-5 h-5" />
             </button>
-            <button className="w-8 h-8 rounded-full overflow-hidden">
+            {/* Profile Avatar */}
+            <button className="w-8 h-8 rounded-full overflow-hidden focus:outline-none ring-2 ring-transparent hover:ring-gray-300 dark:hover:ring-gray-600 active:ring-gray-400 dark:active:ring-gray-500 transition-all">
               <img src="https://github.com/shadcn.png" alt="Profile" className="w-full h-full object-cover" />
             </button>
           </div>
@@ -701,9 +711,10 @@ export default function SearchResults() {
           <div className="max-w-5xl mx-auto flex gap-2">
             {/* Back Button */}
             <button 
+              onClick={() => window.history.back()}
               className="w-12 h-12 flex items-center justify-center p-3 rounded-full border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/40"
             >
-              <ArrowLeftIcon className="w-4 h-4 text-gray-600 flex-shrink-0" />
+              <ArrowLeftIcon className="w-4 h-4 text-gray-600 dark:text-gray-300 flex-shrink-0" />
             </button>
 
             {/* Search Input */}
@@ -827,7 +838,7 @@ export default function SearchResults() {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="text-xs py-1 px-3 h-7 border border-gray-200 dark:border-gray-700 rounded-full bg-white text-gray-600 dark:text-gray-300 font-normal"
+                  className="text-xs py-1 px-3 h-7 border border-gray-200 dark:border-gray-700 rounded-full bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-normal"
                 >
                   Publish Date
                   <ChevronDown className="ml-1 h-3 w-3" />
@@ -839,7 +850,7 @@ export default function SearchResults() {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="text-xs py-1 px-3 h-7 border border-gray-200 dark:border-gray-700 rounded-full bg-white text-gray-600 dark:text-gray-300 font-normal"
+                  className="text-xs py-1 px-3 h-7 border border-gray-200 dark:border-gray-700 rounded-full bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-normal"
                 >
                   Space
                   <ChevronDown  className="ml-1 h-3 w-3" />
@@ -851,7 +862,7 @@ export default function SearchResults() {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="text-xs py-1 px-3 h-7 border border-gray-200 dark:border-gray-700 rounded-full bg-white text-gray-600 dark:text-gray-300 font-normal"
+                  className="text-xs py-1 px-3 h-7 border border-gray-200 dark:border-gray-700 rounded-full bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-normal"
                 >
                   Member
                   <ChevronDown  className="ml-1 h-3 w-3" />
@@ -863,7 +874,7 @@ export default function SearchResults() {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="text-xs py-1 px-3 h-7 border border-gray-200 dark:border-gray-700 rounded-full bg-white text-gray-600 dark:text-gray-300 font-normal"
+                  className="text-xs py-1 px-3 h-7 border border-gray-200 dark:border-gray-700 rounded-full bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-normal"
                 >
                   Tag
                   <ChevronDown  className="ml-1 h-3 w-3" />
@@ -877,7 +888,7 @@ export default function SearchResults() {
                 <Button 
                   variant="ghost" 
                   size="sm"
-                  className="text-xs py-1 px-3 h-7 border border-gray-200 dark:border-gray-700 rounded-full bg-white text-gray-600 dark:text-gray-300 font-normal"
+                  className="text-xs py-1 px-3 h-7 border border-gray-200 dark:border-gray-700 rounded-full bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-normal"
                   onClick={toggleSortDropdown}
                 >
                   Sort: {sortOption.charAt(0).toUpperCase() + sortOption.slice(1)}
