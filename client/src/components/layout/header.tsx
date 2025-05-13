@@ -31,7 +31,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard' }: HeaderProp
   const buttonBgHover = variant === 'site' ? "hover:bg-gray-700 dark:hover:bg-gray-200" : "hover:bg-gray-50 dark:hover:bg-gray-700";
   const buttonBg = variant === 'site' ? "bg-gray-900 dark:bg-white" : "bg-white dark:bg-gray-800";
   const logoContainerBase = "w-12 h-12 flex items-center justify-center transition-all duration-300 ease-in-out";
-  const logoFixedClasses = "fixed top-3 left-3 z-40 rounded-md shadow-lg cursor-pointer bg-gray-900 dark:bg-white";
+  const logoFixedClasses = "fixed mt-8 top-3 right-5 z-50 rounded-md shadow-lg cursor-pointer bg-gray-900 dark:bg-white";
 
   const handleLogoClick = () => {
     if (variant === 'site' && !isSiteHeaderVisible) {
@@ -90,7 +90,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard' }: HeaderProp
 
         {/* Conditionally Render Rest of Header Content (NO INNER ANIMATION) */}
         {(variant === 'dashboard' || (variant === 'site' && isSiteHeaderVisible)) && (
-            <div className="flex-1 flex items-center overflow-hidden">
+            <div className="flex-1 flex items-center">
               {/* Middle Section - App Navigation */}
               <div className={cn("w-64 flex-shrink-0 h-full border-r", borderColor)}>
                 <div className="flex h-full items-center justify-center gap-2 px-2">
