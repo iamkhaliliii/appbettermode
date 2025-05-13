@@ -250,24 +250,21 @@ const SecurityPrivacySettings = () => <div><Card><CardHeader><CardTitle>Security
 
 export default function Settings() {
   const [location, setLocation] = useLocation();
-  const [match, params] = useRoute('/settings/:section?'); // Make section optional
+  const [match, params] = useRoute('/settings/:section?');
   const section = params?.section;
   const [isCommandMenuOpen, setIsCommandMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedItemIndex, setSelectedItemIndex] = useState(-1);
   const commandMenuRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const scrollContainerRef = useRef<HTMLDivElement>(null); // Ref for scroll container
-  
-  // New state for sources accordion in Ask AI view
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [sourcesExpanded, setSourcesExpanded] = useState(false);
-
-  // New state for command menu mode and AI response
   const [commandMenuMode, setCommandMenuMode] = useState<'initial' | 'searching' | 'ask_ai' | 'empty'>('initial');
-  const [askAiResponse, setAskAiResponse] = useState(""); // State for the full AI response
-  const [displayedResponse, setDisplayedResponse] = useState(""); // State for the typed response
-  const [isTyping, setIsTyping] = useState(false); // State to track typing animation
-  
+  const [askAiResponse, setAskAiResponse] = useState("");
+  const [displayedResponse, setDisplayedResponse] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [recentSearchesScrolled, setRecentSearchesScrolled] = useState(false);
+
   // Sample post search results
   const postResults = [
     {
@@ -313,18 +310,18 @@ export default function Settings() {
   
   // Updated search results with IDs for removal functionality
   const [recentSearches, setRecentSearches] = useState([
-    { id: 1, text: "login method", onClick: () => setSearchQuery("login method") },
-    { id: 2, text: "header and sidebar", onClick: () => setSearchQuery("header and sidebar") },
-    { id: 3, text: "sidebar", onClick: () => setSearchQuery("sidebar") },
-    { id: 4, text: "custom domain", onClick: () => setSearchQuery("custom domain") },
-    { id: 5, text: "SSO integration", onClick: () => setSearchQuery("SSO integration") },
-    { id: 6, text: "API access", onClick: () => setSearchQuery("API access") },
-    { id: 7, text: "moderation settings", onClick: () => setSearchQuery("moderation settings") }
+    { id: 1, text: "login method", onClick: () => { setSearchQuery("login method"); setCommandMenuMode('searching'); } },
+    { id: 2, text: "header and sidebar", onClick: () => { setSearchQuery("header and sidebar"); setCommandMenuMode('searching'); } },
+    { id: 3, text: "sidebar", onClick: () => { setSearchQuery("sidebar"); setCommandMenuMode('searching'); } },
+    { id: 4, text: "custom domain", onClick: () => { setSearchQuery("custom domain"); setCommandMenuMode('searching'); } },
+    { id: 5, text: "SSO integration", onClick: () => { setSearchQuery("SSO integration"); setCommandMenuMode('searching'); } },
+    { id: 6, text: "API access", onClick: () => { setSearchQuery("API access"); setCommandMenuMode('searching'); } },
+    { id: 7, text: "moderation settings", onClick: () => { setSearchQuery("moderation settings"); setCommandMenuMode('searching'); } }
   ]);
   
   // Function to remove a search item
   const removeSearchItem = (id: number, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent triggering the parent onClick
+    e.stopPropagation();
     setRecentSearches(recentSearches.filter(item => item.id !== id));
   };
   
@@ -648,46 +645,32 @@ Happy posting!`;
     }
   }, [displayedResponse, askAiResponse, isTyping, commandMenuMode]);
 
-  // Add CSS keyframes for animations
-  const animations = `
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-5px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes pulse {
-      0% { opacity: 0.3; }
-      50% { opacity: 0.7; }
-      100% { opacity: 0.3; }
-    }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes growExpand {
-      from { max-height: 0; opacity: 0; }
-      to { max-height: 500px; opacity: 1; }
-    }
-  `;
-
-  // Navigate to selected section
-  const navigateToSection = (sectionPath: string) => {
-    setLocation(`/settings/${sectionPath}`);
-    setIsCommandMenuOpen(false);
-    setSearchQuery("");
-  };
-
-  // Redirect to the first tab (site-settings) if we're at the root or invalid settings route
+  // MOVED HOOK AND RELATED LOGIC HERE
   useEffect(() => {
-    if (match && !section) { // If matched /settings but no section provided
+    const container = document.getElementById('recent-searches-container');
+    if (container) {
+      container.addEventListener('scroll', handleRecentSearchesScroll);
+      handleRecentSearchesScroll(); // Call handler once initially
+      return () => {
+        container.removeEventListener('scroll', handleRecentSearchesScroll);
+      };
+    }
+  }, [isCommandMenuOpen]);
+  // END OF MOVED LOGIC
+
+  useEffect(() => {
+    // ... logic for redirecting ...
+    if (match && !section) {
       setLocation('/settings/site-settings', { replace: true });
     }
   }, [location, setLocation, section, match]);
 
-  // If we're at the root settings URL or section is not yet determined, show a loading state
+  // ---- Conditional Return ----
   if (!section) {
     return <DashboardLayout><div className="p-8">Loading settings...</div></DashboardLayout>;
   }
-  
+  // ---- Hooks are all defined before this point ----
+
   // Function to render content based on section
   const renderSectionContent = () => {
     switch (section) {
@@ -724,9 +707,21 @@ Happy posting!`;
     }
   };
 
-  // New state for tracking scroll position of recent searches
-  const [recentSearchesScrolled, setRecentSearchesScrolled] = useState(false);
-  
+  const getPostIconBgClass = (iconType: string) => {
+    switch (iconType) {
+      case 'message':
+        return "bg-blue-100 dark:bg-blue-900/30";
+      case 'user':
+        return "bg-violet-100 dark:bg-violet-900/30";
+      case 'bell':
+        return "bg-amber-100 dark:bg-amber-900/30";
+      case 'docs':
+        return "bg-emerald-100 dark:bg-emerald-900/30";
+      default:
+        return "bg-gray-100 dark:bg-gray-800/30";
+    }
+  };
+
   // Function to check scroll position and update state
   const handleRecentSearchesScroll = () => {
     const container = document.getElementById('recent-searches-container');
@@ -740,11 +735,33 @@ Happy posting!`;
     const container = document.getElementById('recent-searches-container');
     if (container) {
       container.addEventListener('scroll', handleRecentSearchesScroll);
+      handleRecentSearchesScroll(); // Call handler once initially
       return () => {
         container.removeEventListener('scroll', handleRecentSearchesScroll);
       };
     }
   }, [isCommandMenuOpen]);
+
+  // Define animations constant here, before the return statement
+  const animations = `
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0% { opacity: 0.3; }
+      50% { opacity: 0.7; }
+      100% { opacity: 0.3; }
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes growExpand {
+      from { max-height: 0; opacity: 0; }
+      to { max-height: 500px; opacity: 1; }
+    }
+  `;
 
   return (
     <DashboardLayout>
@@ -1425,7 +1442,7 @@ Happy posting!`;
                           {/* Conditional KBD for Tab shortcut */}
                           {selectedItemIndex === 0 ? (
                             <kbd className={`ml-2 px-1.5 h-5 flex items-center justify-center py-0.5 text-[0.65rem] font-medium rounded border bg-gray-100/80 border-gray-200 dark:bg-gray-800/80 dark:border-gray-700/80 text-gray-600 dark:text-gray-400`}>
-                              tab
+                              <CornerDownLeftIcon className="w-3 h-3" />
                             </kbd>
                           ) : (
                             <kbd className="ml-2 inline-flex items-center gap-0.5">
@@ -1472,7 +1489,10 @@ Happy posting!`;
                               recentSearches.map((item) => (
                                 <div 
                                   key={item.id}
-                                  onClick={item.onClick}
+                                  onClick={() => {
+                                    setSearchQuery(item.text);
+                                    setCommandMenuMode('searching');
+                                  }}
                                   className="inline-flex items-center flex-shrink-0 h-7 px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer transition-colors text-xs group"
                                 >
                                   <SearchIcon className="w-3 h-3 text-gray-500 dark:text-gray-400 mr-1.5" />
@@ -1518,14 +1538,15 @@ Happy posting!`;
                             <div 
                               key={index}
                               data-selectable-index={index + 1}
-                              className={`flex space-x-3 p-2 rounded-md cursor-pointer ${
+                              className={`flex space-x-3 p-2 rounded-md cursor-pointer ${ 
                                 selectedItemIndex === index + 1 
-                                ? 'bg-gray-100 dark:bg-gray-800'
+                                ? 'bg-gray-100 dark:bg-gray-800' 
                                 : 'hover:bg-gray-50 dark:hover:bg-gray-800/40'
                               }`}
                             >
                               <div className="w-8 h-8 flex-shrink-0 rounded-md overflow-hidden">
-                                <div className="w-full h-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                                {/* Use the helper function to set the background class dynamically */}
+                                <div className={`w-full h-full ${getPostIconBgClass(post.icon)} flex items-center justify-center`}>
                                   {renderPostIcon(post.icon)}
                                 </div>
                               </div>
