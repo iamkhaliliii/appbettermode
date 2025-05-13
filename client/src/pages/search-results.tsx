@@ -48,6 +48,7 @@ export default function SearchResults() {
   const [hasMorePosts, setHasMorePosts] = useState(true);
   const [hasResults, setHasResults] = useState(true);
   const [initialVisit, setInitialVisit] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   // Site configuration (these would come from your app settings in a real app)
   const siteConfig = {
@@ -656,6 +657,7 @@ export default function SearchResults() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Top Header */}
+      <Header variant="site" onToggleMobileMenu={() => setMobileMenuOpen(!mobileMenuOpen)} />
       <div className="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
           {/* Logo */}
