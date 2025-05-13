@@ -472,7 +472,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard' }: HeaderProp
                       View Site
                     </Button>
                   ) : (
-                     <Link href="/dashboard">
+                     <Link href="/content">
                        <Button 
                          variant="secondary-gray" 
                          size="sm" 

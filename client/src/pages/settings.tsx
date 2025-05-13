@@ -265,6 +265,14 @@ export default function Settings() {
   const [isTyping, setIsTyping] = useState(false);
   const [recentSearchesScrolled, setRecentSearchesScrolled] = useState(false);
 
+  // Ensure handleRecentSearchesScroll is defined here, and only here.
+  const handleRecentSearchesScroll = () => {
+    const container = document.getElementById('recent-searches-container');
+    if (container) {
+      setRecentSearchesScrolled(container.scrollLeft > 10);
+    }
+  };
+
   // Sample post search results
   const postResults = [
     {
@@ -644,8 +652,8 @@ Happy posting!`;
       }
     }
   }, [displayedResponse, askAiResponse, isTyping, commandMenuMode]);
-
-  // MOVED HOOK AND RELATED LOGIC HERE
+  
+  // THIS IS THE CORRECT PLACE FOR THE SCROLL LISTENER USEEFFECT
   useEffect(() => {
     const container = document.getElementById('recent-searches-container');
     if (container) {
@@ -655,8 +663,7 @@ Happy posting!`;
         container.removeEventListener('scroll', handleRecentSearchesScroll);
       };
     }
-  }, [isCommandMenuOpen]);
-  // END OF MOVED LOGIC
+  }, [isCommandMenuOpen]); 
 
   useEffect(() => {
     // ... logic for redirecting ...
@@ -664,6 +671,7 @@ Happy posting!`;
       setLocation('/settings/site-settings', { replace: true });
     }
   }, [location, setLocation, section, match]);
+  // ---- END OF ALL USEEFFECT HOOKS ----
 
   // ---- Conditional Return ----
   if (!section) {
@@ -721,26 +729,6 @@ Happy posting!`;
         return "bg-gray-100 dark:bg-gray-800/30";
     }
   };
-
-  // Function to check scroll position and update state
-  const handleRecentSearchesScroll = () => {
-    const container = document.getElementById('recent-searches-container');
-    if (container) {
-      setRecentSearchesScrolled(container.scrollLeft > 10);
-    }
-  };
-
-  // Add scroll event listener for recent searches container
-  useEffect(() => {
-    const container = document.getElementById('recent-searches-container');
-    if (container) {
-      container.addEventListener('scroll', handleRecentSearchesScroll);
-      handleRecentSearchesScroll(); // Call handler once initially
-      return () => {
-        container.removeEventListener('scroll', handleRecentSearchesScroll);
-      };
-    }
-  }, [isCommandMenuOpen]);
 
   // Define animations constant here, before the return statement
   const animations = `
