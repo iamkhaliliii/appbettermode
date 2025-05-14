@@ -36,6 +36,7 @@ interface NavItemProps {
   isActive?: boolean;
   badge?: string;
   collapsed?: boolean;
+  isPro?: boolean;
 }
 
 function NavItem({ 
@@ -44,24 +45,34 @@ function NavItem({
   children, 
   isActive, 
   badge,
-  collapsed = false 
+  collapsed = false,
+  isPro = false
 }: NavItemProps) {
   const navContent = (
     <div
       className={cn(
         "flex items-center justify-center p-1.5 w-8 h-8 rounded-md relative",
-        isActive 
-          ? "bg-primary-200 dark:bg-primary-700 text-primary-800 dark:text-primary-100 shadow-[0_2px_4px_rgba(0,0,0,0.1)] dark:shadow-[0_2px_8px_rgba(20,20,40,0.5)] border border-primary-300 dark:border-primary-400 dark:ring-1 dark:ring-primary-400/30" 
-          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200"
+        isPro
+          ? cn(
+              "rounded-lg border border-[var(--Gradient-skeuemorphic-gradient-border,rgba(255,255,255,0.12))] bg-[var(--Colors-Blue-500,#2E90FA)] shadow-[0px_0px_0px_1px_rgba(16,24,40,0.24)_inset,0px_3px_3px_0px_rgba(255,255,255,0.10)_inset,0px_-3px_3px_0px_rgba(0,0,0,0.10)_inset,0px_3px_4px_-1px_rgba(42,42,42,0.14),0px_1px_1px_0px_rgba(42,42,42,0.08)]",
+              isActive
+                ? "brightness-95"
+                : "hover:brightness-105"
+            )
+          : isActive 
+            ? "bg-primary-200 dark:bg-primary-700 text-primary-800 dark:text-primary-100 shadow-[0_2px_4px_rgba(0,0,0,0.1)] dark:shadow-[0_2px_8px_rgba(20,20,40,0.5)] border border-primary-300 dark:border-primary-400 dark:ring-1 dark:ring-primary-400/30"
+            : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200"
       )}
     >
-      {isActive && (
+      {!isPro && isActive && (
         <span className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1.5 h-6 bg-primary-600 dark:bg-primary-300 rounded-r-sm"></span>
       )}
       <span className={cn(
-        isActive 
-          ? "text-primary-800 dark:text-primary-100 font-bold" 
-          : "text-gray-500 dark:text-gray-400"
+        isPro 
+          ? "text-white"
+          : isActive 
+            ? "text-primary-800 dark:text-primary-100 font-bold"
+            : "text-gray-500 dark:text-gray-400"
       )}>
         {icon}
       </span>
@@ -243,17 +254,6 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
             People
           </NavItem>
           
-
-          
-          <NavItem 
-            href="/design-studio" 
-            icon={<PanelsLeftBottom className="h-4 w-4" />} 
-            isActive={location.startsWith('/design-studio') && !location.startsWith('/design-studio-plus')} 
-            collapsed={true}
-          >
-            Design Studio
-          </NavItem>
-          
           <NavItem 
             href="/appearance" 
             icon={<Shapes className="h-4 w-4" />} 
@@ -297,6 +297,19 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
             collapsed={true}
           >
             App Store
+          </NavItem>
+
+          {/* Divider */}
+          <div className="my-2 border-t border-gray-200 dark:border-gray-700 w-8/12 mx-auto"></div>
+          
+          <NavItem 
+            href="/design-studio" 
+            icon={<PanelsLeftBottom className="text-white h-4 w-4" />} 
+            isActive={location.startsWith('/design-studio') && !location.startsWith('/design-studio-plus')} 
+            collapsed={true}
+            isPro={true}
+          >
+            Design Studio
           </NavItem>
         </nav>
         
