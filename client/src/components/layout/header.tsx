@@ -312,7 +312,41 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard' }: HeaderProp
                         </span>
                       )}
                       
-                      {location.startsWith('/design-studio') && (
+                      {location.startsWith('/site') && (
+                        <span>
+                          {/* Single level */}
+                          {location === '/site' && 
+                            <span className={cn("font-medium", primaryTextColor)}>Site</span>
+                          }
+                          
+                          {/* Multi level */}
+                          {location !== '/site' && (
+                            <>
+                              <span>Site</span>
+                              <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
+                                <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                              
+                              {/* Special case for spaces/feed */}
+                              {location === '/site/spaces/feed' ? (
+                                <>
+                                  <span>Spaces</span>
+                                  <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
+                                    <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                  </svg>
+                                  <span className={cn("font-medium", primaryTextColor)}>Feed</span>
+                                </>
+                              ) : (
+                                <span className={cn("font-medium", primaryTextColor)}>
+                                  {location.split('/')[2] ? location.split('/')[2].split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : ''}
+                                </span>
+                              )}
+                            </>
+                          )}
+                        </span>
+                      )}
+                      
+                      {location.startsWith('/design-studio') && !location.startsWith('/site') && (
                         <span>
                           {/* Single level */}
                           {location === '/design-studio' && 
@@ -338,7 +372,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard' }: HeaderProp
                                 </>
                               ) : (
                                 <span className={cn("font-medium", primaryTextColor)}>
-                                  {location.split('/')[2].split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                                  {location.split('/')[2] ? location.split('/')[2].split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : ''}
                                 </span>
                               )}
                             </>

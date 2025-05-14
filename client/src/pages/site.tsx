@@ -1,21 +1,30 @@
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { useLocation } from "wouter";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { 
+  RefreshCw, 
+  ArrowLeft, 
+  ArrowRight, 
+  Plus, 
   Home, 
   Search, 
+  Moon, 
+  ChevronDown,
+  X,
+  Settings,
   Bell,
   User,
-  Moon,
+  Moon as MoonIcon,
   FileText,
   Users,
   MessageSquare,
-  Calendar,
-  ChevronDown
+  Calendar
 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AddContentDialog } from "@/components/ui/add-content-dialog";
 
 // Feed post interface
 interface FeedPost {
@@ -63,6 +72,20 @@ function FeedContent() {
       comments: 8,
       time: "3h ago",
       tags: ["Development", "Architecture"]
+    },
+    {
+      id: "3",
+      author: {
+        name: "Sophia Chen",
+        avatar: "https://github.com/shadcn.png",
+        role: "UX Researcher"
+      },
+      content: "Just conducted a fascinating user research session on our new onboarding flow. The insights we gathered will help us significantly improve user retention.",
+      image: "https://images.unsplash.com/photo-1531685250784-7569952593d2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80",
+      likes: 32,
+      comments: 11,
+      time: "5h ago",
+      tags: ["Research", "UX"]
     }
   ];
 
@@ -199,173 +222,18 @@ function FeedContent() {
   );
 }
 
-// Articles Component
-function ArticlesContent() {
-  return (
-    <div className="p-2.5">
-      <div className="flex items-center justify-between mb-2.5">
-        <div>
-          <h1 className="text-base font-bold text-gray-900 dark:text-white">Articles</h1>
-          <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">
-            Advice and answers from the Tribe Team
-          </p>
-        </div>
-        
-        <div className="flex items-center space-x-1">
-          <button className="text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 p-0.5 rounded transition-colors">
-            <Bell className="h-3.5 w-3.5" />
-          </button>
-          <button className="text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 p-0.5 rounded transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-            </svg>
-          </button>
-        </div>
-      </div>
-      
-      <Tabs defaultValue="all" className="mb-2.5">
-        <TabsList className="bg-transparent border border-gray-200/60 dark:border-gray-700/60 rounded-md">
-          <TabsTrigger value="all" className="text-[10px] data-[state=active]:bg-white/70 dark:data-[state=active]:bg-gray-800/70 data-[state=active]:text-purple-700 dark:data-[state=active]:text-purple-400">View all</TabsTrigger>
-          <TabsTrigger value="design" className="text-[10px] data-[state=active]:bg-white/70 dark:data-[state=active]:bg-gray-800/70 data-[state=active]:text-purple-700 dark:data-[state=active]:text-purple-400">Design</TabsTrigger>
-          <TabsTrigger value="product" className="text-[10px] data-[state=active]:bg-white/70 dark:data-[state=active]:bg-gray-800/70 data-[state=active]:text-purple-700 dark:data-[state=active]:text-purple-400">Product</TabsTrigger>
-          <TabsTrigger value="dev" className="text-[10px] data-[state=active]:bg-white/70 dark:data-[state=active]:bg-gray-800/70 data-[state=active]:text-purple-700 dark:data-[state=active]:text-purple-400">Dev</TabsTrigger>
-        </TabsList>
-      </Tabs>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        {/* Article Card 1 */}
-        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-200/60 dark:border-gray-700/60 group">
-          <div className="h-28 bg-gradient-to-br from-purple-500 to-indigo-600 relative flex items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/90 to-indigo-600/90 group-hover:opacity-90 transition-opacity"></div>
-            <svg className="w-20 h-20 text-white/30 relative z-10" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M21 14.7V9.3c0-.77-.62-1.4-1.39-1.4-.2 0-.39.04-.57.11l-2.46.91V9.3c0-.77-.62-1.4-1.39-1.4-.2 0-.39.04-.57.11L12 8.8l-2.62-.98c-.18-.07-.37-.11-.57-.11-.77 0-1.39.62-1.39 1.4v.48l-2.46-.91c-.18-.07-.37-.11-.57-.11-.77 0-1.39.62-1.39 1.4v5.39c0 .61.4 1.14.97 1.33l2.65.86 2.78.9c.13.04.26.06.4.06.31 0 .6-.1.84-.29.24.19.54.29.84.29.14 0 .27-.02.4-.06l2.78-.9 2.65-.86c.58-.19.97-.72.97-1.33z" />
-            </svg>
-            <div className="absolute top-0 right-0 mt-1.5 mr-1.5 bg-white/20 dark:bg-black/20 backdrop-blur-sm rounded px-1.5 py-0.5">
-              <span className="text-[10px] font-medium text-white">Design</span>
-            </div>
-          </div>
-          <div className="p-2">
-            <h3 className="font-semibold text-gray-900 dark:text-white text-xs leading-tight mb-1 group-hover:text-purple-700 dark:group-hover:text-purple-400 transition-colors">UX review presentations</h3>
-            <p className="text-[10px] text-gray-600 dark:text-gray-400 leading-tight mb-1.5 line-clamp-2">
-              How do you create compelling presentations that wow your colleagues and impress your managers
-            </p>
-            <div className="flex items-center mt-1.5 pt-1.5 border-t border-gray-100 dark:border-gray-700/40">
-              <Avatar className="h-4 w-4 mr-1">
-                <img src="https://github.com/shadcn.png" alt="Olivia Rhye" />
-              </Avatar>
-              <div className="text-[9px] text-gray-500 dark:text-gray-400">
-                <span className="font-medium">Olivia Rhye</span>
-                <span className="mx-1.5 opacity-50">•</span>
-                <span>Jan 20</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Article Card 2 */}
-        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-200/60 dark:border-gray-700/60 group">
-          <div className="h-28 relative overflow-hidden">
-            <img 
-              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80" 
-              alt="People discussing work" 
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-            <div className="absolute top-0 right-0 mt-1.5 mr-1.5 bg-white/20 dark:bg-black/20 backdrop-blur-sm rounded px-1.5 py-0.5">
-              <span className="text-[10px] font-medium text-white">Product</span>
-            </div>
-          </div>
-          <div className="p-2">
-            <h3 className="font-semibold text-gray-900 dark:text-white text-xs leading-tight mb-1 group-hover:text-purple-700 dark:group-hover:text-purple-400 transition-colors">Migrating to Linear 101</h3>
-            <p className="text-[10px] text-gray-600 dark:text-gray-400 leading-tight mb-1.5 line-clamp-2">
-              Linear helps streamline software projects, sprints, tasks, and bug tracking. Here\'s how to get started.
-            </p>
-            <div className="flex items-center mt-1.5 pt-1.5 border-t border-gray-100 dark:border-gray-700/40">
-              <Avatar className="h-4 w-4 mr-1">
-                <img src="https://github.com/shadcn.png" alt="Olivia Rhye" />
-              </Avatar>
-              <div className="text-[9px] text-gray-500 dark:text-gray-400">
-                <span className="font-medium">Olivia Rhye</span>
-                <span className="mx-1.5 opacity-50">•</span>
-                <span>Jan 20</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Article Card 3 */}
-        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-200/60 dark:border-gray-700/60 group">
-          <div className="h-28 bg-gradient-to-br from-gray-700 to-gray-900 relative flex items-center justify-center overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-700/90 to-gray-900/90 group-hover:opacity-90 transition-opacity"></div>
-            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-16 h-16 text-gray-300/30 relative z-10 group-hover:scale-110 transition-transform duration-500">
-              <path fill="currentColor" d="M 100 20 L 120 80 L 180 80 L 130 110 L 150 170 L 100 140 L 50 170 L 70 110 L 20 80 L 80 80 Z" />
-              <path fill="currentColor" d="M 100 40 L 120 100 L 180 100 L 130 130 L 150 190 L 100 160 L 50 190 L 70 130 L 20 100 L 80 100 Z" opacity="0.5" transform="rotate(15)" />
-            </svg>
-            <div className="absolute top-0 right-0 mt-1.5 mr-1.5 bg-white/20 dark:bg-black/20 backdrop-blur-sm rounded px-1.5 py-0.5">
-              <span className="text-[10px] font-medium text-white">Dev</span>
-            </div>
-          </div>
-          <div className="p-2">
-            <h3 className="font-semibold text-gray-900 dark:text-white text-xs leading-tight mb-1 group-hover:text-purple-700 dark:group-hover:text-purple-400 transition-colors">Building your API stack</h3>
-            <p className="text-[10px] text-gray-600 dark:text-gray-400 leading-tight mb-1.5 line-clamp-2">
-              The rise of RESTful APIs has been met by a rise in tools for creating, testing, and managing them.
-            </p>
-            <div className="flex items-center mt-1.5 pt-1.5 border-t border-gray-100 dark:border-gray-700/40">
-              <Avatar className="h-4 w-4 mr-1">
-                <img src="https://github.com/shadcn.png" alt="Olivia Rhye" />
-              </Avatar>
-              <div className="text-[9px] text-gray-500 dark:text-gray-400">
-                <span className="font-medium">Olivia Rhye</span>
-                <span className="mx-1.5 opacity-50">•</span>
-                <span>Jan 20</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default function DesignStudio() {
+export default function Site() { // Renamed from DesignStudio
   const [location, setLocation] = useLocation();
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
   const [responsiveDropdownOpen, setResponsiveDropdownOpen] = useState(false);
-  const [addContentDialogOpen, setAddContentDialogOpen] = useState(false);
   
   // Check if we\'re in the feed section
   const isFeed = location.includes('/spaces/feed');
-  
-  // Set up keyboard shortcut for opening the dialog
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      // Only trigger if key \'n\' is pressed and no input elements are focused
-      if (
-        event.key === 'n' && 
-        document.activeElement?.tagName !== 'INPUT' && 
-        document.activeElement?.tagName !== 'TEXTAREA'
-      ) {
-        setAddContentDialogOpen(true);
-      }
-    };
-    
-    window.addEventListener('keydown', handleKeyDown);
-    
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
 
   return (
     <DashboardLayout>
-      {/* Add Content Dialog */}
-      <AddContentDialog 
-        open={addContentDialogOpen} 
-        onOpenChange={setAddContentDialogOpen} 
-      />
-      
       <div className="w-full p-4">
         {/* Browser mockup - with shadow */}
         <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-3xl w-full h-[calc(100vh-100px)]" 
@@ -393,6 +261,23 @@ export default function DesignStudio() {
             
             {/* Browser controls - Right aligned */}
             <div className="flex items-center space-x-3">
+              {/* Undo/Redo buttons */}
+              <div className="flex space-x-1">
+                <button className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md px-1.5 py-0.5 flex items-center bg-gray-50 dark:bg-gray-750" style={{ width: '22px', height: '22px' }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 5C7.58172 5 4 8.58172 4 13C4 17.4183 7.58172 21 12 21C16.4183 21 20 17.4183 20 13" strokeWidth="1.5" strokeLinecap="round"/>
+                    <path d="M15 5L12 8L9 5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+                
+                <button className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md px-1.5 py-0.5 flex items-center bg-gray-50 dark:bg-gray-750" style={{ width: '22px', height: '22px' }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 5C16.4183 5 20 8.58172 20 13C20 17.4183 16.4183 21 12 21C7.58172 21 4 17.4183 4 13" strokeWidth="1.5" strokeLinecap="round"/>
+                    <path d="M9 5L12 8L15 5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+              
               {/* Action Controls */}
               <div className="flex space-x-1.5">
                 {/* User View Button */}
@@ -418,8 +303,17 @@ export default function DesignStudio() {
                   className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md px-1.5 py-0.5 flex items-center text-xs"
                   onClick={() => setThemeDropdownOpen(!themeDropdownOpen)}
                 >
-                  <Moon className="h-3.5 w-3.5 mr-1" />
+                  <MoonIcon className="h-3.5 w-3.5 mr-1" />
                   <span className="text-xs">Dark</span>
+                  <ChevronDown className="h-3 w-3 ml-0.5" />
+                </button>
+                
+                {/* Responsive View Button */}
+                <button 
+                  className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md px-1.5 py-0.5 flex items-center text-xs"
+                  onClick={() => setResponsiveDropdownOpen(!responsiveDropdownOpen)}
+                >
+                  <span className="text-xs">Desktop</span>
                   <ChevronDown className="h-3 w-3 ml-0.5" />
                 </button>
               </div>
@@ -464,10 +358,10 @@ export default function DesignStudio() {
                   </a>
                   
                   <a 
-                    href="/design-studio/spaces/feed" 
+                    href="/site/spaces/feed"  // Updated path
                     onClick={(e) => {
                       e.preventDefault();
-                      setLocation('/design-studio/spaces/feed');
+                      setLocation('/site/spaces/feed'); // Updated path
                     }}
                     className={`flex items-center px-1.5 py-1 text-[10px] rounded ${isFeed ? 'bg-gray-100/60 dark:bg-gray-800/60 text-purple-700 dark:text-purple-400 font-medium' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50'} transition-colors`}
                   >
@@ -502,10 +396,10 @@ export default function DesignStudio() {
                   </a>
                   
                   <a 
-                    href="/design-studio"
+                    href="/site" // Updated path
                     onClick={(e) => {
                       e.preventDefault();
-                      setLocation('/design-studio');
+                      setLocation('/site'); // Updated path
                     }}
                     className={`flex items-center px-1.5 py-1 text-[10px] rounded ${!isFeed ? 'bg-gray-100/60 dark:bg-gray-800/60 text-purple-700 dark:text-purple-400 font-medium' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50'} transition-colors`}
                   >
@@ -526,7 +420,132 @@ export default function DesignStudio() {
               {/* Conditionally render Feed or Articles content based on URL */}
               <div className="flex-1 flex justify-center">
                 <div className="max-w-4xl w-full">
-                  {isFeed ? <FeedContent /> : <ArticlesContent />}
+                  {isFeed ? (
+                    <FeedContent />
+                  ) : (
+                    <div className="p-2.5">
+                      <div className="flex items-center justify-between mb-2.5">
+                        <div>
+                          <h1 className="text-base font-bold text-gray-900 dark:text-white">Articles</h1>
+                          <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">
+                            Advice and answers from the Tribe Team
+                          </p>
+                        </div>
+                        
+                        <div className="flex items-center space-x-1">
+                          <button className="text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 p-0.5 rounded transition-colors">
+                            <Bell className="h-3.5 w-3.5" />
+                          </button>
+                          <button className="text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 p-0.5 rounded transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <Tabs defaultValue="all" className="mb-2.5">
+                        <TabsList className="bg-transparent border border-gray-200/60 dark:border-gray-700/60 rounded-md">
+                          <TabsTrigger value="all" className="text-[10px] data-[state=active]:bg-white/70 dark:data-[state=active]:bg-gray-800/70 data-[state=active]:text-purple-700 dark:data-[state=active]:text-purple-400">View all</TabsTrigger>
+                          <TabsTrigger value="design" className="text-[10px] data-[state=active]:bg-white/70 dark:data-[state=active]:bg-gray-800/70 data-[state=active]:text-purple-700 dark:data-[state=active]:text-purple-400">Design</TabsTrigger>
+                          <TabsTrigger value="product" className="text-[10px] data-[state=active]:bg-white/70 dark:data-[state=active]:bg-gray-800/70 data-[state=active]:text-purple-700 dark:data-[state=active]:text-purple-400">Product</TabsTrigger>
+                          <TabsTrigger value="dev" className="text-[10px] data-[state=active]:bg-white/70 dark:data-[state=active]:bg-gray-800/70 data-[state=active]:text-purple-700 dark:data-[state=active]:text-purple-400">Dev</TabsTrigger>
+                        </TabsList>
+                      </Tabs>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        {/* Article Card 1 */}
+                        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-200/60 dark:border-gray-700/60 group">
+                          <div className="h-28 bg-gradient-to-br from-purple-500 to-indigo-600 relative flex items-center justify-center overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/90 to-indigo-600/90 group-hover:opacity-90 transition-opacity"></div>
+                            <svg className="w-20 h-20 text-white/30 relative z-10" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M21 14.7V9.3c0-.77-.62-1.4-1.39-1.4-.2 0-.39.04-.57.11l-2.46.91V9.3c0-.77-.62-1.4-1.39-1.4-.2 0-.39.04-.57.11L12 8.8l-2.62-.98c-.18-.07-.37-.11-.57-.11-.77 0-1.39.62-1.39 1.4v.48l-2.46-.91c-.18-.07-.37-.11-.57-.11-.77 0-1.39.62-1.39 1.4v5.39c0 .61.4 1.14.97 1.33l2.65.86 2.78.9c.13.04.26.06.4.06.31 0 .6-.1.84-.29.24.19.54.29.84.29.14 0 .27-.02.4-.06l2.78-.9 2.65-.86c.58-.19.97-.72.97-1.33z" />
+                            </svg>
+                            <div className="absolute top-0 right-0 mt-1.5 mr-1.5 bg-white/20 dark:bg-black/20 backdrop-blur-sm rounded px-1.5 py-0.5">
+                              <span className="text-[10px] font-medium text-white">Design</span>
+                            </div>
+                          </div>
+                          <div className="p-2">
+                            <h3 className="font-semibold text-gray-900 dark:text-white text-xs leading-tight mb-1 group-hover:text-purple-700 dark:group-hover:text-purple-400 transition-colors">UX review presentations</h3>
+                            <p className="text-[10px] text-gray-600 dark:text-gray-400 leading-tight mb-1.5 line-clamp-2">
+                              How do you create compelling presentations that wow your colleagues and impress your managers
+                            </p>
+                            <div className="flex items-center mt-1.5 pt-1.5 border-t border-gray-100 dark:border-gray-700/40">
+                              <Avatar className="h-4 w-4 mr-1">
+                                <img src="https://github.com/shadcn.png" alt="Olivia Rhye" />
+                              </Avatar>
+                              <div className="text-[9px] text-gray-500 dark:text-gray-400">
+                                <span className="font-medium">Olivia Rhye</span>
+                                <span className="mx-1.5 opacity-50">•</span>
+                                <span>Jan 20</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Article Card 2 */}
+                        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-200/60 dark:border-gray-700/60 group">
+                          <div className="h-28 relative overflow-hidden">
+                            <img 
+                              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80" 
+                              alt="People discussing work" 
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                            <div className="absolute top-0 right-0 mt-1.5 mr-1.5 bg-white/20 dark:bg-black/20 backdrop-blur-sm rounded px-1.5 py-0.5">
+                              <span className="text-[10px] font-medium text-white">Product</span>
+                            </div>
+                          </div>
+                          <div className="p-2">
+                            <h3 className="font-semibold text-gray-900 dark:text-white text-xs leading-tight mb-1 group-hover:text-purple-700 dark:group-hover:text-purple-400 transition-colors">Migrating to Linear 101</h3>
+                            <p className="text-[10px] text-gray-600 dark:text-gray-400 leading-tight mb-1.5 line-clamp-2">
+                              Linear helps streamline software projects, sprints, tasks, and bug tracking. Here\'s how to get started.
+                            </p>
+                            <div className="flex items-center mt-1.5 pt-1.5 border-t border-gray-100 dark:border-gray-700/40">
+                              <Avatar className="h-4 w-4 mr-1">
+                                <img src="https://github.com/shadcn.png" alt="Olivia Rhye" />
+                              </Avatar>
+                              <div className="text-[9px] text-gray-500 dark:text-gray-400">
+                                <span className="font-medium">Olivia Rhye</span>
+                                <span className="mx-1.5 opacity-50">•</span>
+                                <span>Jan 20</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Article Card 3 */}
+                        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-200/60 dark:border-gray-700/60 group">
+                          <div className="h-28 bg-gradient-to-br from-gray-700 to-gray-900 relative flex items-center justify-center overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-gray-700/90 to-gray-900/90 group-hover:opacity-90 transition-opacity"></div>
+                            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-16 h-16 text-gray-300/30 relative z-10 group-hover:scale-110 transition-transform duration-500">
+                              <path fill="currentColor" d="M 100 20 L 120 80 L 180 80 L 130 110 L 150 170 L 100 140 L 50 170 L 70 110 L 20 80 L 80 80 Z" />
+                              <path fill="currentColor" d="M 100 40 L 120 100 L 180 100 L 130 130 L 150 190 L 100 160 L 50 190 L 70 130 L 20 100 L 80 100 Z" opacity="0.5" transform="rotate(15)" />
+                            </svg>
+                            <div className="absolute top-0 right-0 mt-1.5 mr-1.5 bg-white/20 dark:bg-black/20 backdrop-blur-sm rounded px-1.5 py-0.5">
+                              <span className="text-[10px] font-medium text-white">Dev</span>
+                            </div>
+                          </div>
+                          <div className="p-2">
+                            <h3 className="font-semibold text-gray-900 dark:text-white text-xs leading-tight mb-1 group-hover:text-purple-700 dark:group-hover:text-purple-400 transition-colors">Building your API stack</h3>
+                            <p className="text-[10px] text-gray-600 dark:text-gray-400 leading-tight mb-1.5 line-clamp-2">
+                              The rise of RESTful APIs has been met by a rise in tools for creating, testing, and managing them.
+                            </p>
+                            <div className="flex items-center mt-1.5 pt-1.5 border-t border-gray-100 dark:border-gray-700/40">
+                              <Avatar className="h-4 w-4 mr-1">
+                                <img src="https://github.com/shadcn.png" alt="Olivia Rhye" />
+                              </Avatar>
+                              <div className="text-[9px] text-gray-500 dark:text-gray-400">
+                                <span className="font-medium">Olivia Rhye</span>
+                                <span className="mx-1.5 opacity-50">•</span>
+                                <span>Jan 20</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

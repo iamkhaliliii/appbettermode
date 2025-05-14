@@ -7,7 +7,8 @@ import Content from "@/pages/content";
 import Settings from "@/pages/settings";
 import People from "@/pages/people";
 import Inbox from "@/pages/inbox";
-import DesignStudio from "@/pages/design-studio-simple";
+import DesignStudio from "@/pages/design-studio";
+import Site from "@/pages/site";
 import DesignStudioSpacesFeed from "@/pages/design-studio-spaces-feed";
 import Appearance from "@/pages/appearance";
 import Billing from "@/pages/billing";
@@ -34,6 +35,10 @@ function Router() {
       <Route path="/design-studio/spaces/feed" component={DesignStudioSpacesFeed} />
       <Route path="/design-studio/:section" component={DesignStudio} />
       <Route path="/design-studio/:section/:subsection" component={DesignStudio} />
+      <Route path="/site" component={Site} />
+      <Route path="/site/spaces/feed" component={DesignStudioSpacesFeed} />
+      <Route path="/site/:section" component={Site} />
+      <Route path="/site/:section/:subsection" component={Site} />
       <Route path="/appearance" component={Appearance} />
       <Route path="/appearance/:section" component={Appearance} />
       <Route path="/settings" component={Settings} />

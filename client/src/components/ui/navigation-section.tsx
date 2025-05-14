@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { MiniToggle } from "./mini-toggle";
@@ -23,8 +22,10 @@ export function NavigationSection({
 
   const wrappedChildren = React.Children.map(children, child => {
     if (React.isValidElement(child)) {
-      return React.cloneElement(child, {
-        className: `${child.props.className || ''} ${!isActive ? 'opacity-40 pointer-events-none grayscale cursor-not-allowed bg-gray-100/50 dark:bg-gray-800/50' : ''}`
+      const childWithProps = child as React.ReactElement<{ className?: string; [key: string]: any }>;
+      return React.cloneElement(childWithProps, {
+        ...childWithProps.props,
+        className: `${childWithProps.props.className || ''} ${!isActive ? 'opacity-40 pointer-events-none grayscale cursor-not-allowed bg-gray-100/50 dark:bg-gray-800/50' : ''}`.trim(),
       });
     }
     return child;
@@ -39,7 +40,7 @@ export function NavigationSection({
           className="flex items-center gap-2 flex-1 cursor-pointer"
           onClick={(e) => {
             const content = e.currentTarget.closest(".relative.group")?.querySelector(".content-section");
-            const chevron = e.currentTarget.querySelector(".chevron-icon");
+            const chevron = e.currentTarget.querySelector(".chevron-icon") as HTMLElement | null;
             if (content && chevron) {
               content.classList.toggle("hidden");
               chevron.style.transform = content.classList.contains("hidden")

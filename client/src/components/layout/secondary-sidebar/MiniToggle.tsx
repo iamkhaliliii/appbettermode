@@ -1,15 +1,13 @@
+import React, { useState } from "react";
 
-import { useState } from "react";
-
-interface MiniToggleProps {
-  isActive?: boolean;
-  onChange: (state: boolean) => void;
-}
-
-export function MiniToggle({
+// Minimal Toggle Switch Component
+export const MiniToggle = ({
   isActive: initialActive = false,
   onChange,
-}: MiniToggleProps) {
+}: {
+  isActive?: boolean;
+  onChange: (state: boolean) => void;
+}) => {
   const [isActive, setIsActive] = useState(initialActive);
 
   const handleToggle = () => {
@@ -28,4 +26,4 @@ export function MiniToggle({
       />
     </div>
   );
-}
+}; 

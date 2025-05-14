@@ -20,7 +20,8 @@ import {
   Moon,
   LayoutDashboard,
   Inbox,
-  BellDot
+  BellDot,
+  MonitorCog
 } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { useState, useEffect } from "react";
@@ -225,7 +226,14 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
           >
             Content
           </NavItem>
-          
+          <NavItem 
+            href="/site" 
+            icon={<MonitorCog className="h-4 w-4" />} 
+            isActive={location.startsWith('/site')} 
+            collapsed={true}
+          >
+            Site
+          </NavItem>
           <NavItem 
             href="/people" 
             icon={<Users className="h-4 w-4" />} 
@@ -235,10 +243,12 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
             People
           </NavItem>
           
+
+          
           <NavItem 
             href="/design-studio" 
             icon={<PanelsLeftBottom className="h-4 w-4" />} 
-            isActive={location.startsWith('/design-studio')} 
+            isActive={location.startsWith('/design-studio') && !location.startsWith('/design-studio-plus')} 
             collapsed={true}
           >
             Design Studio
