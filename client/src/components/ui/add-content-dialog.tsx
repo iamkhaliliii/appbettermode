@@ -447,7 +447,10 @@ export function AddContentDialog({
         <Dialog open={open} onOpenChange={onOpenChange}>
           <DialogContent
             className="sm:max-w-[90vw] md:max-w-[1100px] bg-white dark:bg-gray-900 backdrop-blur-xl
-                       rounded-2xl p-10  border-gray-100 dark:border-gray-800/30 overflow-hidden max-h-[90vh] overflow-y-auto"
+                       rounded-2xl p-10  border-gray-100 dark:border-gray-800/30 overflow-hidden max-h-[90vh] overflow-y-auto
+                       scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent
+                       [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 
+                       dark:[&::-webkit-scrollbar-thumb]:bg-gray-700 [&::-webkit-scrollbar-track]:bg-transparent"
           >
             <DialogHeader className="mb-6">
               <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-white">
