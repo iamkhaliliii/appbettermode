@@ -56,8 +56,34 @@ const siteCreationSchema = z.object({
 const fetchUserSites = async (): Promise<Site[]> => {
   const response = await fetch('/api/sites');
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({ message: 'Failed to fetch sites' }));
-    throw new Error(errorData.message || 'Failed to fetch sites');
+    const contentType = response.headers.get('content-type');
+    let errorMessage = 'Failed to fetch sites';
+    if (contentType && contentType.includes('application/json')) {
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorMessage;
+      } catch (jsonError) {
+        // It claimed to be JSON but wasn't, or other JSON parsing error
+        errorMessage = 'Failed to parse JSON error response.';
+      }
+    } else {
+      // It's not JSON, likely HTML or plain text
+      try {
+        const errorText = await response.text();
+        // You might want to log errorText for debugging on Vercel
+        // console.error("Received non-JSON error response:", errorText);
+        if (errorText && errorText.toLowerCase().includes('<!doctype html')) {
+          errorMessage = `Server returned an HTML page instead of JSON. Status: ${response.status}`;
+        } else if (errorText) {
+          errorMessage = `Server error: ${errorText.substring(0, 100)}`; // Show a snippet
+        } else {
+          errorMessage = `Failed to fetch sites. Status: ${response.status}`;
+        }
+      } catch (textError) {
+        errorMessage = `Failed to read error response. Status: ${response.status}`;
+      }
+    }
+    throw new Error(errorMessage);
   }
   return response.json();
 };
