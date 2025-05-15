@@ -17,7 +17,7 @@ import { BrowserMockup } from "@/components/layout/browser-mockup";
 import { CommunityContent } from "@/components/layout/community-content";
 import { AddContentDialog } from "@/components/ui/add-content-dialog";
 
-export default function Site() {
+export default function SiteConfigPage() {
   const [location, setLocation] = useLocation();
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
@@ -70,4 +70,4 @@ export default function Site() {
       </div>
     </DashboardLayout>
   );
-}
+} 

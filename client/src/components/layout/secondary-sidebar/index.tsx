@@ -1,8 +1,10 @@
 import React from "react";
 import { useLocation } from "wouter";
 import { isActiveUrl as isActiveUrlUtil } from "./utils";
+import { type NavItem } from "./types";
+import { APP_ROUTES, getSiteRoute } from "@/config/routes"; // Import routes
 
-// Import all the new sidebar components
+// Import all the specific sidebar components
 import { DashboardSidebar } from "./DashboardSidebar";
 import { ContentSidebar } from "./ContentSidebar";
 import { PeopleSidebar } from "./PeopleSidebar";
@@ -15,53 +17,63 @@ import { ReportsSidebar } from "./ReportsSidebar";
 import { DesignStudioSpacesFeedSidebar } from "./DesignStudioSpacesFeedSidebar";
 import { AppStoreSidebar } from "./AppStoreSidebar";
 
-// MiniToggle might be used by some sidebars if they have toggles directly, 
-// but it seems it was only used by NavigationItem which is now separate.
-// If not used by any of the new sidebar components directly, this import can be removed.
-// import { MiniToggle } from "./MiniToggle"; 
+// Define Props for SecondarySidebar itself
+interface SecondarySidebarProps {
+  siteName?: string;
+  navItems?: NavItem[];
+  currentSiteId?: string; 
+}
 
-// Separator, Accordion etc. are imported within the components that use them.
-// Icons are also imported directly within the components that use them.
-
-export function SecondarySidebar() {
+export function SecondarySidebar({
+  siteName,
+  navItems,
+  currentSiteId, 
+}: SecondarySidebarProps) {
   const [locationObject] = useLocation();
-  const currentPathname = locationObject; // wouter's useLocation()[0] is the path string
+  const currentPathname = locationObject;
 
   const getSidebarForLocation = () => {
-    // Ensure isActiveUrlUtil is correctly passed and used
-    if (currentPathname.startsWith("/content")) {
+    if (currentSiteId && currentPathname.startsWith(APP_ROUTES.SITE_BASE_PATH(currentSiteId))) {
+      return (
+        <SiteSidebar
+          currentPathname={currentPathname}
+          siteName={siteName}
+          navItems={navItems}
+          currentSiteId={currentSiteId}
+        />
+      );
+    } else if (currentPathname.startsWith(APP_ROUTES.CONTENT)) {
       return <ContentSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname.startsWith("/people")) {
+    } else if (currentPathname.startsWith(APP_ROUTES.PEOPLE)) {
       return <PeopleSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname === "/design-studio/spaces/feed") {
+    } else if (currentPathname === APP_ROUTES.DESIGN_STUDIO_SPACES_FEED) {
       return <DesignStudioSpacesFeedSidebar />;
-    } else if (currentPathname.startsWith("/site")) {
-      return <SiteSidebar currentPathname={currentPathname} />;
-    } else if (currentPathname.startsWith("/design-studio")) {
+    } else if (currentPathname.startsWith(APP_ROUTES.DESIGN_STUDIO)) {
       return <DesignStudioSidebar currentPathname={currentPathname} />;
-    } else if (currentPathname.startsWith("/appearance")) {
+    } else if (currentPathname.startsWith(APP_ROUTES.APPEARANCE)) {
       return <AppearanceSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname.startsWith("/settings")) {
+    } else if (currentPathname.startsWith(APP_ROUTES.SETTINGS)) {
       return <SettingsSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname.startsWith("/billing")) {
+    } else if (currentPathname.startsWith(APP_ROUTES.BILLING)) {
       return <BillingSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname.startsWith("/reports")) {
+    } else if (currentPathname.startsWith(APP_ROUTES.REPORTS)) {
       return <ReportsSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname.startsWith("/app-store")) {
+    } else if (currentPathname.startsWith(APP_ROUTES.APP_STORE)) {
       return <AppStoreSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
     }
-    // Default to Dashboard sidebar if no match, or Content as per original logic for root/dashboard
-    // The original default was renderContentSidebar(). Let's check if /dashboard should render DashboardSidebar
-    if (currentPathname.startsWith("/dashboard")) {
+    
+    if (currentPathname === APP_ROUTES.SITES_LIST) { 
         return <DashboardSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
     }
-    // Fallback to ContentSidebar as per original default
+    
+    // Fallback: Default to ContentSidebar if no other match
+    // Consider if APP_ROUTES.CONTENT is the best fallback or if another route/sidebar is more appropriate.
     return <ContentSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
   };
 
   return (
-    <aside className="secondary-sidebar bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-[calc(100vh-3rem)] overflow-y-auto sticky top-12 w-64">
+    <aside className="secondary-sidebar bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-[calc(100vh-3rem)] overflow-y-auto sticky top-12 w-64 print:hidden">
       {getSidebarForLocation()}
     </aside>
   );
-} 
+}

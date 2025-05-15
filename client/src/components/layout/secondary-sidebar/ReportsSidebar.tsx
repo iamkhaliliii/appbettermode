@@ -1,5 +1,6 @@
 import React from "react";
 import { SideNavItem } from "./SidebarNavigationItems";
+import { APP_ROUTES } from "@/config/routes";
 
 interface ReportsSidebarProps {
   currentPathname: string;
@@ -7,6 +8,7 @@ interface ReportsSidebarProps {
 }
 
 export const ReportsSidebar: React.FC<ReportsSidebarProps> = ({ currentPathname, isActiveUrl }) => {
+  const basePath = APP_ROUTES.REPORTS;
   return (
     <div className="p-3">
       <div className="mb-2">
@@ -17,57 +19,57 @@ export const ReportsSidebar: React.FC<ReportsSidebarProps> = ({ currentPathname,
 
       <div className="space-y-1">
         <SideNavItem
-          href="/reports/overview"
-          isActive={isActiveUrl("/reports/overview", currentPathname) || currentPathname === "/reports"}
+          href={`${basePath}/overview`}
+          isActive={isActiveUrl(`${basePath}/overview`, currentPathname) || currentPathname === basePath}
         >
           Overview
         </SideNavItem>
 
         <SideNavItem
-          href="/reports/engagement"
-          isActive={isActiveUrl("/reports/engagement", currentPathname)}
+          href={`${basePath}/engagement`}
+          isActive={isActiveUrl(`${basePath}/engagement`, currentPathname)}
         >
           Reach & Engagement
         </SideNavItem>
 
         <SideNavItem
-          href="/reports/people"
-          isActive={isActiveUrl("/reports/people", currentPathname)}
+          href={`${basePath}/people`}
+          isActive={isActiveUrl(`${basePath}/people`, currentPathname)}
         >
           People
         </SideNavItem>
 
         <SideNavItem
-          href="/reports/posts"
-          isActive={isActiveUrl("/reports/posts", currentPathname)}
+          href={`${basePath}/posts`}
+          isActive={isActiveUrl(`${basePath}/posts`, currentPathname)}
         >
           Posts
         </SideNavItem>
 
         <SideNavItem
-          href="/reports/spaces"
-          isActive={isActiveUrl("/reports/spaces", currentPathname)}
+          href={`${basePath}/spaces`}
+          isActive={isActiveUrl(`${basePath}/spaces`, currentPathname)}
         >
           Spaces
         </SideNavItem>
 
         <SideNavItem
-          href="/reports/messages"
-          isActive={isActiveUrl("/reports/messages", currentPathname)}
+          href={`${basePath}/messages`}
+          isActive={isActiveUrl(`${basePath}/messages`, currentPathname)}
         >
           Messages
         </SideNavItem>
 
         <SideNavItem
-          href="/reports/audit-logs"
-          isActive={isActiveUrl("/reports/audit-logs", currentPathname)}
+          href={`${basePath}/audit-logs`}
+          isActive={isActiveUrl(`${basePath}/audit-logs`, currentPathname)}
         >
           Audit logs
         </SideNavItem>
 
         <SideNavItem
-          href="/reports/email-logs"
-          isActive={isActiveUrl("/reports/email-logs", currentPathname)}
+          href={`${basePath}/email-logs`}
+          isActive={isActiveUrl(`${basePath}/email-logs`, currentPathname)}
         >
           Email logs
         </SideNavItem>

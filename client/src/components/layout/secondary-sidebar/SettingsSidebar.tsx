@@ -1,5 +1,6 @@
 import React from "react";
 import { SideNavItem } from "./SidebarNavigationItems";
+import { APP_ROUTES } from "@/config/routes";
 
 interface SettingsSidebarProps {
   currentPathname: string;
@@ -17,71 +18,71 @@ export const SettingsSidebar: React.FC<SettingsSidebarProps> = ({ currentPathnam
 
       <div className="space-y-1">
         <SideNavItem
-          href="/settings/site-settings"
-          isActive={isActiveUrl("/settings/site-settings", currentPathname) || currentPathname === "/settings"}
+          href={APP_ROUTES.SETTINGS_SITE}
+          isActive={isActiveUrl(APP_ROUTES.SETTINGS_SITE, currentPathname) || currentPathname === APP_ROUTES.SETTINGS}
         >
           Site settings
         </SideNavItem>
 
         <SideNavItem
-          href="/settings/authentication"
-          isActive={isActiveUrl("/settings/authentication", currentPathname)}
+          href={APP_ROUTES.SETTINGS_AUTHENTICATION}
+          isActive={isActiveUrl(APP_ROUTES.SETTINGS_AUTHENTICATION, currentPathname)}
         >
           Authentication
         </SideNavItem>
 
         <SideNavItem
-          href="/settings/domain"
-          isActive={isActiveUrl("/settings/domain", currentPathname)}
+          href={APP_ROUTES.SETTINGS_DOMAIN}
+          isActive={isActiveUrl(APP_ROUTES.SETTINGS_DOMAIN, currentPathname)}
         >
           Domain
         </SideNavItem>
 
         <SideNavItem
-          href="/settings/search"
-          isActive={isActiveUrl("/settings/search", currentPathname)}
+          href={APP_ROUTES.SETTINGS_SEARCH}
+          isActive={isActiveUrl(APP_ROUTES.SETTINGS_SEARCH, currentPathname)}
         >
           Search
         </SideNavItem>
 
         <SideNavItem
-          href="/settings/messaging"
-          isActive={isActiveUrl("/settings/messaging", currentPathname)}
+          href={APP_ROUTES.SETTINGS_MESSAGING}
+          isActive={isActiveUrl(APP_ROUTES.SETTINGS_MESSAGING, currentPathname)}
         >
           Messaging
         </SideNavItem>
 
         <SideNavItem
-          href="/settings/moderation"
-          isActive={isActiveUrl("/settings/moderation", currentPathname)}
+          href={APP_ROUTES.SETTINGS_MODERATION}
+          isActive={isActiveUrl(APP_ROUTES.SETTINGS_MODERATION, currentPathname)}
         >
           Moderation
         </SideNavItem>
 
         <SideNavItem
-          href="/settings/localization"
-          isActive={isActiveUrl("/settings/localization", currentPathname)}
+          href={APP_ROUTES.SETTINGS_LOCALIZATION}
+          isActive={isActiveUrl(APP_ROUTES.SETTINGS_LOCALIZATION, currentPathname)}
         >
           Localization
         </SideNavItem>
         
         <SideNavItem
-          href="/settings/notifications"
-          isActive={isActiveUrl("/settings/notifications", currentPathname)}
+          href={APP_ROUTES.SETTINGS_NOTIFICATIONS}
+          isActive={isActiveUrl(APP_ROUTES.SETTINGS_NOTIFICATIONS, currentPathname)}
         >
           Notifications
         </SideNavItem>
 
         <SideNavItem
-          href="/settings/seo-settings"
-          isActive={isActiveUrl("/settings/seo-settings", currentPathname)}
+          href={APP_ROUTES.SETTINGS_SEO}
+          isActive={isActiveUrl(APP_ROUTES.SETTINGS_SEO, currentPathname)}
         >
           SEO settings
         </SideNavItem>
 
         <SideNavItem
-          href="/settings/security-privacy"
-          isActive={isActiveUrl("/settings/security-privacy", currentPathname)}
+          href={APP_ROUTES.SETTINGS_SECURITY_PRIVACY}
+          isActive={isActiveUrl(APP_ROUTES.SETTINGS_SECURITY_PRIVACY, currentPathname)}
         >
           Security & Privacy
         </SideNavItem>

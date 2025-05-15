@@ -42,3 +42,11 @@ export interface TreeFolderProps {
   isExpanded?: boolean;
   children?: React.ReactNode;
 } 
+export interface NavItem { // یا type NavItem
+  name: string;
+  href: string;
+  icon?: React.ElementType; // آیکون به عنوان یک کامپوننت React
+  current?: boolean;        // برای مشخص کردن آیتم فعال
+  children?: NavItem[];     // برای آیتم‌های زیرمنو (در صورت نیاز)
+  // سایر فیلدهای لازم
+}

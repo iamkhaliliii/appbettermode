@@ -1,3 +1,21 @@
+        // server/index.ts
+        import './env'; // یا 'shared/env' اگر فایل را آنجا گذاشتید - این خط باید اولین خط اجرایی باشد
+        // Debug: Check if DATABASE_URL is loaded (can be removed later)
+console.log("(server/index.ts) DATABASE_URL after env import:", process.env.DATABASE_URL);
+console.log("(server/index.ts) CWD:", process.cwd());
+
+import dotenv from 'dotenv';
+import path from 'path'; // Import path module
+
+// Explicitly load .env from the project root
+const envPath = path.resolve(process.cwd(), '.env');
+dotenv.config({ path: envPath });
+
+// Debug: Check if DATABASE_URL is loaded and where .env was expected
+console.log(`Trying to load .env from: ${envPath}`);
+console.log("DATABASE_URL from .env:", process.env.DATABASE_URL);
+console.log("CWD for .env loading:", process.cwd());
+
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";

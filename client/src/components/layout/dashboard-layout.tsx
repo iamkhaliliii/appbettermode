@@ -1,28 +1,40 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Header } from "./header";
 import { MainSidebar } from "./main-sidebar";
 import { SecondarySidebar } from "./secondary-sidebar/index";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, X, PanelLeft, PanelRightClose } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import * as Tooltip from "@radix-ui/react-tooltip";
+import { type NavItem } from "./secondary-sidebar/types"; // مسیر جدید
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
+  siteName?: string;        // Optional: Name of the current site, to be displayed possibly in Header or SecondarySidebar
+  currentSiteId?: string;   // Optional: ID of the current site, can be used for dynamic links or data fetching within layout
+  navItems?: NavItem[];     // Optional: Navigation items specific to the current site/context for SecondarySidebar
 }
 
-export function DashboardLayout({ children }: DashboardLayoutProps) {
+export function DashboardLayout({
+  children,
+  siteName,
+  currentSiteId, // This prop is now available
+  navItems = [],   // Default to an empty array if no navItems are provided
+}: DashboardLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
-  
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header onToggleMobileMenu={() => setMobileMenuOpen(!mobileMenuOpen)} />
+    <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-950"> {/* Updated background color */}
+      <Header
+        onToggleMobileMenu={() => setMobileMenuOpen(!mobileMenuOpen)}
+        siteName={siteName} // Pass siteName to Header if it can display it
+        // You might also pass currentSiteId if Header needs it for some links
+      />
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-gray-200 bg-white p-4">
+        <div className="lg:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-md">
           <div className="flex justify-between items-center mb-4">
             <div className="relative w-full">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -30,57 +42,63 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               </div>
               <Input
                 type="text"
-                className="pl-10"
+                className="pl-10 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600" // Simplified classes
                 placeholder="Search..."
               />
             </div>
             <Button
               variant="ghost"
-              size="sm"
+              size="icon" // Changed to icon for a smaller button
               className="ml-2"
               onClick={() => setMobileMenuOpen(false)}
             >
               <X className="h-5 w-5" />
             </Button>
           </div>
-          <nav className="space-y-2">
-            <a href="/" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-primary-700 bg-primary-50">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-primary-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
-              Dashboard
-            </a>
-            <a href="#" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              Calendar
-            </a>
-            <a href="#" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
-              Tasks
-              <span className="ml-auto bg-primary-50 text-primary-700 text-xs font-medium px-2 py-0.5 rounded-full">10</span>
-            </a>
+          <nav className="space-y-1">
+            {/* Render dynamic navItems in mobile menu if provided */}
+            {navItems.length > 0 ? (
+              navItems.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href} // Consider using <Link href={item.href}> from wouter for client-side nav
+                  className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  {item.icon && <item.icon className="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" />}
+                  {item.name}
+                </a>
+              ))
+            ) : (
+              <>
+                {/* Fallback or default mobile nav items */}
+                <a href="/sites" className="flex items-center px-3 py-2 text-sm font-medium rounded-md text-primary-700 dark:text-primary-300 bg-primary-50 dark:bg-primary-700/20">
+                  Sites Dashboard
+                </a>
+                {/* Add other general mobile navigation links here if necessary */}
+              </>
+            )}
           </nav>
         </div>
       )}
 
-      {/* Main content area with 3-column layout */}
-      <div className="flex-1 flex flex-col md:flex-row">
-        {/* Main Sidebar - hidden on mobile, always collapsed otherwise */}
-        <div className={`${isMobile ? 'hidden' : 'w-12 flex-shrink-0'}`}>
-          <MainSidebar collapsed={true} />
-        </div>
+      <div className="flex-1 flex flex-row overflow-hidden">
+        {/* Main Sidebar - always shown on desktop, potentially always collapsed */}
+        {!isMobile && (
+          <div className="w-16 flex-shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
+            <MainSidebar collapsed={true} currentSiteId={currentSiteId} />
+          </div>
+        )}
         
-        {/* Secondary Sidebar - hidden on mobile, always visible otherwise */}
-        <div className={`${isMobile ? 'hidden' : 'w-64 flex-shrink-0'}`}>
-          <SecondarySidebar />
-        </div>
+        {/* Secondary Sidebar - shown on desktop, receives site-specific nav items */}
+        {!isMobile && (
+          <div className="w-64 flex-shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
+            {/* Pass siteName and navItems to SecondarySidebar */}
+            {/* Ensure SecondarySidebar is designed to accept and use these props */}
+            <SecondarySidebar siteName={siteName} navItems={navItems} currentSiteId={currentSiteId} />
+          </div>
+        )}
         
-        {/* Main Content */}
-        <main className="flex-1 bg-gray-50 dark:bg-gray-900 overflow-y-auto min-h-[calc(100vh-4rem)]">
+        <main className="flex-1 bg-gray-50 dark:bg-gray-900 overflow-y-auto"> {/* Changed main content background */}
           {children}
         </main>
       </div>

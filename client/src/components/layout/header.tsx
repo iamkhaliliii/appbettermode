@@ -11,9 +11,10 @@ import { motion, AnimatePresence } from "framer-motion";
 interface HeaderProps {
   onToggleMobileMenu: () => void;
   variant?: 'dashboard' | 'site';
+  siteName?: string;
 }
 
-export function Header({ onToggleMobileMenu, variant = 'dashboard' }: HeaderProps) {
+export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName }: HeaderProps) {
   const [location] = useLocation();
   const [isSiteHeaderVisible, setIsSiteHeaderVisible] = useState(true);
 
@@ -93,148 +94,156 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard' }: HeaderProp
             <div className="flex-1 flex items-center">
               {/* Middle Section - App Navigation */}
               <div className={cn("w-64 flex-shrink-0 h-full border-r", borderColor)}>
-                <div className="flex h-full items-center justify-center gap-2 px-2">
-                  <Tooltip.Provider delayDuration={200}>
-                    <Tooltip.Root>
-                      <DropdownMenu.Root>
-                        <Tooltip.Trigger asChild>
-                          <DropdownMenu.Trigger asChild>
-                            <button
-                              className={cn(
-                                "flex items-center gap-1 justify-center p-1.5 rounded-md border",
-                                borderColor, 
-                                buttonBg, 
-                                iconColor,
-                                buttonBgHover
-                              )}
+                {(siteName && (variant === 'dashboard' || variant === 'site')) ? (
+                  <div className="flex h-full items-center justify-center px-3">
+                    <span className={cn("font-semibold text-sm truncate", primaryTextColor)} title={siteName}>
+                      {siteName} 
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex h-full items-center justify-center gap-2 px-2">
+                    <Tooltip.Provider delayDuration={200}>
+                      <Tooltip.Root>
+                        <DropdownMenu.Root>
+                          <Tooltip.Trigger asChild>
+                            <DropdownMenu.Trigger asChild>
+                              <button
+                                className={cn(
+                                  "flex items-center gap-1 justify-center p-1.5 rounded-md border",
+                                  borderColor, 
+                                  buttonBg, 
+                                  iconColor,
+                                  buttonBgHover
+                                )}
+                              >
+                                <Files className="h-3.5 w-3.5" />
+                                <ChevronDown className="h-2.5 w-2.5 opacity-40" />
+                              </button>
+                            </DropdownMenu.Trigger>
+                          </Tooltip.Trigger>
+                          <Tooltip.Portal>
+                            <Tooltip.Content
+                              className="bg-gray-900 text-white px-2 py-1 rounded text-xs"
+                              side="bottom"
+                              sideOffset={5}
                             >
-                              <Files className="h-3.5 w-3.5" />
-                              <ChevronDown className="h-2.5 w-2.5 opacity-40" />
-                            </button>
-                          </DropdownMenu.Trigger>
-                        </Tooltip.Trigger>
-                        <Tooltip.Portal>
-                          <Tooltip.Content
-                            className="bg-gray-900 text-white px-2 py-1 rounded text-xs"
-                            side="bottom"
+                              Pages
+                              <Tooltip.Arrow className="fill-gray-900" />
+                            </Tooltip.Content>
+                          </Tooltip.Portal>
+                          <DropdownMenu.Content 
+                            className="bg-white dark:bg-gray-800 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 py-1 w-48 mt-1"
                             sideOffset={5}
                           >
-                            Pages
-                            <Tooltip.Arrow className="fill-gray-900" />
-                          </Tooltip.Content>
-                        </Tooltip.Portal>
-                        <DropdownMenu.Content 
-                          className="bg-white dark:bg-gray-800 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 py-1 w-48 mt-1"
-                          sideOffset={5}
-                        >
-                          <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
-                            Home Page
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
-                            About Us
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
-                            Services
-                          </DropdownMenu.Item>
-                        </DropdownMenu.Content>
-                      </DropdownMenu.Root>
-                    </Tooltip.Root>
-                  </Tooltip.Provider>
-                  
-                  <Tooltip.Provider delayDuration={200}>
-                    <Tooltip.Root>
-                      <DropdownMenu.Root>
-                        <Tooltip.Trigger asChild>
-                          <DropdownMenu.Trigger asChild>
-                            <button
-                              className={cn(
-                                "flex items-center gap-1 justify-center p-1.5 rounded-md border",
-                                borderColor, 
-                                buttonBg, 
-                                iconColor,
-                                buttonBgHover
-                              )}
+                            <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                              Home Page
+                            </DropdownMenu.Item>
+                            <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                              About Us
+                            </DropdownMenu.Item>
+                            <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                              Services
+                            </DropdownMenu.Item>
+                          </DropdownMenu.Content>
+                        </DropdownMenu.Root>
+                      </Tooltip.Root>
+                    </Tooltip.Provider>
+                    
+                    <Tooltip.Provider delayDuration={200}>
+                      <Tooltip.Root>
+                        <DropdownMenu.Root>
+                          <Tooltip.Trigger asChild>
+                            <DropdownMenu.Trigger asChild>
+                              <button
+                                className={cn(
+                                  "flex items-center gap-1 justify-center p-1.5 rounded-md border",
+                                  borderColor, 
+                                  buttonBg, 
+                                  iconColor,
+                                  buttonBgHover
+                                )}
+                              >
+                                <Database className="h-3.5 w-3.5" />
+                                <ChevronDown className="h-2.5 w-2.5 opacity-40" />
+                              </button>
+                            </DropdownMenu.Trigger>
+                          </Tooltip.Trigger>
+                          <Tooltip.Portal>
+                            <Tooltip.Content
+                              className="bg-gray-900 text-white px-2 py-1 rounded text-xs"
+                              side="bottom"
+                              sideOffset={5}
                             >
-                              <Database className="h-3.5 w-3.5" />
-                              <ChevronDown className="h-2.5 w-2.5 opacity-40" />
-                            </button>
-                          </DropdownMenu.Trigger>
-                        </Tooltip.Trigger>
-                        <Tooltip.Portal>
-                          <Tooltip.Content
-                            className="bg-gray-900 text-white px-2 py-1 rounded text-xs"
-                            side="bottom"
+                              Database
+                              <Tooltip.Arrow className="fill-gray-900" />
+                            </Tooltip.Content>
+                          </Tooltip.Portal>
+                          <DropdownMenu.Content 
+                            className="bg-white dark:bg-gray-800 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 py-1 w-48 mt-1"
                             sideOffset={5}
                           >
-                            Database
-                            <Tooltip.Arrow className="fill-gray-900" />
-                          </Tooltip.Content>
-                        </Tooltip.Portal>
-                        <DropdownMenu.Content 
-                          className="bg-white dark:bg-gray-800 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 py-1 w-48 mt-1"
-                          sideOffset={5}
-                        >
-                          <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
-                            Users
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
-                            Products
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
-                            Categories
-                          </DropdownMenu.Item>
-                        </DropdownMenu.Content>
-                      </DropdownMenu.Root>
-                    </Tooltip.Root>
-                  </Tooltip.Provider>
-                  
-                  <Tooltip.Provider delayDuration={200}>
-                    <Tooltip.Root>
-                      <DropdownMenu.Root>
-                        <Tooltip.Trigger asChild>
-                          <DropdownMenu.Trigger asChild>
-                            <button
-                              className={cn(
-                                "flex items-center gap-1 justify-center p-1.5 rounded-md border",
-                                borderColor, 
-                                buttonBg, 
-                                iconColor,
-                                buttonBgHover
-                              )}
+                            <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                              Users
+                            </DropdownMenu.Item>
+                            <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                              Products
+                            </DropdownMenu.Item>
+                            <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                              Categories
+                            </DropdownMenu.Item>
+                          </DropdownMenu.Content>
+                        </DropdownMenu.Root>
+                      </Tooltip.Root>
+                    </Tooltip.Provider>
+                    
+                    <Tooltip.Provider delayDuration={200}>
+                      <Tooltip.Root>
+                        <DropdownMenu.Root>
+                          <Tooltip.Trigger asChild>
+                            <DropdownMenu.Trigger asChild>
+                              <button
+                                className={cn(
+                                  "flex items-center gap-1 justify-center p-1.5 rounded-md border",
+                                  borderColor, 
+                                  buttonBg, 
+                                  iconColor,
+                                  buttonBgHover
+                                )}
+                              >
+                                <BarChart2 className="h-3.5 w-3.5" />
+                                <ChevronDown className="h-2.5 w-2.5 opacity-40" />
+                              </button>
+                            </DropdownMenu.Trigger>
+                          </Tooltip.Trigger>
+                          <Tooltip.Portal>
+                            <Tooltip.Content
+                              className="bg-gray-900 text-white px-2 py-1 rounded text-xs"
+                              side="bottom"
+                              sideOffset={5}
                             >
-                              <BarChart2 className="h-3.5 w-3.5" />
-                              <ChevronDown className="h-2.5 w-2.5 opacity-40" />
-                            </button>
-                          </DropdownMenu.Trigger>
-                        </Tooltip.Trigger>
-                        <Tooltip.Portal>
-                          <Tooltip.Content
-                            className="bg-gray-900 text-white px-2 py-1 rounded text-xs"
-                            side="bottom"
+                              Insights
+                              <Tooltip.Arrow className="fill-gray-900" />
+                            </Tooltip.Content>
+                          </Tooltip.Portal>
+                          <DropdownMenu.Content 
+                            className="bg-white dark:bg-gray-800 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 py-1 w-48 mt-1"
                             sideOffset={5}
                           >
-                            Insights
-                            <Tooltip.Arrow className="fill-gray-900" />
-                          </Tooltip.Content>
-                        </Tooltip.Portal>
-                        <DropdownMenu.Content 
-                          className="bg-white dark:bg-gray-800 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 py-1 w-48 mt-1"
-                          sideOffset={5}
-                        >
-                          <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
-                            Analytics
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
-                            Conversions
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
-                            Traffic
-                          </DropdownMenu.Item>
-                        </DropdownMenu.Content>
-                      </DropdownMenu.Root>
-                    </Tooltip.Root>
-                  </Tooltip.Provider>
-                </div>
+                            <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                              Analytics
+                            </DropdownMenu.Item>
+                            <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                              Conversions
+                            </DropdownMenu.Item>
+                            <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                              Traffic
+                            </DropdownMenu.Item>
+                          </DropdownMenu.Content>
+                        </DropdownMenu.Root>
+                      </Tooltip.Root>
+                    </Tooltip.Provider>
+                  </div>
+                )}
               </div>
 
               {/* Right Section - Breadcrumbs and Actions */}

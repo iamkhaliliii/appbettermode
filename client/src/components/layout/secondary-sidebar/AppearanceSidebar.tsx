@@ -1,5 +1,6 @@
 import React from "react";
 import { SideNavItem } from "./SidebarNavigationItems";
+import { APP_ROUTES } from "@/config/routes";
 
 interface AppearanceSidebarProps {
   currentPathname: string;
@@ -7,6 +8,7 @@ interface AppearanceSidebarProps {
 }
 
 export const AppearanceSidebar: React.FC<AppearanceSidebarProps> = ({ currentPathname, isActiveUrl }) => {
+  const basePath = APP_ROUTES.APPEARANCE;
   return (
     <div className="p-3">
       <div className="mb-2">
@@ -17,29 +19,29 @@ export const AppearanceSidebar: React.FC<AppearanceSidebarProps> = ({ currentPat
 
       <div className="space-y-1">
         <SideNavItem
-          href="/appearance/logos"
-          isActive={isActiveUrl("/appearance/logos", currentPathname) || currentPathname === "/appearance"}
+          href={`${basePath}/logos`}
+          isActive={isActiveUrl(`${basePath}/logos`, currentPathname) || currentPathname === basePath}
         >
           Logos
         </SideNavItem>
 
         <SideNavItem
-          href="/appearance/themes"
-          isActive={isActiveUrl("/appearance/themes", currentPathname)}
+          href={`${basePath}/themes`}
+          isActive={isActiveUrl(`${basePath}/themes`, currentPathname)}
         >
           Themes
         </SideNavItem>
 
         <SideNavItem
-          href="/appearance/typographies"
-          isActive={isActiveUrl("/appearance/typographies", currentPathname)}
+          href={`${basePath}/typographies`}
+          isActive={isActiveUrl(`${basePath}/typographies`, currentPathname)}
         >
           Typographies
         </SideNavItem>
 
         <SideNavItem
-          href="/appearance/styles"
-          isActive={isActiveUrl("/appearance/styles", currentPathname)}
+          href={`${basePath}/styles`}
+          isActive={isActiveUrl(`${basePath}/styles`, currentPathname)}
         >
           Styles
         </SideNavItem>

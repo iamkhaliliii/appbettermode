@@ -1,7 +1,7 @@
 import React from "react";
 import { BarChart, TrendingUp, Users, DollarSign, ShoppingBag, ClipboardList } from "lucide-react";
 import { SideNavItem } from "./SidebarNavigationItems";
-import { isActiveUrl as isActiveUrlUtil } from "./utils";
+import { APP_ROUTES } from "@/config/routes";
 
 interface DashboardSidebarProps {
   currentPathname: string;
@@ -9,6 +9,7 @@ interface DashboardSidebarProps {
 }
 
 export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ currentPathname, isActiveUrl }) => {
+  const basePath = APP_ROUTES.DASHBOARD;
   return (
     <div className="p-3">
       <div className="mb-2">
@@ -22,50 +23,50 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ currentPathn
 
       <div className="space-y-1">
         <SideNavItem
-          href="/dashboard"
+          href={basePath}
           icon={<BarChart className="h-4 w-4" />}
-          isActive={isActiveUrl("/dashboard", currentPathname)}
+          isActive={currentPathname === basePath || isActiveUrl(basePath, currentPathname)}
         >
           Overview
         </SideNavItem>
 
         <SideNavItem
-          href="/dashboard/performance"
+          href={`${basePath}/performance`}
           icon={<TrendingUp className="h-4 w-4" />}
-          isActive={isActiveUrl("/dashboard/performance", currentPathname)}
+          isActive={isActiveUrl(`${basePath}/performance`, currentPathname)}
         >
           Performance
         </SideNavItem>
 
         <SideNavItem
-          href="/dashboard/customers"
+          href={`${basePath}/customers`}
           icon={<Users className="h-4 w-4" />}
-          isActive={isActiveUrl("/dashboard/customers", currentPathname)}
+          isActive={isActiveUrl(`${basePath}/customers`, currentPathname)}
           badge="New"
         >
           Customers
         </SideNavItem>
 
         <SideNavItem
-          href="/dashboard/revenue"
+          href={`${basePath}/revenue`}
           icon={<DollarSign className="h-4 w-4" />}
-          isActive={isActiveUrl("/dashboard/revenue", currentPathname)}
+          isActive={isActiveUrl(`${basePath}/revenue`, currentPathname)}
         >
           Revenue
         </SideNavItem>
 
         <SideNavItem
-          href="/dashboard/inventory"
+          href={`${basePath}/inventory`}
           icon={<ShoppingBag className="h-4 w-4" />}
-          isActive={isActiveUrl("/dashboard/inventory", currentPathname)}
+          isActive={isActiveUrl(`${basePath}/inventory`, currentPathname)}
         >
           Inventory
         </SideNavItem>
 
         <SideNavItem
-          href="/dashboard/reports"
+          href={`${basePath}/reports`}
           icon={<ClipboardList className="h-4 w-4" />}
-          isActive={isActiveUrl("/dashboard/reports", currentPathname)}
+          isActive={isActiveUrl(`${basePath}/reports`, currentPathname)}
         >
           Reports
         </SideNavItem>

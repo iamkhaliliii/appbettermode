@@ -1,5 +1,6 @@
 import React from "react";
 import { SideNavItem } from "./SidebarNavigationItems";
+import { APP_ROUTES } from "@/config/routes";
 
 interface BillingSidebarProps {
   currentPathname: string;
@@ -7,6 +8,7 @@ interface BillingSidebarProps {
 }
 
 export const BillingSidebar: React.FC<BillingSidebarProps> = ({ currentPathname, isActiveUrl }) => {
+  const basePath = APP_ROUTES.BILLING;
   return (
     <div className="p-3">
       <div className="mb-2">
@@ -17,22 +19,22 @@ export const BillingSidebar: React.FC<BillingSidebarProps> = ({ currentPathname,
 
       <div className="space-y-1">
         <SideNavItem
-          href="/billing/summary"
-          isActive={isActiveUrl("/billing/summary", currentPathname) || currentPathname === "/billing"}
+          href={`${basePath}/summary`}
+          isActive={isActiveUrl(`${basePath}/summary`, currentPathname) || currentPathname === basePath}
         >
           Summary
         </SideNavItem>
 
         <SideNavItem
-          href="/billing/subscription"
-          isActive={isActiveUrl("/billing/subscription", currentPathname)}
+          href={`${basePath}/subscription`}
+          isActive={isActiveUrl(`${basePath}/subscription`, currentPathname)}
         >
           Subscription plans
         </SideNavItem>
 
         <SideNavItem
-          href="/billing/usage"
-          isActive={isActiveUrl("/billing/usage", currentPathname)}
+          href={`${basePath}/usage`}
+          isActive={isActiveUrl(`${basePath}/usage`, currentPathname)}
         >
           Service usage
         </SideNavItem>

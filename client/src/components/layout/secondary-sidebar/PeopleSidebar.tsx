@@ -1,5 +1,6 @@
 import React from "react";
 import { SideNavItem } from "./SidebarNavigationItems";
+import { APP_ROUTES } from "@/config/routes";
 
 interface PeopleSidebarProps {
   currentPathname: string;
@@ -17,36 +18,36 @@ export const PeopleSidebar: React.FC<PeopleSidebarProps> = ({ currentPathname, i
 
       <div className="space-y-1">
         <SideNavItem
-          href="/people/members"
-          isActive={isActiveUrl("/people/members", currentPathname) || currentPathname === "/people"}
+          href={APP_ROUTES.PEOPLE_MEMBERS}
+          isActive={isActiveUrl(APP_ROUTES.PEOPLE_MEMBERS, currentPathname) || currentPathname === APP_ROUTES.PEOPLE}
         >
           Members
         </SideNavItem>
 
         <SideNavItem
-          href="/people/staff"
-          isActive={isActiveUrl("/people/staff", currentPathname)}
+          href={APP_ROUTES.PEOPLE_STAFF}
+          isActive={isActiveUrl(APP_ROUTES.PEOPLE_STAFF, currentPathname)}
         >
           Staff
         </SideNavItem>
 
         <SideNavItem
-          href="/people/invitations"
-          isActive={isActiveUrl("/people/invitations", currentPathname)}
+          href={APP_ROUTES.PEOPLE_INVITATIONS}
+          isActive={isActiveUrl(APP_ROUTES.PEOPLE_INVITATIONS, currentPathname)}
         >
           Invitations
         </SideNavItem>
 
         <SideNavItem
-          href="/people/profile-fields"
-          isActive={isActiveUrl("/people/profile-fields", currentPathname)}
+          href={APP_ROUTES.PEOPLE_PROFILE_FIELDS}
+          isActive={isActiveUrl(APP_ROUTES.PEOPLE_PROFILE_FIELDS, currentPathname)}
         >
           Profile fields
         </SideNavItem>
 
         <SideNavItem
-          href="/people/badges"
-          isActive={isActiveUrl("/people/badges", currentPathname)}
+          href={APP_ROUTES.PEOPLE_BADGES}
+          isActive={isActiveUrl(APP_ROUTES.PEOPLE_BADGES, currentPathname)}
         >
           Badges
         </SideNavItem>

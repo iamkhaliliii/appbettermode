@@ -28,6 +28,7 @@ import { useState, useEffect } from "react";
 import { NotificationDrawer } from "@/components/ui/notification-drawer";
 import { useQuery } from "@tanstack/react-query";
 import { getNotifications } from "@/lib/dashboard-data";
+import { APP_ROUTES, isSiteSpecificRoute, getSiteIdFromRoute } from "@/config/routes";
 
 interface NavItemProps {
   href: string;
@@ -111,6 +112,7 @@ function NavItem({
 
 interface MainSidebarProps {
   collapsed?: boolean;
+  currentSiteId?: string;
 }
 
 // Create a custom NavButton component for the Inbox icon that will open a drawer
@@ -181,7 +183,7 @@ function NavButton({
   );
 }
 
-export function MainSidebar({ collapsed = false }: MainSidebarProps) {
+export function MainSidebar({ collapsed = false, currentSiteId }: MainSidebarProps) {
   const [location] = useLocation();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [notificationDrawerOpen, setNotificationDrawerOpen] = useState(false);
@@ -210,6 +212,14 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
     setIsDarkMode(isDark);
   }, []);
 
+  // Determine if we should use site-specific routes
+  const inSiteContext = !!currentSiteId;
+
+  // Helper function to get the appropriate route based on context
+  const getContextualRoute = (generalRoute: string, siteSpecificFn: (siteId: string) => string) => {
+    return inSiteContext ? siteSpecificFn(currentSiteId!) : generalRoute;
+  };
+
   return (
     <aside className="bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-[calc(100vh-3rem)] overflow-y-auto sticky top-12 w-12">
       <div className="px-1.5 py-3 h-full flex flex-col">
@@ -222,7 +232,7 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
             )}
             <NavButton 
               icon={<Inbox className="h-4 w-4" />} 
-              isActive={location.startsWith('/inbox') || notificationDrawerOpen}
+              isActive={location.startsWith(APP_ROUTES.INBOX) || notificationDrawerOpen}
               onClick={() => setNotificationDrawerOpen(true)}
             >
               Inbox
@@ -230,70 +240,79 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
           </div>
           
           <NavItem 
-            href="/content" 
+            href={getContextualRoute(APP_ROUTES.CONTENT, APP_ROUTES.SITE_CONTENT)} 
             icon={<Database className="h-4 w-4" />} 
-            isActive={location.startsWith('/content') && !location.startsWith('/content/inbox')} 
+            isActive={location.startsWith(APP_ROUTES.CONTENT) || 
+                      (inSiteContext && location.startsWith(APP_ROUTES.SITE_CONTENT(currentSiteId)))} 
             collapsed={true}
           >
             Content
           </NavItem>
+
           <NavItem 
-            href="/site" 
+            href={inSiteContext ? APP_ROUTES.SITE_DETAIL(currentSiteId) : APP_ROUTES.SITES_LIST} 
             icon={<MonitorCog className="h-4 w-4" />} 
-            isActive={location.startsWith('/site')} 
+            isActive={location.startsWith(APP_ROUTES.SITE) || location === APP_ROUTES.SITES_LIST} 
             collapsed={true}
           >
-            Site
+            {inSiteContext ? 'Site Overview' : 'Sites'}
           </NavItem>
+          
           <NavItem 
-            href="/people" 
+            href={getContextualRoute(APP_ROUTES.PEOPLE, APP_ROUTES.SITE_PEOPLE)} 
             icon={<Users className="h-4 w-4" />} 
-            isActive={location.startsWith('/people')} 
+            isActive={location.startsWith(APP_ROUTES.PEOPLE) || 
+                      (inSiteContext && location.startsWith(APP_ROUTES.SITE_PEOPLE(currentSiteId)))} 
             collapsed={true}
           >
             People
           </NavItem>
           
           <NavItem 
-            href="/appearance" 
+            href={getContextualRoute(APP_ROUTES.APPEARANCE, APP_ROUTES.SITE_APPEARANCE)} 
             icon={<Shapes className="h-4 w-4" />} 
-            isActive={location.startsWith('/appearance')} 
+            isActive={location.startsWith(APP_ROUTES.APPEARANCE) || 
+                      (inSiteContext && location.startsWith(APP_ROUTES.SITE_APPEARANCE(currentSiteId)))} 
             collapsed={true}
           >
             Appearance
           </NavItem>
           
           <NavItem 
-            href="/settings" 
+            href={getContextualRoute(APP_ROUTES.SETTINGS, APP_ROUTES.SITE_SETTINGS)} 
             icon={<Settings className="h-4 w-4" />} 
-            isActive={location.startsWith('/settings')} 
+            isActive={location.startsWith(APP_ROUTES.SETTINGS) || 
+                      (inSiteContext && location.startsWith(APP_ROUTES.SITE_SETTINGS(currentSiteId)))} 
             collapsed={true}
           >
             Settings
           </NavItem>
           
           <NavItem 
-            href="/billing" 
+            href={getContextualRoute(APP_ROUTES.BILLING, APP_ROUTES.SITE_BILLING)} 
             icon={<CreditCard className="h-4 w-4" />} 
-            isActive={location.startsWith('/billing')} 
+            isActive={location.startsWith(APP_ROUTES.BILLING) || 
+                      (inSiteContext && location.startsWith(APP_ROUTES.SITE_BILLING(currentSiteId)))} 
             collapsed={true}
           >
             Billing
           </NavItem>
           
           <NavItem 
-            href="/reports" 
+            href={getContextualRoute(APP_ROUTES.REPORTS, APP_ROUTES.SITE_REPORTS)} 
             icon={<BarChart2 className="h-4 w-4" />} 
-            isActive={location.startsWith('/reports')} 
+            isActive={location.startsWith(APP_ROUTES.REPORTS) || 
+                      (inSiteContext && location.startsWith(APP_ROUTES.SITE_REPORTS(currentSiteId)))} 
             collapsed={true}
           >
             Reports
           </NavItem>
           
           <NavItem 
-            href="/app-store" 
+            href={getContextualRoute(APP_ROUTES.APP_STORE, APP_ROUTES.SITE_APP_STORE)} 
             icon={<ShoppingBag className="h-4 w-4" />} 
-            isActive={location.startsWith('/app-store')} 
+            isActive={location.startsWith(APP_ROUTES.APP_STORE) || 
+                      (inSiteContext && location.startsWith(APP_ROUTES.SITE_APP_STORE(currentSiteId)))} 
             collapsed={true}
           >
             App Store
@@ -303,9 +322,10 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
           <div className="my-2 border-t border-gray-200 dark:border-gray-700 w-8/12 mx-auto"></div>
           
           <NavItem 
-            href="/design-studio" 
+            href={getContextualRoute(APP_ROUTES.DESIGN_STUDIO, APP_ROUTES.SITE_DESIGN_STUDIO)} 
             icon={<PanelsLeftBottom className="text-white h-4 w-4" />} 
-            isActive={location.startsWith('/design-studio') && !location.startsWith('/design-studio-plus')} 
+            isActive={(location.startsWith(APP_ROUTES.DESIGN_STUDIO) && !location.startsWith(APP_ROUTES.DESIGN_STUDIO_SPACES_FEED)) || 
+                      (inSiteContext && location.startsWith(APP_ROUTES.SITE_DESIGN_STUDIO(currentSiteId)))} 
             collapsed={true}
             isPro={true}
           >
@@ -314,6 +334,29 @@ export function MainSidebar({ collapsed = false }: MainSidebarProps) {
         </nav>
         
         <div className="mt-auto flex flex-col items-center gap-3 pb-2">
+          {/* Return to sites list button if in site context */}
+          {inSiteContext && (
+            <Tooltip.Provider delayDuration={200}>
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <Link href={APP_ROUTES.SITES_LIST} className="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-300 p-1.5">
+                    <Home className="h-4 w-4" />
+                  </Link>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content
+                    className="bg-gray-900 text-white px-2 py-1 rounded text-sm animate-in fade-in-50 data-[side=right]:slide-in-from-left-2"
+                    side="right"
+                    sideOffset={10}
+                  >
+                    <span>All Sites</span>
+                    <Tooltip.Arrow className="fill-gray-900" />
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+            </Tooltip.Provider>
+          )}
+          
           {/* Onboarding button with GraduationCap icon */}
           <Tooltip.Provider delayDuration={200}>
             <Tooltip.Root>
