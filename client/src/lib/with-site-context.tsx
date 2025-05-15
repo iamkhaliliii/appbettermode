@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'wouter';
+import { useRoute } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 
 // Define site details type
@@ -39,9 +39,12 @@ export function withSiteContext<P extends WithSiteContextProps>(
   Component: React.ComponentType<P>
 ): React.FC<Omit<P, keyof WithSiteContextProps>> {
   const WithSiteContext: React.FC<Omit<P, keyof WithSiteContextProps>> = (props) => {
-    // Extract siteId from URL params
-    const params = useParams<{ siteId?: string }>();
-    const siteId = params.siteId;
+    // Try to match both site and dashboard routes
+    const [, siteParams] = useRoute('/site/:siteId/*');
+    const [, dashboardParams] = useRoute('/dashboard/site/:siteId/*');
+    
+    // Get siteId from either route pattern
+    const siteId = siteParams?.siteId || dashboardParams?.siteId;
     
     // Fetch site details if siteId is available
     const {

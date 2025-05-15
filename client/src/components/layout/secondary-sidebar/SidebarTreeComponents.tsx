@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "wouter";
+import { Link } from "wouter";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -22,10 +22,17 @@ import {
 import { MinimalItemProps, TreeFolderProps } from "./types";
 import { MiniToggle } from "./MiniToggle";
 
+// Moved tempNormalize to module scope and renamed to normalizePath
+const normalizePath = (p: string | undefined): string => {
+  if (!p) return "";
+  return p.length > 1 && p.endsWith('/') ? p.slice(0, -1) : p;
+};
+
 export function MinimalItem({
   name,
   path,
   icon,
+  currentPathname: rawCurrentPathname,
   iconColor = "text-gray-500",
   level = 0,
   isHidden = false,
@@ -37,10 +44,11 @@ export function MinimalItem({
   isPrimary,
   isHomepage,
 }: MinimalItemProps) {
-  const [location] = useLocation() as any;
   const [hidden, setHidden] = useState(isHidden);
-  const currentPathname = typeof location === 'string' ? location : location.pathname;
-  const isActive = currentPathname === path;
+  
+  const currentPath = normalizePath(rawCurrentPathname);
+  const itemPath = normalizePath(path);
+  const isActive = currentPath === itemPath || (isHomepage && currentPath.startsWith(itemPath));
 
   const displayName = name.includes(".") ? name.split(".")[0] : name;
   const showHideOption = inSpaces && isFile;
@@ -54,10 +62,7 @@ export function MinimalItem({
       <div className="relative group">
         <div
           className={cn(
-            "flex items-center justify-between px-2 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded opacity-50",
-            isActive
-              ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
-              : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800",
+            "flex items-center justify-between px-2 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800",
           )}
           style={{ paddingLeft: level === 0 ? "12px" : `${level * 10 + 16}px` }}
         >
@@ -111,10 +116,7 @@ export function MinimalItem({
     <div className="relative group">
       <div
         className={cn(
-          "flex items-center justify-center px-2 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded",
-          isActive
-            ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
-            : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800",
+          "flex items-center justify-center px-2 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800",
         )}
         style={{ paddingLeft: level === 0 ? "12px" : `${level * 10 + 16}px` }}
       >
@@ -206,11 +208,24 @@ export function TreeFolder({
   level = 0,
   isExpanded = false,
   children,
+  currentPathname: rawCurrentPathname,
 }: TreeFolderProps) {
   const [expanded, setExpanded] = useState(isExpanded);
-  const [location] = useLocation() as any;
-  const currentPathname = typeof location === 'string' ? location : location.pathname;
-  const isActive = currentPathname === path;
+  
+  const currentPath = normalizePath(rawCurrentPathname);
+  const folderPath = normalizePath(path);
+  
+  let newIsActive = false;
+  if (folderPath) {
+    if (folderPath === '/') {
+      newIsActive = currentPath === '/';
+    } else {
+      newIsActive = currentPath === folderPath || currentPath.startsWith(folderPath + '/');
+    }
+  } else if (path === '/' && rawCurrentPathname === '/') { // Handles root path case if normalization results in empty
+    newIsActive = true;
+  }
+  const isActive = newIsActive;
 
   const handleToggle = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -223,10 +238,7 @@ export function TreeFolder({
       <div className="relative group">
         <div
           className={cn(
-            "flex items-center justify-between px-2 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded",
-            isActive
-              ? "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white"
-              : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800",
+            "flex items-center justify-between px-2 py-1 text-xs cursor-pointer my-0.5 transition-colors duration-150 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800",
           )}
           style={{ paddingLeft: level === 0 ? "12px" : `${level * 10 + 16}px` }}
         >

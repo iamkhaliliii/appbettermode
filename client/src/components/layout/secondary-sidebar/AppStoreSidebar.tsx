@@ -1,14 +1,27 @@
 import React from "react";
 import { SideNavItem } from "./SidebarNavigationItems";
-import { APP_ROUTES } from "@/config/routes"; // Import APP_ROUTES
+import { APP_ROUTES, getSiteAdminRoute } from "@/config/routes";
+import { BaseSidebarProps } from "./types";
 
-interface AppStoreSidebarProps {
-  currentPathname: string;
-  isActiveUrl: (url: string, currentPathname: string) => boolean;
-}
+export const AppStoreSidebar: React.FC<BaseSidebarProps> = ({ 
+  currentPathname, 
+  isActiveUrl,
+  siteId
+}) => {
+  // Determine if we're in site-specific context
+  const inSiteContext = !!siteId;
+  
+  // Helper function to get the appropriate route based on context
+  const getContextualRoute = (generalRoute: string, siteSpecificPath: string) => {
+    return inSiteContext 
+      ? getSiteAdminRoute(siteId, siteSpecificPath) 
+      : generalRoute;
+  };
 
-export const AppStoreSidebar: React.FC<AppStoreSidebarProps> = ({ currentPathname, isActiveUrl }) => {
-  const basePath = APP_ROUTES.APP_STORE;
+  const basePath = inSiteContext 
+    ? APP_ROUTES.DASHBOARD_SITE.APP_STORE(siteId)
+    : '/dashboard/app-store';
+    
   const integrationsPath = `${basePath}/integrations`;
   const addonsPath = `${basePath}/addons`;
 
@@ -21,27 +34,25 @@ export const AppStoreSidebar: React.FC<AppStoreSidebarProps> = ({ currentPathnam
       </div>
 
       <div className="space-y-1">
-        <SideNavItem
-          href={integrationsPath} 
-          isActive={isActiveUrl(integrationsPath, currentPathname) || currentPathname === basePath}
-        >
-          <div className="space-y-1">
             <SideNavItem
               href={integrationsPath}
-              isActive={isActiveUrl(integrationsPath, currentPathname) || currentPathname === basePath} // The main active check is on the parent
+              isActive={isActiveUrl && (
+                isActiveUrl(integrationsPath, currentPathname) || 
+                currentPathname === basePath
+              )}
             >
               Apps & Integrations
             </SideNavItem>
 
             <SideNavItem
               href={addonsPath}
-              isActive={isActiveUrl(addonsPath, currentPathname)}
+              isActive={isActiveUrl && isActiveUrl(addonsPath, currentPathname)}
             >
               Add-ons
             </SideNavItem>
           </div>
-        </SideNavItem>
+
       </div>
-    </div>
+
   );
 }; 

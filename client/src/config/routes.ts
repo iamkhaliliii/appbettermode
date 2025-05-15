@@ -1,77 +1,51 @@
 export const APP_ROUTES = {
-  // Main Navigation Routes
+  // Root and Sites List
   HOME: '/',
-  DASHBOARD: '/dashboard',
-  INBOX: '/inbox',
-  CONTENT: '/content',
-  SITE: '/site',
-  PEOPLE: '/people',
-  APPEARANCE: '/appearance',
-  SETTINGS: '/settings',
-  BILLING: '/billing',
-  REPORTS: '/reports',
-  APP_STORE: '/app-store',
-  DESIGN_STUDIO: '/design-studio',
-
-  // Site-specific routes
   SITES_LIST: '/sites',
-  SITE_BASE_PATH: (siteId: string) => `/site/${siteId}`,
-  SITE_DETAIL: (siteId: string) => `/site/${siteId}`,
   
-  // Site-specific sections
-  SITE_CONTENT: (siteId: string) => `/site/${siteId}/content`,
-  SITE_PEOPLE: (siteId: string) => `/site/${siteId}/people`,
-  SITE_APPEARANCE: (siteId: string) => `/site/${siteId}/appearance`,
-  SITE_SETTINGS: (siteId: string) => `/site/${siteId}/settings`,
-  SITE_BILLING: (siteId: string) => `/site/${siteId}/billing`,
-  SITE_REPORTS: (siteId: string) => `/site/${siteId}/reports`,
-  SITE_DESIGN_STUDIO: (siteId: string) => `/site/${siteId}/design-studio`,
-  SITE_APP_STORE: (siteId: string) => `/site/${siteId}/app-store`,
-  SITE_ANALYTICS: (siteId: string) => `/site/${siteId}/analytics`,
-  SITE_OVERVIEW: (siteId: string) => `/site/${siteId}/overview`,
-
-  // Content Sidebar Specific Routes
-  CONTENT_ALL: '/content/all',
-  CONTENT_EVENTS: '/content/events',
-  CONTENT_DISCUSSIONS: '/content/discussions',
-  CONTENT_ARTICLES: '/content/articles',
-  CONTENT_QUESTIONS: '/content/questions',
-  CONTENT_WISHLIST: '/content/wishlist',
-  CONTENT_NEW_CMS: '/content/new-cms',
-  CONTENT_CUSTOM_VIEW: '/content/custom-view',
-
-  // Inbox Specific Routes
-  INBOX_ALL_ACTIVITY: '/inbox/all-activity',
-  INBOX_UNREAD: '/inbox/unread',
-  INBOX_COMMENTS: '/inbox/comments',
-  INBOX_REACTIONS: '/inbox/reactions',
-  INBOX_MENTIONS: '/inbox/mentions',
-  INBOX_REPORTS: '/inbox/reports',
-  INBOX_RSVPS: '/inbox/rsvps',
-  INBOX_FORMS: '/inbox/forms',
-  INBOX_CMS_ARTICLES: '/inbox/cms/articles',
-  INBOX_CMS_EVENTS: '/inbox/cms/events',
-  INBOX_CMS_QUESTIONS: '/inbox/cms/questions',
-  INBOX_CMS_WISHLIST: '/inbox/cms/wishlist',
+  // Site Frontend Routes (public facing)
+  SITE_HOME: (siteId: string) => `/site/${siteId}`,
+  SITE_SEARCH: (siteId: string) => `/site/${siteId}/search`,
+  SITE_PROFILE: (siteId: string, username: string) => `/site/${siteId}/profile/${username}`,
   
-  // Content Inbox specific
-  CONTENT_INBOX_ROOT: '/content/inbox',
-  CONTENT_INBOX_UNREAD_SUB: '/content/inbox/unread',
-  CONTENT_INBOX_IMPORTANT: '/content/inbox/important',
-  CONTENT_INBOX_ARCHIVED: '/content/inbox/archived',
+  // Dashboard Site Routes
+  DASHBOARD_SITE: {
+    INDEX: (siteId: string) => `/dashboard/site/${siteId}`,
+    CONTENT: (siteId: string) => `/dashboard/site/${siteId}/content`,
+    CONTENT_SECTION: (siteId: string, section: string) => `/dashboard/site/${siteId}/content/${section}`,
+    PEOPLE: (siteId: string) => `/dashboard/site/${siteId}/people`,
+    PEOPLE_MEMBERS: (siteId: string) => `/dashboard/site/${siteId}/people/members`,
+    PEOPLE_STAFF: (siteId: string) => `/dashboard/site/${siteId}/people/staff`,
+    APPEARANCE: (siteId: string) => `/dashboard/site/${siteId}/appearance`,
+    APPEARANCE_SECTION: (siteId: string, section: string) => `/dashboard/site/${siteId}/appearance/${section}`,
+    SETTINGS: (siteId: string) => `/dashboard/site/${siteId}/settings`,
+    SETTINGS_SEARCH: (siteId: string) => `/dashboard/site/${siteId}/settings/search`,
+    BILLING: (siteId: string) => `/dashboard/site/${siteId}/billing`,
+    BILLING_SECTION: (siteId: string, section: string) => `/dashboard/site/${siteId}/billing/${section}`,
+    REPORTS: (siteId: string) => `/dashboard/site/${siteId}/reports`,
+    REPORTS_SECTION: (siteId: string, section: string) => `/dashboard/site/${siteId}/reports/${section}`,
+    APP_STORE: (siteId: string) => `/dashboard/site/${siteId}/app-store`,
+    APP_STORE_SECTION: (siteId: string, section: string) => `/dashboard/site/${siteId}/app-store/${section}`,
+    DESIGN_STUDIO: (siteId: string) => `/dashboard/site/${siteId}/design-studio`,
+    DESIGN_STUDIO_SECTION: (siteId: string, section: string) => `/dashboard/site/${siteId}/design-studio/${section}`,
+    SITE_CONFIG: (siteId: string) => `/dashboard/site/${siteId}/site-config`,
+  },
+  
+  // Content Types (for use in content sections)
+  CONTENT_TYPES: {
+    ALL: 'all',
+    EVENTS: 'events',
+    DISCUSSIONS: 'discussions',
+    ARTICLES: 'articles',
+    QUESTIONS: 'questions',
+    WISHLIST: 'wishlist',
+    NEW_CMS: 'new-cms',
+    CUSTOM_VIEW: 'custom-view',
+  },
 
-  // Design Studio Specific
-  DESIGN_STUDIO_SPACES_FEED: '/design-studio/spaces/feed',
-
-  // People Sidebar Specific Routes
-  PEOPLE_MEMBERS: '/people/members',
-  PEOPLE_STAFF: '/people/staff',
-  PEOPLE_INVITATIONS: '/people/invitations',
-  PEOPLE_PROFILE_FIELDS: '/people/profile-fields',
-  PEOPLE_BADGES: '/people/badges',
-
-  // Settings Sidebar Specific Routes
-  SETTINGS_SITE: '/settings/site-settings',
+  // Settings Routes
+  SETTINGS: '/settings',
+  SETTINGS_SITE: '/settings/site',
   SETTINGS_AUTHENTICATION: '/settings/authentication',
   SETTINGS_DOMAIN: '/settings/domain',
   SETTINGS_SEARCH: '/settings/search',
@@ -79,8 +53,29 @@ export const APP_ROUTES = {
   SETTINGS_MODERATION: '/settings/moderation',
   SETTINGS_LOCALIZATION: '/settings/localization',
   SETTINGS_NOTIFICATIONS: '/settings/notifications',
-  SETTINGS_SEO: '/settings/seo-settings',
+  SETTINGS_SEO: '/settings/seo',
   SETTINGS_SECURITY_PRIVACY: '/settings/security-privacy',
+};
+
+// Helper function for checking if a route is site-specific (public site frontend)
+export const isSitePublicRoute = (pathname: string): boolean => {
+  return pathname.match(/^\/site\/[^\/]+/) !== null && 
+         !pathname.match(/^\/dashboard\/site\/[^\/]+/);
+};
+
+// Helper function for checking if a route is site admin-specific (dashboard for a site)
+export const isSiteAdminRoute = (pathname: string): boolean => {
+  return pathname.match(/^\/dashboard\/site\/[^\/]+/) !== null;
+};
+
+// Helper function to extract siteId from any site-related route
+export const getSiteIdFromRoute = (pathname: string): string | null => {
+  // Match site ID from either public site routes or dashboard site routes
+  const publicMatch = pathname.match(/^\/site\/([^\/]+)/);
+  if (publicMatch) return publicMatch[1];
+  
+  const adminMatch = pathname.match(/^\/dashboard\/site\/([^\/]+)/);
+  return adminMatch ? adminMatch[1] : null;
 };
 
 // Helper function for constructing site-specific URLs
@@ -89,30 +84,16 @@ export const getSiteRoute = (siteId: string, subPath: string): string => {
   return `/site/${siteId}/${cleanSubPath}`;
 };
 
-// Helper function for checking if a route is site-specific
-export const isSiteSpecificRoute = (pathname: string): boolean => {
-  return pathname.match(/^\/site\/[^\/]+/) !== null;
-};
-
-// Helper function to extract siteId from a site-specific route
-export const getSiteIdFromRoute = (pathname: string): string | null => {
-  const match = pathname.match(/^\/site\/([^\/]+)/);
-  return match ? match[1] : null;
-};
-
-// Helper function for constructing content-specific URLs under /content/:collectionSlug
-export const getContentCollectionRoute = (collectionSlug: string, subPath?: string): string => {
-  let path = `/content/${collectionSlug}`;
-  if (subPath) {
-    const cleanSubPath = subPath.startsWith('/') ? subPath.substring(1) : subPath;
-    path += `/${cleanSubPath}`;
-  }
-  return path;
+// Helper function for constructing site admin dashboard URLs
+export const getSiteAdminRoute = (siteId: string, subPath?: string): string => {
+  if (!subPath) return `/dashboard/site/${siteId}`;
+  const cleanSubPath = subPath.startsWith('/') ? subPath.substring(1) : subPath;
+  return `/dashboard/site/${siteId}/${cleanSubPath}`;
 };
 
 // Helper function for constructing site-specific content URLs
 export const getSiteContentRoute = (siteId: string, collectionSlug: string, subPath?: string): string => {
-  let path = `/site/${siteId}/content/${collectionSlug}`;
+  let path = `/dashboard/site/${siteId}/content/${collectionSlug}`;
   if (subPath) {
     const cleanSubPath = subPath.startsWith('/') ? subPath.substring(1) : subPath;
     path += `/${cleanSubPath}`;

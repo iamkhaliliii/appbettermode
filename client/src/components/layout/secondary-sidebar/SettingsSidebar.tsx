@@ -1,13 +1,28 @@
 import React from "react";
 import { SideNavItem } from "./SidebarNavigationItems";
-import { APP_ROUTES } from "@/config/routes";
+import { APP_ROUTES, getSiteAdminRoute } from "@/config/routes";
+import { BaseSidebarProps } from "./types";
 
-interface SettingsSidebarProps {
-  currentPathname: string;
-  isActiveUrl: (url: string, currentPathname: string) => boolean;
-}
+export const SettingsSidebar: React.FC<BaseSidebarProps> = ({ 
+  currentPathname, 
+  isActiveUrl,
+  siteId
+}) => {
+  // Determine if we're in site-specific context
+  const inSiteContext = !!siteId;
+  
+  // Helper function to get the appropriate route based on context
+  const getContextualRoute = (generalRoute: string, siteSpecificPath: string) => {
+    return inSiteContext 
+      ? getSiteAdminRoute(siteId, siteSpecificPath) 
+      : generalRoute;
+  };
 
-export const SettingsSidebar: React.FC<SettingsSidebarProps> = ({ currentPathname, isActiveUrl }) => {
+  // Helper function to safely check if a route is active
+  const checkIsActive = (route: string) => {
+    return isActiveUrl(route, currentPathname);
+  };
+
   return (
     <div className="p-3">
       <div className="mb-2">
@@ -18,71 +33,94 @@ export const SettingsSidebar: React.FC<SettingsSidebarProps> = ({ currentPathnam
 
       <div className="space-y-1">
         <SideNavItem
-          href={APP_ROUTES.SETTINGS_SITE}
-          isActive={isActiveUrl(APP_ROUTES.SETTINGS_SITE, currentPathname) || currentPathname === APP_ROUTES.SETTINGS}
+          href={getContextualRoute(APP_ROUTES.SETTINGS_SITE, 'settings/site')}
+          isActive={
+            checkIsActive(getContextualRoute(APP_ROUTES.SETTINGS_SITE, 'settings/site')) || 
+            (inSiteContext 
+              ? currentPathname === getContextualRoute(APP_ROUTES.SETTINGS, 'settings')
+              : currentPathname === APP_ROUTES.SETTINGS)
+          }
         >
           Site settings
         </SideNavItem>
 
         <SideNavItem
-          href={APP_ROUTES.SETTINGS_AUTHENTICATION}
-          isActive={isActiveUrl(APP_ROUTES.SETTINGS_AUTHENTICATION, currentPathname)}
+          href={getContextualRoute(APP_ROUTES.SETTINGS_AUTHENTICATION, 'settings/authentication')}
+          isActive={checkIsActive(
+            getContextualRoute(APP_ROUTES.SETTINGS_AUTHENTICATION, 'settings/authentication')
+          )}
         >
           Authentication
         </SideNavItem>
 
         <SideNavItem
-          href={APP_ROUTES.SETTINGS_DOMAIN}
-          isActive={isActiveUrl(APP_ROUTES.SETTINGS_DOMAIN, currentPathname)}
+          href={getContextualRoute(APP_ROUTES.SETTINGS_DOMAIN, 'settings/domain')}
+          isActive={checkIsActive(
+            getContextualRoute(APP_ROUTES.SETTINGS_DOMAIN, 'settings/domain')
+          )}
         >
           Domain
         </SideNavItem>
 
         <SideNavItem
-          href={APP_ROUTES.SETTINGS_SEARCH}
-          isActive={isActiveUrl(APP_ROUTES.SETTINGS_SEARCH, currentPathname)}
+          href={getContextualRoute(APP_ROUTES.SETTINGS_SEARCH, 'settings/search')}
+          isActive={checkIsActive(
+            getContextualRoute(APP_ROUTES.SETTINGS_SEARCH, 'settings/search')
+          )}
         >
           Search
         </SideNavItem>
 
         <SideNavItem
-          href={APP_ROUTES.SETTINGS_MESSAGING}
-          isActive={isActiveUrl(APP_ROUTES.SETTINGS_MESSAGING, currentPathname)}
+          href={getContextualRoute(APP_ROUTES.SETTINGS_MESSAGING, 'settings/messaging')}
+          isActive={checkIsActive(
+            getContextualRoute(APP_ROUTES.SETTINGS_MESSAGING, 'settings/messaging')
+          )}
         >
           Messaging
         </SideNavItem>
 
         <SideNavItem
-          href={APP_ROUTES.SETTINGS_MODERATION}
-          isActive={isActiveUrl(APP_ROUTES.SETTINGS_MODERATION, currentPathname)}
+          href={getContextualRoute(APP_ROUTES.SETTINGS_MODERATION, 'settings/moderation')}
+          isActive={checkIsActive(
+            getContextualRoute(APP_ROUTES.SETTINGS_MODERATION, 'settings/moderation')
+          )}
         >
           Moderation
         </SideNavItem>
 
         <SideNavItem
-          href={APP_ROUTES.SETTINGS_LOCALIZATION}
-          isActive={isActiveUrl(APP_ROUTES.SETTINGS_LOCALIZATION, currentPathname)}
+          href={getContextualRoute(APP_ROUTES.SETTINGS_LOCALIZATION, 'settings/localization')}
+          isActive={checkIsActive(
+            getContextualRoute(APP_ROUTES.SETTINGS_LOCALIZATION, 'settings/localization')
+          )}
         >
           Localization
         </SideNavItem>
         
         <SideNavItem
-          href={APP_ROUTES.SETTINGS_NOTIFICATIONS}
-          isActive={isActiveUrl(APP_ROUTES.SETTINGS_NOTIFICATIONS, currentPathname)}
+          href={getContextualRoute(APP_ROUTES.SETTINGS_NOTIFICATIONS, 'settings/notifications')}
+          isActive={checkIsActive(
+            getContextualRoute(APP_ROUTES.SETTINGS_NOTIFICATIONS, 'settings/notifications')
+          )}
         >
           Notifications
         </SideNavItem>
 
         <SideNavItem
-          href={APP_ROUTES.SETTINGS_SEO}
-          isActive={isActiveUrl(APP_ROUTES.SETTINGS_SEO, currentPathname)}
+          href={getContextualRoute(APP_ROUTES.SETTINGS_SEO, 'settings/seo')}
+          isActive={checkIsActive(
+            getContextualRoute(APP_ROUTES.SETTINGS_SEO, 'settings/seo')
+          )}
         >
           SEO settings
         </SideNavItem>
 
         <SideNavItem
-          href={APP_ROUTES.SETTINGS_SECURITY_PRIVACY}
-          isActive={isActiveUrl(APP_ROUTES.SETTINGS_SECURITY_PRIVACY, currentPathname)}
+          href={getContextualRoute(APP_ROUTES.SETTINGS_SECURITY_PRIVACY, 'settings/security-privacy')}
+          isActive={checkIsActive(
+            getContextualRoute(APP_ROUTES.SETTINGS_SECURITY_PRIVACY, 'settings/security-privacy')
+          )}
         >
           Security & Privacy
         </SideNavItem>

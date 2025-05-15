@@ -31,12 +31,8 @@ import {
 import { MinimalItem, TreeFolder } from "./SidebarTreeComponents";
 import { NavigationItem as NavItemUI } from "@/components/ui/navigation-item"; // Renaming to avoid conflict
 import { NavigationSection as NavSectionUI } from "@/components/ui/navigation-section"; // Renaming to avoid conflict
-import { APP_ROUTES } from "@/config/routes"; // Import APP_ROUTES
-
-interface DesignStudioSidebarProps {
-  currentPathname: string;
-  // isActiveUrl is not used directly in this component's main logic but might be needed by children if passed down
-}
+import { APP_ROUTES, getSiteAdminRoute } from "@/config/routes";
+import { DesignStudioSidebarProps } from "./types";
 
 // Define NavigationSection and NavigationItem locally if they are simple enough
 // and not used extensively outside this sidebar. Otherwise, they should be proper components.
@@ -63,9 +59,24 @@ const NavigationItem: React.FC<{ icon: React.ReactNode; title: string }> = ({ ic
 };
 
 
-export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ currentPathname }) => {
+export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ 
+  currentPathname,
+  siteId
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const basePath = APP_ROUTES.DESIGN_STUDIO; // Base path for Design Studio
+  
+  // Determine if we're in site-specific context
+  const inSiteContext = !!siteId;
+  
+  // Base path for Design Studio based on context
+  const basePath = inSiteContext 
+    ? APP_ROUTES.DASHBOARD_SITE.DESIGN_STUDIO(siteId)
+    : '/dashboard/design-studio';
+
+  // Feed path
+  const feedPath = inSiteContext
+    ? `${APP_ROUTES.DASHBOARD_SITE.DESIGN_STUDIO(siteId)}/spaces/feed`
+    : '/dashboard/design-studio/spaces/feed';
 
   const defaultExpanded = currentPathname.includes(`${basePath}/spaces`)
     ? "spaces"
@@ -154,7 +165,8 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
               {/* Root files first */}
               <MinimalItem
                 name="Feed"
-                path={APP_ROUTES.DESIGN_STUDIO_SPACES_FEED} 
+                path={feedPath}
+                currentPathname={currentPathname}
                 icon={<AppWindowMac className="h-3.5 w-3.5" />}
                 iconColor="text-[#A694FF]"
                 inSpaces={true}
@@ -163,6 +175,7 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
               <MinimalItem
                 name="Explore"
                 path={`${basePath}/spaces/explore`}
+                currentPathname={currentPathname}
                 icon={<AppWindowMac className="h-3.5 w-3.5" />}
                 iconColor="text-gray-500"
                 inSpaces={true}
@@ -172,11 +185,13 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
               <TreeFolder
                 name="Connect"
                 path={`${basePath}/spaces/connect`}
+                currentPathname={currentPathname}
                 isExpanded={currentPathname.startsWith(`${basePath}/spaces/connect`)}
               >
                 <MinimalItem
                   name="Intros & Networking"
                   path={`${basePath}/spaces/connect/intros`}
+                  currentPathname={currentPathname}
                   icon={<AppWindowMac className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
                   inSpaces={true}
@@ -186,6 +201,7 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
                 <MinimalItem
                   name="Ask the Community"
                   path={`${basePath}/spaces/connect/ask`}
+                  currentPathname={currentPathname}
                   icon={<AppWindowMac className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
                   inSpaces={true}
@@ -195,6 +211,7 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
                 <MinimalItem
                   name="Hire Experts"
                   path={`${basePath}/spaces/connect/hire`}
+                  currentPathname={currentPathname}
                   icon={<AppWindowMac className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
                   inSpaces={true}
@@ -207,11 +224,13 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
               <TreeFolder
                 name="Help Center"
                 path={`${basePath}/spaces/help-center`}
+                currentPathname={currentPathname}
                 isExpanded={currentPathname.startsWith(`${basePath}/spaces/help-center`)}
               >
                 <MinimalItem
                   name="Getting Started"
                   path={`${basePath}/spaces/help-center/getting-started`}
+                  currentPathname={currentPathname}
                   icon={<AppWindowMac className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
                   inSpaces={true}
@@ -221,6 +240,7 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
                 <MinimalItem
                   name="Account & Billing"
                   path={`${basePath}/spaces/help-center/account`}
+                  currentPathname={currentPathname}
                   icon={<AppWindowMac className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
                   inSpaces={true}
@@ -230,6 +250,7 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
                 <MinimalItem
                   name="Content Management"
                   path={`${basePath}/spaces/help-center/content`}
+                  currentPathname={currentPathname}
                   icon={<AppWindowMac className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
                   inSpaces={true}
@@ -239,6 +260,7 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
                 <MinimalItem
                   name="Member Management"
                   path={`${basePath}/spaces/help-center/members`}
+                  currentPathname={currentPathname}
                   icon={<AppWindowMac className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
                   inSpaces={true}
@@ -248,6 +270,7 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
                 <MinimalItem
                   name="Appearance & Design"
                   path={`${basePath}/spaces/help-center/appearance`}
+                  currentPathname={currentPathname}
                   icon={<AppWindowMac className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
                   inSpaces={true}
@@ -257,6 +280,7 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
                 <MinimalItem
                   name="Reports & Analytics"
                   path={`${basePath}/spaces/help-center/reports`}
+                  currentPathname={currentPathname}
                   icon={<AppWindowMac className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
                   inSpaces={true}
@@ -266,6 +290,7 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
                 <MinimalItem
                   name="Apps & Integrations"
                   path={`${basePath}/spaces/help-center/apps`}
+                  currentPathname={currentPathname}
                   icon={<AppWindowMac className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
                   inSpaces={true}
@@ -275,6 +300,7 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
                 <MinimalItem
                   name="API & Webhooks"
                   path={`${basePath}/spaces/help-center/api`}
+                  currentPathname={currentPathname}
                   icon={<AppWindowMac className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
                   inSpaces={true}
@@ -284,6 +310,7 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
                 <MinimalItem
                   name="Get Inspired"
                   path={`${basePath}/spaces/help-center/inspired`}
+                  currentPathname={currentPathname}
                   icon={<AppWindowMac className="h-3.5 w-3.5" />}
                   iconColor="text-[#A694FF]"
                   inSpaces={true}
@@ -336,6 +363,7 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
               <MinimalItem
                 name="Event"
                 path={`${basePath}/collections/event`}
+                currentPathname={currentPathname}
                 icon={<File className="h-3.5 w-3.5" />}
                 iconColor="text-[#A694FF]"
                 decorationIcon={<Database />}
@@ -343,6 +371,7 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
               <MinimalItem
                 name="Discussion"
                 path={`${basePath}/collections/discussion`}
+                currentPathname={currentPathname}
                 icon={<File className="h-3.5 w-3.5" />}
                 iconColor="text-[#A694FF]"
                 decorationIcon={<Database />}
@@ -350,6 +379,7 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
               <MinimalItem
                 name="Blog"
                 path={`${basePath}/collections/blog`}
+                currentPathname={currentPathname}
                 icon={<File className="h-3.5 w-3.5" />}
                 iconColor="text-[#A694FF]"
                 decorationIcon={<Database />}
@@ -357,6 +387,7 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
               <MinimalItem
                 name="Job List"
                 path={`${basePath}/collections/jobs`}
+                currentPathname={currentPathname}
                 icon={<File className="h-3.5 w-3.5" />}
                 iconColor="text-[#A694FF]"
                 decorationIcon={<Database />}
@@ -492,6 +523,7 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
               <MinimalItem
                 name="General template"
                 path={`${basePath}/templates/general`}
+                currentPathname={currentPathname}
                 icon={<File className="h-3.5 w-3.5" />}
                 iconColor="text-[#57ABFF]"
                 decorationIcon={<Paintbrush />}
@@ -499,6 +531,7 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
               <MinimalItem
                 name="Product"
                 path={`${basePath}/templates/product`}
+                currentPathname={currentPathname}
                 icon={<File className="h-3.5 w-3.5" />}
                 iconColor="text-[#57ABFF]"
                 decorationIcon={<Paintbrush />}
@@ -521,18 +554,21 @@ export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ curren
               <MinimalItem
                 name="404 Page"
                 path={`${basePath}/utility/404`}
+                currentPathname={currentPathname}
                 icon={<File className="h-3.5 w-3.5" />}
                 iconColor="text-gray-500"
               />
               <MinimalItem
                 name="Search result"
                 path={`${basePath}/utility/search`}
+                currentPathname={currentPathname}
                 icon={<File className="h-3.5 w-3.5" />}
                 iconColor="text-gray-500"
               />
               <MinimalItem
                 name="Member profile"
                 path={`${basePath}/utility/member-profile`}
+                currentPathname={currentPathname}
                 icon={<File className="h-3.5 w-3.5" />}
                 iconColor="text-gray-500"
               />

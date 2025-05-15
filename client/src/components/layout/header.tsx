@@ -94,13 +94,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName }: 
             <div className="flex-1 flex items-center">
               {/* Middle Section - App Navigation */}
               <div className={cn("w-64 flex-shrink-0 h-full border-r", borderColor)}>
-                {(siteName && (variant === 'dashboard' || variant === 'site')) ? (
-                  <div className="flex h-full items-center justify-center px-3">
-                    <span className={cn("font-semibold text-sm truncate", primaryTextColor)} title={siteName}>
-                      {siteName} 
-                    </span>
-                  </div>
-                ) : (
+
                   <div className="flex h-full items-center justify-center gap-2 px-2">
                     <Tooltip.Provider delayDuration={200}>
                       <Tooltip.Root>
@@ -243,7 +237,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName }: 
                       </Tooltip.Root>
                     </Tooltip.Provider>
                   </div>
-                )}
+                
               </div>
 
               {/* Right Section - Breadcrumbs and Actions */}
@@ -252,251 +246,71 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName }: 
                 <div className={cn("flex items-center text-xs", secondaryTextColor)}>
                   <span>Dashboard</span>
                   
-                  {/* Handle second level of breadcrumb */}
                   {location !== '/' && location !== '/dashboard' && (
                     <>
-                      {/* Separator */}
                       <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
                         <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                       
-                      {/* Path-specific sections */}
-                      {location.startsWith('/dashboard') && (
-                        <span>
-                          {/* For single level */}
-                          {location.split('/').length <= 3 && 
-                            <span className={cn("font-medium", primaryTextColor)}>
-                              {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
-                            </span>
-                          }
-                          {/* For multi level */}
-                          {location.split('/').length > 3 &&
-                            <span>
-                              {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
-                            </span>
-                          }
-                        </span>
-                      )}
-                      
-                      {location.startsWith('/content') && (
-                        <span>
-                          {/* Always show Content with path for consistency */}
-                          <span>Content</span>
-                          
-                          {/* Root content path has no additional label */}
-                          
-                          {/* Show specific section for subpaths */}
-                          {location !== '/content' && (
-                            <>
-                              <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
-                                <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                              <span className={cn("font-medium", primaryTextColor)}>
-                                {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
-                              </span>
-                            </>
-                          )}
-                        </span>
-                      )}
-                      
-                      {location.startsWith('/people') && (
-                        <span>
-                          {/* Single level */}
-                          {location === '/people' && 
-                            <span className={cn("font-medium", primaryTextColor)}>People</span>
-                          }
-                          
-                          {/* Multi level */}
-                          {location !== '/people' && (
-                            <>
-                              <span>People</span>
-                              <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
-                                <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                              <span className={cn("font-medium", primaryTextColor)}>
-                                {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
-                              </span>
-                            </>
-                          )}
-                        </span>
-                      )}
-                      
-                      {location.startsWith('/site') && (
-                        <span>
-                          {/* Single level */}
-                          {location === '/site' && 
-                            <span className={cn("font-medium", primaryTextColor)}>Site</span>
-                          }
-                          
-                          {/* Multi level */}
-                          {location !== '/site' && (
-                            <>
-                              <span>Site</span>
-                              <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
-                                <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
+                      {/* Handle dashboard site routes */}
+                      {location.startsWith('/dashboard/site/') && (
+                        <>
+                          {/* Extract section and subsection */}
+                          {(() => {
+                            const parts = location.split('/');
+                            if (parts.length >= 5) {
+                              const section = parts[4]; // e.g., 'people', 'content'
+                              const subsection = parts[5]; // e.g., 'staff', 'members'
                               
-                              {/* Special case for spaces/feed */}
-                              {location === '/site/spaces/feed' ? (
+                              return (
                                 <>
-                                  <span>Spaces</span>
-                                  <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
-                                    <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                  </svg>
-                                  <span className={cn("font-medium", primaryTextColor)}>Feed</span>
+                                  <span>{section.charAt(0).toUpperCase() + section.slice(1)}</span>
+                                  {subsection && (
+                                    <>
+                                      <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
+                                        <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                      </svg>
+                                      <span className={cn("font-medium", primaryTextColor)}>
+                                        {subsection.charAt(0).toUpperCase() + subsection.slice(1)}
+                                      </span>
+                                    </>
+                                  )}
                                 </>
-                              ) : (
-                                <span className={cn("font-medium", primaryTextColor)}>
-                                  {location.split('/')[2] ? location.split('/')[2].split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : ''}
-                                </span>
-                              )}
-                            </>
-                          )}
-                        </span>
-                      )}
-                      
-                      {location.startsWith('/design-studio') && !location.startsWith('/site') && (
-                        <span>
-                          {/* Single level */}
-                          {location === '/design-studio' && 
-                            <span className={cn("font-medium", primaryTextColor)}>Design Studio</span>
-                          }
-                          
-                          {/* Multi level */}
-                          {location !== '/design-studio' && (
-                            <>
-                              <span>Design Studio</span>
-                              <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
-                                <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                              
-                              {/* Special case for spaces/feed */}
-                              {location === '/design-studio/spaces/feed' ? (
-                                <>
-                                  <span>Spaces</span>
-                                  <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
-                                    <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                  </svg>
-                                  <span className={cn("font-medium", primaryTextColor)}>Feed</span>
-                                </>
-                              ) : (
-                                <span className={cn("font-medium", primaryTextColor)}>
-                                  {location.split('/')[2] ? location.split('/')[2].split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : ''}
-                                </span>
-                              )}
-                            </>
-                          )}
-                        </span>
-                      )}
-                      
-                      {location.startsWith('/appearance') && (
-                        <span>
-                          {/* Single level */}
-                          {location === '/appearance' && 
-                            <span className={cn("font-medium", primaryTextColor)}>Appearance</span>
-                          }
-                          
-                          {/* Multi level */}
-                          {location !== '/appearance' && (
-                            <>
-                              <span>Appearance</span>
-                              <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
-                                <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                              <span className={cn("font-medium", primaryTextColor)}>
-                                {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
-                              </span>
-                            </>
-                          )}
-                        </span>
+                              );
+                            }
+                            return null;
+                          })()}
+                        </>
                       )}
 
-                      {location.startsWith('/settings') && (
-                        <span>
-                          {/* Single level */}
-                          {location === '/settings' && 
-                            <span className={cn("font-medium", primaryTextColor)}>Settings</span>
-                          }
-                          
-                          {/* Multi level */}
-                          {location !== '/settings' && (
-                            <>
-                              <span>Settings</span>
-                              <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
-                                <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                              <span className={cn("font-medium", primaryTextColor)}>
-                                {location.split('/')[2].split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-                              </span>
-                            </>
-                          )}
-                        </span>
-                      )}
-                      
-                      {location.startsWith('/billing') && (
-                        <span>
-                          {/* Single level */}
-                          {location === '/billing' && 
-                            <span className={cn("font-medium", primaryTextColor)}>Billing</span>
-                          }
-                          
-                          {/* Multi level */}
-                          {location !== '/billing' && (
-                            <>
-                              <span>Billing</span>
-                              <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
-                                <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                              <span className={cn("font-medium", primaryTextColor)}>
-                                {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
-                              </span>
-                            </>
-                          )}
-                        </span>
-                      )}
-                      
-                      {location.startsWith('/reports') && (
-                        <span>
-                          {/* Single level */}
-                          {location === '/reports' && 
-                            <span className={cn("font-medium", primaryTextColor)}>Reports</span>
-                          }
-                          
-                          {/* Multi level */}
-                          {location !== '/reports' && (
-                            <>
-                              <span>Reports</span>
-                              <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
-                                <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                              <span className={cn("font-medium", primaryTextColor)}>
-                                {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
-                              </span>
-                            </>
-                          )}
-                        </span>
-                      )}
-                      
-                      {location.startsWith('/app-store') && (
-                        <span>
-                          {/* Single level */}
-                          {location === '/app-store' && 
-                            <span className={cn("font-medium", primaryTextColor)}>App Store</span>
-                          }
-                          
-                          {/* Multi level */}
-                          {location !== '/app-store' && (
-                            <>
-                              <span>App Store</span>
-                              <svg className="h-3 w-3 mx-1 inline" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
-                                <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                              <span className={cn("font-medium", primaryTextColor)}>
-                                {location.split('/')[2].charAt(0).toUpperCase() + location.split('/')[2].slice(1)}
-                              </span>
-                            </>
-                          )}
-                        </span>
+                      {/* Handle non-site-specific dashboard routes */}
+                      {location.startsWith('/dashboard/') && !location.startsWith('/dashboard/site/') && (
+                        <>
+                          {(() => {
+                            const parts = location.split('/');
+                            if (parts.length >= 3) {
+                              const section = parts[2];
+                              const subsection = parts[3];
+                              
+                              return (
+                                <>
+                                  <span>{section.charAt(0).toUpperCase() + section.slice(1)}</span>
+                                  {subsection && (
+                                    <>
+                                      <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
+                                        <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                      </svg>
+                                      <span className={cn("font-medium", primaryTextColor)}>
+                                        {subsection.charAt(0).toUpperCase() + subsection.slice(1)}
+                                      </span>
+                                    </>
+                                  )}
+                                </>
+                              );
+                            }
+                            return null;
+                          })()}
+                        </>
                       )}
                     </>
                   )}

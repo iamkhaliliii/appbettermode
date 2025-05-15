@@ -81,10 +81,10 @@ export function DashboardLayout({
         </div>
       )}
 
-      <div className="flex-1 flex flex-row overflow-hidden">
+      <div className="flex-1 flex flex-col md:flex-row">
         {/* Main Sidebar - always shown on desktop, potentially always collapsed */}
         {!isMobile && (
-          <div className="w-16 flex-shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
+          <div className="w-12 flex-shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
             <MainSidebar collapsed={true} currentSiteId={currentSiteId} />
           </div>
         )}
@@ -98,7 +98,7 @@ export function DashboardLayout({
           </div>
         )}
         
-        <main className="flex-1 bg-gray-50 dark:bg-gray-900 overflow-y-auto"> {/* Changed main content background */}
+        <main className="flex-1 bg-gray-50 dark:bg-gray-900 overflow-y-auto min-h-[calc(100vh-4rem)]"> {/* Changed main content background */}
           {children}
         </main>
       </div>

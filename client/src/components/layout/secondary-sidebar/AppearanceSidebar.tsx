@@ -1,14 +1,27 @@
 import React from "react";
 import { SideNavItem } from "./SidebarNavigationItems";
-import { APP_ROUTES } from "@/config/routes";
+import { APP_ROUTES, getSiteAdminRoute } from "@/config/routes";
+import { BaseSidebarProps } from "./types";
 
-interface AppearanceSidebarProps {
-  currentPathname: string;
-  isActiveUrl: (url: string, currentPathname: string) => boolean;
-}
+export const AppearanceSidebar: React.FC<BaseSidebarProps> = ({ 
+  currentPathname, 
+  isActiveUrl,
+  siteId
+}) => {
+  // Determine if we're in site-specific context
+  const inSiteContext = !!siteId;
+  
+  // Helper function to get the appropriate route based on context
+  const getContextualRoute = (generalRoute: string, siteSpecificPath: string) => {
+    return inSiteContext 
+      ? getSiteAdminRoute(siteId, siteSpecificPath) 
+      : generalRoute;
+  };
 
-export const AppearanceSidebar: React.FC<AppearanceSidebarProps> = ({ currentPathname, isActiveUrl }) => {
-  const basePath = APP_ROUTES.APPEARANCE;
+  const basePath = inSiteContext 
+    ? APP_ROUTES.DASHBOARD_SITE.APPEARANCE(siteId)
+    : '/dashboard/appearance';
+
   return (
     <div className="p-3">
       <div className="mb-2">
@@ -20,28 +33,31 @@ export const AppearanceSidebar: React.FC<AppearanceSidebarProps> = ({ currentPat
       <div className="space-y-1">
         <SideNavItem
           href={`${basePath}/logos`}
-          isActive={isActiveUrl(`${basePath}/logos`, currentPathname) || currentPathname === basePath}
+          isActive={isActiveUrl && (
+            isActiveUrl(`${basePath}/logos`, currentPathname) || 
+            currentPathname === basePath
+          )}
         >
           Logos
         </SideNavItem>
 
         <SideNavItem
           href={`${basePath}/themes`}
-          isActive={isActiveUrl(`${basePath}/themes`, currentPathname)}
+          isActive={isActiveUrl && isActiveUrl(`${basePath}/themes`, currentPathname)}
         >
           Themes
         </SideNavItem>
 
         <SideNavItem
           href={`${basePath}/typographies`}
-          isActive={isActiveUrl(`${basePath}/typographies`, currentPathname)}
+          isActive={isActiveUrl && isActiveUrl(`${basePath}/typographies`, currentPathname)}
         >
           Typographies
         </SideNavItem>
 
         <SideNavItem
           href={`${basePath}/styles`}
-          isActive={isActiveUrl(`${basePath}/styles`, currentPathname)}
+          isActive={isActiveUrl && isActiveUrl(`${basePath}/styles`, currentPathname)}
         >
           Styles
         </SideNavItem>

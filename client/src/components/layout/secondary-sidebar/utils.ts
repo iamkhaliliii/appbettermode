@@ -1,4 +1,5 @@
-export const isActiveUrl = (url: string, currentPathname: string): boolean => {
+export const isActiveUrl = (url: string | undefined, currentPathname: string | undefined): boolean => {
+  if (!url || !currentPathname) return false;
   if (currentPathname === url) return true;
   if (
     url.includes("/") &&

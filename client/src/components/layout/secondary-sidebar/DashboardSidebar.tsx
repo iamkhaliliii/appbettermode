@@ -9,7 +9,7 @@ interface DashboardSidebarProps {
 }
 
 export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ currentPathname, isActiveUrl }) => {
-  const basePath = APP_ROUTES.DASHBOARD;
+  const basePath = '/dashboard';
   return (
     <div className="p-3">
       <div className="mb-2">

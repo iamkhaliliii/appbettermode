@@ -724,9 +724,11 @@ const data: Post[] = [
   },
 ];
 
-export default function Content() {
+import { withSiteContext, WithSiteContextProps } from "@/lib/with-site-context";
+
+function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
   const [location, setLocation] = useLocation();
-  const [, params] = useRoute('/content/:section');
+  const [, params] = useRoute(siteId ? `/dashboard/site/${siteId}/content/:section` : '/content/:section');
   const section = params?.section;
   
   // UI state
@@ -788,7 +790,15 @@ export default function Content() {
   // For the Inbox section
   if (section === 'inbox') {
     return (
-      <DashboardLayout>
+      <DashboardLayout
+        siteName={siteDetails?.name}
+        currentSiteId={siteId}
+        navItems={siteId ? [
+          { name: 'Overview', href: `/site/${siteId}/overview` },
+          { name: 'Content', href: `/site/${siteId}/content` },
+          { name: 'Members', href: `/site/${siteId}/people` }
+        ] : []}
+      >
         <div className="px-4 md:px-6 py-4 md:py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -819,7 +829,10 @@ export default function Content() {
   // For the Activity Hub section
   if (section === 'activity') {
     return (
-      <DashboardLayout>
+      <DashboardLayout
+        siteName={siteDetails?.name}
+        currentSiteId={siteId}
+      >
         <div className="px-4 md:px-6 py-4 md:py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -864,7 +877,10 @@ export default function Content() {
   
   // For the default CMS view (now at root /content path)
   return (
-    <DashboardLayout>
+    <DashboardLayout
+      siteName={siteDetails?.name}
+      currentSiteId={siteId}
+    >
       <div className="max-w-7xl mx-auto">
           {/* Content container with padding */}
           <div className="px-2 py-3 pb-1.5 sm:px-3 sm:py-4 sm:pb-2">
@@ -1217,4 +1233,5 @@ export default function Content() {
       </DashboardLayout>
     );
   }
+export default withSiteContext(Content);
 

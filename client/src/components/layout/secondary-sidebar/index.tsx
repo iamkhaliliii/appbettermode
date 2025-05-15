@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation } from "wouter";
 import { isActiveUrl as isActiveUrlUtil } from "./utils";
 import { type NavItem } from "./types";
-import { APP_ROUTES, getSiteRoute } from "@/config/routes"; // Import routes
+import { APP_ROUTES, isSitePublicRoute, isSiteAdminRoute, getSiteIdFromRoute } from "@/config/routes"; // Updated imports
 
 // Import all the specific sidebar components
 import { DashboardSidebar } from "./DashboardSidebar";
@@ -11,6 +11,7 @@ import { PeopleSidebar } from "./PeopleSidebar";
 import { SettingsSidebar } from "./SettingsSidebar";
 import { DesignStudioSidebar } from "./DesignStudioSidebar";
 import { SiteSidebar } from "./SiteSidebar";
+import { SiteConfigSidebar } from "./SiteConfigSidebar";
 import { AppearanceSidebar } from "./AppearanceSidebar";
 import { BillingSidebar } from "./BillingSidebar";
 import { ReportsSidebar } from "./ReportsSidebar";
@@ -32,43 +33,118 @@ export function SecondarySidebar({
   const [locationObject] = useLocation();
   const currentPathname = locationObject;
 
+  // Get the site ID from the current path if it's a site-specific route
+  const siteIdFromRoute = getSiteIdFromRoute(currentPathname);
+  
+  // Use explicitly provided siteId or extract from route
+  const effectiveSiteId = currentSiteId || siteIdFromRoute || '';
+  
+  // Determine if we're in a site-specific context
+  const isInSiteContext = Boolean(effectiveSiteId);
+  const isPublicSite = isSitePublicRoute(currentPathname);
+  const isAdminSite = isSiteAdminRoute(currentPathname);
+
   const getSidebarForLocation = () => {
-    if (currentSiteId && currentPathname.startsWith(APP_ROUTES.SITE_BASE_PATH(currentSiteId))) {
+    // Handle public site-specific pages
+    if (isPublicSite) {
       return (
         <SiteSidebar
           currentPathname={currentPathname}
-          siteName={siteName}
-          navItems={navItems}
-          currentSiteId={currentSiteId}
+          isActiveUrl={isActiveUrlUtil}
+          siteId={effectiveSiteId}
         />
       );
-    } else if (currentPathname.startsWith(APP_ROUTES.CONTENT)) {
+    }
+
+    // Handle dashboard routes (both general dashboard and site-specific admin)
+    if (currentPathname.startsWith('/dashboard/')) {
+      // Site-specific admin dashboard sections
+      if (isAdminSite && effectiveSiteId) {
+        if (currentPathname.includes(`/site/${effectiveSiteId}/content`)) {
+          return <ContentSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} siteId={effectiveSiteId} />;
+        } else if (currentPathname.includes(`/site/${effectiveSiteId}/people`)) {
+          return <PeopleSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} siteId={effectiveSiteId} />;
+        } else if (currentPathname.includes(`/site/${effectiveSiteId}/appearance`)) {
+          return <AppearanceSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} siteId={effectiveSiteId} />;
+        } else if (currentPathname.includes(`/site/${effectiveSiteId}/settings`)) {
+          return <SettingsSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} siteId={effectiveSiteId} />;
+        } else if (currentPathname.includes(`/site/${effectiveSiteId}/billing`)) {
+          return <BillingSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} siteId={effectiveSiteId} />;
+        } else if (currentPathname.includes(`/site/${effectiveSiteId}/reports`)) {
+          return <ReportsSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} siteId={effectiveSiteId} />;
+        } else if (currentPathname.includes(`/site/${effectiveSiteId}/site-config`)) {
+          return <SiteConfigSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} siteId={effectiveSiteId} />;
+        } else if (currentPathname.includes(`/site/${effectiveSiteId}/app-store`)) {
+          return <AppStoreSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} siteId={effectiveSiteId} />;
+        } else if (currentPathname.includes(`/site/${effectiveSiteId}/design-studio`)) {
+          if (currentPathname.includes('/spaces/feed')) {
+            return <DesignStudioSpacesFeedSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} siteId={effectiveSiteId} />;
+          }
+          return <DesignStudioSidebar currentPathname={currentPathname} siteId={effectiveSiteId} />;
+        }
+        
+        // Default site admin sidebar
+        return <SiteSidebar
+          currentPathname={currentPathname}
+          isActiveUrl={isActiveUrlUtil}
+          siteId={effectiveSiteId}
+        />;
+      }
+      
+      // General dashboard routes (not site-specific)
+      if (currentPathname.startsWith('/dashboard/content')) {
+        return <ContentSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
+      } else if (currentPathname.startsWith('/dashboard/people')) {
+        return <PeopleSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
+      } else if (currentPathname === '/dashboard/design-studio/spaces/feed') {
+        return <DesignStudioSpacesFeedSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
+      } else if (currentPathname.startsWith('/dashboard/design-studio')) {
+        return <DesignStudioSidebar currentPathname={currentPathname} />;
+      } else if (currentPathname.startsWith('/dashboard/appearance')) {
+        return <AppearanceSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
+      } else if (currentPathname.startsWith(APP_ROUTES.SETTINGS)) {
+        return <SettingsSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
+      } else if (currentPathname.startsWith('/dashboard/billing')) {
+        return <BillingSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
+      } else if (currentPathname.startsWith('/dashboard/reports')) {
+        return <ReportsSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
+      } else if (currentPathname.startsWith('/dashboard/app-store')) {
+        return <AppStoreSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
+      } else if (currentPathname.startsWith('/dashboard/site-config')) {
+        return <SiteConfigSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
+      }
+
+    }
+    
+    // Old routes (for backward compatibility)
+    if (currentPathname.startsWith('/content')) {
       return <ContentSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname.startsWith(APP_ROUTES.PEOPLE)) {
+    } else if (currentPathname.startsWith('/people')) {
       return <PeopleSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname === APP_ROUTES.DESIGN_STUDIO_SPACES_FEED) {
-      return <DesignStudioSpacesFeedSidebar />;
-    } else if (currentPathname.startsWith(APP_ROUTES.DESIGN_STUDIO)) {
+    } else if (currentPathname === '/design-studio/spaces/feed') {
+      return <DesignStudioSpacesFeedSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
+    } else if (currentPathname.startsWith('/design-studio')) {
       return <DesignStudioSidebar currentPathname={currentPathname} />;
-    } else if (currentPathname.startsWith(APP_ROUTES.APPEARANCE)) {
+    } else if (currentPathname.startsWith('/appearance')) {
       return <AppearanceSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname.startsWith(APP_ROUTES.SETTINGS)) {
+    } else if (currentPathname.startsWith('/settings')) {
       return <SettingsSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname.startsWith(APP_ROUTES.BILLING)) {
+    } else if (currentPathname.startsWith('/billing')) {
       return <BillingSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname.startsWith(APP_ROUTES.REPORTS)) {
+    } else if (currentPathname.startsWith('/reports')) {
       return <ReportsSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname.startsWith(APP_ROUTES.APP_STORE)) {
+    } else if (currentPathname.startsWith('/app-store')) {
       return <AppStoreSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
+    } else if (currentPathname.startsWith('/site-config')) {
+      return <SiteConfigSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
     }
     
     if (currentPathname === APP_ROUTES.SITES_LIST) { 
         return <DashboardSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
     }
     
-    // Fallback: Default to ContentSidebar if no other match
-    // Consider if APP_ROUTES.CONTENT is the best fallback or if another route/sidebar is more appropriate.
-    return <ContentSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
+    // Fallback: Default to DashboardSidebar if no other match
+    return <DashboardSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
   };
 
   return (
