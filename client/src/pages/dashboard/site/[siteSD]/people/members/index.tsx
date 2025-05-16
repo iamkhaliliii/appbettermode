@@ -116,7 +116,7 @@ export default function SiteMembersPage() {
     // Apply search filter
     if (searchTerm) {
       filtered = filtered.filter(member => 
-        member.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        member.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         member.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         member.role.toLowerCase().includes(searchTerm.toLowerCase())
       );
@@ -263,13 +263,13 @@ export default function SiteMembersPage() {
               {/* Table body */}
               <div className="divide-y">
                 {filteredMembers.map((member) => (
-                  <div key={member.id} className="grid grid-cols-12 gap-4 py-3 px-4 items-center hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+                  <div key={member.userId} className="grid grid-cols-12 gap-4 py-3 px-4 items-center hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
                     <div className="col-span-5 flex items-center gap-3">
                       <div className="h-9 w-9 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
                         <UserIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900 dark:text-white">{member.name || 'Anonymous User'}</p>
+                        <p className="font-medium text-gray-900 dark:text-white">{member.fullName || 'Anonymous User'}</p>
                         <p className="text-sm text-gray-500 dark:text-gray-400">{member.email || 'No email provided'}</p>
                       </div>
                     </div>

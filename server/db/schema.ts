@@ -1,5 +1,5 @@
 import { pgTable, uuid, text, timestamp, varchar, primaryKey, pgEnum, boolean, uniqueIndex } from 'drizzle-orm/pg-core';
-import { sql } from 'drizzle-orm';
+import { sql, InferSelectModel, InferInsertModel } from 'drizzle-orm';
 
 // Enum for membership roles - PLEASE VERIFY/UPDATE THESE VALUES
 export const memberRoleEnum = pgEnum('member_role', ['member', 'admin', 'editor']); // Added 'admin', 'editor' as common roles
@@ -36,6 +36,10 @@ export const memberships = pgTable('memberships', {
   };
 });
 
+// Export inferred types for User
+export type User = InferSelectModel<typeof users>;
+export type InsertUser = InferInsertModel<typeof users>;
+
 // New Tables based on DB Schema:
 
 export const categories = pgTable('categories', {
@@ -46,6 +50,9 @@ export const categories = pgTable('categories', {
   created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
+
+export type Category = InferSelectModel<typeof categories>;
+export type InsertCategory = InferInsertModel<typeof categories>;
 
 export const spaces = pgTable('spaces', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
@@ -59,6 +66,9 @@ export const spaces = pgTable('spaces', {
   icon_url: text('icon_url'),
 });
 
+export type Space = InferSelectModel<typeof spaces>;
+export type InsertSpace = InferInsertModel<typeof spaces>;
+
 export const discussions = pgTable('discussions', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   title: text('title').notNull(),
@@ -69,6 +79,9 @@ export const discussions = pgTable('discussions', {
   created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
+
+export type Discussion = InferSelectModel<typeof discussions>;
+export type InsertDiscussion = InferInsertModel<typeof discussions>;
 
 export const tags = pgTable('tags', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
@@ -86,6 +99,8 @@ export const tags = pgTable('tags', {
 // name_unique_idx: uniqueIndex('tags_name_key_idx').on(table.name),
 // I've made it unique per site_id as that's more common. Please verify.
 
+export type Tag = InferSelectModel<typeof tags>;
+export type InsertTag = InferInsertModel<typeof tags>;
 
 export const discussion_tags = pgTable('discussion_tags', {
   discussion_id: uuid('discussion_id').notNull().references(() => discussions.id, { onDelete: 'cascade' }),
@@ -95,6 +110,9 @@ export const discussion_tags = pgTable('discussion_tags', {
     pk: primaryKey({ columns: [table.discussion_id, table.tag_id] })
   };
 });
+
+export type DiscussionTag = InferSelectModel<typeof discussion_tags>;
+export type InsertDiscussionTag = InferInsertModel<typeof discussion_tags>;
 
 export const events = pgTable('events', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
@@ -108,3 +126,6 @@ export const events = pgTable('events', {
   created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
+
+export type Event = InferSelectModel<typeof events>;
+export type InsertEvent = InferInsertModel<typeof events>;

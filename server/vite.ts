@@ -2,10 +2,13 @@ import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from 'url';
-import { createServer as createViteServer, createLogger } from "vite";
+import { createServer as createViteServer, createLogger, type UserConfig } from "vite";
 import { type Server } from "http";
-import viteConfig from "../vite.config";
+// @ts-ignore TS7016 - Unable to get declaration file for .mjs to work reliably
+import viteConfigModule from "../vite.config.mjs";
 import { nanoid } from "nanoid";
+
+const viteConfig = viteConfigModule as any; // Cast to any as a workaround
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

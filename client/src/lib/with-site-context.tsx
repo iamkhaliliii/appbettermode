@@ -15,7 +15,7 @@ export interface SiteDetails {
 // Function to fetch site details
 export const fetchSiteDetails = async (siteId: string): Promise<SiteDetails | null> => {
   try {
-    const response = await fetch(`/api/sites/${siteId}`);
+    const response = await fetch(`/api/v1/sites/${siteId}`);
     if (!response.ok) {
       throw new Error('Failed to fetch site details');
     }

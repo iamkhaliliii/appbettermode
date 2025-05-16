@@ -322,7 +322,7 @@ export function MainSidebar({ collapsed = false, currentSiteIdentifier }: MainSi
         const data = await sitesApi.getSite(currentSiteIdentifier);
         setSiteData({
           id: data.id,
-          subdomain: data.subdomain
+          subdomain: data.subdomain ?? null
         });
       } catch (error) {
         console.error("Error fetching site data:", error);

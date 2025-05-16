@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { db } from "../shared/db"; // Using Drizzle instance
+import { db } from "./db/index.js"; // Using Drizzle instance
 import {
   sites,
   memberships,
@@ -8,9 +8,12 @@ import {
   // Events and Discussions related schemas are not directly used in sites API,
   // but would be needed if those routes were also in this file.
   // events, discussions, tags, discussionTags, categories, spaces,
-} from "../shared/schema";
+} from "./db/schema.js";
 import { z, ZodError } from "zod"; // Ensure ZodError is imported for typed error handling
 import { eq, and, or } from "drizzle-orm"; // eq and and are sufficient for these routes
+import type { PgTransaction } from 'drizzle-orm/pg-core'; // For typing 'tx'
+import type * as ActualSchema from './db/schema.js'; // To get all schema types for tx
+import type { NodePgDatabase } from 'drizzle-orm/node-postgres'; // For db type
 
 // Zod schema for the payload when creating a new SITE
 const createSitePayloadSchema = z.object({
@@ -45,7 +48,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: sites.id,
           name: sites.name,
           subdomain: sites.subdomain,
-          ownerId: sites.ownerId,
+          ownerId: sites.owner_id,
           role: memberships.role,
           createdAt: sites.createdAt,
         })
@@ -126,13 +129,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      const newSite = await db.transaction(async (tx) => {
+      const newSite = await db.transaction(async (tx: PgTransaction<any, typeof ActualSchema, any>) => {
         const siteInsertResult = await tx
           .insert(sites)
           .values({
             name: payload.name,
             subdomain: payload.subdomain, // Will be null if optional and not provided
-            ownerId: currentUserId,
+            owner_id: currentUserId,
           })
           .returning();
         

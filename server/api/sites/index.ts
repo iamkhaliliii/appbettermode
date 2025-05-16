@@ -1,6 +1,6 @@
 import express from 'express';
-import { db } from '../../db/index';
-import { sites, memberships } from '../../db/schema';
+import { db } from '../../db/index.js';
+import { sites, memberships } from '../../db/schema.js';
 import { eq, and, or } from 'drizzle-orm';
 import { z } from 'zod';
 
@@ -76,7 +76,7 @@ router.get('/:identifier', async (req, res) => {
       .from(sites)
       .where(eq(sites.subdomain, identifier))
       .limit(1)
-      .then(results => results[0] || null);
+      .then((results: any) => results[0] || null);
     
     // If not found by subdomain, try UUID (if it looks like a UUID)
     if (!site && identifier.includes('-') && identifier.length > 30) {
@@ -95,7 +95,7 @@ router.get('/:identifier', async (req, res) => {
         .from(sites)
         .where(eq(sites.id, identifier))
         .limit(1)
-        .then(results => results[0] || null);
+        .then((results: any) => results[0] || null);
     }
 
     if (!site) {
