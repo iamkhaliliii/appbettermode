@@ -620,7 +620,7 @@ export default function SearchResults() {
       </p>
       <div className="flex items-center space-x-3 justify-center">
         <Button 
-          variant="secondary-gray" 
+          variant="secondary" 
           onClick={() => setLocation('/')}
           className="rounded-full px-5 py-2 h-10"
         >

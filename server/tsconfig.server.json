@@ -1,8 +1,8 @@
 {
     "extends": "../tsconfig.json",
     "compilerOptions": {
-      "outDir": "api",
-      "rootDir": "..",
+      "outDir": "../api",
+      "rootDir": ".",
       "noEmit": false,
       "module": "nodenext",
       "moduleResolution": "nodenext",
@@ -11,12 +11,8 @@
       "skipLibCheck": true,
       "esModuleInterop": true,
       "resolveJsonModule": true,
-      "baseUrl": "..", 
-      "paths": {
-        "@/*": ["./server/*"]
-        // "@shared/*": ["../shared/*"], // <--- REMOVE OR COMMENT OUT
-        // "shared/*": ["../shared/*"]    // <--- REMOVE OR COMMENT OUT
-      }
+      "baseUrl": ".", 
+      "paths": {}
     },
     "include": [
       "./**/*"
@@ -24,6 +20,7 @@
     "exclude": [
       "node_modules",
       "**/*.test.ts",
-      "**/*.spec.ts"
+      "**/*.spec.ts",
+      "../vite.config.mjs"
     ]
   }
