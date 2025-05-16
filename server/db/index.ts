@@ -1,6 +1,7 @@
 // server/db/index.ts
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
+import pg from 'pg'; // Changed to default import
+const { Pool } = pg; // Destructure Pool from the default export
 import * as schema from './schema.js';
 
 const connectionString = process.env.DATABASE_URL;
