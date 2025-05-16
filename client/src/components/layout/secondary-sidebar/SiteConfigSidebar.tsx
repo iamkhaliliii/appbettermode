@@ -51,20 +51,20 @@ const NavigationItem: React.FC<{ icon: React.ReactNode; title: string }> = ({ ic
 export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({ 
   currentPathname, 
   isActiveUrl,
-  siteId
+  currentSiteIdentifier
 }) => {
-  // If no siteId is provided, show nothing
-  if (!siteId) {
+  // If no currentSiteIdentifier is provided, show nothing
+  if (!currentSiteIdentifier) {
     return null;
   }
 
   const [searchTerm, setSearchTerm] = useState("");
 
   // Determine if the accordion should be expanded by default
-  const accordionShouldBeExpanded = currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(siteId));
+  const accordionShouldBeExpanded = currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(currentSiteIdentifier));
   const defaultAccordionState = accordionShouldBeExpanded ? "spaces" : "";
 
-  const basePath = APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(siteId);
+  const basePath = APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(currentSiteIdentifier);
 
   return (
     <div className="p-3">

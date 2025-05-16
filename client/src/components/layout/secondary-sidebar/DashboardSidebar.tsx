@@ -7,11 +7,11 @@ import { type DashboardSidebarProps, type NavItem } from "./types";
 export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
   currentPathname,
   isActiveUrl,
-  siteIdentifier,
+  currentSiteIdentifier,
   siteName,
   navItems = []
 }) => {
-  const basePath = `/dashboard/site/${siteIdentifier}`;
+  const basePath = `/dashboard/site/${currentSiteIdentifier}`;
 
   const checkActive = isActiveUrl || ((url: string, path: string) => path === url);
 
@@ -22,7 +22,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
           {siteName || "Dashboard"}
         </h2>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-          Overview for {siteIdentifier}
+          Overview for {currentSiteIdentifier}
         </p>
       </div>
 
@@ -53,16 +53,16 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
           </SideNavItem>
 
           <SideNavItem
-            href={APP_ROUTES.DASHBOARD_SITE.CONTENT(siteIdentifier)}
+            href={APP_ROUTES.DASHBOARD_SITE.CONTENT(currentSiteIdentifier)}
             icon={<ClipboardList className="h-4 w-4" />}
-            isActive={checkActive(APP_ROUTES.DASHBOARD_SITE.CONTENT(siteIdentifier), currentPathname)}
+            isActive={checkActive(APP_ROUTES.DASHBOARD_SITE.CONTENT(currentSiteIdentifier), currentPathname)}
           >
             Content
           </SideNavItem>
           <SideNavItem
-            href={APP_ROUTES.DASHBOARD_SITE.PEOPLE(siteIdentifier)}
+            href={APP_ROUTES.DASHBOARD_SITE.PEOPLE(currentSiteIdentifier)}
             icon={<Users className="h-4 w-4" />}
-            isActive={checkActive(APP_ROUTES.DASHBOARD_SITE.PEOPLE(siteIdentifier), currentPathname)}
+            isActive={checkActive(APP_ROUTES.DASHBOARD_SITE.PEOPLE(currentSiteIdentifier), currentPathname)}
           >
             People
           </SideNavItem>

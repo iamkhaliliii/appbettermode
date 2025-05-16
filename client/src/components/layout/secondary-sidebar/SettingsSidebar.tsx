@@ -6,21 +6,21 @@ import { BaseSidebarProps } from "./types";
 export const SettingsSidebar: React.FC<BaseSidebarProps> = ({ 
   currentPathname, 
   isActiveUrl,
-  siteId
+  currentSiteIdentifier
 }) => {
   // Determine if we're in site-specific context
-  const inSiteContext = !!siteId;
+  const inSiteContext = !!currentSiteIdentifier;
   
   // Helper function to get the appropriate route based on context
   const getContextualRoute = (generalRoute: string, siteSpecificPath: string) => {
     return inSiteContext 
-      ? getSiteAdminRoute(siteId, siteSpecificPath) 
+      ? getSiteAdminRoute(currentSiteIdentifier, siteSpecificPath) 
       : generalRoute;
   };
 
   // Helper function to safely check if a route is active
   const checkIsActive = (route: string) => {
-    return isActiveUrl(route, currentPathname);
+    return isActiveUrl && isActiveUrl(route, currentPathname);
   };
 
   return (

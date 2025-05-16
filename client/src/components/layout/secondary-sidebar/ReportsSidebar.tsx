@@ -6,20 +6,20 @@ import { BaseSidebarProps } from "./types";
 export const ReportsSidebar: React.FC<BaseSidebarProps> = ({ 
   currentPathname, 
   isActiveUrl,
-  siteId
+  currentSiteIdentifier
 }) => {
   // Determine if we're in site-specific context
-  const inSiteContext = !!siteId;
+  const inSiteContext = !!currentSiteIdentifier;
   
   // Helper function to get the appropriate route based on context
   const getContextualRoute = (generalRoute: string, siteSpecificPath: string) => {
     return inSiteContext 
-      ? getSiteAdminRoute(siteId, siteSpecificPath) 
+      ? getSiteAdminRoute(currentSiteIdentifier, siteSpecificPath) 
       : generalRoute;
   };
 
   const basePath = inSiteContext 
-    ? APP_ROUTES.DASHBOARD_SITE.REPORTS(siteId)
+    ? APP_ROUTES.DASHBOARD_SITE.REPORTS(currentSiteIdentifier)
     : '/dashboard/reports';
     
   return (
