@@ -2,7 +2,7 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist/public",
-  "framework": null,
+  "framework": "vite",
   "devCommand": "npm run dev",
   "functions": {
     "api/**/*.js": {
@@ -10,7 +10,12 @@
       "maxDuration": 10
     }
   },
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/api/index.js" }
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/(.*\\.(js|css|png|jpg|jpeg|svg|ico|json))", "dest": "/$1" },
+    { "src": "/dashboard/site/[^/]+/(appearance|app-store|billing|content|design-studio|people|reports|settings|site-config).*", "dest": "/index.html" },
+    { "src": "/dashboard.*", "dest": "/index.html" },
+    { "src": "/sites.*", "dest": "/index.html" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 } 
