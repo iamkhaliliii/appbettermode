@@ -24,7 +24,7 @@ export function OverviewCard({ title, value, icon, bgColor }: OverviewCardProps)
       </CardContent>
       <CardFooter className="bg-gray-50 dark:bg-gray-800 px-5 py-3">
         <div className="text-sm">
-          <Button variant="link-color" className="p-0 h-auto font-medium text-primary-700 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-300">
+          <Button variant="link" className="p-0 h-auto font-medium text-primary-700 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-300">
             View all
           </Button>
         </div>

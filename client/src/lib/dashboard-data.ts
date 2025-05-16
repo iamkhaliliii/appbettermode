@@ -121,7 +121,7 @@ export const getDashboardData = async () => {
         space: 'Design',
         cmsType: 'Article',
         time: '2 hours ago',
-        timeCategory: 'today',
+        timeCategory: 'today' as const,
         read: false,
         avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       },
@@ -134,7 +134,7 @@ export const getDashboardData = async () => {
         space: 'Product',
         cmsType: 'Post',
         time: '4 hours ago',
-        timeCategory: 'today',
+        timeCategory: 'today' as const,
         read: false,
         avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
         commentContent: 'Great progress on the dashboard project! I think we should review the analytics section again before the final release.'
@@ -148,7 +148,7 @@ export const getDashboardData = async () => {
         space: 'Marketing',
         cmsType: 'Document',
         time: '5 hours ago',
-        timeCategory: 'today',
+        timeCategory: 'today' as const,
         read: false,
         avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       },
@@ -164,7 +164,7 @@ export const getDashboardData = async () => {
         cmsType: 'Task',
         date: 'Yesterday',
         time: 'Yesterday at 3:45 PM',
-        timeCategory: 'yesterday',
+        timeCategory: 'yesterday' as const,
         read: false,
         avatar: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       },
@@ -178,7 +178,7 @@ export const getDashboardData = async () => {
         cmsType: 'Report',
         date: 'Yesterday',
         time: 'Yesterday at 11:30 AM',
-        timeCategory: 'yesterday',
+        timeCategory: 'yesterday' as const,
         read: true,
         avatar: 'https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       },
@@ -194,7 +194,7 @@ export const getDashboardData = async () => {
         cmsType: 'Event',
         date: 'Mon',
         time: 'Monday at 9:15 AM',
-        timeCategory: 'this_week',
+        timeCategory: 'this_week' as const,
         read: true,
         avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       },
@@ -208,7 +208,7 @@ export const getDashboardData = async () => {
         cmsType: 'Form',
         date: 'Mon',
         time: 'Monday at 8:20 AM',
-        timeCategory: 'this_week',
+        timeCategory: 'this_week' as const,
         read: true,
         avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       },
@@ -224,7 +224,7 @@ export const getDashboardData = async () => {
         cmsType: 'Feature',
         date: 'Apr 8',
         time: 'Apr 8',
-        timeCategory: 'last_week',
+        timeCategory: 'last_week' as const,
         read: true,
         avatar: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
         commentContent: 'What we didn\'t address is the mapping of the Sorena users with Bettermode staff. We need to find a way to address that',
@@ -240,7 +240,7 @@ export const getDashboardData = async () => {
         cmsType: 'Group',
         date: 'Apr 7',
         time: 'Apr 7',
-        timeCategory: 'last_week',
+        timeCategory: 'last_week' as const,
         read: true,
         avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       },
@@ -256,7 +256,7 @@ export const getDashboardData = async () => {
         cmsType: 'Discussion',
         date: 'Mar 28',
         time: 'Mar 28',
-        timeCategory: 'older',
+        timeCategory: 'older' as const,
         read: true,
         avatar: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       },
@@ -270,7 +270,7 @@ export const getDashboardData = async () => {
         cmsType: 'System',
         date: 'Mar 25',
         time: 'Mar 25',
-        timeCategory: 'older',
+        timeCategory: 'older' as const,
         read: true,
         avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
       }

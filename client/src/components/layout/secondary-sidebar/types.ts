@@ -101,4 +101,5 @@ export interface SiteSidebarProps {
   siteName?: string;
   navItems?: NavItem[];
   currentSiteId?: string;
+  isActiveUrl?: (url: string | undefined, currentPathname: string | undefined) => boolean;
 }

@@ -1,25 +1,25 @@
 import React from "react";
 import { SideNavItem } from "./SidebarNavigationItems";
 import { APP_ROUTES, getSiteAdminRoute } from "@/config/routes";
-import { BaseSidebarProps } from "./types";
+import { SiteSidebarProps } from "./types";
 
-export const SiteSidebar: React.FC<BaseSidebarProps> = ({ 
+export const SiteSidebar: React.FC<SiteSidebarProps> = ({ 
   currentPathname, 
   isActiveUrl,
-  siteId
+  currentSiteId
 }) => {
   // Determine if we're in site-specific context
-  const inSiteContext = !!siteId;
+  const inSiteContext = !!currentSiteId;
   
   // Helper function to get the appropriate route based on context
   const getContextualRoute = (generalRoute: string, siteSpecificPath: string) => {
     return inSiteContext 
-      ? getSiteAdminRoute(siteId, siteSpecificPath) 
+      ? getSiteAdminRoute(currentSiteId, siteSpecificPath) 
       : generalRoute;
   };
 
   const basePath = inSiteContext 
-    ? `/dashboard/site/${siteId}` 
+    ? `/dashboard/site/${currentSiteId}` 
     : '/site';
 
   return (

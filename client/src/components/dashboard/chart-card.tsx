@@ -15,21 +15,21 @@ export function ChartCard({ title, type }: ChartCardProps) {
           <h3 className="text-lg font-medium text-gray-900 dark:text-white">{title}</h3>
           <div className="flex space-x-2">
             <Button 
-              variant="secondary-gray" 
+              variant="secondary" 
               size="sm" 
               className="text-sm font-medium"
             >
               Weekly
             </Button>
             <Button 
-              variant="secondary-color" 
+              variant="default" 
               size="sm" 
               className="text-sm font-medium"
             >
               Monthly
             </Button>
             <Button 
-              variant="secondary-gray" 
+              variant="secondary" 
               size="sm" 
               className="text-sm font-medium"
             >

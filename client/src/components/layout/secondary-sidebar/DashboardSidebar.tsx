@@ -11,7 +11,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
   siteName,
   navItems = []
 }) => {
-  const basePath = `/dashboard/site/${currentSiteIdentifier}`;
+  const basePath = currentSiteIdentifier ? `/dashboard/site/${currentSiteIdentifier}` : "#";
 
   const checkActive = isActiveUrl || ((url: string, path: string) => path === url);
 
@@ -47,22 +47,22 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
           <SideNavItem
             href={basePath}
             icon={<BarChart className="h-4 w-4" />}
-            isActive={checkActive(basePath, currentPathname)}
+            isActive={currentSiteIdentifier ? checkActive(basePath, currentPathname) : false}
           >
             Overview
           </SideNavItem>
 
           <SideNavItem
-            href={APP_ROUTES.DASHBOARD_SITE.CONTENT(currentSiteIdentifier)}
+            href={currentSiteIdentifier ? APP_ROUTES.DASHBOARD_SITE.CONTENT(currentSiteIdentifier) : "#"}
             icon={<ClipboardList className="h-4 w-4" />}
-            isActive={checkActive(APP_ROUTES.DASHBOARD_SITE.CONTENT(currentSiteIdentifier), currentPathname)}
+            isActive={currentSiteIdentifier ? checkActive(APP_ROUTES.DASHBOARD_SITE.CONTENT(currentSiteIdentifier), currentPathname) : false}
           >
             Content
           </SideNavItem>
           <SideNavItem
-            href={APP_ROUTES.DASHBOARD_SITE.PEOPLE(currentSiteIdentifier)}
+            href={currentSiteIdentifier ? APP_ROUTES.DASHBOARD_SITE.PEOPLE(currentSiteIdentifier) : "#"}
             icon={<Users className="h-4 w-4" />}
-            isActive={checkActive(APP_ROUTES.DASHBOARD_SITE.PEOPLE(currentSiteIdentifier), currentPathname)}
+            isActive={currentSiteIdentifier ? checkActive(APP_ROUTES.DASHBOARD_SITE.PEOPLE(currentSiteIdentifier), currentPathname) : false}
           >
             People
           </SideNavItem>

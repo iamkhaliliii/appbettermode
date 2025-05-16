@@ -24,7 +24,7 @@ import {
   PanelRight,
   PanelBottom,
 } from "lucide-react"; // Icons for NavigationSection
-import { BaseSidebarProps } from "./types";
+import { DesignStudioSpacesFeedSidebarProps } from "./types";
 
 // Define NavigationSection and NavigationItem locally if they are simple enough
 // and not used extensively outside this sidebar. Otherwise, they should be proper components.
@@ -49,10 +49,9 @@ const NavigationItem: React.FC<{ icon: React.ReactNode; title: string }> = ({ ic
 };
 
 
-export const DesignStudioSpacesFeedSidebar: React.FC<BaseSidebarProps> = ({ 
-  currentPathname,
-  isActiveUrl,
+export const DesignStudioSpacesFeedSidebar: React.FC<DesignStudioSpacesFeedSidebarProps> = ({ 
   siteId 
+  // siteName, navItems, currentSiteId are also available but not currently used
 }) => {
   return (
     <div className="p-2">
