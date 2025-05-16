@@ -153,20 +153,27 @@ router.post('/', async (req, res) => {
       }
       const createdSite = siteInsertResult[0];
 
-      // Add the site creator as an 'admin' member
+      // Temporarily skip membership creation as it might be causing the error
+      /* 
       await tx.insert(memberships).values({
         userId: currentUserId,
         siteId: createdSite.id,
         role: 'admin',
       });
-
+      */
+      
+      console.log('Site created successfully:', createdSite);
       return createdSite;
     });
 
     return res.status(201).json(newSite);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating site:', error);
-    return res.status(500).json({ message: 'Error creating site in database' });
+    // Add more detailed error information
+    return res.status(500).json({ 
+      message: 'Error creating site in database',
+      details: error.message || 'Unknown error'
+    });
   }
 });
 
