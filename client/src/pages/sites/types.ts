@@ -2,11 +2,10 @@ export interface Site {
   id: string;
   name: string;
   subdomain?: string | null;
-  role: string;
+  ownerId?: string;
   createdAt: string;
-  status: 'active' | 'inactive' | 'pending';
-  memberCount?: number;
-  lastActivityAt?: string;
+  updatedAt?: string | null;
+  state?: string;
 }
 
 export interface SiteCreationFormInputs {
