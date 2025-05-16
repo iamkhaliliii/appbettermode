@@ -42,6 +42,7 @@ export const memberSchema = z.object({
   avatarUrl: z.string().url().optional().nullable(),
   role: z.enum(['member', 'admin', 'editor']),
   joinedAt: z.string().datetime().optional(),
+  status: z.string(),
 });
 
 export const membersResponseSchema = z.array(memberSchema);
@@ -186,6 +187,7 @@ export const sitesApi = {
         email: "olivia@untitledui.com",
         joinedAt: new Date().toISOString(),
         avatarUrl: undefined,
+        status: "Active",
       },
       {
         userId: "59b55209-f7f6-5c2f-c9fc-c2d61ff1740e",
@@ -195,6 +197,7 @@ export const sitesApi = {
         email: "phoenix@untitledui.com",
         joinedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
         avatarUrl: undefined,
+        status: "Active",
       },
       {
         userId: "71d77321-h9h8-7e4h-e1he-e4f83hh3962g",
@@ -204,6 +207,7 @@ export const sitesApi = {
         email: "candice@untitledui.com",
         joinedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
         avatarUrl: undefined,
+        status: "Inactive",
       },
       {
         userId: "82e88432-i0i9-8f5i-f2if-f5g94ii4073h",
@@ -213,6 +217,7 @@ export const sitesApi = {
         email: "drew@untitledui.com",
         joinedAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
         avatarUrl: undefined,
+        status: "Active",
       }
     ];
     

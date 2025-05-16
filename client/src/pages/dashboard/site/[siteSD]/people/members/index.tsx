@@ -277,7 +277,7 @@ export default function SiteMembersPage() {
                       {member.role}
                     </div>
                     <div className="col-span-2 text-gray-700 dark:text-gray-300">
-                      {new Date(member.joinedAt).toLocaleDateString()}
+                      {member.joinedAt ? new Date(member.joinedAt).toLocaleDateString() : 'N/A'}
                     </div>
                     <div className="col-span-2">
                       <span 
