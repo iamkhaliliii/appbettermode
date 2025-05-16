@@ -1,5 +1,5 @@
-import { db } from '../server/db'; // Adjusted path to point to server/db/index.ts
-import { sites } from '../server/db/schema'; // Adjusted path
+import { db } from '../server/db/index.js'; // Corrected import path
+import { sites } from '../server/db/schema.js'; // Corrected import path
 // import { eq, desc } from 'drizzle-orm'; // Import operators if needed for specific queries
 
 export default async function handler(req, res) {
