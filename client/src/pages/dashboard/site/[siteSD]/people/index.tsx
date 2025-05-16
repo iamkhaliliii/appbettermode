@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { sitesApi, Site } from "@/lib/api";
 import { 
   UserIcon, 
   PlusIcon, 
@@ -13,8 +14,20 @@ import {
   ArrowUpDown
 } from "lucide-react";
 
+// Define Member interface
+interface Member {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  joinDate: string;
+  status: "Active" | "Inactive";
+}
+
 // Mock data for members
-const MOCK_MEMBERS = [
+// TODO: Replace with API call to fetch members for a site
+// Future endpoint could be: /api/v1/sites/:siteId/members
+const MOCK_MEMBERS: Member[] = [
   { id: 1, name: "Olivia Rhye", email: "olivia@untitledui.com", role: "Admin", joinDate: "Jan 12, 2023", status: "Active" },
   { id: 2, name: "Phoenix Baker", email: "phoenix@untitledui.com", role: "Member", joinDate: "Jan 10, 2023", status: "Active" },
   { id: 3, name: "Lana Steiner", email: "lana@untitledui.com", role: "Member", joinDate: "Dec 15, 2022", status: "Active" },
@@ -24,30 +37,61 @@ const MOCK_MEMBERS = [
   { id: 7, name: "Drew Cano", email: "drew@untitledui.com", role: "Member", joinDate: "Nov 24, 2022", status: "Active" }
 ];
 
+/**
+ * Site People Dashboard Page
+ * 
+ * Shows a list of members for a specific site.
+ * Currently using mock data for members, but will be updated to use the API.
+ * 
+ * Future improvements:
+ * - Fetch members from API (memberships table)
+ * - Implement pagination
+ * - Add, edit, and delete functionality
+ * - Role management
+ */
 export default function SitePeoplePage() {
-  // Extract siteId from the route
-  const [, params] = useRoute('/dashboard/site/:siteId/people');
-  const siteId = params?.siteId || '';
+  // Extract siteSD (site identifier) from the route
+  const [, params] = useRoute('/dashboard/site/:siteSD/people');
+  const siteSD = params?.siteSD || '';
   
-  // State for site name
-  const [siteName, setSiteName] = useState('');
+  // State for site data
+  const [siteData, setSiteData] = useState<Site | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
   // State for members search
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredMembers, setFilteredMembers] = useState(MOCK_MEMBERS);
   
+  // Fetch site data
   useEffect(() => {
-    // Simulate fetching site data
     const fetchSiteData = async () => {
-      // This would be an API call in a real app
-      setSiteName(`Site ${siteId}`);
+      if (!siteSD) {
+        setIsLoading(false);
+        setError("No site identifier provided");
+        return;
+      }
+      
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        // Fetch site data using the new API
+        const data = await sitesApi.getSite(siteSD);
+        setSiteData(data);
+        setIsLoading(false);
+      } catch (err: any) {
+        console.error("Error fetching site data:", err);
+        setError(err.message || "Failed to load site data");
+        setIsLoading(false);
+      }
     };
     
-    if (siteId) {
-      fetchSiteData();
-    }
-    
-    // Filter members based on search term
+    fetchSiteData();
+  }, [siteSD]);
+  
+  // Filter members based on search term
+  useEffect(() => {
     if (searchTerm) {
       setFilteredMembers(
         MOCK_MEMBERS.filter(member => 
@@ -58,16 +102,43 @@ export default function SitePeoplePage() {
     } else {
       setFilteredMembers(MOCK_MEMBERS);
     }
-  }, [siteId, searchTerm]);
+  }, [searchTerm]);
+  
+  if (isLoading) {
+    return (
+      <DashboardLayout currentSiteIdentifier={siteSD} siteName="Loading...">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin h-8 w-8 border-4 border-primary-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-gray-500 dark:text-gray-400">Loading site data...</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+  
+  if (error) {
+    return (
+      <DashboardLayout currentSiteIdentifier={siteSD} siteName="Error">
+        <div className="p-4 text-center">
+          <div className="text-red-500 mb-2 text-3xl">⚠️</div>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Error Loading Site</h2>
+          <p className="text-gray-500 dark:text-gray-400">{error}</p>
+        </div>
+      </DashboardLayout>
+    );
+  }
   
   return (
-    <DashboardLayout currentSiteId={siteId} siteName={siteName}>
+    <DashboardLayout 
+      currentSiteIdentifier={siteSD} 
+      siteName={siteData?.name || "Site"}>
       <div className="max-w-7xl mx-auto p-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
           <div>
             <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">People</h1>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Manage members and staff for {siteName}
+              Manage members and staff for {siteData?.name || "this site"}
             </p>
           </div>
           

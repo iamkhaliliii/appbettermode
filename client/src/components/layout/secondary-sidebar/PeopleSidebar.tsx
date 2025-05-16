@@ -6,15 +6,15 @@ import { BaseSidebarProps } from "./types";
 export const PeopleSidebar: React.FC<BaseSidebarProps> = ({ 
   currentPathname, 
   isActiveUrl,
-  siteId
+  currentSiteIdentifier
 }) => {
   // Determine if we're in site-specific context
-  const inSiteContext = !!siteId;
+  const inSiteContext = !!currentSiteIdentifier;
   
   // Helper function to get the appropriate route based on context
   const getContextualRoute = (generalRoute: string, siteSpecificPath: string) => {
     return inSiteContext 
-      ? getSiteAdminRoute(siteId, siteSpecificPath) 
+      ? getSiteAdminRoute(currentSiteIdentifier, siteSpecificPath) 
       : generalRoute;
   };
   
@@ -28,11 +28,11 @@ export const PeopleSidebar: React.FC<BaseSidebarProps> = ({
 
       <div className="space-y-1">
         <SideNavItem
-          href={inSiteContext ? APP_ROUTES.DASHBOARD_SITE.PEOPLE_MEMBERS(siteId) : '/dashboard/people/members'}
+          href={inSiteContext ? APP_ROUTES.DASHBOARD_SITE.PEOPLE_MEMBERS(currentSiteIdentifier) : '/dashboard/people/members'}
           isActive={
             inSiteContext 
-              ? (isActiveUrl && isActiveUrl(APP_ROUTES.DASHBOARD_SITE.PEOPLE_MEMBERS(siteId), currentPathname)) || 
-                (currentPathname.includes(`/dashboard/site/${siteId}/people`) && 
+              ? (isActiveUrl && isActiveUrl(APP_ROUTES.DASHBOARD_SITE.PEOPLE_MEMBERS(currentSiteIdentifier), currentPathname)) || 
+                (currentPathname.includes(`/dashboard/site/${currentSiteIdentifier}/people`) && 
                 !currentPathname.includes('/staff') && 
                 !currentPathname.includes('/invitations') && 
                 !currentPathname.includes('/profile-fields') && 
@@ -44,10 +44,10 @@ export const PeopleSidebar: React.FC<BaseSidebarProps> = ({
         </SideNavItem>
 
         <SideNavItem
-          href={inSiteContext ? APP_ROUTES.DASHBOARD_SITE.PEOPLE_STAFF(siteId) : '/dashboard/people/staff'}
+          href={inSiteContext ? APP_ROUTES.DASHBOARD_SITE.PEOPLE_STAFF(currentSiteIdentifier) : '/dashboard/people/staff'}
           isActive={isActiveUrl && isActiveUrl(
             inSiteContext 
-              ? APP_ROUTES.DASHBOARD_SITE.PEOPLE_STAFF(siteId)
+              ? APP_ROUTES.DASHBOARD_SITE.PEOPLE_STAFF(currentSiteIdentifier)
               : '/dashboard/people/staff', 
             currentPathname
           )}
@@ -56,10 +56,10 @@ export const PeopleSidebar: React.FC<BaseSidebarProps> = ({
         </SideNavItem>
 
         <SideNavItem
-          href={inSiteContext ? getSiteAdminRoute(siteId, 'people/invitations') : '/dashboard/people/invitations'}
+          href={inSiteContext ? getSiteAdminRoute(currentSiteIdentifier, 'people/invitations') : '/dashboard/people/invitations'}
           isActive={isActiveUrl && isActiveUrl(
             inSiteContext 
-              ? getSiteAdminRoute(siteId, 'people/invitations')
+              ? getSiteAdminRoute(currentSiteIdentifier, 'people/invitations')
               : '/dashboard/people/invitations', 
             currentPathname
           )}
@@ -68,10 +68,10 @@ export const PeopleSidebar: React.FC<BaseSidebarProps> = ({
         </SideNavItem>
 
         <SideNavItem
-          href={inSiteContext ? getSiteAdminRoute(siteId, 'people/profile-fields') : '/dashboard/people/profile-fields'}
+          href={inSiteContext ? getSiteAdminRoute(currentSiteIdentifier, 'people/profile-fields') : '/dashboard/people/profile-fields'}
           isActive={isActiveUrl && isActiveUrl(
             inSiteContext 
-              ? getSiteAdminRoute(siteId, 'people/profile-fields')
+              ? getSiteAdminRoute(currentSiteIdentifier, 'people/profile-fields')
               : '/dashboard/people/profile-fields', 
             currentPathname
           )}
@@ -80,10 +80,10 @@ export const PeopleSidebar: React.FC<BaseSidebarProps> = ({
         </SideNavItem>
 
         <SideNavItem
-          href={inSiteContext ? getSiteAdminRoute(siteId, 'people/badges') : '/dashboard/people/badges'}
+          href={inSiteContext ? getSiteAdminRoute(currentSiteIdentifier, 'people/badges') : '/dashboard/people/badges'}
           isActive={isActiveUrl && isActiveUrl(
             inSiteContext 
-              ? getSiteAdminRoute(siteId, 'people/badges')
+              ? getSiteAdminRoute(currentSiteIdentifier, 'people/badges')
               : '/dashboard/people/badges', 
             currentPathname
           )}

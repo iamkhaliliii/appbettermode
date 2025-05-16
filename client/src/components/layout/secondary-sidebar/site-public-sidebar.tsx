@@ -1,20 +1,20 @@
 import React from 'react';
 
 interface SitePublicSidebarProps {
-  siteIdentifier: string;
+  currentSiteIdentifier: string;
   currentPath: string;
 }
 
-export function SitePublicSidebar({ siteIdentifier, currentPath }: SitePublicSidebarProps) {
-  console.log('Site Identifier in SitePublicSidebar:', siteIdentifier);
+export function SitePublicSidebar({ currentSiteIdentifier, currentPath }: SitePublicSidebarProps) {
+  console.log('Site Identifier in SitePublicSidebar:', currentSiteIdentifier);
   console.log('Current Path in SitePublicSidebar:', currentPath);
   return (
     <div>
-      <p>Public Sidebar for: {siteIdentifier}</p>
+      <p>Public Sidebar for: {currentSiteIdentifier}</p>
       {/* Placeholder for public site navigation or context */}
       <ul>
-        <li><a href={`/site/${siteIdentifier}/`}>Home</a></li>
-        <li><a href={`/site/${siteIdentifier}/search`}>Search</a></li>
+        <li><a href={`/site/${currentSiteIdentifier}/`}>Home</a></li>
+        <li><a href={`/site/${currentSiteIdentifier}/search`}>Search</a></li>
       </ul>
     </div>
   );

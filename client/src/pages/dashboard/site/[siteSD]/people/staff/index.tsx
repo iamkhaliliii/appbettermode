@@ -1,10 +1,11 @@
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { useRoute } from "wouter";
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { sitesApi, Site } from "@/lib/api";
 import { 
   UserIcon, 
   PlusIcon, 
@@ -16,8 +17,20 @@ import {
   UserPlusIcon
 } from "lucide-react";
 
+// Define Staff interface
+interface StaffMember {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  joinDate: string;
+  status: "Active" | "Inactive";
+}
+
 // Mock data for staff members
-const MOCK_STAFF = [
+// TODO: Replace with API call to fetch staff for a site
+// Future endpoint could be: /api/v1/sites/:siteId/staff
+const MOCK_STAFF: StaffMember[] = [
   { id: 1, name: "Olivia Rhye", email: "olivia@untitledui.com", role: "Admin", joinDate: "Jan 12, 2023", status: "Active" },
   { id: 2, name: "Phoenix Baker", email: "phoenix@untitledui.com", role: "Moderator", joinDate: "Jan 10, 2023", status: "Active" },
   { id: 3, name: "Lana Steiner", email: "lana@untitledui.com", role: "Editor", joinDate: "Dec 15, 2022", status: "Active" },
@@ -32,31 +45,63 @@ const ROLE_COLORS = {
   "Editor": "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
 };
 
+/**
+ * Site Staff Dashboard Page
+ * 
+ * Shows a list of staff members for a specific site.
+ * Currently using mock data for staff, but will be updated to use the API.
+ * 
+ * Future improvements:
+ * - Fetch staff from API (memberships table with role filter)
+ * - Implement pagination
+ * - Add, edit, and delete functionality
+ * - Role and permission management
+ */
 export default function SiteStaffPage() {
-  // Extract siteId from the route
-  const [, params] = useRoute('/dashboard/site/:siteId/people/staff');
-  const siteId = params?.siteId || '';
+  // Extract siteSD (site identifier) from the route
+  const [, params] = useRoute('/dashboard/site/:siteSD/people/staff');
+  const siteSD = params?.siteSD || '';
   
-  // State for site name
-  const [siteName, setSiteName] = useState('');
+  // State for site data
+  const [siteData, setSiteData] = useState<Site | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
   // State for staff search
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredStaff, setFilteredStaff] = useState(MOCK_STAFF);
   const [currentTab, setCurrentTab] = useState('all');
   
+  // Fetch site data
   useEffect(() => {
-    // Simulate fetching site data
     const fetchSiteData = async () => {
-      // This would be an API call in a real app
-      setSiteName(`Site ${siteId}`);
+      if (!siteSD) {
+        setIsLoading(false);
+        setError("No site identifier provided");
+        return;
+      }
+      
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        // Fetch site data using the API
+        const data = await sitesApi.getSite(siteSD);
+        setSiteData(data);
+        setIsLoading(false);
+      } catch (err: any) {
+        console.error("Error fetching site data:", err);
+        setError(err.message || "Failed to load site data");
+        setIsLoading(false);
+      }
     };
     
-    if (siteId) {
-      fetchSiteData();
-    }
+    fetchSiteData();
     
-    // Filter staff based on search term and current tab
+  }, [siteSD]);
+  
+  // Filter staff based on search term and current tab
+  useEffect(() => {
     let filtered = MOCK_STAFF;
     
     // Apply search filter
@@ -79,16 +124,43 @@ export default function SiteStaffPage() {
     }
     
     setFilteredStaff(filtered);
-  }, [siteId, searchTerm, currentTab]);
+  }, [searchTerm, currentTab]);
+  
+  if (isLoading) {
+    return (
+      <DashboardLayout currentSiteIdentifier={siteSD} siteName="Loading...">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin h-8 w-8 border-4 border-primary-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-gray-500 dark:text-gray-400">Loading site data...</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+  
+  if (error) {
+    return (
+      <DashboardLayout currentSiteIdentifier={siteSD} siteName="Error">
+        <div className="p-4 text-center">
+          <div className="text-red-500 mb-2 text-3xl">⚠️</div>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Error Loading Site</h2>
+          <p className="text-gray-500 dark:text-gray-400">{error}</p>
+        </div>
+      </DashboardLayout>
+    );
+  }
   
   return (
-    <DashboardLayout currentSiteId={siteId} siteName={siteName}>
+    <DashboardLayout 
+      currentSiteIdentifier={siteSD} 
+      siteName={siteData?.name || "Site"}>
       <div className="max-w-7xl mx-auto p-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
           <div>
             <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Staff</h1>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Manage staff and permissions for {siteName}
+              Manage staff and permissions for {siteData?.name || "this site"}
             </p>
           </div>
           

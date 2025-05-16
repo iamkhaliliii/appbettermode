@@ -6,20 +6,20 @@ import { BaseSidebarProps } from "./types";
 export const BillingSidebar: React.FC<BaseSidebarProps> = ({ 
   currentPathname, 
   isActiveUrl,
-  siteId
+  currentSiteIdentifier
 }) => {
   // Determine if we're in site-specific context
-  const inSiteContext = !!siteId;
+  const inSiteContext = !!currentSiteIdentifier;
   
   // Helper function to get the appropriate route based on context
   const getContextualRoute = (generalRoute: string, siteSpecificPath: string) => {
     return inSiteContext 
-      ? getSiteAdminRoute(siteId, siteSpecificPath) 
+      ? getSiteAdminRoute(currentSiteIdentifier, siteSpecificPath) 
       : generalRoute;
   };
 
   const basePath = inSiteContext 
-    ? APP_ROUTES.DASHBOARD_SITE.BILLING(siteId)
+    ? APP_ROUTES.DASHBOARD_SITE.BILLING(currentSiteIdentifier)
     : '/dashboard/billing';
   return (
     <div className="p-3">

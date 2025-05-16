@@ -1,10 +1,11 @@
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { useRoute } from "wouter";
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { sitesApi, Site, Member } from "@/lib/api";
 import { 
   UserIcon, 
   PlusIcon, 
@@ -17,49 +18,107 @@ import {
   DownloadIcon
 } from "lucide-react";
 
-// Mock data for members
-const MOCK_MEMBERS = [
-  { id: 1, name: "Olivia Rhye", email: "olivia@untitledui.com", role: "Admin", joinDate: "Jan 12, 2023", status: "Active" },
-  { id: 2, name: "Phoenix Baker", email: "phoenix@untitledui.com", role: "Member", joinDate: "Jan 10, 2023", status: "Active" },
-  { id: 3, name: "Lana Steiner", email: "lana@untitledui.com", role: "Member", joinDate: "Dec 15, 2022", status: "Active" },
-  { id: 4, name: "Demi Wilkinson", email: "demi@untitledui.com", role: "Moderator", joinDate: "Dec 13, 2022", status: "Active" },
-  { id: 5, name: "Candice Wu", email: "candice@untitledui.com", role: "Member", joinDate: "Dec 5, 2022", status: "Inactive" },
-  { id: 6, name: "Natali Craig", email: "natali@untitledui.com", role: "Member", joinDate: "Nov 29, 2022", status: "Active" },
-  { id: 7, name: "Drew Cano", email: "drew@untitledui.com", role: "Member", joinDate: "Nov 24, 2022", status: "Active" }
-];
+// Using the Member interface imported from @/lib/api
 
+// Members are now fetched from the API using sitesApi.getMembers
+
+/**
+ * Site Members Dashboard Page
+ * 
+ * Shows a list of members for a specific site.
+ * Currently using mock data for members, but will be updated to use the API.
+ * 
+ * Future improvements:
+ * - Fetch members from API (memberships table)
+ * - Implement pagination
+ * - Add, edit, and delete functionality
+ * - Role management
+ */
 export default function SiteMembersPage() {
-  // Extract siteId from the route
-  const [, params] = useRoute('/dashboard/site/:siteId/people/members');
-  const siteId = params?.siteId || '';
+  // Extract siteSD (site identifier) from the route
+  const [, params] = useRoute('/dashboard/site/:siteSD/people/members');
+  const siteSD = params?.siteSD || '';
   
-  // State for site name
-  const [siteName, setSiteName] = useState('');
+  // State for site data
+  const [siteData, setSiteData] = useState<Site | null>(null);
+  const [isLoadingSite, setIsLoadingSite] = useState(true);
+  const [siteError, setSiteError] = useState<string | null>(null);
+  
+  // State for members data
+  const [members, setMembers] = useState<Member[]>([]);
+  const [isLoadingMembers, setIsLoadingMembers] = useState(true);
+  const [membersError, setMembersError] = useState<string | null>(null);
   
   // State for members search
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredMembers, setFilteredMembers] = useState(MOCK_MEMBERS);
+  const [filteredMembers, setFilteredMembers] = useState<Member[]>([]);
   const [currentTab, setCurrentTab] = useState('all');
   
+  // Fetch site data
   useEffect(() => {
-    // Simulate fetching site data
     const fetchSiteData = async () => {
-      // This would be an API call in a real app
-      setSiteName(`Site ${siteId}`);
+      if (!siteSD) {
+        setIsLoadingSite(false);
+        setSiteError("No site identifier provided");
+        return;
+      }
+      
+      setIsLoadingSite(true);
+      setSiteError(null);
+      
+      try {
+        // Fetch site data using the API
+        const data = await sitesApi.getSite(siteSD);
+        setSiteData(data);
+        setIsLoadingSite(false);
+      } catch (err: any) {
+        console.error("Error fetching site data:", err);
+        setSiteError(err.message || "Failed to load site data");
+        setIsLoadingSite(false);
+      }
     };
     
-    if (siteId) {
-      fetchSiteData();
+    fetchSiteData();
+  }, [siteSD]);
+  
+  // Fetch members data
+  useEffect(() => {
+    const fetchMembers = async () => {
+      if (!siteSD) return;
+      
+      setIsLoadingMembers(true);
+      setMembersError(null);
+      
+      try {
+        // Fetch members using the API
+        const data = await sitesApi.getMembers(siteSD);
+        setMembers(data);
+        setIsLoadingMembers(false);
+      } catch (err: any) {
+        console.error("Error fetching members:", err);
+        setMembersError(err.message || "Failed to load members data");
+        setIsLoadingMembers(false);
+      }
+    };
+    
+    fetchMembers();
+  }, [siteSD]);
+  
+  // Filter members based on search term and current tab
+  useEffect(() => {
+    if (!members.length) {
+      setFilteredMembers([]);
+      return;
     }
     
-    // Filter members based on search term and current tab
-    let filtered = MOCK_MEMBERS;
+    let filtered = [...members];
     
     // Apply search filter
     if (searchTerm) {
       filtered = filtered.filter(member => 
-        member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        member.email.toLowerCase().includes(searchTerm.toLowerCase())
+        member.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        member.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        member.role.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
     
@@ -71,16 +130,48 @@ export default function SiteMembersPage() {
     }
     
     setFilteredMembers(filtered);
-  }, [siteId, searchTerm, currentTab]);
+  }, [members, searchTerm, currentTab]);
+  
+  const isLoading = isLoadingSite || isLoadingMembers;
+  const error = siteError || membersError;
+  
+  if (isLoading) {
+    return (
+      <DashboardLayout currentSiteIdentifier={siteSD} siteName="Loading...">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin h-8 w-8 border-4 border-primary-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-gray-500 dark:text-gray-400">
+              {isLoadingSite ? "Loading site data..." : "Loading members..."}
+            </p>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+  
+  if (error) {
+    return (
+      <DashboardLayout currentSiteIdentifier={siteSD} siteName="Error">
+        <div className="p-4 text-center">
+          <div className="text-red-500 mb-2 text-3xl">⚠️</div>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Error</h2>
+          <p className="text-gray-500 dark:text-gray-400">{error}</p>
+        </div>
+      </DashboardLayout>
+    );
+  }
   
   return (
-    <DashboardLayout currentSiteId={siteId} siteName={siteName}>
+    <DashboardLayout 
+      currentSiteIdentifier={siteSD} 
+      siteName={siteData?.name || "Site"}>
       <div className="max-w-7xl mx-auto p-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
           <div>
             <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Members</h1>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              Manage community members for {siteName}
+              Manage community members for {siteData?.name || "this site"}
             </p>
           </div>
           
@@ -178,15 +269,15 @@ export default function SiteMembersPage() {
                         <UserIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900 dark:text-white">{member.name}</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">{member.email}</p>
+                        <p className="font-medium text-gray-900 dark:text-white">{member.name || 'Anonymous User'}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{member.email || 'No email provided'}</p>
                       </div>
                     </div>
                     <div className="col-span-2 text-gray-700 dark:text-gray-300">
                       {member.role}
                     </div>
                     <div className="col-span-2 text-gray-700 dark:text-gray-300">
-                      {member.joinDate}
+                      {new Date(member.joinedAt).toLocaleDateString()}
                     </div>
                     <div className="col-span-2">
                       <span 

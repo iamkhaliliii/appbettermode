@@ -6,20 +6,20 @@ import { BaseSidebarProps } from "./types";
 export const AppearanceSidebar: React.FC<BaseSidebarProps> = ({ 
   currentPathname, 
   isActiveUrl,
-  siteId
+  currentSiteIdentifier
 }) => {
   // Determine if we're in site-specific context
-  const inSiteContext = !!siteId;
+  const inSiteContext = !!currentSiteIdentifier;
   
   // Helper function to get the appropriate route based on context
   const getContextualRoute = (generalRoute: string, siteSpecificPath: string) => {
     return inSiteContext 
-      ? getSiteAdminRoute(siteId, siteSpecificPath) 
+      ? getSiteAdminRoute(currentSiteIdentifier, siteSpecificPath) 
       : generalRoute;
   };
 
   const basePath = inSiteContext 
-    ? APP_ROUTES.DASHBOARD_SITE.APPEARANCE(siteId)
+    ? APP_ROUTES.DASHBOARD_SITE.APPEARANCE(currentSiteIdentifier)
     : '/dashboard/appearance';
 
   return (

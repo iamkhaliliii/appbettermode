@@ -60,7 +60,7 @@ export interface NavItem {
 export interface BaseSidebarProps {
   currentPathname: string;
   isActiveUrl?: (url: string | undefined, currentPathname: string | undefined) => boolean;
-  siteIdentifier: string;
+  currentSiteIdentifier?: string;
 }
 
 // Specific props for each sidebar type
@@ -80,7 +80,7 @@ export interface DashboardSidebarProps extends BaseSidebarProps {
 
 export interface DesignStudioSidebarProps {
   currentPathname: string;
-  siteIdentifier: string;
+  currentSiteIdentifier?: string;
 }
 
 export interface DesignStudioSpacesFeedSidebarProps {

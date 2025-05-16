@@ -61,21 +61,21 @@ const NavigationItem: React.FC<{ icon: React.ReactNode; title: string }> = ({ ic
 
 export const DesignStudioSidebar: React.FC<DesignStudioSidebarProps> = ({ 
   currentPathname,
-  siteId
+  currentSiteIdentifier
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   
   // Determine if we're in site-specific context
-  const inSiteContext = !!siteId;
+  const inSiteContext = !!currentSiteIdentifier;
   
   // Base path for Design Studio based on context
   const basePath = inSiteContext 
-    ? APP_ROUTES.DASHBOARD_SITE.DESIGN_STUDIO(siteId)
+    ? APP_ROUTES.DASHBOARD_SITE.DESIGN_STUDIO(currentSiteIdentifier)
     : '/dashboard/design-studio';
 
   // Feed path
   const feedPath = inSiteContext
-    ? `${APP_ROUTES.DASHBOARD_SITE.DESIGN_STUDIO(siteId)}/spaces/feed`
+    ? `${APP_ROUTES.DASHBOARD_SITE.DESIGN_STUDIO(currentSiteIdentifier)}/spaces/feed`
     : '/dashboard/design-studio/spaces/feed';
 
   const defaultExpanded = currentPathname.includes(`${basePath}/spaces`)

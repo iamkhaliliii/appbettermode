@@ -1,22 +1,52 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Bell, Menu, ChevronDown, ExternalLink, Database, BarChart2, Files, ChevronUp, XIcon } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { cn } from "@/lib/utils";
 import { useLocation, Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
+import { sitesApi, Site } from "@/lib/api";
+import { APP_ROUTES } from "@/config/routes";
 
 interface HeaderProps {
   onToggleMobileMenu: () => void;
   variant?: 'dashboard' | 'site';
   siteName?: string;
+  siteIdentifier?: string;
 }
 
-export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName }: HeaderProps) {
+export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, siteIdentifier }: HeaderProps) {
   const [location] = useLocation();
   const [isSiteHeaderVisible, setIsSiteHeaderVisible] = useState(true);
+  const [siteData, setSiteData] = useState<Site | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Fetch site data when siteIdentifier changes
+  useEffect(() => {
+    const fetchSiteData = async () => {
+      if (!siteIdentifier) {
+        setSiteData(null);
+        return;
+      }
+      
+      setIsLoading(true);
+      try {
+        const data = await sitesApi.getSite(siteIdentifier);
+        setSiteData(data);
+      } catch (error) {
+        console.error("Error fetching site data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchSiteData();
+  }, [siteIdentifier]);
+  
+  // Use site name from props or from fetched data
+  const displaySiteName = siteName || siteData?.name || "Loading...";
 
   // Define base and variant-specific classes
   const headerBaseClasses = "sticky top-0 z-30 border-b transition-colors duration-300 ease-in-out";
@@ -37,8 +67,10 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName }: 
   const handleLogoClick = () => {
     if (variant === 'site' && !isSiteHeaderVisible) {
       setIsSiteHeaderVisible(true);
+    } else if (siteIdentifier) {
+      // Navigate to the site dashboard
+      window.location.href = APP_ROUTES.DASHBOARD_SITE.INDEX(siteIdentifier);
     }
-    // Optionally navigate home or do nothing if header is visible
   };
 
   // Animation variants for the header content
@@ -52,6 +84,13 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName }: 
     visible: { y: 0, transition: { duration: 0.3, ease: "easeInOut" } },
     hidden: { y: "-100%", transition: { duration: 0.3, ease: "easeInOut" } },
   };
+  
+  // Update document title when site data changes
+  useEffect(() => {
+    if (variant === 'dashboard' && siteData) {
+      document.title = `${siteData.name} Dashboard | BetterMode`;
+    }
+  }, [siteData, variant]);
 
   return (
     <motion.header
@@ -92,6 +131,11 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName }: 
         {/* Conditionally Render Rest of Header Content (NO INNER ANIMATION) */}
         {(variant === 'dashboard' || (variant === 'site' && isSiteHeaderVisible)) && (
             <div className="flex-1 flex items-center">
+              {siteData && (
+                <div className={cn("hidden sm:block absolute left-14 text-sm font-medium", primaryTextColor, "max-w-[120px] truncate")}>
+                  {displaySiteName}
+                </div>
+              )}
               {/* Middle Section - App Navigation */}
               <div className={cn("w-64 flex-shrink-0 h-full border-r", borderColor)}>
 
@@ -252,9 +296,11 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName }: 
                         <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                       
-                      {/* Handle dashboard site routes */}
-                      {location.startsWith('/dashboard/site/') && (
+                      {/* Display site name if available */}
+                      {siteData && location.startsWith('/dashboard/site/') && (
                         <>
+                          <span className={cn("font-medium", primaryTextColor)}>{displaySiteName}</span>
+                          
                           {/* Extract section and subsection */}
                           {(() => {
                             const parts = location.split('/');
@@ -264,6 +310,9 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName }: 
                               
                               return (
                                 <>
+                                  <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
+                                    <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                  </svg>
                                   <span>{section.charAt(0).toUpperCase() + section.slice(1)}</span>
                                   {subsection && (
                                     <>
@@ -324,12 +373,18 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName }: 
                       variant="secondary" 
                       size="sm" 
                       className={cn(borderColor, buttonBg, primaryTextColor, buttonBgHover)}
+                      disabled={!siteData?.subdomain}
+                      onClick={() => {
+                        if (siteData?.subdomain) {
+                          window.open(`https://${siteData.subdomain}.bettermode.com`, '_blank');
+                        }
+                      }}
                     >
                       <ExternalLink className="h-4 w-4 mr-1" />
                       View Site
                     </Button>
                   ) : (
-                     <Link href="/content">
+                     <Link href={siteIdentifier ? APP_ROUTES.DASHBOARD_SITE.INDEX(siteIdentifier) : "#"}>
                        <Button 
                          variant="secondary" 
                          size="sm" 

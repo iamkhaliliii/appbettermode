@@ -41,40 +41,40 @@ export function SecondarySidebar({
   const getSidebarForLocation = () => {
     if (isAdminSite && siteIdentifierFromUrl) {
       if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.CONTENT(siteIdentifierFromUrl))) {
-        return <ContentSidebar siteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+        return <ContentSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
       }
       if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.PEOPLE(siteIdentifierFromUrl))) {
-        return <PeopleSidebar siteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+        return <PeopleSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
       }
       if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.APPEARANCE(siteIdentifierFromUrl))) {
-        return <AppearanceSidebar siteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+        return <AppearanceSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
       }
       if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.SETTINGS(siteIdentifierFromUrl))) {
-        return <SettingsSidebar siteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+        return <SettingsSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
       }
       if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.BILLING(siteIdentifierFromUrl))) {
-        return <BillingSidebar siteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+        return <BillingSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
       }
       if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.REPORTS(siteIdentifierFromUrl))) {
-        return <ReportsSidebar siteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+        return <ReportsSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
       }
       if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.APP_STORE(siteIdentifierFromUrl))) {
-        return <AppStoreSidebar siteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+        return <AppStoreSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
       }
       if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.DESIGN_STUDIO(siteIdentifierFromUrl))) {
-        return <DesignStudioSidebar siteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+        return <DesignStudioSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
       }
       if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(siteIdentifierFromUrl))) {
-        return <SiteConfigSidebar siteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+        return <SiteConfigSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
       }
       if (currentPathname === APP_ROUTES.DASHBOARD_SITE.INDEX(siteIdentifierFromUrl)) {
         // Pass siteIdentifierFromUrl for link building, but DashboardSidebar might also want the canonicalId via currentSiteIdentifier
-        return <DashboardSidebar siteIdentifier={siteIdentifierFromUrl} canonicalSiteId={currentSiteIdentifier} currentPathname={currentPathname} siteName={siteName} navItems={navItems} />;
+        return <DashboardSidebar currentSiteIdentifier={siteIdentifierFromUrl} canonicalSiteId={currentSiteIdentifier} currentPathname={currentPathname} siteName={siteName} navItems={navItems} />;
       }
     }
 
     if (isPublicSite && siteIdentifierFromUrl) {
-      return <SitePublicSidebar siteIdentifier={siteIdentifierFromUrl} currentPath={currentPathname} />;
+      return <SitePublicSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPath={currentPathname} />;
     }
     
     if (currentPathname.startsWith(APP_ROUTES.SITES_LIST) || currentPathname === APP_ROUTES.HOME) {

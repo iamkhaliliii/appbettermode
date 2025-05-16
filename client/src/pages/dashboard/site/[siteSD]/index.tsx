@@ -4,13 +4,9 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, Loader2 } from "lucide-react";
 import { sitesApi, Site } from "@/lib/api";
-import { SiteDetails } from "@/types/site";
-
-// NOTE: We now use the real API instead of mock data
 
 export default function SiteAdminPage() {
   const [, params] = useRoute('/dashboard/site/:siteSD');
-  // siteSD can be a subdomain string from the URL
   const siteSD = params?.siteSD || '';
   
   const [siteDetails, setSiteDetails] = useState<Site | null>(null);
@@ -19,7 +15,6 @@ export default function SiteAdminPage() {
 
   useEffect(() => {
     const fetchSiteData = async () => {
-      // If siteSD is empty, set an error.
       if (!siteSD) {
         setSiteDetails(null);
         setIsLoading(false);
@@ -27,22 +22,15 @@ export default function SiteAdminPage() {
         return;
       }
 
-      // Reset states for the new fetch operation
       setIsLoading(true);
       setError(null);
-      setSiteDetails(null); // Clear previous site details before fetching new ones
+      setSiteDetails(null);
 
       try {
-        console.log(`Fetching site data for: ${siteSD}`);
-        
-        // Use the new sitesApi to fetch site data
         const data = await sitesApi.getSite(siteSD);
-        console.log('Site data received from API:', data);
         setSiteDetails(data);
         setIsLoading(false);
       } catch (err: any) {
-        console.error("Error fetching site data:", err);
-        // Get the error message or fallback to a generic message
         const errorMessage = err instanceof Error ? err.message : 
           "An unexpected error occurred while fetching site data.";
         setError(errorMessage);
@@ -51,21 +39,19 @@ export default function SiteAdminPage() {
     };
 
     fetchSiteData();
-  }, [siteSD]); // Re-run effect if siteSD changes
+  }, [siteSD]);
 
-  // 1. Handle Loading State
   if (isLoading) {
     return (
       <DashboardLayout currentSiteIdentifier={siteSD} siteName="Loading...">
         <div className="flex items-center justify-center h-64">
           <Loader2 className="h-12 w-12 animate-spin text-primary-500" />
-          <p className="ml-3 text-lg">Loading site data for "{siteSD}"...</p>
+          <p className="ml-3 text-lg">Loading site data...</p>
         </div>
       </DashboardLayout>
     );
   }
 
-  // 2. Handle Error State (if an error occurred during fetch)
   if (error) {
     return (
       <DashboardLayout currentSiteIdentifier={siteSD} siteName="Error">
@@ -73,13 +59,12 @@ export default function SiteAdminPage() {
           <AlertTriangle className="h-16 w-16 text-red-500 mx-auto mb-4" />
           <h1 className="text-2xl font-semibold text-red-700 dark:text-red-400">Error Loading Site</h1>
           <p className="mt-2 text-md text-gray-600 dark:text-gray-400">{error}</p>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-500">Subdomain: {siteSD}</p>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-500">Identifier: {siteSD}</p>
         </div>
       </DashboardLayout>
     );
   }
 
-  // 3. Handle Not Found / Not Available State
   if (!siteDetails) {
     return (
       <DashboardLayout currentSiteIdentifier={siteSD} siteName="Site Not Found">
@@ -89,35 +74,27 @@ export default function SiteAdminPage() {
           <p className="mt-2 text-md text-gray-600 dark:text-gray-400">
             Could not load details for the specified site. It may not exist or there was an issue retrieving its data.
           </p>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-500">Subdomain: {siteSD}</p>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-500">Identifier: {siteSD}</p>
         </div>
       </DashboardLayout>
     );
   }
-
-  // 4. Success State: siteDetails are available
-  // At this point, isLoading is false, error is null, and siteDetails is populated.
-  const displayName = siteDetails.name;
-  const displaySubdomain = siteDetails.subdomain;
-  // For DashboardLayout and any critical operations, use the canonical ID from the database.
-  const layoutSiteIdentifier = siteDetails.id;
 
   // Format dates for display
   const createdDate = siteDetails.createdAt ? new Date(siteDetails.createdAt).toLocaleDateString() : 'N/A';
   const updatedDate = siteDetails.updatedAt ? new Date(siteDetails.updatedAt).toLocaleDateString() : 'N/A';
 
   return (
-    <DashboardLayout currentSiteIdentifier={layoutSiteIdentifier} siteName={displayName}>
+    <DashboardLayout currentSiteIdentifier={siteDetails.id} siteName={siteDetails.name}>
       <div className="max-w-7xl mx-auto p-4">
         <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">{displayName} Admin Dashboard</h1>
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">{siteDetails.name} Admin Dashboard</h1>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            View and manage site details for {displayName}
+            View and manage site details
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Site Details Card */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Site Details</CardTitle>
@@ -135,7 +112,7 @@ export default function SiteAdminPage() {
               
               <div className="grid grid-cols-3 gap-4 py-1">
                 <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Subdomain:</span>
-                <span className="col-span-2 text-sm text-gray-700 dark:text-gray-300">{siteDetails.subdomain}</span>
+                <span className="col-span-2 text-sm text-gray-700 dark:text-gray-300">{siteDetails.subdomain || 'N/A'}</span>
               </div>
               
               <div className="grid grid-cols-3 gap-4 py-1">
@@ -171,7 +148,6 @@ export default function SiteAdminPage() {
             </CardContent>
           </Card>
 
-          {/* Site Status Card */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Site Status</CardTitle>
