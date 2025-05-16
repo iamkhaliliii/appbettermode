@@ -18,12 +18,13 @@ const LEGACY_ENDPOINTS = {
 // Schema for site data
 const siteSchema = z.object({
   id: z.string().uuid(),
-  name: z.string(),
-  subdomain: z.string().nullable(),
-  ownerId: z.string().uuid().nullable(),
+  name: z.string().min(2, { message: 'Site name must be at least 2 characters.' }),
+  subdomain: z.string().optional(),
+  ownerId: z.string().uuid(),
   createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime().nullable().optional(),
-  state: z.string().nullable().optional(),
+  updatedAt: z.string().datetime().nullable(),
+  state: z.string().nullable(),
+  status: z.string(),
   // Role may be included in responses from the membership join
   role: z.string().optional(),
 });
@@ -32,16 +33,15 @@ const sitesResponseSchema = z.array(siteSchema);
 
 export type Site = z.infer<typeof siteSchema>;
 
-// Schema for site member data
+// Schema for a member, likely a user associated with a site through a membership
 export const memberSchema = z.object({
-  id: z.string().uuid(),
   userId: z.string().uuid(),
   siteId: z.string().uuid(),
-  role: z.string(),
-  name: z.string().optional(),
-  email: z.string().email().optional(),
-  status: z.enum(['Active', 'Inactive']),
-  joinedAt: z.string().datetime(),
+  fullName: z.string().optional(),
+  email: z.string().email(),
+  avatarUrl: z.string().url().optional().nullable(),
+  role: z.enum(['member', 'admin', 'editor']),
+  joinedAt: z.string().datetime().optional(),
 });
 
 export const membersResponseSchema = z.array(memberSchema);
@@ -177,59 +177,44 @@ export const sitesApi = {
     // For now, use mock data
     console.log(`Getting members for site ${siteId}${options?.role ? ` with role ${options.role}` : ''} (mock data)`);
     
-    // Define mock members with the exact Member type structure
-    const mockMembers = [
+    const mockMembers: Member[] = [
       {
-        id: "1f4c8b1f-dc8c-4522-80c9-cf9b12de8c3f",
         userId: "49a44198-e6e5-4b1e-b8fb-b1c50ee0639d",
         siteId: siteId,
-        role: "Admin",
-        name: "Olivia Rhye",
+        role: "admin",
+        fullName: "Olivia Rhye",
         email: "olivia@untitledui.com",
-        status: "Active" as const,
         joinedAt: new Date().toISOString(),
+        avatarUrl: undefined,
       },
       {
-        id: "2a5d8c2f-ed9d-5633-91d0-df0c23ef9d4g",
         userId: "59b55209-f7f6-5c2f-c9fc-c2d61ff1740e",
         siteId: siteId,
-        role: "Member",
-        name: "Phoenix Baker",
+        role: "member",
+        fullName: "Phoenix Baker",
         email: "phoenix@untitledui.com",
-        status: "Active" as const,
         joinedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+        avatarUrl: undefined,
       },
       {
-        id: "3b6e9d3f-fe0e-6744-02e1-ef1d34fg0e5h",
-        userId: "60c66210-g8g7-6d3g-d0gd-d3e72gg2851f",
-        siteId: siteId,
-        role: "Moderator",
-        name: "Lana Steiner",
-        email: "lana@untitledui.com",
-        status: "Active" as const,
-        joinedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: "4c7f0e4f-gf1f-7855-13f2-fg2e45gh1f6i",
         userId: "71d77321-h9h8-7e4h-e1he-e4f83hh3962g",
         siteId: siteId,
-        role: "Member",
-        name: "Candice Wu",
+        role: "member",
+        fullName: "Candice Wu",
         email: "candice@untitledui.com",
-        status: "Inactive" as const,
         joinedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+        avatarUrl: undefined,
       },
       {
-        id: "5d8g1f5g-hg2g-8966-24g3-gh3f56hi2g7j",
         userId: "82e88432-i0i9-8f5i-f2if-f5g94ii4073h",
         siteId: siteId,
-        role: "Editor",
-        name: "Drew Cano",
+        role: "editor",
+        fullName: "Drew Cano",
         email: "drew@untitledui.com",
-        status: "Active" as const,
         joinedAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
+        avatarUrl: undefined,
       }
-    ] as Member[]; // Type assertion to Member[]
+    ];
     
     // Return mock data directly, filtered if needed
     // This bypasses the schema validation which was causing type issues

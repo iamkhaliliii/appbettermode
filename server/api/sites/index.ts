@@ -32,11 +32,12 @@ router.get('/', async (req, res) => {
         id: sites.id,
         name: sites.name,
         subdomain: sites.subdomain,
-        ownerId: sites.ownerId,
+        ownerId: sites.owner_id,
         role: memberships.role,
         createdAt: sites.createdAt,
         updatedAt: sites.updatedAt,
         state: sites.state,
+        status: sites.status,
       })
       .from(sites)
       .innerJoin(memberships, eq(memberships.siteId, sites.id))
@@ -66,10 +67,11 @@ router.get('/:identifier', async (req, res) => {
         id: sites.id,
         name: sites.name,
         subdomain: sites.subdomain,
-        ownerId: sites.ownerId,
+        ownerId: sites.owner_id,
         createdAt: sites.createdAt,
         updatedAt: sites.updatedAt,
         state: sites.state,
+        status: sites.status,
       })
       .from(sites)
       .where(eq(sites.subdomain, identifier))
@@ -84,10 +86,11 @@ router.get('/:identifier', async (req, res) => {
           id: sites.id,
           name: sites.name,
           subdomain: sites.subdomain,
-          ownerId: sites.ownerId,
+          ownerId: sites.owner_id,
           createdAt: sites.createdAt,
           updatedAt: sites.updatedAt,
           state: sites.state,
+          status: sites.status,
         })
         .from(sites)
         .where(eq(sites.id, identifier))
@@ -137,34 +140,48 @@ router.post('/', async (req, res) => {
       }
     }
 
-    const newSite = await db.transaction(async (tx) => {
-      const siteInsertResult = await tx
-        .insert(sites)
-        .values({
-          name: payload.name,
-          subdomain: payload.subdomain,
-          ownerId: currentUserId,
-          state: 'pending', // Default state for new sites
-        })
-        .returning();
-      
-      if (!siteInsertResult || siteInsertResult.length === 0) {
-        throw new Error('Failed to create the site record in the database.');
-      }
-      const createdSite = siteInsertResult[0];
-
-      // Temporarily skip membership creation as it might be causing the error
-      /* 
-      await tx.insert(memberships).values({
-        userId: currentUserId,
-        siteId: createdSite.id,
-        role: 'admin',
-      });
-      */
-      
-      console.log('Site created successfully:', createdSite);
-      return createdSite;
+    // Skip transaction, create only the site without membership
+    console.log('Creating site with data:', {
+      name: payload.name,
+      subdomain: payload.subdomain,
+      ownerId: currentUserId,
+      state: 'pending'
     });
+    
+    const siteInsertResult = await db
+      .insert(sites)
+      .values({
+        name: payload.name,
+        subdomain: payload.subdomain,
+        owner_id: currentUserId,
+        state: 'pending', // Default state for new sites
+      })
+      .returning({
+        id: sites.id,
+        name: sites.name,
+        subdomain: sites.subdomain,
+        ownerId: sites.owner_id,    // CORRECTED: Use DB column name (sites.owner_id) for value, but key is 'ownerId'
+        createdAt: sites.createdAt,
+        updatedAt: sites.updatedAt,
+        state: sites.state,
+        status: sites.status,
+      });
+    
+    if (!siteInsertResult || siteInsertResult.length === 0) {
+      throw new Error('Failed to create the site record in the database.');
+    }
+    
+    const newSite = siteInsertResult[0];
+    console.log('Site created successfully:', newSite);
+    
+    // Automatically add the creator as an admin member of the new site
+    await db.insert(memberships).values({
+      userId: currentUserId,
+      siteId: newSite.id, // newSite.id should be the UUID of the newly created site
+      role: 'admin', // Assigning 'admin' role to the creator
+      // joined_at will be set by default (defaultNow() in schema)
+    });
+    console.log(`User ${currentUserId} added as admin to site ${newSite.id}`);
 
     return res.status(201).json(newSite);
   } catch (error: any) {
@@ -172,8 +189,39 @@ router.post('/', async (req, res) => {
     // Add more detailed error information
     return res.status(500).json({ 
       message: 'Error creating site in database',
-      details: error.message || 'Unknown error'
+      details: error.message || 'Unknown error',
+      code: error.code,
+      position: error.position
     });
+  }
+});
+
+// Debug endpoint to check table structure
+router.get('/debug/schema', async (req, res) => {
+  try {
+    // Get column information for sites table
+    const sitesColumns = await db.execute(
+      `SELECT column_name, data_type, is_nullable 
+       FROM information_schema.columns 
+       WHERE table_name = 'sites'
+       ORDER BY ordinal_position`
+    );
+    
+    // Get column information for memberships table
+    const membershipsColumns = await db.execute(
+      `SELECT column_name, data_type, is_nullable 
+       FROM information_schema.columns 
+       WHERE table_name = 'memberships'
+       ORDER BY ordinal_position`
+    );
+    
+    return res.status(200).json({
+      sites: sitesColumns,
+      memberships: membershipsColumns
+    });
+  } catch (error) {
+    console.error('Error fetching schema:', error);
+    return res.status(500).json({ message: 'Error fetching schema information' });
   }
 });
 
