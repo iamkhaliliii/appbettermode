@@ -1,7 +1,14 @@
 import express from 'express';
 import sitesRouter from './sites/index.js';
 
+console.log('[VERCEL_LOG_TEST] server/api/index.ts: Top of file reached before router setup'); // Explicit Vercel Log Test
+
 const apiRouter = express.Router();
+
+apiRouter.use((req, res, next) => {
+  console.log(`[VERCEL_LOG_TEST] Request received for: ${req.method} ${req.originalUrl}`);
+  next();
+});
 
 // Register all API routes
 apiRouter.use('/sites', sitesRouter);
