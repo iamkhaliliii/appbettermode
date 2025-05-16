@@ -292,45 +292,38 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                   
                   {location !== '/' && location !== '/dashboard' && (
                     <>
-                      <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
-                        <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                      
-                      {/* Display site name if available */}
-                      {siteData && location.startsWith('/dashboard/site/') && (
-                        <>
-                          <span className={cn("font-medium", primaryTextColor)}>{displaySiteName}</span>
+                      {/* Extract section and subsection for all dashboard routes */}
+                      {(() => {
+                        const parts = location.split('/');
+                        // For dashboard/site routes
+                        if (location.startsWith('/dashboard/site/') && parts.length >= 5) {
+                          const section = parts[4]; // e.g., 'people', 'content'
+                          const subsection = parts[5]; // e.g., 'staff', 'members', 'events'
                           
-                          {/* Extract section and subsection */}
-                          {(() => {
-                            const parts = location.split('/');
-                            if (parts.length >= 5) {
-                              const section = parts[4]; // e.g., 'people', 'content'
-                              const subsection = parts[5]; // e.g., 'staff', 'members'
+                          return (
+                            <>
+                              <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
+                                <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                              <span className={cn("font-medium", primaryTextColor)}>
+                                {section.charAt(0).toUpperCase() + section.slice(1)}
+                              </span>
                               
-                              return (
+                              {subsection && (
                                 <>
                                   <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
                                     <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                                   </svg>
-                                  <span>{section.charAt(0).toUpperCase() + section.slice(1)}</span>
-                                  {subsection && (
-                                    <>
-                                      <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
-                                        <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                      </svg>
-                                      <span className={cn("font-medium", primaryTextColor)}>
-                                        {subsection.charAt(0).toUpperCase() + subsection.slice(1)}
-                                      </span>
-                                    </>
-                                  )}
+                                  <span className={cn("font-medium", primaryTextColor)}>
+                                    {subsection.charAt(0).toUpperCase() + subsection.slice(1)}
+                                  </span>
                                 </>
-                              );
-                            }
-                            return null;
-                          })()}
-                        </>
-                      )}
+                              )}
+                            </>
+                          );
+                        }
+                        return null;
+                      })()}
 
                       {/* Handle non-site-specific dashboard routes */}
                       {location.startsWith('/dashboard/') && !location.startsWith('/dashboard/site/') && (
@@ -343,7 +336,12 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                               
                               return (
                                 <>
-                                  <span>{section.charAt(0).toUpperCase() + section.slice(1)}</span>
+                                  <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
+                                    <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                  </svg>
+                                  <span className={cn("font-medium", primaryTextColor)}>
+                                    {section.charAt(0).toUpperCase() + section.slice(1)}
+                                  </span>
                                   {subsection && (
                                     <>
                                       <svg className="h-3 w-3 mx-1" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
