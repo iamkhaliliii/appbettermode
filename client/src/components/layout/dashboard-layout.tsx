@@ -11,14 +11,14 @@ import { type NavItem } from "./secondary-sidebar/types"; // مسیر جدید
 interface DashboardLayoutProps {
   children: React.ReactNode;
   siteName?: string;        // Optional: Name of the current site, to be displayed possibly in Header or SecondarySidebar
-  currentSiteId?: string;   // Optional: ID of the current site, can be used for dynamic links or data fetching within layout
+  currentSiteIdentifier?: string;   // Optional: ID of the current site, can be used for dynamic links or data fetching within layout
   navItems?: NavItem[];     // Optional: Navigation items specific to the current site/context for SecondarySidebar
 }
 
 export function DashboardLayout({
   children,
   siteName,
-  currentSiteId, // This prop is now available
+  currentSiteIdentifier, // Renamed from currentSiteId
   navItems = [],   // Default to an empty array if no navItems are provided
 }: DashboardLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -29,7 +29,7 @@ export function DashboardLayout({
       <Header
         onToggleMobileMenu={() => setMobileMenuOpen(!mobileMenuOpen)}
         siteName={siteName} // Pass siteName to Header if it can display it
-        // You might also pass currentSiteId if Header needs it for some links
+        // You might also pass currentSiteIdentifier if Header needs it for some links
       />
 
       {/* Mobile menu */}
@@ -85,7 +85,7 @@ export function DashboardLayout({
         {/* Main Sidebar - always shown on desktop, potentially always collapsed */}
         {!isMobile && (
           <div className="w-12 flex-shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
-            <MainSidebar collapsed={true} currentSiteId={currentSiteId} />
+            <MainSidebar collapsed={true} currentSiteIdentifier={currentSiteIdentifier} />
           </div>
         )}
         
@@ -94,7 +94,7 @@ export function DashboardLayout({
           <div className="w-64 flex-shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
             {/* Pass siteName and navItems to SecondarySidebar */}
             {/* Ensure SecondarySidebar is designed to accept and use these props */}
-            <SecondarySidebar siteName={siteName} navItems={navItems} currentSiteId={currentSiteId} />
+            <SecondarySidebar siteName={siteName} navItems={navItems} currentSiteIdentifier={currentSiteIdentifier} />
           </div>
         )}
         

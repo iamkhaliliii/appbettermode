@@ -321,7 +321,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName }: 
                   {/* Conditional Button: View Site / Go to Dashboard */} 
                   {variant === 'dashboard' ? (
                     <Button 
-                      variant="secondary-gray" 
+                      variant="secondary" 
                       size="sm" 
                       className={cn(borderColor, buttonBg, primaryTextColor, buttonBgHover)}
                     >
@@ -331,7 +331,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName }: 
                   ) : (
                      <Link href="/content">
                        <Button 
-                         variant="secondary-gray" 
+                         variant="secondary" 
                          size="sm" 
                          className={cn(
                            borderColor, 

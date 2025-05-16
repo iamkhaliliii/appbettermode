@@ -228,7 +228,7 @@ const SearchSettings = () => {
             </div>
           </div>
           <div className="flex space-x-2">
-            <Button variant="secondary-gray" size="sm" className="h-8 px-3 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">
+            <Button variant="secondary" size="sm" className="h-8 px-3 text-xs font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors">
               Docs
             </Button>
             <Button size="sm" className="h-8 px-4 text-xs font-medium bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors shadow-sm">

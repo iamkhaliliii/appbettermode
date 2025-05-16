@@ -1,29 +1,26 @@
         // server/index.ts
-        import './env'; // یا 'shared/env' اگر فایل را آنجا گذاشتید - این خط باید اولین خط اجرایی باشد
-        // Debug: Check if DATABASE_URL is loaded (can be removed later)
-console.log("(server/index.ts) DATABASE_URL after env import:", process.env.DATABASE_URL);
-console.log("(server/index.ts) CWD:", process.cwd());
-
+import './env'; // First import to ensure environment variables are loaded
+import express, { type Request, Response, NextFunction } from "express";
+import { setupVite, serveStatic, log } from "./vite";
+import apiRouter from './api/index';
+import http from 'http';
 import dotenv from 'dotenv';
-import path from 'path'; // Import path module
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Explicitly load .env from the project root
 const envPath = path.resolve(process.cwd(), '.env');
 dotenv.config({ path: envPath });
 
-// Debug: Check if DATABASE_URL is loaded and where .env was expected
-console.log(`Trying to load .env from: ${envPath}`);
-console.log("DATABASE_URL from .env:", process.env.DATABASE_URL);
-console.log("CWD for .env loading:", process.cwd());
-
-import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
-
+// Create Express app
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Request logging middleware
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -54,35 +51,46 @@ app.use((req, res, next) => {
   next();
 });
 
+// IMPORTANT: Mount the API router before Vite middleware
+app.use(apiRouter);
+
+// Add a test endpoint for debugging
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'API test endpoint is working' });
+});
+
+// Global error handler
+app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  const status = err.status || err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+
+  res.status(status).json({ message });
+  console.error(err);
+});
+
+// Create HTTP server
+const server = http.createServer(app);
+
+// Start the server
+const port = process.env.PORT || 3030;
+server.listen(port, () => {
+  log(`Server running on port ${port}`);
+  log(`API test endpoint at http://localhost:${port}/api/test`);
+  log(`API health endpoint at http://localhost:${port}/api/v1/health`);
+});
+
+// Setup Vite in development or serve static files in production
+// IMPORTANT: This should be the LAST middleware to avoid interfering with API routes
 (async () => {
-  const server = await registerRoutes(app);
-
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    res.status(status).json({ message });
-    throw err;
-  });
-
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
+  try {
+    if (app.get("env") === "development") {
+      log("Setting up Vite middleware in development mode");
+      await setupVite(app, server);
+    } else {
+      log("Serving static files in production mode");
+      serveStatic(app);
+    }
+  } catch (err) {
+    console.error("Error setting up Vite:", err);
   }
-
-  // ALWAYS serve the app on port 3030
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = process.env.PORT || 3030;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
-  });
 })();

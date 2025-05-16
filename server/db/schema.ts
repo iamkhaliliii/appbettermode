@@ -14,3 +14,22 @@ export const sites = pgTable('sites', {
   // memberCount: integer('member_count').default(0),
   // lastActivityAt: timestamp('last_activity_at'),
 });
+
+// User schema (simplified - actual user authentication might be handled elsewhere)
+export const users = pgTable('users', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  email: text('email').unique().notNull(),
+  name: text('name'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }),
+});
+
+// Membership schema for site permissions
+export const memberships = pgTable('memberships', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  siteId: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
+  role: text('role').default('member').notNull(), // 'admin', 'moderator', 'member', etc.
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }),
+});

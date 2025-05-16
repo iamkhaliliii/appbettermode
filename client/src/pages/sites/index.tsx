@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
@@ -7,16 +7,24 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from "@/hooks/use-toast";
+import { sitesApi, Site } from '@/lib/api'; // Import the new API client
 import {
   AlertCircle,
   CheckCircle2,
   Plus,
   Search,
   Filter,
-  Users, // Will be removed from SiteCard
+  Users,
   Calendar,
   ExternalLink,
-  Loader2
+  Loader2,
+  Globe,
+  Clock,
+  TagIcon,
+  LayoutGrid,
+  X,
+  RefreshCw,
+  ChevronDown
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from "wouter";
@@ -28,6 +36,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import {
   Card,
@@ -37,7 +46,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Site, SiteCreationFormInputs } from './types'; // Uses updated Site type
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { SiteCreationFormInputs } from './types';
 
 // --- Validation Schema (for create site form) ---
 const siteCreationSchema = z.object({
@@ -47,86 +62,58 @@ const siteCreationSchema = z.object({
   subdomain: z.string()
     .min(3, 'Subdomain must be at least 3 characters.')
     .max(30, 'Subdomain cannot exceed 30 characters.')
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Invalid subdomain format.')
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Invalid subdomain format (lowercase letters, numbers, and hyphens).')
     .optional()
     .or(z.literal('')),
 });
 
-// --- API Functions ---
+// --- API Functions using our new API client ---
 const fetchUserSites = async (): Promise<Site[]> => {
-  const response = await fetch('/api/sites');
-  if (!response.ok) {
-    const contentType = response.headers.get('content-type');
-    let errorMessage = 'Failed to fetch sites';
-    if (contentType && contentType.includes('application/json')) {
-      try {
-        const errorData = await response.json();
-        errorMessage = errorData.message || errorMessage;
-      } catch (jsonError) {
-        errorMessage = 'Failed to parse JSON error response.';
-      }
-    } else {
-      try {
-        const errorText = await response.text();
-        if (errorText && errorText.toLowerCase().includes('<!doctype html')) {
-          errorMessage = `Server returned an HTML page instead of JSON. Status: ${response.status}`;
-        } else if (errorText) {
-          errorMessage = `Server error: ${errorText.substring(0, 150)}`; // Show a snippet
-        } else {
-          errorMessage = `Failed to fetch sites. Status: ${response.status}`;
-        }
-      } catch (textError) {
-        errorMessage = `Failed to read error response. Status: ${response.status}`;
-      }
-    }
-    throw new Error(errorMessage);
-  }
-  return response.json();
+  return sitesApi.getAllSites();
 };
 
 const createNewSite = async (data: SiteCreationFormInputs): Promise<Site> => {
-  const response = await fetch('/api/sites', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      ...data,
-      subdomain: data.subdomain?.trim() || null,
-    }),
+  return sitesApi.createSite({
+    name: data.name,
+    subdomain: data.subdomain?.trim().toLowerCase() || undefined,
   });
-
-  if (!response.ok) {
-    // Assuming error response is JSON, if not, more robust handling like in fetchUserSites might be needed
-    const errorData = await response.json().catch(() => ({ message: 'Failed to create site. Server returned non-JSON response.' }));
-    throw new Error(errorData.message || 'Failed to create site');
-  }
-  return response.json(); // Expects the new Site object matching the updated Site type
 };
 
 // --- Helper Components ---
+const SiteStateBadge: React.FC<{ state?: string | null }> = ({ state }) => {
+  if (!state) return null;
+
+  const normalizedState = state.toLowerCase();
+  let bgColor = 'bg-gray-100 dark:bg-gray-700';
+  let textColor = 'text-gray-600 dark:text-gray-300';
+  let dotColor = 'bg-gray-400';
+  let Icon = TagIcon;
+
+  if (normalizedState === 'active') {
+    bgColor = 'bg-green-100 dark:bg-green-900/30';
+    textColor = 'text-green-700 dark:text-green-300';
+    dotColor = 'bg-green-500';
+    Icon = CheckCircle2;
+  } else if (normalizedState === 'pending') {
+    bgColor = 'bg-yellow-100 dark:bg-yellow-900/30';
+    textColor = 'text-yellow-700 dark:text-yellow-400';
+    dotColor = 'bg-yellow-500';
+    Icon = Clock;
+  } else if (normalizedState === 'inactive') {
+    bgColor = 'bg-slate-100 dark:bg-slate-800';
+    textColor = 'text-slate-600 dark:text-slate-400';
+    dotColor = 'bg-slate-500';
+  }
+
+  return (
+    <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${bgColor} ${textColor} border border-transparent shadow-sm`}>
+      <Icon className={`w-3 h-3 mr-1.5 ${normalizedState === 'active' || normalizedState === 'pending' ? textColor : dotColor}`} />
+      {state.charAt(0).toUpperCase() + state.slice(1)}
+    </div>
+  );
+};
+
 const SiteCard: React.FC<{ site: Site }> = ({ site }) => {
-  // Adjusted styles for potentially different 'state' values.
-  // Ensure keys are lowercase for matching.
-  const stateStyles: Record<string, string> = {
-    active: 'bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-400',
-    inactive: 'bg-gray-100 text-gray-800 dark:bg-gray-800/20 dark:text-gray-400',
-    pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800/20 dark:text-yellow-400',
-    // Add more states if your backend uses them, e.g.:
-    // archived: 'bg-slate-100 text-slate-800 dark:bg-slate-800/20 dark:text-slate-400',
-  };
-
-  const getStateText = (stateValue?: string | null) => {
-    if (!stateValue) return 'Unknown';
-    return stateValue.charAt(0).toUpperCase() + stateValue.slice(1);
-  };
-
-  const getStateStyle = (stateValue?: string | null) => {
-    const normalizedState = stateValue?.toLowerCase();
-    if (!normalizedState || !stateStyles[normalizedState]) {
-      return stateStyles.inactive; // Default style
-    }
-    return stateStyles[normalizedState];
-  };
-
   const formatDate = (dateString?: string | null) => {
     if (!dateString) return 'N/A';
     try {
@@ -134,39 +121,54 @@ const SiteCard: React.FC<{ site: Site }> = ({ site }) => {
         year: 'numeric', month: 'short', day: 'numeric'
       });
     } catch (e) {
-      console.error("Invalid date string:", dateString, e);
       return 'Invalid Date';
     }
   };
 
   return (
-    <Link href={APP_ROUTES.DASHBOARD_SITE.INDEX(site.id)}>
-      <Card className="cursor-pointer hover:shadow-lg transition-all duration-200 border border-gray-200 dark:border-gray-700 flex flex-col h-full">
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span className="truncate" title={site.name}>{site.name}</span>
-            {site.state && (
-              <span className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${getStateStyle(site.state)}`}>
-                {getStateText(site.state)}
-              </span>
-            )}
-          </CardTitle>
-          <CardDescription className="truncate" title={site.subdomain ? `${site.subdomain}.yourdomain.com` : 'No subdomain set'}>
-            {site.subdomain ? `${site.subdomain}.yourdomain.com` : 'No subdomain set'}
-          </CardDescription>
+    <Link href={APP_ROUTES.DASHBOARD_SITE.INDEX(site.subdomain || site.id)} className="block group">
+      <Card className="bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/60 hover:shadow-xl dark:hover:border-primary-500/50 transition-all duration-300 ease-in-out h-full flex flex-col rounded-lg overflow-hidden will-change-transform group-hover:translate-y-[-4px]">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-500/5 to-primary-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+        <CardHeader className="p-5 border-b dark:border-gray-700/60 relative">
+          <div className="flex justify-between items-start gap-2">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors truncate" title={site.name}>
+              {site.name}
+            </h3>
+            <SiteStateBadge state={site.state} />
+          </div>
+          {site.subdomain ? (
+            <p className="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-1">
+              <Globe className="w-3.5 h-3.5 mr-1.5 text-gray-400 dark:text-gray-500" />
+              <span className="truncate">{site.subdomain}.yourdomain.com</span>
+            </p>
+          ) : (
+            <p className="text-sm text-gray-400 dark:text-gray-500 italic mt-1">No subdomain</p>
+          )}
         </CardHeader>
-        <CardContent className="flex-grow">
-          <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-            <Calendar className="h-4 w-4 flex-shrink-0" />
+        <CardContent className="p-5 flex-grow space-y-3 relative z-10">
+          <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+            <Clock className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500 flex-shrink-0" />
             <span>Created: {formatDate(site.createdAt)}</span>
           </div>
-          {/* Member count display removed as site.memberCount is no longer available */}
+          <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+            <Clock className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+            <span>Updated: {formatDate(site.updatedAt)}</span>
+          </div>
         </CardContent>
-        <CardFooter className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
-          <span>
-            Updated: {formatDate(site.updatedAt)}
-          </span>
-          <ExternalLink className="h-4 w-4" />
+        <CardFooter className="p-4 bg-gray-50 dark:bg-gray-800 border-t dark:border-gray-700/60 relative z-10">
+          <div className="flex justify-between w-full items-center">
+            <Button 
+              variant="link" 
+              size="sm" 
+              className="text-primary-600 dark:text-primary-400 group-hover:underline p-0 h-auto"
+            >
+              View Dashboard
+              <ExternalLink className="w-3.5 h-3.5 ml-1.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </Button>
+            <div className="h-6 w-6 rounded-full bg-primary-100 dark:bg-primary-900/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <ChevronDown className="h-4 w-4 text-primary-600 dark:text-primary-400" />
+            </div>
+          </div>
         </CardFooter>
       </Card>
     </Link>
@@ -183,12 +185,16 @@ const CreateSiteDialog: React.FC<{
     register,
     handleSubmit,
     reset,
-    formState: { errors },
-    // setError, // setError is not used in current implementation, can be removed if not planned
+    formState: { errors, isSubmitting, isValid, touchedFields },
+    watch,
   } = useForm<SiteCreationFormInputs>({
     resolver: zodResolver(siteCreationSchema),
     defaultValues: { name: '', subdomain: '' },
+    mode: 'onChange'
   });
+
+  const nameValue = watch('name');
+  const subdomainValue = watch('subdomain');
 
   const createSiteMutation = useMutation({
     mutationFn: createNewSite,
@@ -197,106 +203,188 @@ const CreateSiteDialog: React.FC<{
       reset();
       onOpenChange(false);
       toast({
-        title: "Success!",
-        description: `Site "${newSite.name}" has been created.`, // newSite now has the updated Site structure
+        title: "Site Created!",
+        description: `The site "${newSite.name}" has been successfully created.`,
         variant: "default",
       });
     },
     onError: (error: Error) => {
       toast({
-        title: "Error Creating Site",
+        title: "Creation Failed",
         description: error.message || "An unexpected error occurred.",
         variant: "destructive",
       });
     },
   });
 
-  const onSubmit: SubmitHandler<SiteCreationFormInputs> = (data) => {
+  const onSubmitHandler: SubmitHandler<SiteCreationFormInputs> = (data) => {
     createSiteMutation.mutate(data);
   };
 
+  // Auto-generate subdomain suggestion based on name
+  useEffect(() => {
+    if (nameValue && !touchedFields.subdomain) {
+      const suggestedSubdomain = nameValue
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+  }, [nameValue, touchedFields.subdomain]);
+
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create New Site</DialogTitle>
-          <DialogDescription>
-            Enter the details for your new site. You can always modify these later.
+    <Dialog open={isOpen} onOpenChange={(open) => {
+      if (createSiteMutation.isPending) return;
+      onOpenChange(open);
+      if (!open) reset();
+    }}>
+      <DialogContent className="sm:max-w-lg bg-white dark:bg-gray-800 p-0 overflow-hidden">
+        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-primary-400 to-primary-600"></div>
+        <DialogHeader className="p-6 pb-3 border-b dark:border-gray-700">
+          <DialogTitle className="text-xl font-semibold text-gray-800 dark:text-gray-100">Create a New Site</DialogTitle>
+          <DialogDescription className="text-gray-600 dark:text-gray-400">
+            Fill in the details below to launch your new community site.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-2">
-          <div className="space-y-2">
-            <Label htmlFor="name">Site Name</Label>
+        <form onSubmit={handleSubmit(onSubmitHandler)} className="px-6 py-4 space-y-6">
+          <div className="space-y-1.5">
+            <Label htmlFor="name" className="font-medium text-gray-700 dark:text-gray-300">Site Name</Label>
             <Input
               id="name"
               {...register('name')}
-              placeholder="My Awesome Site"
-              className={errors.name ? 'border-red-500' : ''}
+              placeholder="e.g., My Awesome Community"
+              className={`w-full h-10 px-3 rounded-md border dark:bg-gray-700 dark:text-gray-200 ${errors.name ? 'border-red-500 dark:border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600 focus:border-primary-500 dark:focus:border-primary-400 focus:ring-primary-500 dark:focus:ring-primary-400'}`}
+              disabled={createSiteMutation.isPending}
             />
-            {errors.name && (
-              <p className="text-sm text-red-500">{errors.name.message}</p>
+            {errors.name ? (
+              <p className="text-sm text-red-600 dark:text-red-400 animate-fadeIn">{errors.name.message}</p>
+            ) : (
+              <p className="text-xs text-gray-500 dark:text-gray-400 h-4"></p>
             )}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="subdomain">Subdomain (Optional)</Label>
-            <Input
-              id="subdomain"
-              {...register('subdomain')}
-              placeholder="my-site"
-              className={errors.subdomain ? 'border-red-500' : ''}
-            />
-            {errors.subdomain && (
-              <p className="text-sm text-red-500">{errors.subdomain.message}</p>
+          <div className="space-y-1.5">
+            <Label htmlFor="subdomain" className="font-medium text-gray-700 dark:text-gray-300">Subdomain <span className="text-xs text-gray-500 dark:text-gray-400">(Optional)</span></Label>
+            <div className="flex items-center relative">
+              <Input
+                id="subdomain"
+                {...register('subdomain')}
+                placeholder="e.g., my-community"
+                className={`w-full h-10 px-3 rounded-l-md border dark:bg-gray-700 dark:text-gray-200 ${errors.subdomain ? 'border-red-500 dark:border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600 focus:border-primary-500 dark:focus:border-primary-400 focus:ring-primary-500 dark:focus:ring-primary-400'} rounded-r-none border-r-0`}
+                disabled={createSiteMutation.isPending}
+              />
+              <span className="px-3 h-10 inline-flex items-center rounded-r-md border border-l-0 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 text-sm">
+                .yourdomain.com
+              </span>
+              {subdomainValue && (
+                <button
+                  type="button"
+                  className="absolute right-16 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  onClick={() => {
+                    const field = register('subdomain');
+                    field.onChange({ target: { value: '' } } as React.ChangeEvent<HTMLInputElement>);
+                  }}
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+            {errors.subdomain ? (
+              <p className="text-sm text-red-600 dark:text-red-400 animate-fadeIn">{errors.subdomain.message}</p>
+            ) : (
+              <p className="text-xs text-gray-500 dark:text-gray-400 pt-1">
+                Lowercase letters, numbers, and hyphens only. Leave blank for no subdomain.
+              </p>
             )}
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              If provided, your site will be available at my-site.yourdomain.com
-            </p>
           </div>
 
-          <div className="flex justify-end gap-2 pt-2">
+          <DialogFooter className="flex justify-end gap-3 pt-4 border-t dark:border-gray-700">
             <Button
               type="button"
-              variant="secondary-gray"
-              onClick={() => { reset(); onOpenChange(false); }}
+              variant="secondary"
+              onClick={() => {
+                if (createSiteMutation.isPending) return;
+                reset();
+                onOpenChange(false);
+              }}
+              disabled={createSiteMutation.isPending}
+              className="dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              disabled={createSiteMutation.isPending}
-            >
+              variant="default"
+              disabled={createSiteMutation.isPending}            >
               {createSiteMutation.isPending ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating...
+                  <Loader2 className="mr-2 h-4.5 w-4.5 animate-spin" />
+                  Creating Site...
                 </>
               ) : (
-                'Create Site'
+                <>
+                  <Plus className="mr-2 h-4.5 w-4.5" />
+                  Create Site
+                </>
               )}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
   );
 };
 
+// --- Skeleton Placeholder for loading state ---
+const SiteCardSkeleton: React.FC = () => (
+  <div className="bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/60 rounded-lg overflow-hidden h-full flex flex-col animate-pulse">
+    <div className="p-5 border-b dark:border-gray-700/60">
+      <div className="flex justify-between items-start gap-2">
+        <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+        <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded-full w-20"></div>
+      </div>
+      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/5 mt-2"></div>
+    </div>
+    <div className="p-5 flex-grow space-y-3">
+      <div className="flex items-center">
+        <div className="h-4 w-4 bg-gray-200 dark:bg-gray-700 rounded-full mr-2"></div>
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+      </div>
+      <div className="flex items-center">
+        <div className="h-4 w-4 bg-gray-200 dark:bg-gray-700 rounded-full mr-2"></div>
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+      </div>
+    </div>
+    <div className="p-4 bg-gray-50 dark:bg-gray-800 border-t dark:border-gray-700/60">
+      <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-32"></div>
+    </div>
+  </div>
+);
+
 // --- Main Component ---
 const SitesDashboardPage: React.FC = () => {
   const queryClient = useQueryClient();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [stateFilter, setStateFilter] = useState<string>('all'); // Renamed from statusFilter
+  const [stateFilter, setStateFilter] = useState<string>('all');
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const {
     data: sites = [],
     isLoading,
     error,
-  } = useQuery<Site[], Error>({ // Site[] uses the updated Site type
+    refetch,
+  } = useQuery<Site[], Error>({
     queryKey: ['userSites'],
     queryFn: fetchUserSites,
+    refetchOnWindowFocus: true,
   });
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await refetch();
+    setTimeout(() => setIsRefreshing(false), 800); // Ensure minimal spinner time for UX
+  };
 
   const filteredSites = useMemo(() => {
     return sites.filter(site => {
@@ -304,155 +392,221 @@ const SitesDashboardPage: React.FC = () => {
       const nameMatch = site.name.toLowerCase().includes(searchLower);
       const subdomainMatch = site.subdomain?.toLowerCase().includes(searchLower);
       const matchesSearch = nameMatch || subdomainMatch;
-
       const siteStateNormalized = site.state?.toLowerCase();
       const filterStateNormalized = stateFilter.toLowerCase();
       const matchesState = filterStateNormalized === 'all' || (siteStateNormalized && siteStateNormalized === filterStateNormalized);
-
       return matchesSearch && matchesState;
     });
   }, [sites, searchQuery, stateFilter]);
 
+  const availableStates = useMemo(() => {
+    const uniqueStates = new Set(sites.map(site => site.state).filter(Boolean) as string[]);
+    return ['all', ...Array.from(uniqueStates).sort()];
+  }, [sites]);
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setStateFilter('all');
+  };
+
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin mx-auto mb-6 text-primary-500" />
-          <p className="text-lg font-medium text-gray-700 dark:text-gray-300">Loading your sites...</p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Please wait a moment.</p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-slate-100 dark:from-gray-900 dark:to-gray-800 flex flex-col items-center justify-center p-4">
+        <div className="relative">
+          <Loader2 className="h-16 w-16 animate-spin text-primary-600 dark:text-primary-400 mb-6" />
+          <div className="absolute inset-0 h-16 w-16 rounded-full border-t-2 border-primary-600/20 dark:border-primary-400/20 animate-ping"></div>
         </div>
+        <p className="text-xl font-semibold text-gray-700 dark:text-gray-300">Loading Your Sites</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Please wait while we fetch your data...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
-        <div className="text-center bg-white dark:bg-gray-800 p-8 rounded-lg shadow-xl max-w-md w-full">
-          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-6" />
-          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-3">
-            Error Loading Sites
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-slate-100 dark:from-gray-900 dark:to-gray-800 flex flex-col items-center justify-center p-4">
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-xl max-w-lg w-full text-center">
+          <div className="relative">
+            <AlertCircle className="h-20 w-20 text-red-500 dark:text-red-400 mx-auto mb-6" />
+            <div className="absolute inset-0 h-20 w-20 rounded-full border-2 border-red-500/20 dark:border-red-400/20 animate-pulse"></div>
+          </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-3">
+            Oops! Something Went Wrong
           </h2>
-          <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-3 rounded-md mb-6">
-            {error.message || "An unexpected error occurred. Please try again."}
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            We encountered an error while trying to load your sites. Please try again.
+          </p>
+          <p className="text-xs text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-900/30 p-3 rounded-md mb-8">
+            <strong>Error:</strong> {error.message || "An unexpected error occurred."}
           </p>
           <Button
-            variant="secondary-gray"
-            className="w-full"
-            onClick={() => queryClient.refetchQueries({ queryKey: ['userSites'] })} // Use React Query's refetch
+            variant="default"
+            size="lg"
+            className="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 text-white"
+            onClick={() => queryClient.refetchQueries({ queryKey: ['userSites'] })}
           >
+            <RefreshCw className="mr-2 h-4 w-4" />
             Try Again
           </Button>
         </div>
       </div>
     );
   }
-  
-  // Define available states for the filter dropdown - this should ideally match actual states from your backend
-  const availableStates = useMemo(() => {
-    const uniqueStates = new Set(sites.map(site => site.state).filter(Boolean) as string[]);
-    return ['all', ...Array.from(uniqueStates).sort()];
-  }, [sites]);
-
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        <header className="mb-8 md:mb-10">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-                Your Sites
-              </h1>
-              <p className="mt-1.5 text-md text-gray-600 dark:text-gray-400">
-                Manage and monitor all your Bettermode sites from one place.
-              </p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-stone-50 dark:from-gray-900 dark:via-gray-850 dark:to-gray-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+        <header className="mb-10 md:mb-12 pb-6 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-y-4">
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
+                <LayoutGrid className="h-7 w-7 text-primary-600 dark:text-primary-400" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
+                  My Sites Dashboard
+                </h1>
+                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                  Oversee and manage all your community platforms.
+                </p>
+              </div>
             </div>
-            <Button onClick={() => setIsCreateDialogOpen(true)} size="lg">
-              <Plus className="h-5 w-5 mr-2" />
-              Create New Site
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                variant="secondary"
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+              >
+                <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+                Refresh
+              </Button>
+              <Button
+                variant="default"
+                onClick={() => setIsCreateDialogOpen(true)}
+                size="default"              >
+                <Plus className="h-4 w-4 mr-2" />
+                New Site
+              </Button>
+            </div>
           </div>
         </header>
 
         {/* Filters and Search Section */}
-        <Card className="mb-6 md:mb-8 p-4 sm:p-6 border-border dark:border-border">
-          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
-            <div className="w-full sm:flex-grow">
+        <div className="mb-8 p-5 bg-white dark:bg-gray-800/30 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700/60">
+          <div className="flex flex-col md:flex-row items-stretch justify-between gap-4">
+            <div className="w-full md:flex-grow relative">
               <Label htmlFor="search-sites" className="sr-only">Search sites</Label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5 text-gray-400 dark:text-gray-500" />
-                </div>
-                <Input
-                  id="search-sites"
-                  type="search"
-                  placeholder="Search by name or subdomain..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-10 w-full"
-                />
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                <Search className="h-5 w-5 text-gray-400 dark:text-gray-500" />
               </div>
+              <Input
+                id="search-sites"
+                type="search"
+                placeholder="Search by name or subdomain..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-11 pr-4 py-2.5 h-auto w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:border-primary-500 dark:focus:border-primary-400 focus:ring-1 focus:ring-primary-500 dark:focus:ring-primary-400 transition-colors"
+              />
+              {searchQuery && (
+                <button 
+                  onClick={() => setSearchQuery('')}
+                  className="absolute inset-y-0 right-2 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              )}
             </div>
-            <div className="w-full sm:w-auto">
-              <Label htmlFor="state-filter" className="sr-only">Filter by state</Label>
-              <select
-                id="state-filter"
-                value={stateFilter}
-                onChange={(e) => setStateFilter(e.target.value)}
-                className="h-10 px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 w-full sm:w-auto"
-              >
-                {availableStates.map(s => (
-                  <option key={s} value={s.toLowerCase()}>
-                    {s === 'all' ? 'All States' : (s.charAt(0).toUpperCase() + s.slice(1))}
-                  </option>
-                ))}
-              </select>
+            <div className="w-full md:w-auto md:min-w-[220px]">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="secondary" 
+                    className="w-full justify-between items-center h-10 border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+                  >
+                    <div className="flex items-center">
+                      <Filter className="h-4 w-4 mr-2 text-gray-500 dark:text-gray-400" />
+                      {stateFilter === 'all' ? 'All States' : (stateFilter.charAt(0).toUpperCase() + stateFilter.slice(1))}
+                    </div>
+                    <ChevronDown className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-full min-w-[220px]">
+                  {availableStates.map(s => (
+                    <DropdownMenuItem 
+                      key={s} 
+                      onClick={() => setStateFilter(s.toLowerCase())}
+                      className={stateFilter === s.toLowerCase() ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300' : ''}
+                    >
+                      {s === 'all' ? 'All States' : (s.charAt(0).toUpperCase() + s.slice(1))}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
-        </Card>
-        
+        </div>
 
         {/* Sites Grid or Empty State */}
-        {filteredSites.length === 0 && !isLoading ? (
-          <div className="text-center py-12 md:py-16 bg-white dark:bg-gray-800 rounded-lg shadow">
-            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-primary-100 dark:bg-primary-800/30 mb-6">
-              <AlertCircle className="h-8 w-8 text-primary-500 dark:text-primary-400" />
-            </div>
+        {sites.length > 0 && filteredSites.length === 0 && !isLoading && (
+          <div className="text-center py-12 md:py-16 bg-white dark:bg-gray-800/30 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700/60">
+            <Search className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 mb-4" />
             <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
-              No sites found
+              No Sites Match Your Filters
             </h3>
             <p className="text-md text-gray-600 dark:text-gray-400 mb-6">
-              {searchQuery || stateFilter !== 'all'
-                ? 'Try adjusting your search or filters, or create a new site.'
-                : 'Get started by creating your first site!'}
+              Try adjusting your search query or changing the selected state filter.
             </p>
-            {!searchQuery && stateFilter === 'all' && (
-              <Button
-                onClick={() => setIsCreateDialogOpen(true)}
-                size="lg"
-              >
-                <Plus className="h-5 w-5 mr-2" />
-                Create Your First Site
-              </Button>
-            )}
+            <Button variant="secondary" onClick={clearFilters} className="px-6">
+              <X className="h-4 w-4 mr-2" />
+              Clear Filters
+            </Button>
           </div>
-        ) : (
+        )}
+
+        {sites.length === 0 && !isLoading && (
+          <div className="text-center py-16 md:py-24 bg-white dark:bg-gray-800/30 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700/60">
+            <div className="mx-auto h-20 w-20 rounded-xl bg-primary-100/50 dark:bg-primary-900/20 flex items-center justify-center mb-6">
+              <LayoutGrid className="h-12 w-12 text-primary-500 dark:text-primary-400 opacity-80" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-3">
+              No Sites Yet!
+            </h3>
+            <p className="text-md text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">
+              It looks like you haven't created any sites. Let's get your first community up and running.
+            </p>
+            <Button
+              variant="default"
+              onClick={() => setIsCreateDialogOpen(true)}
+              size="lg"
+            >
+              <Plus className="h-5 w-5 mr-2.5" />
+              Create Your First Site
+            </Button>
+          </div>
+        )}
+
+        {filteredSites.length > 0 && (
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
           >
             <AnimatePresence>
               {filteredSites.map((site) => (
                 <motion.div
                   key={site.id}
                   layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, y: -10 }}
+                  transition={{ 
+                    type: "spring", 
+                    stiffness: 300, 
+                    damping: 30, 
+                    mass: 1
+                  }}
+                  className="h-full"
                 >
                   <SiteCard site={site} />
                 </motion.div>

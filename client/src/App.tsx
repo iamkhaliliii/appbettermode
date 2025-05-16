@@ -10,20 +10,20 @@ import SitesDashboardPage from "@/pages/sites/index";
 import SearchResults from "@/pages/site/[siteId]/search/index";
 
 // Import dashboard site-specific pages
-import DashboardSiteIndex from "@/pages/dashboard/site/[siteId]/index";
-import DashboardSitePeople from "@/pages/dashboard/site/[siteId]/people/index";
-import DashboardSitePeopleMembers from "@/pages/dashboard/site/[siteId]/people/members/index";
-import DashboardSitePeopleStaff from "@/pages/dashboard/site/[siteId]/people/staff/index";
-import DashboardSiteAppearance from "@/pages/dashboard/site/[siteId]/appearance/index";
-import DashboardSiteSettings from "@/pages/dashboard/site/[siteId]/settings/index";
-import DashboardSiteSettingsSearch from "@/pages/dashboard/site/[siteId]/settings/search/index";
-import DashboardSiteBilling from "@/pages/dashboard/site/[siteId]/billing/index";
-import DashboardSiteReports from "@/pages/dashboard/site/[siteId]/reports/index";
-import DashboardSiteAppStore from "@/pages/dashboard/site/[siteId]/app-store/index";
-import DashboardSiteDesignStudio from "@/pages/dashboard/site/[siteId]/design-studio/index";
-import DashboardSiteSiteConfig from "@/pages/dashboard/site/[siteId]/site-config/index";
+import DashboardSiteIndex from "@/pages/dashboard/site/[siteSD]/index";
+import DashboardSitePeople from "@/pages/dashboard/site/[siteSD]/people/index";
+import DashboardSitePeopleMembers from "@/pages/dashboard/site/[siteSD]/people/members/index";
+import DashboardSitePeopleStaff from "@/pages/dashboard/site/[siteSD]/people/staff/index";
+import DashboardSiteAppearance from "@/pages/dashboard/site/[siteSD]/appearance/index";
+import DashboardSiteSettings from "@/pages/dashboard/site/[siteSD]/settings/index";
+import DashboardSiteSettingsSearch from "@/pages/dashboard/site/[siteSD]/settings/search/index";
+import DashboardSiteBilling from "@/pages/dashboard/site/[siteSD]/billing/index";
+import DashboardSiteReports from "@/pages/dashboard/site/[siteSD]/reports/index";
+import DashboardSiteAppStore from "@/pages/dashboard/site/[siteSD]/app-store/index";
+import DashboardSiteDesignStudio from "@/pages/dashboard/site/[siteSD]/design-studio/index";
+import DashboardSiteSiteConfig from "@/pages/dashboard/site/[siteSD]/site-config/index";
 import NotFound from "@/pages/not-found";
-import Content from "@/pages/dashboard/site/[siteId]/content";
+import Content from "@/pages/dashboard/site/[siteSD]/content";
 
 // Import site frontend pages (public facing)
 import SiteFrontendSearch from "@/pages/site/[siteId]/search/index";
@@ -38,29 +38,29 @@ function Router() {
       <Route path="/sites" component={SitesDashboardPage} />
       
       {/* Dashboard site-specific routes */}
-      <Route path="/dashboard/site/:siteId" component={DashboardSiteIndex} />
-      <Route path="/dashboard/site/:siteId/content" component={Content} />
-      <Route path="/dashboard/site/:siteId/content/:section" component={Content} />
-      <Route path="/dashboard/site/:siteId/people" component={DashboardSitePeople} />
-      <Route path="/dashboard/site/:siteId/people/members" component={DashboardSitePeopleMembers} />
-      <Route path="/dashboard/site/:siteId/people/staff" component={DashboardSitePeopleStaff} />
-      <Route path="/dashboard/site/:siteId/appearance" component={DashboardSiteAppearance} />
-      <Route path="/dashboard/site/:siteId/appearance/:section" component={DashboardSiteAppearance} />
-      <Route path="/dashboard/site/:siteId/settings" component={DashboardSiteSettings} />
-      <Route path="/dashboard/site/:siteId/settings/search" component={DashboardSiteSettingsSearch} />
-      <Route path="/dashboard/site/:siteId/billing" component={DashboardSiteBilling} />
-      <Route path="/dashboard/site/:siteId/billing/:section" component={DashboardSiteBilling} />
-      <Route path="/dashboard/site/:siteId/reports" component={DashboardSiteReports} />
-      <Route path="/dashboard/site/:siteId/reports/:section" component={DashboardSiteReports} />
-      <Route path="/dashboard/site/:siteId/app-store" component={DashboardSiteAppStore} />
-      <Route path="/dashboard/site/:siteId/app-store/:section" component={DashboardSiteAppStore} />
-      <Route path="/dashboard/site/:siteId/design-studio" component={DashboardSiteDesignStudio} />
-      <Route path="/dashboard/site/:siteId/design-studio/:section" component={DashboardSiteDesignStudio} />
-      <Route path="/dashboard/site/:siteId/site-config" component={DashboardSiteSiteConfig} />
+      <Route path="/dashboard/site/:siteSD" component={DashboardSiteIndex} />
+      <Route path="/dashboard/site/:siteSD/content" component={Content} />
+      <Route path="/dashboard/site/:siteSD/content/:section" component={Content} />
+      <Route path="/dashboard/site/:siteSD/people" component={DashboardSitePeople} />
+      <Route path="/dashboard/site/:siteSD/people/members" component={DashboardSitePeopleMembers} />
+      <Route path="/dashboard/site/:siteSD/people/staff" component={DashboardSitePeopleStaff} />
+      <Route path="/dashboard/site/:siteSD/appearance" component={DashboardSiteAppearance} />
+      <Route path="/dashboard/site/:siteSD/appearance/:section" component={DashboardSiteAppearance} />
+      <Route path="/dashboard/site/:siteSD/settings" component={DashboardSiteSettings} />
+      <Route path="/dashboard/site/:siteSD/settings/search" component={DashboardSiteSettingsSearch} />
+      <Route path="/dashboard/site/:siteSD/billing" component={DashboardSiteBilling} />
+      <Route path="/dashboard/site/:siteSD/billing/:section" component={DashboardSiteBilling} />
+      <Route path="/dashboard/site/:siteSD/reports" component={DashboardSiteReports} />
+      <Route path="/dashboard/site/:siteSD/reports/:section" component={DashboardSiteReports} />
+      <Route path="/dashboard/site/:siteSD/app-store" component={DashboardSiteAppStore} />
+      <Route path="/dashboard/site/:siteSD/app-store/:section" component={DashboardSiteAppStore} />
+      <Route path="/dashboard/site/:siteSD/design-studio" component={DashboardSiteDesignStudio} />
+      <Route path="/dashboard/site/:siteSD/design-studio/:section" component={DashboardSiteDesignStudio} />
+      <Route path="/dashboard/site/:siteSD/site-config" component={DashboardSiteSiteConfig} />
       
       {/* Site frontend routes (public facing) */}
-      <Route path="/site/:siteId/search" component={SiteFrontendSearch} />
-      <Route path="/site/:siteId/search/:query" component={SiteFrontendSearch} />
+      <Route path="/site/:siteSD/search" component={SiteFrontendSearch} />
+      <Route path="/site/:siteSD/search/:query" component={SiteFrontendSearch} />
       
       {/* Catch-all for 404 */}
       <Route component={NotFound} />

@@ -1,155 +1,96 @@
 import React from "react";
 import { useLocation } from "wouter";
-import { isActiveUrl as isActiveUrlUtil } from "./utils";
 import { type NavItem } from "./types";
-import { APP_ROUTES, isSitePublicRoute, isSiteAdminRoute, getSiteIdFromRoute } from "@/config/routes"; // Updated imports
+import { APP_ROUTES, isSitePublicRoute, isSiteAdminRoute, getSiteIdentifierFromRoute } from "@/config/routes";
 
 // Import all the specific sidebar components
 import { DashboardSidebar } from "./DashboardSidebar";
 import { ContentSidebar } from "./ContentSidebar";
 import { PeopleSidebar } from "./PeopleSidebar";
-import { SettingsSidebar } from "./SettingsSidebar";
-import { DesignStudioSidebar } from "./DesignStudioSidebar";
-import { SiteSidebar } from "./SiteSidebar";
-import { SiteConfigSidebar } from "./SiteConfigSidebar";
 import { AppearanceSidebar } from "./AppearanceSidebar";
+import { SettingsSidebar } from "./SettingsSidebar";
 import { BillingSidebar } from "./BillingSidebar";
 import { ReportsSidebar } from "./ReportsSidebar";
-import { DesignStudioSpacesFeedSidebar } from "./DesignStudioSpacesFeedSidebar";
 import { AppStoreSidebar } from "./AppStoreSidebar";
+import { DesignStudioSidebar } from "./DesignStudioSidebar";
+import { SiteConfigSidebar } from "./SiteConfigSidebar";
 
-// Define Props for SecondarySidebar itself
+import { GlobalAdminSidebar } from "./global-admin-sidebar";
+import { SitePublicSidebar } from "./site-public-sidebar";
+
 interface SecondarySidebarProps {
+  currentSiteIdentifier?: string; // This is the canonical ID (e.g., UUID) passed from DashboardLayout
   siteName?: string;
   navItems?: NavItem[];
-  currentSiteId?: string; 
 }
 
 export function SecondarySidebar({
+  currentSiteIdentifier, // This is the canonical ID (e.g., UUID) passed from DashboardLayout
   siteName,
-  navItems,
-  currentSiteId, 
+  navItems = [],
 }: SecondarySidebarProps) {
-  const [locationObject] = useLocation();
-  const currentPathname = locationObject;
+  const [currentPathname] = useLocation();
 
-  // Get the site ID from the current path if it's a site-specific route
-  const siteIdFromRoute = getSiteIdFromRoute(currentPathname);
-  
-  // Use explicitly provided siteId or extract from route
-  const effectiveSiteId = currentSiteId || siteIdFromRoute || '';
-  
-  // Determine if we're in a site-specific context
-  const isInSiteContext = Boolean(effectiveSiteId);
+  const siteIdentifierFromUrl = getSiteIdentifierFromRoute(currentPathname) || ''; // Identifier from the URL segment
   const isPublicSite = isSitePublicRoute(currentPathname);
   const isAdminSite = isSiteAdminRoute(currentPathname);
 
+  // For internal logic and passing to children that build URLs, use the identifier from the URL.
+  // The canonical ID (currentSiteIdentifier) can be passed if needed for data, etc.
+
   const getSidebarForLocation = () => {
-    // Handle public site-specific pages
-    if (isPublicSite) {
-      return (
-        <SiteSidebar
-          currentPathname={currentPathname}
-          isActiveUrl={isActiveUrlUtil}
-          siteId={effectiveSiteId}
-        />
-      );
+    if (isAdminSite && siteIdentifierFromUrl) {
+      if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.CONTENT(siteIdentifierFromUrl))) {
+        return <ContentSidebar siteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+      }
+      if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.PEOPLE(siteIdentifierFromUrl))) {
+        return <PeopleSidebar siteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+      }
+      if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.APPEARANCE(siteIdentifierFromUrl))) {
+        return <AppearanceSidebar siteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+      }
+      if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.SETTINGS(siteIdentifierFromUrl))) {
+        return <SettingsSidebar siteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+      }
+      if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.BILLING(siteIdentifierFromUrl))) {
+        return <BillingSidebar siteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+      }
+      if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.REPORTS(siteIdentifierFromUrl))) {
+        return <ReportsSidebar siteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+      }
+      if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.APP_STORE(siteIdentifierFromUrl))) {
+        return <AppStoreSidebar siteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+      }
+      if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.DESIGN_STUDIO(siteIdentifierFromUrl))) {
+        return <DesignStudioSidebar siteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+      }
+      if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(siteIdentifierFromUrl))) {
+        return <SiteConfigSidebar siteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+      }
+      if (currentPathname === APP_ROUTES.DASHBOARD_SITE.INDEX(siteIdentifierFromUrl)) {
+        // Pass siteIdentifierFromUrl for link building, but DashboardSidebar might also want the canonicalId via currentSiteIdentifier
+        return <DashboardSidebar siteIdentifier={siteIdentifierFromUrl} canonicalSiteId={currentSiteIdentifier} currentPathname={currentPathname} siteName={siteName} navItems={navItems} />;
+      }
     }
 
-    // Handle dashboard routes (both general dashboard and site-specific admin)
-    if (currentPathname.startsWith('/dashboard/')) {
-      // Site-specific admin dashboard sections
-      if (isAdminSite && effectiveSiteId) {
-        if (currentPathname.includes(`/site/${effectiveSiteId}/content`)) {
-          return <ContentSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} siteId={effectiveSiteId} />;
-        } else if (currentPathname.includes(`/site/${effectiveSiteId}/people`)) {
-          return <PeopleSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} siteId={effectiveSiteId} />;
-        } else if (currentPathname.includes(`/site/${effectiveSiteId}/appearance`)) {
-          return <AppearanceSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} siteId={effectiveSiteId} />;
-        } else if (currentPathname.includes(`/site/${effectiveSiteId}/settings`)) {
-          return <SettingsSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} siteId={effectiveSiteId} />;
-        } else if (currentPathname.includes(`/site/${effectiveSiteId}/billing`)) {
-          return <BillingSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} siteId={effectiveSiteId} />;
-        } else if (currentPathname.includes(`/site/${effectiveSiteId}/reports`)) {
-          return <ReportsSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} siteId={effectiveSiteId} />;
-        } else if (currentPathname.includes(`/site/${effectiveSiteId}/site-config`)) {
-          return <SiteConfigSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} siteId={effectiveSiteId} />;
-        } else if (currentPathname.includes(`/site/${effectiveSiteId}/app-store`)) {
-          return <AppStoreSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} siteId={effectiveSiteId} />;
-        } else if (currentPathname.includes(`/site/${effectiveSiteId}/design-studio`)) {
-          if (currentPathname.includes('/spaces/feed')) {
-            return <DesignStudioSpacesFeedSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} siteId={effectiveSiteId} />;
-          }
-          return <DesignStudioSidebar currentPathname={currentPathname} siteId={effectiveSiteId} />;
-        }
-        
-        // Default site admin sidebar
-        return <SiteSidebar
-          currentPathname={currentPathname}
-          isActiveUrl={isActiveUrlUtil}
-          siteId={effectiveSiteId}
-        />;
-      }
-      
-      // General dashboard routes (not site-specific)
-      if (currentPathname.startsWith('/dashboard/content')) {
-        return <ContentSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-      } else if (currentPathname.startsWith('/dashboard/people')) {
-        return <PeopleSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-      } else if (currentPathname === '/dashboard/design-studio/spaces/feed') {
-        return <DesignStudioSpacesFeedSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-      } else if (currentPathname.startsWith('/dashboard/design-studio')) {
-        return <DesignStudioSidebar currentPathname={currentPathname} />;
-      } else if (currentPathname.startsWith('/dashboard/appearance')) {
-        return <AppearanceSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-      } else if (currentPathname.startsWith(APP_ROUTES.SETTINGS)) {
-        return <SettingsSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-      } else if (currentPathname.startsWith('/dashboard/billing')) {
-        return <BillingSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-      } else if (currentPathname.startsWith('/dashboard/reports')) {
-        return <ReportsSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-      } else if (currentPathname.startsWith('/dashboard/app-store')) {
-        return <AppStoreSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-      } else if (currentPathname.startsWith('/dashboard/site-config')) {
-        return <SiteConfigSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-      }
-
+    if (isPublicSite && siteIdentifierFromUrl) {
+      return <SitePublicSidebar siteIdentifier={siteIdentifierFromUrl} currentPath={currentPathname} />;
     }
     
-    // Old routes (for backward compatibility)
-    if (currentPathname.startsWith('/content')) {
-      return <ContentSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname.startsWith('/people')) {
-      return <PeopleSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname === '/design-studio/spaces/feed') {
-      return <DesignStudioSpacesFeedSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname.startsWith('/design-studio')) {
-      return <DesignStudioSidebar currentPathname={currentPathname} />;
-    } else if (currentPathname.startsWith('/appearance')) {
-      return <AppearanceSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname.startsWith('/settings')) {
-      return <SettingsSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname.startsWith('/billing')) {
-      return <BillingSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname.startsWith('/reports')) {
-      return <ReportsSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname.startsWith('/app-store')) {
-      return <AppStoreSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    } else if (currentPathname.startsWith('/site-config')) {
-      return <SiteConfigSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
+    if (currentPathname.startsWith(APP_ROUTES.SITES_LIST) || currentPathname === APP_ROUTES.HOME) {
+      return <GlobalAdminSidebar currentPath={currentPathname} />;
     }
     
-    if (currentPathname === APP_ROUTES.SITES_LIST) { 
-        return <DashboardSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
-    }
-    
-    // Fallback: Default to DashboardSidebar if no other match
-    return <DashboardSidebar currentPathname={currentPathname} isActiveUrl={isActiveUrlUtil} />;
+    return null;
   };
 
   return (
     <aside className="secondary-sidebar bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-[calc(100vh-3rem)] overflow-y-auto sticky top-12 w-64 print:hidden">
-      {getSidebarForLocation()}
+      <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
+        <div className="space-y-2 font-medium">
+          {getSidebarForLocation()}
+        </div>
+      </div>
     </aside>
   );
-}
+} 

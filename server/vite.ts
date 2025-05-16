@@ -45,8 +45,16 @@ export async function setupVite(app: Express, server: Server) {
   });
 
   app.use(vite.middlewares);
+  
+  // Only apply the catch-all for non-API routes
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
+    
+    // Skip API routes - they should be handled by the API router
+    if (url.startsWith('/api')) {
+      next();
+      return;
+    }
 
     try {
       const clientTemplate = path.resolve(
@@ -82,8 +90,14 @@ export function serveStatic(app: Express) {
 
   app.use(express.static(distPath));
 
-  // fall through to index.html if the file doesn't exist
-  app.use("*", (_req, res) => {
+  // fall through to index.html if the file doesn't exist, but skip API routes
+  app.use("*", (req, res, next) => {
+    // Skip API routes - they should be handled by the API router
+    if (req.originalUrl.startsWith('/api')) {
+      next();
+      return;
+    }
+    
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }

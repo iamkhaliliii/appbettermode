@@ -4,31 +4,31 @@ export const APP_ROUTES = {
   SITES_LIST: '/sites',
   
   // Site Frontend Routes (public facing)
-  SITE_HOME: (siteId: string) => `/site/${siteId}`,
-  SITE_SEARCH: (siteId: string) => `/site/${siteId}/search`,
-  SITE_PROFILE: (siteId: string, username: string) => `/site/${siteId}/profile/${username}`,
+  SITE_HOME: (siteSD: string) => `/site/${siteSD}`,
+  SITE_SEARCH: (siteSD: string) => `/site/${siteSD}/search`,
+  SITE_PROFILE: (siteSD: string, username: string) => `/site/${siteSD}/profile/${username}`,
   
   // Dashboard Site Routes
   DASHBOARD_SITE: {
-    INDEX: (siteId: string) => `/dashboard/site/${siteId}`,
-    CONTENT: (siteId: string) => `/dashboard/site/${siteId}/content`,
-    CONTENT_SECTION: (siteId: string, section: string) => `/dashboard/site/${siteId}/content/${section}`,
-    PEOPLE: (siteId: string) => `/dashboard/site/${siteId}/people`,
-    PEOPLE_MEMBERS: (siteId: string) => `/dashboard/site/${siteId}/people/members`,
-    PEOPLE_STAFF: (siteId: string) => `/dashboard/site/${siteId}/people/staff`,
-    APPEARANCE: (siteId: string) => `/dashboard/site/${siteId}/appearance`,
-    APPEARANCE_SECTION: (siteId: string, section: string) => `/dashboard/site/${siteId}/appearance/${section}`,
-    SETTINGS: (siteId: string) => `/dashboard/site/${siteId}/settings`,
-    SETTINGS_SEARCH: (siteId: string) => `/dashboard/site/${siteId}/settings/search`,
-    BILLING: (siteId: string) => `/dashboard/site/${siteId}/billing`,
-    BILLING_SECTION: (siteId: string, section: string) => `/dashboard/site/${siteId}/billing/${section}`,
-    REPORTS: (siteId: string) => `/dashboard/site/${siteId}/reports`,
-    REPORTS_SECTION: (siteId: string, section: string) => `/dashboard/site/${siteId}/reports/${section}`,
-    APP_STORE: (siteId: string) => `/dashboard/site/${siteId}/app-store`,
-    APP_STORE_SECTION: (siteId: string, section: string) => `/dashboard/site/${siteId}/app-store/${section}`,
-    DESIGN_STUDIO: (siteId: string) => `/dashboard/site/${siteId}/design-studio`,
-    DESIGN_STUDIO_SECTION: (siteId: string, section: string) => `/dashboard/site/${siteId}/design-studio/${section}`,
-    SITE_CONFIG: (siteId: string) => `/dashboard/site/${siteId}/site-config`,
+    INDEX: (siteSD: string) => `/dashboard/site/${siteSD}`,
+    CONTENT: (siteSD: string) => `/dashboard/site/${siteSD}/content`,
+    CONTENT_SECTION: (siteSD: string, section: string) => `/dashboard/site/${siteSD}/content/${section}`,
+    PEOPLE: (siteSD: string) => `/dashboard/site/${siteSD}/people`,
+    PEOPLE_MEMBERS: (siteSD: string) => `/dashboard/site/${siteSD}/people/members`,
+    PEOPLE_STAFF: (siteSD: string) => `/dashboard/site/${siteSD}/people/staff`,
+    APPEARANCE: (siteSD: string) => `/dashboard/site/${siteSD}/appearance`,
+    APPEARANCE_SECTION: (siteSD: string, section: string) => `/dashboard/site/${siteSD}/appearance/${section}`,
+    SETTINGS: (siteSD: string) => `/dashboard/site/${siteSD}/settings`,
+    SETTINGS_SEARCH: (siteSD: string) => `/dashboard/site/${siteSD}/settings/search`,
+    BILLING: (siteSD: string) => `/dashboard/site/${siteSD}/billing`,
+    BILLING_SECTION: (siteSD: string, section: string) => `/dashboard/site/${siteSD}/billing/${section}`,
+    REPORTS: (siteSD: string) => `/dashboard/site/${siteSD}/reports`,
+    REPORTS_SECTION: (siteSD: string, section: string) => `/dashboard/site/${siteSD}/reports/${section}`,
+    APP_STORE: (siteSD: string) => `/dashboard/site/${siteSD}/app-store`,
+    APP_STORE_SECTION: (siteSD: string, section: string) => `/dashboard/site/${siteSD}/app-store/${section}`,
+    DESIGN_STUDIO: (siteSD: string) => `/dashboard/site/${siteSD}/design-studio`,
+    DESIGN_STUDIO_SECTION: (siteSD: string, section: string) => `/dashboard/site/${siteSD}/design-studio/${section}`,
+    SITE_CONFIG: (siteSD: string) => `/dashboard/site/${siteSD}/site-config`,
   },
   
   // Content Types (for use in content sections)
@@ -68,9 +68,9 @@ export const isSiteAdminRoute = (pathname: string): boolean => {
   return pathname.match(/^\/dashboard\/site\/[^\/]+/) !== null;
 };
 
-// Helper function to extract siteId from any site-related route
-export const getSiteIdFromRoute = (pathname: string): string | null => {
-  // Match site ID from either public site routes or dashboard site routes
+// Helper function to extract site identifier (e.g., siteSD) from any site-related route
+export const getSiteIdentifierFromRoute = (pathname: string): string | null => {
+  // Match site identifier from either public site routes or dashboard site routes
   const publicMatch = pathname.match(/^\/site\/([^\/]+)/);
   if (publicMatch) return publicMatch[1];
   
@@ -79,21 +79,21 @@ export const getSiteIdFromRoute = (pathname: string): string | null => {
 };
 
 // Helper function for constructing site-specific URLs
-export const getSiteRoute = (siteId: string, subPath: string): string => {
+export const getSiteRoute = (siteSD: string, subPath: string): string => {
   const cleanSubPath = subPath.startsWith('/') ? subPath.substring(1) : subPath;
-  return `/site/${siteId}/${cleanSubPath}`;
+  return `/site/${siteSD}/${cleanSubPath}`;
 };
 
 // Helper function for constructing site admin dashboard URLs
-export const getSiteAdminRoute = (siteId: string, subPath?: string): string => {
-  if (!subPath) return `/dashboard/site/${siteId}`;
+export const getSiteAdminRoute = (siteSD: string, subPath?: string): string => {
+  if (!subPath) return `/dashboard/site/${siteSD}`;
   const cleanSubPath = subPath.startsWith('/') ? subPath.substring(1) : subPath;
-  return `/dashboard/site/${siteId}/${cleanSubPath}`;
+  return `/dashboard/site/${siteSD}/${cleanSubPath}`;
 };
 
 // Helper function for constructing site-specific content URLs
-export const getSiteContentRoute = (siteId: string, collectionSlug: string, subPath?: string): string => {
-  let path = `/dashboard/site/${siteId}/content/${collectionSlug}`;
+export const getSiteContentRoute = (siteSD: string, collectionSlug: string, subPath?: string): string => {
+  let path = `/dashboard/site/${siteSD}/content/${collectionSlug}`;
   if (subPath) {
     const cleanSubPath = subPath.startsWith('/') ? subPath.substring(1) : subPath;
     path += `/${cleanSubPath}`;

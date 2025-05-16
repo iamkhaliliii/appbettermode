@@ -59,8 +59,8 @@ export interface NavItem {
 // Common props for all sidebar components
 export interface BaseSidebarProps {
   currentPathname: string;
-  isActiveUrl: (url: string | undefined, currentPathname: string | undefined) => boolean;
-  siteId?: string; // Added for site-specific sidebars
+  isActiveUrl?: (url: string | undefined, currentPathname: string | undefined) => boolean;
+  siteIdentifier: string;
 }
 
 // Specific props for each sidebar type
@@ -71,15 +71,29 @@ export interface SettingsSidebarProps extends BaseSidebarProps {}
 export interface BillingSidebarProps extends BaseSidebarProps {}
 export interface ReportsSidebarProps extends BaseSidebarProps {}
 export interface AppStoreSidebarProps extends BaseSidebarProps {}
-export interface DashboardSidebarProps extends BaseSidebarProps {}
+
+export interface DashboardSidebarProps extends BaseSidebarProps {
+  siteName?: string;
+  navItems?: NavItem[];
+  canonicalSiteId?: string;
+}
 
 export interface DesignStudioSidebarProps {
   currentPathname: string;
-  siteId?: string; // Added for site-specific context
+  siteIdentifier: string;
 }
 
 export interface DesignStudioSpacesFeedSidebarProps {
-  siteId?: string; // Added for site-specific context
+  siteId?: string;
+  siteName?: string;
+  navItems?: NavItem[];
+  currentSiteId?: string;
+}
+
+// Props for GlobalAdminSidebar
+export interface GlobalAdminSidebarProps {
+  currentPath: string;
+  navItems?: NavItem[];
 }
 
 export interface SiteSidebarProps {

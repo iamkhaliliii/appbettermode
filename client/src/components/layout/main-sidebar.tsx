@@ -101,7 +101,7 @@ function NavItem({
 
 interface MainSidebarProps {
   collapsed?: boolean;
-  currentSiteId?: string;
+  currentSiteIdentifier?: string;
 }
 
 // Create a custom NavButton component for the Inbox icon that will open a drawer
@@ -172,7 +172,7 @@ function NavButton({
   );
 }
 
-export function MainSidebar({ collapsed = false, currentSiteId }: MainSidebarProps) {
+export function MainSidebar({ collapsed = false, currentSiteIdentifier }: MainSidebarProps) {
   const [location] = useLocation();
   const [isDarkMode, setIsDarkMode] = useState(false);
   
@@ -192,223 +192,144 @@ export function MainSidebar({ collapsed = false, currentSiteId }: MainSidebarPro
     setIsDarkMode(isDark);
   }, []);
 
-  // Only show site-specific navigation if we have a currentSiteId
-  if (currentSiteId) {
-    return (
-      <aside className="bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-[calc(100vh-3rem)] overflow-y-auto sticky top-12 w-12">
-        <div className="px-1.5 py-3 h-full flex flex-col">
-          <nav className="space-y-2 flex-grow flex flex-col items-center pt-1.5">
-            
-            <NavItem 
-              href={APP_ROUTES.DASHBOARD_SITE.CONTENT(currentSiteId)} 
-              icon={<Database className="h-4 w-4" />} 
-              isActive={location.startsWith(APP_ROUTES.DASHBOARD_SITE.CONTENT(currentSiteId))} 
-              collapsed={true}
-            >
-              Content
-            </NavItem>
-            
-            <NavItem 
-              href={APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(currentSiteId)} 
-              icon={<MonitorCog className="h-4 w-4" />} 
-              isActive={location.startsWith(APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(currentSiteId))} 
-              collapsed={true}
-            >
-              Site
-            </NavItem>
-            
-            <NavItem 
-              href={APP_ROUTES.DASHBOARD_SITE.PEOPLE(currentSiteId)} 
-              icon={<Users className="h-4 w-4" />} 
-              isActive={location.startsWith(APP_ROUTES.DASHBOARD_SITE.PEOPLE(currentSiteId))} 
-              collapsed={true}
-            >
-              People
-            </NavItem>
-            
-            <NavItem 
-              href={APP_ROUTES.DASHBOARD_SITE.APPEARANCE(currentSiteId)} 
-              icon={<Shapes className="h-4 w-4" />} 
-              isActive={location.startsWith(APP_ROUTES.DASHBOARD_SITE.APPEARANCE(currentSiteId))} 
-              collapsed={true}
-            >
-              Appearance
-            </NavItem>
-            
-            <NavItem 
-              href={APP_ROUTES.DASHBOARD_SITE.SETTINGS(currentSiteId)} 
-              icon={<Settings className="h-4 w-4" />} 
-              isActive={location.startsWith(APP_ROUTES.DASHBOARD_SITE.SETTINGS(currentSiteId))} 
-              collapsed={true}
-            >
-              Settings
-            </NavItem>
-            
-            <NavItem 
-              href={APP_ROUTES.DASHBOARD_SITE.BILLING(currentSiteId)} 
-              icon={<CreditCard className="h-4 w-4" />} 
-              isActive={location.startsWith(APP_ROUTES.DASHBOARD_SITE.BILLING(currentSiteId))} 
-              collapsed={true}
-            >
-              Billing
-            </NavItem>
-            
-            <NavItem 
-              href={APP_ROUTES.DASHBOARD_SITE.REPORTS(currentSiteId)} 
-              icon={<BarChart2 className="h-4 w-4" />} 
-              isActive={location.startsWith(APP_ROUTES.DASHBOARD_SITE.REPORTS(currentSiteId))} 
-              collapsed={true}
-            >
-              Reports
-            </NavItem>
-            
-            <NavItem 
-              href={APP_ROUTES.DASHBOARD_SITE.APP_STORE(currentSiteId)} 
-              icon={<ShoppingBag className="h-4 w-4" />} 
-              isActive={location.startsWith(APP_ROUTES.DASHBOARD_SITE.APP_STORE(currentSiteId))} 
-              collapsed={true}
-            >
-              App Store
-            </NavItem>
-
-            {/* Divider */}
-            <div className="my-2 border-t border-gray-200 dark:border-gray-700 w-8/12 mx-auto"></div>
-            
-            <NavItem 
-              href={APP_ROUTES.DASHBOARD_SITE.DESIGN_STUDIO(currentSiteId)} 
-              icon={<Shapes className="text-white h-4 w-4" />} 
-              isActive={location.startsWith(APP_ROUTES.DASHBOARD_SITE.DESIGN_STUDIO(currentSiteId))} 
-              collapsed={true}
-              isPro={true}
-            >
-              Design Studio
-            </NavItem>
-          </nav>
-          
-          <div className="mt-auto flex flex-col items-center gap-3 pb-2">
-            {/* Return to sites list button */}
-            <Tooltip.Provider delayDuration={200}>
-              <Tooltip.Root>
-                <Tooltip.Trigger asChild>
-                  <Link href={APP_ROUTES.SITES_LIST} className="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-300 p-1.5">
-                    <Home className="h-4 w-4" />
-                  </Link>
-                </Tooltip.Trigger>
-                <Tooltip.Portal>
-                  <Tooltip.Content
-                    className="bg-gray-900 text-white px-2 py-1 rounded text-sm animate-in fade-in-50 data-[side=right]:slide-in-from-left-2"
-                    side="right"
-                    sideOffset={10}
-                  >
-                    <span>All Sites</span>
-                    <Tooltip.Arrow className="fill-gray-900" />
-                  </Tooltip.Content>
-                </Tooltip.Portal>
-              </Tooltip.Root>
-            </Tooltip.Provider>
-            
-            {/* Onboarding button with GraduationCap icon */}
-            <Tooltip.Provider delayDuration={200}>
-              <Tooltip.Root>
-                <Tooltip.Trigger asChild>
-                  <button className="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-300 p-1.5">
-                    <GraduationCap className="h-4 w-4" />
-                  </button>
-                </Tooltip.Trigger>
-                <Tooltip.Portal>
-                  <Tooltip.Content
-                    className="bg-gray-900 text-white px-2 py-1 rounded text-sm animate-in fade-in-50 data-[side=right]:slide-in-from-left-2"
-                    side="right"
-                    sideOffset={10}
-                  >
-                    <span>Onboarding</span>
-                    <Tooltip.Arrow className="fill-gray-900" />
-                  </Tooltip.Content>
-                </Tooltip.Portal>
-              </Tooltip.Root>
-            </Tooltip.Provider>
-            
-            {/* Dark mode toggle button */}
-            <Tooltip.Provider delayDuration={200}>
-              <Tooltip.Root>
-                <Tooltip.Trigger asChild>
-                  <button 
-                    className="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-300 p-1.5"
-                    onClick={toggleDarkMode}
-                  >
-                    {isDarkMode ? (
-                      <SunMedium className="h-4 w-4" />
-                    ) : (
-                      <Moon className="h-4 w-4" />
-                    )}
-                  </button>
-                </Tooltip.Trigger>
-                <Tooltip.Portal>
-                  <Tooltip.Content
-                    className="bg-gray-900 text-white px-2 py-1 rounded text-sm animate-in fade-in-50 data-[side=right]:slide-in-from-left-2"
-                    side="right"
-                    sideOffset={10}
-                  >
-                    <span>{isDarkMode ? 'Light mode' : 'Dark mode'}</span>
-                    <Tooltip.Arrow className="fill-gray-900" />
-                  </Tooltip.Content>
-                </Tooltip.Portal>
-              </Tooltip.Root>
-            </Tooltip.Provider>
-            
-            <Tooltip.Provider delayDuration={200}>
-              <Tooltip.Root>
-                <Tooltip.Trigger asChild>
-                  <button className="relative text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-300">
-                    <img 
-                      className="h-6 w-6 rounded-full border border-gray-200 dark:border-gray-700" 
-                      src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
-                      alt="User profile" 
-                    />
-                    <div className="absolute bottom-0 right-0 h-1.5 w-1.5 rounded-full bg-green-500 ring-1 ring-white dark:ring-gray-800"></div>
-                  </button>
-                </Tooltip.Trigger>
-                <Tooltip.Portal>
-                  <Tooltip.Content
-                    className="bg-gray-900 text-white px-3 py-2 rounded text-sm animate-in fade-in-50 data-[side=right]:slide-in-from-left-2"
-                    side="right"
-                    sideOffset={10}
-                  >
-                    <div className="flex flex-col space-y-1">
-                      <span className="font-medium">Olivia Rhye</span>
-                      <span className="text-gray-300 text-xs">olivia@untitledui.com</span>
-                      <div className="flex items-center mt-1 pt-1 border-t border-gray-700">
-                        <LogOut className="h-3 w-3 mr-1" />
-                        <span className="text-xs">Sign out</span>
-                      </div>
-                    </div>
-                    <Tooltip.Arrow className="fill-gray-900" />
-                  </Tooltip.Content>
-                </Tooltip.Portal>
-              </Tooltip.Root>
-            </Tooltip.Provider>
-          </div>
-        </div>
-      </aside>
-    );
-  }
-
-  // If no currentSiteId, show a simplified sidebar for the sites list page
+  // MainSidebar now always renders a consistent set of icons.
+  // The href and isActive logic for each NavItem will adapt based on currentSiteIdentifier.
   return (
     <aside className="bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-[calc(100vh-3rem)] overflow-y-auto sticky top-12 w-12">
-      <div className="px-1.5 py-3 h-full flex flex-col">
+      <div className="px-1.5 py-2 h-full flex flex-col">
         <nav className="space-y-2 flex-grow flex flex-col items-center pt-1.5">
+          {/* Sites List / Home - Always available, but behavior might change */} 
           <NavItem 
-            href={APP_ROUTES.SITES_LIST} 
-            icon={<Home className="h-4 w-4" />} 
-            isActive={location === APP_ROUTES.SITES_LIST} 
+            href={currentSiteIdentifier ? APP_ROUTES.DASHBOARD_SITE.CONTENT(currentSiteIdentifier) : "#"} 
+            icon={<Database className="h-4 w-4" />} 
+            isActive={currentSiteIdentifier ? location.startsWith(APP_ROUTES.DASHBOARD_SITE.CONTENT(currentSiteIdentifier)) : false} 
+            collapsed={true}
+            // Add a class to disable if no currentSiteIdentifier, or handle in NavItem
+            // className={!currentSiteIdentifier ? "opacity-50 pointer-events-none" : ""}
+          >
+            Content
+          </NavItem>
+          
+          <NavItem 
+            href={currentSiteIdentifier ? APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(currentSiteIdentifier) : "#"} 
+            icon={<MonitorCog className="h-4 w-4" />} 
+            isActive={currentSiteIdentifier ? location.startsWith(APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(currentSiteIdentifier)) : false} 
             collapsed={true}
           >
-            Sites
+            Site
+          </NavItem>
+          
+          <NavItem 
+            href={currentSiteIdentifier ? APP_ROUTES.DASHBOARD_SITE.PEOPLE(currentSiteIdentifier) : "#"} 
+            icon={<Users className="h-4 w-4" />} 
+            isActive={currentSiteIdentifier ? location.startsWith(APP_ROUTES.DASHBOARD_SITE.PEOPLE(currentSiteIdentifier)) : false} 
+            collapsed={true}
+          >
+            People
+          </NavItem>
+          
+          <NavItem 
+            href={currentSiteIdentifier ? APP_ROUTES.DASHBOARD_SITE.APPEARANCE(currentSiteIdentifier) : "#"} 
+            icon={<Shapes className="h-4 w-4" />} 
+            isActive={currentSiteIdentifier ? location.startsWith(APP_ROUTES.DASHBOARD_SITE.APPEARANCE(currentSiteIdentifier)) : false} 
+            collapsed={true}
+          >
+            Appearance
+          </NavItem>
+          
+          <NavItem 
+            href={currentSiteIdentifier ? APP_ROUTES.DASHBOARD_SITE.SETTINGS(currentSiteIdentifier) : "#"} 
+            icon={<Settings className="h-4 w-4" />} 
+            isActive={currentSiteIdentifier ? location.startsWith(APP_ROUTES.DASHBOARD_SITE.SETTINGS(currentSiteIdentifier)) : false} 
+            collapsed={true}
+          >
+            Settings
+          </NavItem>
+          
+          <NavItem 
+            href={currentSiteIdentifier ? APP_ROUTES.DASHBOARD_SITE.BILLING(currentSiteIdentifier) : "#"} 
+            icon={<CreditCard className="h-4 w-4" />} 
+            isActive={currentSiteIdentifier ? location.startsWith(APP_ROUTES.DASHBOARD_SITE.BILLING(currentSiteIdentifier)) : false} 
+            collapsed={true}
+          >
+            Billing
+          </NavItem>
+          
+          <NavItem 
+            href={currentSiteIdentifier ? APP_ROUTES.DASHBOARD_SITE.REPORTS(currentSiteIdentifier) : "#"} 
+            icon={<BarChart2 className="h-4 w-4" />} 
+            isActive={currentSiteIdentifier ? location.startsWith(APP_ROUTES.DASHBOARD_SITE.REPORTS(currentSiteIdentifier)) : false} 
+            collapsed={true}
+          >
+            Reports
+          </NavItem>
+          
+          <NavItem 
+            href={currentSiteIdentifier ? APP_ROUTES.DASHBOARD_SITE.APP_STORE(currentSiteIdentifier) : "#"} 
+            icon={<ShoppingBag className="h-4 w-4" />} 
+            isActive={currentSiteIdentifier ? location.startsWith(APP_ROUTES.DASHBOARD_SITE.APP_STORE(currentSiteIdentifier)) : false} 
+            collapsed={true}
+          >
+            App Store
+          </NavItem>
+
+          {/* Divider */}
+          <div className="my-2 border-t border-gray-200 dark:border-gray-700 w-8/12 mx-auto"></div>
+          
+          <NavItem 
+            href={currentSiteIdentifier ? APP_ROUTES.DASHBOARD_SITE.DESIGN_STUDIO(currentSiteIdentifier) : "#"} 
+            icon={<Shapes className="text-white h-4 w-4" />} 
+            isActive={currentSiteIdentifier ? location.startsWith(APP_ROUTES.DASHBOARD_SITE.DESIGN_STUDIO(currentSiteIdentifier)) : false} 
+            collapsed={true}
+            isPro={true}
+          >
+            Design Studio
           </NavItem>
         </nav>
         
         <div className="mt-auto flex flex-col items-center gap-3 pb-2">
+          {/* Return to sites list button (already global, no change needed) */}
+          <Tooltip.Provider delayDuration={200}>
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <Link href={APP_ROUTES.SITES_LIST} className="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-300 p-1.5">
+                  <Home className="h-4 w-4" />
+                </Link>
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  className="bg-gray-900 text-white px-2 py-1 rounded text-sm animate-in fade-in-50 data-[side=right]:slide-in-from-left-2"
+                  side="right"
+                  sideOffset={10}
+                >
+                  <span>All Sites</span>
+                  <Tooltip.Arrow className="fill-gray-900" />
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+          </Tooltip.Provider>
+          
+          {/* Onboarding button with GraduationCap icon */}
+          <Tooltip.Provider delayDuration={200}>
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <button className="text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-300 p-1.5">
+                  <GraduationCap className="h-4 w-4" />
+                </button>
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  className="bg-gray-900 text-white px-2 py-1 rounded text-sm animate-in fade-in-50 data-[side=right]:slide-in-from-left-2"
+                  side="right"
+                  sideOffset={10}
+                >
+                  <span>Onboarding</span>
+                  <Tooltip.Arrow className="fill-gray-900" />
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+          </Tooltip.Provider>
+          
           {/* Dark mode toggle button */}
           <Tooltip.Provider delayDuration={200}>
             <Tooltip.Root>

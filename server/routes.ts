@@ -10,7 +10,7 @@ import {
   // events, discussions, tags, discussionTags, categories, spaces,
 } from "../shared/schema";
 import { z, ZodError } from "zod"; // Ensure ZodError is imported for typed error handling
-import { eq, and } from "drizzle-orm"; // eq and and are sufficient for these routes
+import { eq, and, or } from "drizzle-orm"; // eq and and are sufficient for these routes
 
 // Zod schema for the payload when creating a new SITE
 const createSitePayloadSchema = z.object({
@@ -57,6 +57,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(200).json(userSites);
     } catch (error) {
       console.error("Error in GET /api/sites:", error);
+      return next(error); // Pass to your centralized error handler
+    }
+  });
+
+  // --- Endpoint to GET a specific site by ID or SUBDOMAIN ---
+  app.get("/api/sites/:identifier", async (req, res, next) => {
+    try {
+      const { identifier } = req.params;
+
+      if (!identifier) {
+        return res.status(400).json({ message: "Site identifier is required." });
+      }
+
+      const site = await db.query.sites.findFirst({
+        where: or(eq(sites.id, identifier), eq(sites.subdomain, identifier)),
+        // If you want to return all columns, you can omit the 'columns' option.
+        // Otherwise, specify them like this:
+        // columns: {
+        //   id: true,
+        //   name: true,
+        //   subdomain: true,
+        //   ownerId: true,
+        //   createdAt: true,
+        //   updatedAt: true,
+        //   state: true,
+        // },
+      });
+
+      if (!site) {
+        return res.status(404).json({ message: "Site not found." });
+      }
+
+      return res.status(200).json(site);
+    } catch (error) {
+      console.error(`Error in GET /api/sites/${req.params.identifier}:`, error);
       return next(error); // Pass to your centralized error handler
     }
   });
