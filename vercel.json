@@ -19,6 +19,8 @@
     }
   ],
   "rewrites": [
+    { "source": "/api/v1/sites/:id", "destination": "/api/v1/sites/[id].js" },
+    { "source": "/api/v1/sites", "destination": "/api/v1/sites.js" },
     { "source": "/api/v1/:path*", "destination": "/api/v1" },
     { "source": "/api", "destination": "/api/api.js" },
     { "source": "/test-vercel", "destination": "/api/api.js" },

@@ -7,7 +7,7 @@ import { db } from './db/index.js';
 import { logger } from './utils/logger.js';
 
 const app = express();
-const PORT = process.env.PORT || 3030;
+const PORT = process.env.PORT || 4000; // Changed default port from 3030 to 4000
 const IS_DEV = process.env.NODE_ENV === 'development';
 
 app.use(express.json());
