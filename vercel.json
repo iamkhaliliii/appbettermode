@@ -9,7 +9,7 @@
     { "source": "/api", "destination": "/api/api.js" },
     { "source": "/test-vercel", "destination": "/api/api.js" },
     { "source": "/:file(.*\\.(?:js|css|png|jpg|jpeg|svg|ico|json))", "destination": "/:file" },
-    { "source": "/dashboard/site/:siteId/(appearance|app-store|billing|content|design-studio|people|reports|settings|site-config).*", "destination": "/index.html" },
+    { "source": "/dashboard/site/:siteId/:section(appearance|app-store|billing|content|design-studio|people|reports|settings|site-config)/:path*", "destination": "/index.html" },
     { "source": "/dashboard/:path*", "destination": "/index.html" },
     { "source": "/sites/:path*", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
