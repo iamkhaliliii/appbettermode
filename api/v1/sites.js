@@ -1,6 +1,7 @@
 // Standalone serverless function for /api/v1/sites
 import { db } from "../db/index.js";
 import { sites } from "../db/schema.js";
+import { eq } from "drizzle-orm";
 
 console.log('[VERCEL_API] /api/v1/sites endpoint initialized');
 
