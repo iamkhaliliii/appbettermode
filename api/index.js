@@ -2,9 +2,14 @@ import './env.js'; // Ensures .env is loaded
 import express from 'express';
 import path from 'path';
 import http from 'http';
+import { fileURLToPath } from 'url';
 import apiRoutes from './routes/index.js';
 import { db } from './db/index.js';
 import { logger } from './utils/logger.js';
+
+// Get directory path in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3030;
 const IS_DEV = process.env.NODE_ENV === 'development';

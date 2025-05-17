@@ -12,20 +12,16 @@
   },
   "routes": [
     { 
-      "src": "/api/v1/sites(.*)", 
-      "dest": "/api/v1/sites.js" 
+      "src": "/api/v1/(.*)", 
+      "dest": "/api/vercel.js" 
     },
     { 
       "src": "/api/health", 
-      "dest": "/api/health.js" 
+      "dest": "/api/vercel.js" 
     },
     { 
       "src": "/test-vercel", 
-      "dest": "/api/index.js" 
-    },
-    { 
-      "src": "/api/(.*)", 
-      "dest": "/api/index.js" 
+      "dest": "/api/vercel.js" 
     },
     { "src": "/(.*\\.(js|css|png|jpg|jpeg|svg|ico|json))", "dest": "/$1" },
     { "src": "/dashboard/site/[^/]+/(appearance|app-store|billing|content|design-studio|people|reports|settings|site-config).*", "dest": "/index.html" },
