@@ -8,6 +8,7 @@ This folder contains comprehensive documentation for the App-bettermode project.
 - [Development Guide](development.md) - Guide for setting up the development environment and workflow
 - [API Documentation](api.md) - Documentation of available API endpoints
 - [Project Structure](project-structure.md) - Explanation of the project directory structure
+- [AI Agent Guide](ai-agent-guide.md) - **Updated** comprehensive guide for AI agents with form handling, state management, testing, and more examples
 
 ## About Documentation
 
