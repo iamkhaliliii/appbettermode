@@ -1,34 +1,54 @@
-# appbettermode
+# App-bettermode
 
-Modern SPA App for Bettermode API Implementation
+Modern Content Management and Community Platform for managing multiple sites
 
-## Unified API Architecture
+## Project Structure
 
-This project uses a unified API architecture that works seamlessly in both local development and Vercel production environments. See [API.md](API.md) for detailed documentation.
+This project consists of several important components:
 
-## Development
+### Main Components
+
+- **`client/`** - React frontend code
+- **`server/`** - TypeScript source code for the API (these files should be edited)
+- **`api/`** - Compiled JavaScript code from `server/` for deployment on Vercel (do not edit)
+
+### Other Directories
+
+- **`docs/`** - Project documentation
+- **`scripts/`** - Helper scripts for development and deployment
+
+### Important Note About Server and API Folders
+
+- The `server` folder contains TypeScript source code that developers work on
+- The `api` folder contains compiled JavaScript code that is generated from `server` code using `npm run build`
+- Never directly edit files in the `api` folder
+- If you need to change the API, always modify the code in the `server` folder
+
+## Getting Started
+
+To set up the project in the development environment:
 
 ```bash
 # Install dependencies
 npm install
 
-# Run development server
+# Run in development mode
 npm run dev
-
-# Build for production
-npm run build
 ```
 
-## Environment Setup
+To access the application:
+- Frontend: http://localhost:4000
+- API: http://localhost:4000/api/v1
 
-The application requires the following environment variables:
+## Documentation
 
-- `NODE_ENV` - Set to `development` or `production`
-- `DATABASE_URL` - PostgreSQL connection string
-- `PORT` - Server port (default: 4000)
+For more information, please refer to the following documentation:
 
-## API Routes
+- [Development Guide](./docs/development.md) - Guide for getting started with development
+- [Architecture](./docs/architecture.md) - Information about the project architecture
+- [API Documentation](./docs/api.md) - Details about API endpoints
+- [Project Structure](./docs/project-structure.md) - Explanation of the project structure
 
-- `/api/v1/sites` - Get all sites or create a new site
-- `/api/v1/sites/:id` - Get a specific site by ID or subdomain
-- `/api/health` - API health check endpoint
+## License
+
+All rights reserved.
