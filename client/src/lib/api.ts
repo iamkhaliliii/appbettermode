@@ -1,8 +1,25 @@
 import { SiteDetails } from '@/types/site';
 import { z } from 'zod';
 
-// API base URL and endpoints - use the new v1 endpoints
-const API_BASE = '/api/v1';
+/**
+ * Get the base URL for API requests based on environment
+ */
+function getApiBaseUrl(): string {
+  // In production (Vercel), use relative URLs to avoid CORS issues
+  if (process.env.NODE_ENV === 'production') {
+    return '';
+  }
+  
+  // In development, use the dev server
+  return 'http://localhost:4000';
+}
+
+// API configuration
+const API_BASE_URL = getApiBaseUrl();
+const API_VERSION = 'v1';
+const API_BASE = `${API_BASE_URL}/api/${API_VERSION}`;
+
+// API endpoints with environment-aware URLs
 const ENDPOINTS = {
   SITES: `${API_BASE}/sites`,
   SITE: (identifier: string) => `${API_BASE}/sites/${identifier}`,
@@ -112,6 +129,8 @@ async function apiFetch<T>(
   options: RequestInit = {}
 ): Promise<T> {
   try {
+    console.log(`[API] ${options.method || 'GET'} ${url}`);
+    
     const response = await fetch(url, {
       ...options,
       headers: {
@@ -120,17 +139,45 @@ async function apiFetch<T>(
       },
     });
 
-    const data = await response.json();
+    // Try to parse the response, handling both JSON and non-JSON responses
+    let data: any;
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      data = await response.json();
+    } else {
+      // For non-JSON responses, get the text and try to parse it
+      const text = await response.text();
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        data = { message: text };
+      }
+    }
 
     if (!response.ok) {
       const errorData = data as ApiErrorResponse;
-      throw new Error(errorData.message || 'An error occurred with the API request');
+      console.error(`[API] Error ${response.status}:`, errorData);
+      
+      // Create a more structured error
+      const error = new Error(errorData.message || 'An error occurred with the API request');
+      (error as any).status = response.status;
+      (error as any).details = errorData.errors;
+      throw error;
     }
 
     return data as T;
   } catch (error) {
-    console.error('API error:', error);
-    throw error;
+    // If it's already an augmented error, just rethrow it
+    if ((error as any).status) {
+      throw error;
+    }
+    
+    // Otherwise wrap it in a standard format
+    console.error('[API] Error:', error);
+    const wrappedError = new Error(error instanceof Error ? error.message : 'Unknown API error');
+    (wrappedError as any).status = 500;
+    (wrappedError as any).details = { originalError: error };
+    throw wrappedError;
   }
 }
 
