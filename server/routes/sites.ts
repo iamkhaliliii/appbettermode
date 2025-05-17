@@ -1,6 +1,6 @@
 import express from 'express';
-import { db } from '../../db/index.js';
-import { sites, memberships } from '../../db/schema.js';
+import { db } from '../db/index.js';
+import { sites, memberships } from '../db/schema.js';
 import { eq, and, or } from 'drizzle-orm';
 import { z } from 'zod';
 
@@ -160,7 +160,7 @@ router.post('/', async (req, res) => {
         id: sites.id,
         name: sites.name,
         subdomain: sites.subdomain,
-        ownerId: sites.owner_id,    // CORRECTED: Use DB column name (sites.owner_id) for value, but key is 'ownerId'
+        ownerId: sites.owner_id,
         createdAt: sites.createdAt,
         updatedAt: sites.updatedAt,
         state: sites.state,
@@ -177,16 +177,14 @@ router.post('/', async (req, res) => {
     // Automatically add the creator as an admin member of the new site
     await db.insert(memberships).values({
       userId: currentUserId,
-      siteId: newSite.id, // newSite.id should be the UUID of the newly created site
+      siteId: newSite.id,
       role: 'admin', // Assigning 'admin' role to the creator
-      // joined_at will be set by default (defaultNow() in schema)
     });
     console.log(`User ${currentUserId} added as admin to site ${newSite.id}`);
 
     return res.status(201).json(newSite);
   } catch (error: any) {
     console.error('Error creating site:', error);
-    // Add more detailed error information
     return res.status(500).json({ 
       message: 'Error creating site in database',
       details: error.message || 'Unknown error',
