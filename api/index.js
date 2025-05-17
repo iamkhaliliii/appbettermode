@@ -1,58 +1,58 @@
-import './env.js'; // Ensures .env is loaded
+// Simplified entry point for Vercel deployment
 import express from 'express';
-import path from 'path';
-import http from 'http';
-import { fileURLToPath } from 'url';
-import apiRoutes from './routes/index.js';
-import { db } from './db/index.js';
-import { logger } from './utils/logger.js';
 
-// Get directory path in ESM
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Create a minimal Express app
 const app = express();
-const PORT = process.env.PORT || 3030;
-const IS_DEV = process.env.NODE_ENV === 'development';
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// API routes
-app.use('/api/v1', apiRoutes);
-// Create an HTTP server instance
-const server = http.createServer(app);
-if (IS_DEV) {
-    // Development mode: Set up Vite middleware
-    import('./vite.js').then((viteModule) => {
-        if (viteModule.setupVite && typeof viteModule.setupVite === 'function') {
-            viteModule.setupVite(app, server);
-            logger.info('Vite Dev Middleware configured.');
-        }
-        else {
-            logger.error('setupVite function not found or failed to load correctly.');
-        }
-    }).catch(error => {
-        logger.error('Failed to load or setup Vite Dev Middleware:', error);
-    });
-}
-else {
-    // Production mode: Serve static files
-    const clientBuildPath = path.join(__dirname, '../dist/public');
-    app.use(express.static(clientBuildPath));
-    // SPA fallback for client-side routing
-    app.get('*', (req, res) => {
-        if (req.method === 'GET' && !req.path.startsWith('/api') && req.accepts('html') && !req.path.includes('.')) {
-            res.sendFile(path.join(clientBuildPath, 'index.html'));
-        }
-        else if (!req.path.startsWith('/api')) {
-            res.status(404).sendFile(path.join(clientBuildPath, 'index.html'));
-        }
-    });
-}
-// Start the server
-server.listen(PORT, () => {
-    logger.info(`Server listening on port ${PORT}`);
-    logger.info(`Database initialized: ${db ? true : false}`);
-    if (IS_DEV) {
-        logger.info(`Development server running at http://localhost:${PORT}`);
-    }
+
+// Simplified API handling for Vercel
+app.get('/api/v1/sites', (req, res) => {
+  console.log('[VERCEL] GET /api/v1/sites request received');
+  return res.status(200).json({
+    message: 'Sites API endpoint',
+    data: [
+      { id: '1', name: 'Example Site 1', subdomain: 'example1' },
+      { id: '2', name: 'Example Site 2', subdomain: 'example2' },
+    ]
+  });
 });
+
+app.get('/api/v1/sites/:id', (req, res) => {
+  console.log(`[VERCEL] GET /api/v1/sites/${req.params.id} request received`);
+  return res.status(200).json({
+    message: `Site details for ID: ${req.params.id}`,
+    site: {
+      id: req.params.id,
+      name: `Example Site ${req.params.id}`,
+      subdomain: `example${req.params.id}`,
+      created: new Date().toISOString()
+    }
+  });
+});
+
+app.get('/test-vercel', (req, res) => {
+  console.log('[VERCEL] GET /test-vercel request received');
+  return res.status(200).json({ 
+    message: 'Vercel deployment is working', 
+    timestamp: new Date().toISOString() 
+  });
+});
+
+app.get('/api/health', (req, res) => {
+  console.log('[VERCEL] GET /api/health request received');
+  return res.status(200).json({ status: 'ok', message: 'API is healthy' });
+});
+
+// Fallback for any other API routes
+app.all('*', (req, res) => {
+  console.log(`[VERCEL] Request to unknown route: ${req.method} ${req.url}`);
+  return res.status(200).json({ 
+    message: 'Vercel API handler',
+    method: req.method,
+    path: req.url
+  });
+});
+
+// Export the handler for Vercel
 export default app;
