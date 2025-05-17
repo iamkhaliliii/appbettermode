@@ -1,10 +1,17 @@
 // Serverless function for specific site details
 export default function handler(req, res) {
   console.log(`[VERCEL_API] Site details endpoint called for: ${req.query.id}`);
+  
+  // Set proper headers
   res.setHeader('Content-Type', 'application/json');
   res.setHeader('Access-Control-Allow-Origin', '*');
-res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  // Handle OPTIONS request for CORS preflight
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
   const siteId = req.query.id;
   
   // Sample sites data
@@ -37,8 +44,10 @@ res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   );
   
   if (!site) {
+    console.log(`[VERCEL_API] Site not found for ID/subdomain: ${siteId}`);
     return res.status(404).json({ message: 'Site not found' });
   }
   
+  console.log(`[VERCEL_API] Site found:`, site);
   return res.status(200).json(site);
 } 
