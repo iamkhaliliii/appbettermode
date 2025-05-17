@@ -1,22 +1,24 @@
 /**
  * Helper utilities for API routes using Express
  */
+import { Request, Response, NextFunction } from 'express';
+import { IS_DEV } from './environment.js';
 
 /**
  * Wrap an async express route handler to automatically catch errors
  */
-export function asyncHandler(fn) {
-  return async (req, res, next) => {
+export function asyncHandler(fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       await fn(req, res, next);
-    } catch (error) {
+    } catch (error: any) {
       console.error(`Error in API handler for ${req.method} ${req.path}:`, error);
       
       // Send appropriate error response
       if (!res.headersSent) {
         res.status(500).json({ 
           message: 'Internal server error',
-          error: process.env.NODE_ENV === 'development' ? error.message : undefined
+          error: IS_DEV ? error.message : undefined
         });
       }
     }
@@ -26,8 +28,8 @@ export function asyncHandler(fn) {
 /**
  * Add standard cache control headers for API responses
  */
-export function cacheControl(maxAge = 0, staleWhileRevalidate = 0) {
-  return (req, res, next) => {
+export function cacheControl(maxAge: number = 0, staleWhileRevalidate: number = 0) {
+  return (req: Request, res: Response, next: NextFunction) => {
     if (maxAge === 0 && staleWhileRevalidate === 0) {
       res.setHeader('Cache-Control', 'no-store, max-age=0');
     } else {
@@ -40,16 +42,16 @@ export function cacheControl(maxAge = 0, staleWhileRevalidate = 0) {
 /**
  * Utility to set standard API response
  */
-export function apiResponse(res, status, data) {
+export function apiResponse(res: Response, status: number, data: any) {
   return res.status(status).json(data);
 }
 
 /**
  * Standard error response
  */
-export function apiError(res, status, message, details) {
+export function apiError(res: Response, status: number, message: string, details?: any) {
   return res.status(status).json({
     message,
-    ...(details && { details })
+    ...details && { details }
   });
 } 
