@@ -4,6 +4,11 @@
   "outputDirectory": "dist/public",
   "framework": "vite",
   "devCommand": "npm run dev",
+  "rewrites": [
+    { "source": "/api/v1/:path*", "destination": "/api/v1" },
+    { "source": "/api", "destination": "/api/api.js" },
+    { "source": "/test-vercel", "destination": "/api/api.js" }
+  ],
   "functions": {
     "api/**/*.js": {
       "memory": 1024,
@@ -11,18 +16,6 @@
     }
   },
   "routes": [
-    { 
-      "src": "/api/v1/(.*)", 
-      "dest": "/api/vercel.js" 
-    },
-    { 
-      "src": "/api/health", 
-      "dest": "/api/vercel.js" 
-    },
-    { 
-      "src": "/test-vercel", 
-      "dest": "/api/vercel.js" 
-    },
     { "src": "/(.*\\.(js|css|png|jpg|jpeg|svg|ico|json))", "dest": "/$1" },
     { "src": "/dashboard/site/[^/]+/(appearance|app-store|billing|content|design-studio|people|reports|settings|site-config).*", "dest": "/index.html" },
     { "src": "/dashboard.*", "dest": "/index.html" },
