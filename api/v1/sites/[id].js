@@ -1,5 +1,9 @@
 // Serverless function for specific site details
-export default function handler(req, res) {
+import { db } from "../../db/index.js";
+import { sites } from "../../db/schema.js";
+import { eq, or } from "drizzle-orm";
+
+export default async function handler(req, res) {
   console.log(`[VERCEL_API] Site details endpoint called for: ${req.query.id}`);
   
   // Set proper headers
@@ -12,42 +16,52 @@ export default function handler(req, res) {
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
+  
   const siteId = req.query.id;
   
-  // Sample sites data
-  const sites = [
-    {
-      id: '2108ce1a-ef73-4203-a6f8-bac4c0ad110d',
-      name: 'My First Test Site',
-      subdomain: 'myfirstsite',
-      ownerId: '49a44198-e6e5-4b1e-b8fb-b1c50ee0639d',
-      createdAt: '2025-05-15T15:40:54.181Z',
-      updatedAt: '2025-05-15T15:40:54.181Z',
-      state: 'pending',
-      status: 'active'
-    },
-    {
-      id: '8abc0268-b470-48cf-898d-695fae5bf72e',
-      name: 'Amir',
-      subdomain: 'amir',
-      ownerId: '49a44198-e6e5-4b1e-b8fb-b1c50ee0639d',
-      createdAt: '2025-05-15T15:47:40.603Z',
-      updatedAt: '2025-05-15T15:47:40.603Z',
-      state: 'pending',
-      status: 'active'
+  try {
+    console.log(`[VERCEL_API] Fetching site from database with ID or subdomain: ${siteId}`);
+    
+    // Try to find the site by ID or subdomain
+    let site;
+    
+    // First try as subdomain
+    site = await db.query.sites.findFirst({
+      where: eq(sites.subdomain, siteId)
+    });
+    
+    // If not found by subdomain, try by ID
+    if (!site && siteId.includes('-') && siteId.length > 30) {
+      console.log(`[VERCEL_API] Not found by subdomain, trying UUID: ${siteId}`);
+      site = await db.query.sites.findFirst({
+        where: eq(sites.id, siteId)
+      });
     }
-  ];
-  
-  // Find site by ID or subdomain
-  const site = sites.find(
-    site => site.id === siteId || site.subdomain === siteId
-  );
-  
-  if (!site) {
-    console.log(`[VERCEL_API] Site not found for ID/subdomain: ${siteId}`);
-    return res.status(404).json({ message: 'Site not found' });
+    
+    if (!site) {
+      console.log(`[VERCEL_API] Site not found for ID/subdomain: ${siteId}`);
+      return res.status(404).json({ message: 'Site not found' });
+    }
+    
+    // Format the response to match the expected format
+    const formattedSite = {
+      id: site.id,
+      name: site.name,
+      subdomain: site.subdomain,
+      ownerId: site.owner_id,
+      createdAt: site.createdAt,
+      updatedAt: site.updatedAt,
+      state: site.state,
+      status: site.status
+    };
+    
+    console.log(`[VERCEL_API] Site found:`, formattedSite);
+    return res.status(200).json(formattedSite);
+  } catch (error) {
+    console.error(`[VERCEL_API] Error fetching site:`, error);
+    return res.status(500).json({ 
+      message: 'Error fetching site from database',
+      details: error.message || 'Unknown error'
+    });
   }
-  
-  console.log(`[VERCEL_API] Site found:`, site);
-  return res.status(200).json(site);
 } 
