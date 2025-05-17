@@ -3,6 +3,7 @@ import { db } from '../db/index.js';
 import { sites, memberships } from '../db/schema.js';
 import { eq, and, or } from 'drizzle-orm';
 import { z } from 'zod';
+import { setApiResponseHeaders, handleCorsPreflightRequest } from '../utils/environment.js';
 
 const router = express.Router();
 
@@ -111,14 +112,24 @@ router.get('/:identifier', async (req, res) => {
   }
 });
 
+// Apply CORS headers and handle OPTIONS requests for all routes
+router.use((req, res, next) => {
+  setApiResponseHeaders(res);
+  if (handleCorsPreflightRequest(req, res)) return;
+  next();
+});
+
 // Create a new site
 router.post('/', async (req, res) => {
   try {
-    const validationResult = createSiteSchema.safeParse(req.body);
+    // Handle both string and object body formats (for Vercel compatibility)
+    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    
+    const validationResult = createSiteSchema.safeParse(body);
     if (!validationResult.success) {
       return res.status(400).json({
         message: 'Invalid site data.',
-        errors: validationResult.error.flatten().fieldErrors,
+        errors: { fieldErrors: validationResult.error.flatten().fieldErrors },
       });
     }
     const payload = validationResult.data;

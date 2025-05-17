@@ -5,12 +5,24 @@ import http from 'http';
 import apiRoutes from './routes/index.js';
 import { db } from './db/index.js';
 import { logger } from './utils/logger.js';
+import { IS_DEV, IS_VERCEL, SERVER_PORT } from './utils/environment.js';
 
 const app = express();
-const PORT = process.env.PORT || 4000; // Changed default port from 3030 to 4000
-const IS_DEV = process.env.NODE_ENV === 'development';
+const PORT = SERVER_PORT;
 
-app.use(express.json());
+app.use(express.json({
+  // Increase size limit for file uploads if needed
+  limit: '10mb',
+  // Handle JSON parse errors gracefully
+  verify: (req: any, res: any, buf: Buffer) => {
+    try {
+      JSON.parse(buf.toString());
+    } catch (e) {
+      res.status(400).json({ message: 'Invalid JSON in request body' });
+      throw new Error('Invalid JSON');
+    }
+  }
+}));
 app.use(express.urlencoded({ extended: true }));
 
 // API routes
@@ -34,7 +46,17 @@ if (IS_DEV) {
 } else {
   // Production mode: Serve static files
   const clientBuildPath = path.join(__dirname, '../dist/public');
-  app.use(express.static(clientBuildPath));
+  app.use(express.static(clientBuildPath, {
+    maxAge: '1y',
+    setHeaders: (res, path) => {
+      // Set proper cache headers
+      if (path.endsWith('.html')) {
+        res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+      } else if (path.match(/\.(js|css|png|jpg|jpeg|gif|ico|svg)$/)) {
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      }
+    }
+  }));
 
   // SPA fallback for client-side routing
   app.get('*', (req, res) => {
@@ -46,13 +68,15 @@ if (IS_DEV) {
   });
 }
 
-// Start the server
-server.listen(PORT, () => {
-  logger.info(`Server listening on port ${PORT}`);
-  logger.info(`Database initialized: ${db ? true : false}`);
-  if (IS_DEV) {
-    logger.info(`Development server running at http://localhost:${PORT}`);
-  }
-});
+// Don't start the server when running in Vercel environment
+if (!IS_VERCEL) {
+  server.listen(PORT, () => {
+    logger.info(`Server listening on port ${PORT}`);
+    logger.info(`Database initialized: ${db ? true : false}`);
+    if (IS_DEV) {
+      logger.info(`Development server running at http://localhost:${PORT}`);
+    }
+  });
+}
 
 export default app; 
