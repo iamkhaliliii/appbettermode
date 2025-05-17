@@ -4,8 +4,12 @@ import { sites, memberships } from '../db/schema.js';
 import { eq, and, or } from 'drizzle-orm';
 import { z } from 'zod';
 import { setApiResponseHeaders, handleCorsPreflightRequest } from '../utils/environment.js';
+import { fetchBrandData } from '../utils/brandfetch.js';
 
 const router = express.Router();
+
+// Brandfetch API key
+const BRANDFETCH_API_KEY = 'rPJ4fYfXffPHxhNAIo8lU7mDRQXHsrYqKXQ678ySJsc=';
 
 // Zod schema for site creation
 const createSiteSchema = z.object({
@@ -16,6 +20,9 @@ const createSiteSchema = z.object({
       message: 'Subdomain can only contain lowercase letters, numbers, and hyphens, and cannot start or end with a hyphen.',
     })
     .optional(),
+  domain: z.string().optional(), // Optional domain for brand fetching
+  selectedLogo: z.string().optional(), // User selected logo URL
+  selectedColor: z.string().optional(), // User selected brand color
 });
 
 // Get all sites for the current user
@@ -151,12 +158,34 @@ router.post('/', async (req, res) => {
       }
     }
 
+    // Determine which brand data to use
+    let logoUrl = null;
+    let primaryColor = null;
+    let brandColors = null;
+    
+    // If user provided selected brand assets, use those
+    if (payload.selectedLogo || payload.selectedColor) {
+      console.log('Using user-selected brand assets');
+      logoUrl = payload.selectedLogo || null;
+      primaryColor = payload.selectedColor || null;
+    } 
+    // Otherwise fetch from Brandfetch if domain is provided
+    else if (payload.domain) {
+      console.log(`Fetching brand data for domain: ${payload.domain}`);
+      const brandData = await fetchBrandData(payload.domain, BRANDFETCH_API_KEY);
+      logoUrl = brandData.logoUrl;
+      primaryColor = brandData.primaryColor;
+      brandColors = brandData.brandColors;
+    }
+
     // Skip transaction, create only the site without membership
     console.log('Creating site with data:', {
       name: payload.name,
       subdomain: payload.subdomain,
       ownerId: currentUserId,
-      state: 'pending'
+      state: 'pending',
+      logoUrl,
+      primaryColor
     });
     
     const siteInsertResult = await db
@@ -166,6 +195,9 @@ router.post('/', async (req, res) => {
         subdomain: payload.subdomain,
         owner_id: currentUserId,
         state: 'pending', // Default state for new sites
+        logo_url: logoUrl,
+        primary_color: primaryColor,
+        brand_colors: brandColors,
       })
       .returning({
         id: sites.id,
@@ -176,6 +208,9 @@ router.post('/', async (req, res) => {
         updatedAt: sites.updatedAt,
         state: sites.state,
         status: sites.status,
+        logo_url: sites.logo_url,
+        primary_color: sites.primary_color,
+        brand_colors: sites.brand_colors,
       });
     
     if (!siteInsertResult || siteInsertResult.length === 0) {

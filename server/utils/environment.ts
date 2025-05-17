@@ -27,10 +27,17 @@ export function getApiBaseUrl(): string {
  * Set standard CORS and content-type headers for API responses
  */
 export function setApiResponseHeaders(res: any): void {
+  // Set content type for API responses
   res.setHeader('Content-Type', 'application/json');
+  
+  // CORS headers - Allow requests from any origin in development
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, Cache-Control, Pragma');
+  res.setHeader('Access-Control-Max-Age', '86400'); // 24 hours
+  
+  // Allow credentials (cookies, auth headers)
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   
   // Add cache control for API responses
   res.setHeader('Cache-Control', 'no-store, max-age=0');

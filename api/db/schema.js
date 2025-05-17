@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, timestamp, primaryKey, pgEnum, boolean, uniqueIndex } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, timestamp, primaryKey, pgEnum, boolean, uniqueIndex, jsonb } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 // Enum for membership roles - PLEASE VERIFY/UPDATE THESE VALUES
 export const memberRoleEnum = pgEnum('member_role', ['member', 'admin', 'editor']); // Added 'admin', 'editor' as common roles
@@ -11,6 +11,9 @@ export const sites = pgTable('sites', {
     updatedAt: timestamp('updated_at', { withTimezone: true }).default(sql `now()`), // DB has default now()
     state: text('state').default('pending'), // DB has default 'pending'
     status: text('status').default('active'), // New column from DB, varchar in DB, using text here. Default 'active'
+    logo_url: text('logo_url'), // Brand logo URL from Brandfetch
+    primary_color: text('primary_color'), // Primary brand color from Brandfetch
+    brand_colors: jsonb('brand_colors'), // Array of brand colors from Brandfetch
 });
 export const users = pgTable('users', {
     id: uuid('id').primaryKey().default(sql `gen_random_uuid()`),

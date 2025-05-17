@@ -1,5 +1,5 @@
 // Vercel serverless function handler for /api/v1
-export default function handler(req, res) {
+export default async function handler(req, res) {
   const path = req.url || '';
   
   // Log the request for debugging
@@ -12,6 +12,20 @@ export default function handler(req, res) {
   // Handle different API endpoints
   if (endpoint.startsWith('sites')) {
     return handleSites(req, res, endpoint);
+  }
+  
+  // Handle brand-fetch endpoint
+  if (endpoint.startsWith('brand-fetch')) {
+    // Dynamically import the handler to avoid loading it unnecessarily
+    const { default: brandFetchHandler } = await import('./brand-fetch.js');
+    return brandFetchHandler(req, res);
+  }
+  
+  // Handle test-brandfetch endpoint
+  if (endpoint.startsWith('test-brandfetch')) {
+    // Dynamically import the test handler
+    const { default: testHandler } = await import('./test-brandfetch.js');
+    return testHandler(req, res);
   }
   
   // Default response for unknown endpoints

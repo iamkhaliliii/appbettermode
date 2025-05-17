@@ -2,6 +2,7 @@ import './env'; // Ensures .env is loaded
 import express, { type Express } from 'express';
 import path from 'path';
 import http from 'http';
+import cors from 'cors';
 import apiRoutes from './routes/index.js';
 import { db } from './db/index.js';
 import { logger } from './utils/logger.js';
@@ -9,6 +10,16 @@ import { IS_DEV, IS_VERCEL, SERVER_PORT } from './utils/environment.js';
 
 const app = express();
 const PORT = SERVER_PORT;
+
+// CORS middleware - apply to all routes
+app.use(cors({
+  origin: '*', // Allow all origins in development
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'Cache-Control', 'Pragma'],
+  // Cannot use credentials:true with origin:'*'
+  credentials: false,
+  maxAge: 86400 // 24 hours
+}));
 
 app.use(express.json({
   // Increase size limit for file uploads if needed

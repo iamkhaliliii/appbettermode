@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -24,7 +24,8 @@ import {
   LayoutGrid,
   X,
   RefreshCw,
-  ChevronDown
+  ChevronDown,
+  Download
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from "wouter";
@@ -52,7 +53,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SiteCreationFormInputs } from './types';
+import { SiteCreationFormInputs, BrandLogo, BrandColor, CompanyInfo } from './types';
+import CreateSiteDialog from '@/components/dashboard/CreateSiteDialog';
 
 // --- Validation Schema (for create site form) ---
 const siteCreationSchema = z.object({
@@ -63,6 +65,9 @@ const siteCreationSchema = z.object({
     .min(3, 'Subdomain must be at least 3 characters.')
     .max(30, 'Subdomain cannot exceed 30 characters.')
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Invalid subdomain format (lowercase letters, numbers, and hyphens).')
+    .optional()
+    .or(z.literal('')),
+  domain: z.string()
     .optional()
     .or(z.literal('')),
 });
@@ -76,6 +81,10 @@ const createNewSite = async (data: SiteCreationFormInputs): Promise<Site> => {
   return sitesApi.createSite({
     name: data.name,
     subdomain: data.subdomain?.trim().toLowerCase() || undefined,
+    domain: data.domain?.trim().toLowerCase() || undefined,
+    // Add selected logo and color if available
+    selectedLogo: data.selectedLogo,
+    selectedColor: data.selectedColor
   });
 };
 
@@ -128,14 +137,38 @@ const SiteCard: React.FC<{ site: Site }> = ({ site }) => {
   return (
     <Link href={APP_ROUTES.DASHBOARD_SITE.INDEX(site.subdomain || site.id)} className="block group">
       <Card className="bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/60 hover:shadow-xl dark:hover:border-primary-500/50 transition-all duration-300 ease-in-out h-full flex flex-col rounded-lg overflow-hidden will-change-transform group-hover:translate-y-[-4px]">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary-500/5 to-primary-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-        <CardHeader className="p-5 border-b dark:border-gray-700/60 relative">
-          <div className="flex justify-between items-start gap-2">
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors truncate" title={site.name}>
-              {site.name}
-            </h3>
-            <SiteStateBadge state={site.state} />
-          </div>
+        <div 
+          className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" 
+          style={site.primary_color ? {
+            background: `linear-gradient(to right, ${site.primary_color}15, ${site.primary_color}00)`
+          } : {
+            background: 'linear-gradient(to right, rgba(var(--primary-500), 0.05), rgba(var(--primary-500), 0))'
+          }}
+        ></div>
+                  <CardHeader className="p-5 border-b dark:border-gray-700/60 relative">
+            <div className="flex justify-between items-start gap-2">
+              <div className="flex items-center gap-3">
+                {site.logo_url ? (
+                  <img 
+                    src={site.logo_url} 
+                    alt={`${site.name} logo`} 
+                    className="w-8 h-8 object-contain rounded-md"
+                    style={{ 
+                      background: 'rgba(250, 250, 250, 0.8)',
+                      padding: '1px'
+                    }}
+                  />
+                ) : (
+                  <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-md flex items-center justify-center text-gray-500 dark:text-gray-400">
+                    <LayoutGrid className="h-5 w-5" />
+                  </div>
+                )}
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors truncate" title={site.name}>
+                  {site.name}
+                </h3>
+              </div>
+              <SiteStateBadge state={site.state} />
+            </div>
           {site.subdomain ? (
             <p className="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-1">
               <Globe className="w-3.5 h-3.5 mr-1.5 text-gray-400 dark:text-gray-500" />
@@ -174,192 +207,6 @@ const SiteCard: React.FC<{ site: Site }> = ({ site }) => {
     </Link>
   );
 };
-
-const CreateSiteDialog: React.FC<{
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-}> = ({ isOpen, onOpenChange }) => {
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting, isValid, touchedFields },
-    watch,
-  } = useForm<SiteCreationFormInputs>({
-    resolver: zodResolver(siteCreationSchema),
-    defaultValues: { name: '', subdomain: '' },
-    mode: 'onChange'
-  });
-
-  const nameValue = watch('name');
-  const subdomainValue = watch('subdomain');
-
-  const createSiteMutation = useMutation({
-    mutationFn: createNewSite,
-    onSuccess: (newSite) => {
-      queryClient.invalidateQueries({ queryKey: ['userSites'] });
-      reset();
-      onOpenChange(false);
-      toast({
-        title: "Site Created!",
-        description: `The site "${newSite.name}" has been successfully created.`,
-        variant: "default",
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Creation Failed",
-        description: error.message || "An unexpected error occurred.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const onSubmitHandler: SubmitHandler<SiteCreationFormInputs> = (data) => {
-    createSiteMutation.mutate(data);
-  };
-
-  // Auto-generate subdomain suggestion based on name
-  useEffect(() => {
-    if (nameValue && !touchedFields.subdomain) {
-      const suggestedSubdomain = nameValue
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '');
-    }
-  }, [nameValue, touchedFields.subdomain]);
-
-  return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
-      if (createSiteMutation.isPending) return;
-      onOpenChange(open);
-      if (!open) reset();
-    }}>
-      <DialogContent className="sm:max-w-lg bg-white dark:bg-gray-800 p-0 overflow-hidden">
-        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-primary-400 to-primary-600"></div>
-        <DialogHeader className="p-6 pb-3 border-b dark:border-gray-700">
-          <DialogTitle className="text-xl font-semibold text-gray-800 dark:text-gray-100">Create a New Site</DialogTitle>
-          <DialogDescription className="text-gray-600 dark:text-gray-400">
-            Fill in the details below to launch your new community site.
-          </DialogDescription>
-        </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmitHandler)} className="px-6 py-4 space-y-6">
-          <div className="space-y-1.5">
-            <Label htmlFor="name" className="font-medium text-gray-700 dark:text-gray-300">Site Name</Label>
-            <Input
-              id="name"
-              {...register('name')}
-              placeholder="e.g., My Awesome Community"
-              className={`w-full h-10 px-3 rounded-md border dark:bg-gray-700 dark:text-gray-200 ${errors.name ? 'border-red-500 dark:border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600 focus:border-primary-500 dark:focus:border-primary-400 focus:ring-primary-500 dark:focus:ring-primary-400'}`}
-              disabled={createSiteMutation.isPending}
-            />
-            {errors.name ? (
-              <p className="text-sm text-red-600 dark:text-red-400 animate-fadeIn">{errors.name.message}</p>
-            ) : (
-              <p className="text-xs text-gray-500 dark:text-gray-400 h-4"></p>
-            )}
-          </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="subdomain" className="font-medium text-gray-700 dark:text-gray-300">Subdomain <span className="text-xs text-gray-500 dark:text-gray-400">(Optional)</span></Label>
-            <div className="flex items-center relative">
-              <Input
-                id="subdomain"
-                {...register('subdomain')}
-                placeholder="e.g., my-community"
-                className={`w-full h-10 px-3 rounded-l-md border dark:bg-gray-700 dark:text-gray-200 ${errors.subdomain ? 'border-red-500 dark:border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600 focus:border-primary-500 dark:focus:border-primary-400 focus:ring-primary-500 dark:focus:ring-primary-400'} rounded-r-none border-r-0`}
-                disabled={createSiteMutation.isPending}
-              />
-              <span className="px-3 h-10 inline-flex items-center rounded-r-md border border-l-0 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 text-sm">
-                .yourdomain.com
-              </span>
-              {subdomainValue && (
-                <button
-                  type="button"
-                  className="absolute right-16 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                  onClick={() => {
-                    const field = register('subdomain');
-                    field.onChange({ target: { value: '' } } as React.ChangeEvent<HTMLInputElement>);
-                  }}
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              )}
-            </div>
-            {errors.subdomain ? (
-              <p className="text-sm text-red-600 dark:text-red-400 animate-fadeIn">{errors.subdomain.message}</p>
-            ) : (
-              <p className="text-xs text-gray-500 dark:text-gray-400 pt-1">
-                Lowercase letters, numbers, and hyphens only. Leave blank for no subdomain.
-              </p>
-            )}
-          </div>
-
-          <DialogFooter className="flex justify-end gap-3 pt-4 border-t dark:border-gray-700">
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => {
-                if (createSiteMutation.isPending) return;
-                reset();
-                onOpenChange(false);
-              }}
-              disabled={createSiteMutation.isPending}
-              className="dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="default"
-              disabled={createSiteMutation.isPending}            >
-              {createSiteMutation.isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4.5 w-4.5 animate-spin" />
-                  Creating Site...
-                </>
-              ) : (
-                <>
-                  <Plus className="mr-2 h-4.5 w-4.5" />
-                  Create Site
-                </>
-              )}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-// --- Skeleton Placeholder for loading state ---
-const SiteCardSkeleton: React.FC = () => (
-  <div className="bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/60 rounded-lg overflow-hidden h-full flex flex-col animate-pulse">
-    <div className="p-5 border-b dark:border-gray-700/60">
-      <div className="flex justify-between items-start gap-2">
-        <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
-        <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded-full w-20"></div>
-      </div>
-      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/5 mt-2"></div>
-    </div>
-    <div className="p-5 flex-grow space-y-3">
-      <div className="flex items-center">
-        <div className="h-4 w-4 bg-gray-200 dark:bg-gray-700 rounded-full mr-2"></div>
-        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-      </div>
-      <div className="flex items-center">
-        <div className="h-4 w-4 bg-gray-200 dark:bg-gray-700 rounded-full mr-2"></div>
-        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
-      </div>
-    </div>
-    <div className="p-4 bg-gray-50 dark:bg-gray-800 border-t dark:border-gray-700/60">
-      <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-32"></div>
-    </div>
-  </div>
-);
 
 // --- Main Component ---
 const SitesDashboardPage: React.FC = () => {

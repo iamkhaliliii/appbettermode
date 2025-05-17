@@ -44,6 +44,10 @@ const siteSchema = z.object({
   status: z.string(),
   // Role may be included in responses from the membership join
   role: z.string().optional(),
+  // Brand data fields
+  logo_url: z.string().nullable().optional(),
+  primary_color: z.string().nullable().optional(),
+  brand_colors: z.any().nullable().optional(),
 });
 
 const sitesResponseSchema = z.array(siteSchema);
@@ -211,7 +215,13 @@ export const sitesApi = {
   },
 
   // Create a new site
-  createSite: async (newSite: { name: string; subdomain?: string }): Promise<Site> => {
+  createSite: async (newSite: { 
+    name: string; 
+    subdomain?: string; 
+    domain?: string;
+    selectedLogo?: string;
+    selectedColor?: string;
+  }): Promise<Site> => {
     const data = await apiFetch<unknown>(ENDPOINTS.SITES, {
       method: 'POST',
       body: JSON.stringify(newSite),
