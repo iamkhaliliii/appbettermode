@@ -4,14 +4,26 @@
   "outputDirectory": "dist/public",
   "framework": "vite",
   "devCommand": "npm run dev",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    }
+  ],
   "rewrites": [
     { "source": "/api/v1/:path*", "destination": "/api/v1" },
     { "source": "/api", "destination": "/api/api.js" },
     { "source": "/test-vercel", "destination": "/api/api.js" },
     { "source": "/:file(.*\\.(?:js|css|png|jpg|jpeg|svg|ico|json))", "destination": "/:file" },
-    { "source": "/dashboard/site/:siteId/:section(appearance|app-store|billing|content|design-studio|people|reports|settings|site-config)/:path*", "destination": "/index.html" },
-    { "source": "/dashboard/:path*", "destination": "/index.html" },
-    { "source": "/sites/:path*", "destination": "/index.html" },
+    { "source": "/(sites|dashboard)(.*)", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "functions": {

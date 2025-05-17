@@ -22,7 +22,7 @@ import DashboardSiteReports from "@/pages/dashboard/site/[siteSD]/reports/index"
 import DashboardSiteAppStore from "@/pages/dashboard/site/[siteSD]/app-store/index";
 import DashboardSiteDesignStudio from "@/pages/dashboard/site/[siteSD]/design-studio/index";
 import DashboardSiteSiteConfig from "@/pages/dashboard/site/[siteSD]/site-config/index";
-import NotFound from "@/pages/not-found";
+import NotFound from "@/pages/404";
 import Content from "@/pages/dashboard/site/[siteSD]/content";
 
 // Import site frontend pages (public facing)
