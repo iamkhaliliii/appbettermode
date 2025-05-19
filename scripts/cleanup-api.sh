@@ -44,6 +44,11 @@ fi
 find ./api -name ".DS_Store" -type f -delete
 echo "Removed .DS_Store files"
 
+echo "Cleaning API directory..."
+
+# Remove any .ts files from the api directory (these should be compiled to .js)
+find api -name "*.ts" -type f -delete
+
 echo "API folder cleanup complete!"
 echo "Redundant files were backed up to: $BACKUP_DIR"
 echo "The API folder now has a clean structure with essential files only." 
