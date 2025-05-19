@@ -333,13 +333,17 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
   };
 
   const onSubmitHandler: SubmitHandler<SiteCreationFormInputs> = (data) => {
+    console.log("Submit handler called, current step:", wizardStep);
+    
     // Make sure we're in step 3 before proceeding with site creation
     if (wizardStep !== 3) {
+      console.log("Prevented submission - not in step 3");
       return;
     }
     
     // Show creation process overlay only after form submission
     setIsCreatingProcess(true);
+    console.log("Starting site creation process...");
     
     // Call the API after a delay to allow for loading animation
     setTimeout(() => {
@@ -478,7 +482,14 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                 </p>
               <form 
                 id="create-site-form" 
-                onSubmit={handleSubmit(onSubmitHandler)} 
+                onSubmit={(e) => {
+                  // Only allow form submission in step 3
+                  if (wizardStep !== 3) {
+                    e.preventDefault();
+                    return;
+                  }
+                  handleSubmit(onSubmitHandler)(e);
+                }} 
                 className="space-y-5"
                 onKeyDown={(e) => {
                   // Prevent form submission on Enter key except when in step 3
@@ -847,7 +858,10 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                   <Button
                     type="button" 
                     size="sm"
-                    onClick={() => {
+                    onClick={(e) => {
+                      // Prevent any form submission
+                      e.preventDefault();
+                      e.stopPropagation();
                       // Only change the wizard step without submitting the form
                       setWizardStep(3);
                     }}
@@ -873,6 +887,12 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                     type="submit"
                     form="create-site-form"
                     size="sm"
+                    onClick={() => {
+                      // Explicitly set creating process state here as a backup
+                      if (wizardStep === 3) {
+                        setIsCreatingProcess(true);
+                      }
+                    }}
                     disabled={createSiteMutation.isPending}
                     className="text-sm bg-gray-900 hover:bg-black text-white dark:bg-gray-800 dark:hover:bg-gray-700 min-w-24"
                   >
