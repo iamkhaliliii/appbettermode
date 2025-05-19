@@ -1,8 +1,20 @@
 import { BrandLogo, BrandColor, CompanyInfo } from '../pages/sites/types';
 
-// Use direct URLs for local development
-const FETCH_BRAND_ENDPOINT = 'http://localhost:4000/api/v1/brand-fetch';
-const TEST_BRAND_ENDPOINT = 'http://localhost:4000/api/v1/test-brandfetch';
+// Function to get API base URL based on environment
+function getApiBaseUrl(): string {
+  // In production, use relative URLs to avoid CORS issues
+  if (process.env.NODE_ENV === 'production') {
+    return '';
+  }
+  
+  // In development, use the local dev server
+  return 'http://localhost:4000';
+}
+
+// Use environment-aware URLs
+const API_BASE = getApiBaseUrl();
+const FETCH_BRAND_ENDPOINT = `${API_BASE}/api/v1/brand-fetch`;
+const TEST_BRAND_ENDPOINT = `${API_BASE}/api/v1/test-brandfetch`;
 
 /**
  * Test the Brandfetch API connection

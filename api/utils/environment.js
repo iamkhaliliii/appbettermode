@@ -27,7 +27,7 @@ export function setApiResponseHeaders(res) {
     // CORS headers - Allow requests from any origin in development
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, Cache-Control, Pragma');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, Cache-Control, Pragma, Expires');
     res.setHeader('Access-Control-Max-Age', '86400'); // 24 hours
     // Allow credentials (cookies, auth headers)
     res.setHeader('Access-Control-Allow-Credentials', 'true');
