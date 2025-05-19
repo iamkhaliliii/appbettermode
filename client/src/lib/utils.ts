@@ -17,3 +17,4 @@ export function getApiBaseUrl(): string {
   // In development, use the dev server
   return 'http://localhost:4000';
 }
+export type ObjectValues<T> = T[keyof T];

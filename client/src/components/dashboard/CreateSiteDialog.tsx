@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { MultiStepLoader } from '@/components/ui/multi-step-loader';
 import {
   Globe,
   X,
@@ -27,6 +28,14 @@ import {
   PenLine,
   Check,
   ArrowLeft,
+  Calendar,
+  MessageSquare,
+  HelpCircle,
+  Star,
+  Layout,
+  BookOpen,
+  Briefcase,
+  FileText,
 } from 'lucide-react';
 import { sitesApi } from '@/lib/api';
 import { z } from 'zod';
@@ -50,9 +59,88 @@ export const siteCreationSchema = z.object({
     .or(z.literal('')),
   selectedLogo: z.string().optional().or(z.literal('')),
   selectedColor: z.string().optional().or(z.literal('')),
+  selectedContentTypes: z.array(z.string()).default([]),
 });
 
 export type SiteCreationFormInputs = z.infer<typeof siteCreationSchema>;
+
+// --- Content Types for Step 3 ---
+interface ContentType {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  color: string;
+}
+
+const contentTypes: ContentType[] = [
+  {
+    id: "event",
+    title: "Event",
+    description: "Organize events with scheduling and registrations.",
+    icon: <Calendar className="h-5 w-5 text-emerald-500" />,
+    color: "emerald"
+  },
+  {
+    id: "discussion",
+    title: "Discussion",
+    description: "Start conversations with community members.",
+    icon: <MessageSquare className="h-5 w-5 text-blue-500" />,
+    color: "blue"
+  },
+  {
+    id: "qa",
+    title: "Q&A",
+    description: "Enable community Q&A with voting system.",
+    icon: <HelpCircle className="h-5 w-5 text-violet-500" />,
+    color: "violet"
+  },
+  {
+    id: "wishlist",
+    title: "Wishlist",
+    description: "Collect and prioritize community ideas.",
+    icon: <Star className="h-5 w-5 text-amber-500" />,
+    color: "amber"
+  },
+  {
+    id: "landing",
+    title: "Landing Page",
+    description: "Create beautiful marketing pages.",
+    icon: <Layout className="h-5 w-5 text-indigo-500" />,
+    color: "indigo"
+  },
+  {
+    id: "knowledge",
+    title: "Knowledge Base",
+    description: "Build a searchable help center.",
+    icon: <BookOpen className="h-5 w-5 text-rose-500" />,
+    color: "rose"
+  },
+  {
+    id: "jobs",
+    title: "Job List",
+    description: "Post and manage job openings.",
+    icon: <Briefcase className="h-5 w-5 text-cyan-500" />,
+    color: "cyan"
+  },
+  {
+    id: "blog",
+    title: "Blog",
+    description: "Share updates and stories.",
+    icon: <FileText className="h-5 w-5 text-purple-500" />,
+    color: "purple"
+  }
+];
+
+// Loading states for the creation process
+const siteCreationSteps = [
+  { text: "Creating Site Structure" },
+  { text: "Setting Up Content Types" },
+  { text: "Configuring Brand Assets" },
+  { text: "Establishing Permissions" },
+  { text: "Initializing Community" },
+  { text: "Finalizing Setup" },
+];
 
 // --- API Functions ---
 const createNewSite = async (data: SiteCreationFormInputs) => {
@@ -61,7 +149,8 @@ const createNewSite = async (data: SiteCreationFormInputs) => {
     subdomain: data.subdomain?.trim().toLowerCase() || undefined,
     domain: data.domain?.trim().toLowerCase() || undefined,
     selectedLogo: data.selectedLogo,
-    selectedColor: data.selectedColor
+    selectedColor: data.selectedColor,
+    selectedContentTypes: data.selectedContentTypes
   });
 };
 
@@ -74,8 +163,11 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
-  // Wizard step tracking - 1: Domain entry, 2: Site details and brand
+  // Wizard step tracking - 1: Domain entry, 2: Site details and brand, 3: Content types
   const [wizardStep, setWizardStep] = useState(1);
+  
+  // Site creation process state
+  const [isCreatingProcess, setIsCreatingProcess] = useState(false);
   
   // Brand data state
   const [brandData, setBrandData] = useState<{
@@ -112,7 +204,8 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
       subdomain: '', 
       domain: '',
       selectedLogo: '',
-      selectedColor: '' 
+      selectedColor: '',
+      selectedContentTypes: [] 
     },
     mode: 'onChange'
   });
@@ -122,6 +215,7 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
   const domainValue = watch('domain');
   const selectedLogo = watch('selectedLogo');
   const selectedColor = watch('selectedColor') || '#6366f1';
+  const selectedContentTypes = watch('selectedContentTypes') || [];
   
   // Function to fetch brand data
   const fetchBrandData = async () => {
@@ -238,6 +332,16 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
     }
   };
 
+  const onSubmitHandler: SubmitHandler<SiteCreationFormInputs> = (data) => {
+    // Show creation process overlay
+    setIsCreatingProcess(true);
+    
+    // Call the API after a delay to allow for loading animation
+    setTimeout(() => {
+      createSiteMutation.mutate(data);
+    }, siteCreationSteps.length * 2000); // Allow enough time for all steps to complete
+  };
+
   const createSiteMutation = useMutation({
     mutationFn: createNewSite,
     onSuccess: (newSite) => {
@@ -251,6 +355,7 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
       });
     },
     onError: (error: Error) => {
+      setIsCreatingProcess(false); // Hide loader on error
       toast({
         title: "Creation Failed",
         description: error.message || "An unexpected error occurred.",
@@ -258,10 +363,6 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
       });
     },
   });
-
-  const onSubmitHandler: SubmitHandler<SiteCreationFormInputs> = (data) => {
-    createSiteMutation.mutate(data);
-  };
 
   // Reset form and state when dialog closes
   const handleDialogReset = () => {
@@ -278,6 +379,7 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
     setWizardStep(1);
     setShowManualLogoInput(false);
     setShowManualColorInput(false);
+    setIsCreatingProcess(false);
   };
 
   // Helper function to adjust color brightness
@@ -299,6 +401,21 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
     return `#${Math.round(adjustR).toString(16).padStart(2, '0')}${Math.round(adjustG).toString(16).padStart(2, '0')}${Math.round(adjustB).toString(16).padStart(2, '0')}`;
   }
 
+  // Function to toggle content type selection
+  const toggleContentType = (id: string) => {
+    const currentSelection = [...(selectedContentTypes || [])];
+    const index = currentSelection.indexOf(id);
+    
+    if (index === -1) {
+      // Add the item if not present
+      setValue('selectedContentTypes', [...currentSelection, id]);
+    } else {
+      // Remove the item if already selected
+      currentSelection.splice(index, 1);
+      setValue('selectedContentTypes', currentSelection);
+    }
+  };
+
   return (
     <Dialog 
       open={isOpen} 
@@ -309,8 +426,15 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
         onOpenChange(open);
       }}
     >
+      {/* Multi-step loader for creation process */}
+      <MultiStepLoader 
+        loadingStates={siteCreationSteps} 
+        loading={isCreatingProcess} 
+        duration={2000} 
+        loop={false}
+      />
+      
       <DialogContent className="sm:max-w-7xl p-0 overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border-0 shadow-xl">
-        
         <div className="flex flex-col md:flex-row h-[90vh] max-h-[800px]">
           {/* Left panel - Form */}
           <div className="md:w-1/2 flex flex-col overflow-hidden bg-white dark:bg-gray-900">
@@ -320,26 +444,31 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                   <div className="w-16 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                     <div 
                       className="h-full bg-green-500 rounded-full" 
-                      style={{ width: wizardStep === 1 ? '50%' : '100%' }}
+                      style={{ width: wizardStep === 1 ? '33%' : wizardStep === 2 ? '66%' : '100%' }}
                     ></div>
                   </div>
-                  <span className="text-sm ml-2 text-gray-600 dark:text-gray-400">{wizardStep}/2</span>
+                  <span className="text-sm ml-2 text-gray-600 dark:text-gray-400">{wizardStep}/3</span>
                 </div>
               </div>
-              
-
+ 
             </div>
             
             <div className="flex-1 items-center justify-center px-16 overflow-y-auto 
-            scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent hover:scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 dark:hover:scrollbar-thumb-gray-600">
-            <h1 className="text-l font-semibold text-gray-900 dark:text-white mt-8 mb-1">
-                {wizardStep === 1 ? "Enter your domain" : "Create your site"}
-              </h1>
-              <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
-                {wizardStep === 1 
-                  ? "We'll fetch your brand assets automatically" 
-                  : "Customize your community platform with your brand"}
-              </p>
+             scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent hover:scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 dark:hover:scrollbar-thumb-gray-600">
+             <h1 className="text-l font-semibold text-gray-900 dark:text-white mt-8 mb-1">
+                  {wizardStep === 1 
+                    ? "Enter your domain" 
+                    : wizardStep === 2 
+                    ? "Create your site" 
+                    : "Choose post types"}
+                </h1>
+                <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
+                  {wizardStep === 1 
+                    ? "We'll fetch your brand assets automatically" 
+                    : wizardStep === 2
+                    ? "Customize your community platform with your brand"
+                    : "Select the content types for your community"}
+                </p>
               <form id="create-site-form" onSubmit={handleSubmit(onSubmitHandler)} className="space-y-5">
                 <AnimatePresence mode="wait">
                   {wizardStep === 1 ? (
@@ -380,7 +509,7 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                         </p>
                       </div>
                     </motion.div>
-                  ) : (
+                  ) : wizardStep === 2 ? (
                     <motion.div 
                       key="step2"
                       className="space-y-5"
@@ -614,6 +743,55 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                         )}
                       </div>
                     </motion.div>
+                  ) : (
+                    <motion.div 
+                      key="step3"
+                      className="space-y-5"
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <div className="mb-4">
+                        
+                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-2">
+                          {contentTypes.map((content, index) => (
+                            <motion.div 
+                              key={content.id}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.2, delay: index * 0.05 }}
+                              onClick={() => toggleContentType(content.id)}
+                              className={cn(
+                                "cursor-pointer rounded-md p-3 transition-all border",
+                                selectedContentTypes.includes(content.id) 
+                                  ? 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 shadow-sm' 
+                                  : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800'
+                              )}
+                            >
+                              <div className="flex items-start gap-3">
+                                <div className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 bg-${content.color}-100 dark:bg-${content.color}-900/20`}>
+                                  {content.icon}
+                                </div>
+                                <div className="flex-1">
+                                  <div className="flex items-center justify-between">
+                                    <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                      {content.title}
+                                    </h3>
+                                    {selectedContentTypes.includes(content.id) && (
+                                      <Check className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                                    )}
+                                  </div>
+                                  <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
+                                    {content.description}
+                                  </p>
+                                </div>
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
                   )}
                 </AnimatePresence>
               </form>
@@ -637,7 +815,7 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                     <span>Next</span>
                   )}
                 </Button>
-              ) : (
+              ) : wizardStep === 2 ? (
                 <div className="flex gap-3">
                   <Button
                     type="button"
@@ -650,10 +828,32 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                     Back
                   </Button>
                   <Button
+                    type="button"
+                    size="sm"
+                    onClick={() => setWizardStep(3)}
+                    disabled={!nameValue}
+                    className="text-sm bg-gray-900 hover:bg-black text-white dark:bg-gray-800 dark:hover:bg-gray-700 min-w-24"
+                  >
+                    <span>Next</span>
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setWizardStep(2)}
+                    disabled={createSiteMutation.isPending}
+                    className="text-sm min-w-20"
+                  >
+                    Back
+                  </Button>
+                  <Button
                     type="submit"
                     form="create-site-form"
                     size="sm"
-                    disabled={createSiteMutation.isPending || !nameValue}
+                    disabled={createSiteMutation.isPending}
                     className="text-sm bg-gray-900 hover:bg-black text-white dark:bg-gray-800 dark:hover:bg-gray-700 min-w-24"
                   >
                     {createSiteMutation.isPending ? (
@@ -679,6 +879,7 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                 previewLogo={selectedLogo || (brandData.logos.length > 0 ? brandData.logos[0].url : "")}
                 subdomainValue={subdomainValue || ""}
                 wizardStep={wizardStep}
+                selectedContentTypes={selectedContentTypes}
               />
             </div>
           </div>

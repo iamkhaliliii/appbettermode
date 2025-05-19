@@ -16,6 +16,7 @@ export const sites = pgTable('sites', {
   logo_url: text('logo_url'), // Brand logo URL from Brandfetch
   primary_color: text('primary_color'), // Primary brand color from Brandfetch
   brand_colors: jsonb('brand_colors'), // Array of brand colors from Brandfetch
+  content_types: jsonb('content_types').default('[]'), // Array of enabled content types
 });
 
 export const users = pgTable('users', {

@@ -48,6 +48,7 @@ const siteSchema = z.object({
   logo_url: z.string().nullable().optional(),
   primary_color: z.string().nullable().optional(),
   brand_colors: z.any().nullable().optional(),
+  content_types: z.array(z.string()).nullable().optional(),
 });
 
 const sitesResponseSchema = z.array(siteSchema);
@@ -221,6 +222,7 @@ export const sitesApi = {
     domain?: string;
     selectedLogo?: string;
     selectedColor?: string;
+    selectedContentTypes?: string[];
   }): Promise<Site> => {
     const data = await apiFetch<unknown>(ENDPOINTS.SITES, {
       method: 'POST',

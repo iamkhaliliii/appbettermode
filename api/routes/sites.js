@@ -20,6 +20,7 @@ const createSiteSchema = z.object({
     domain: z.string().optional(), // Optional domain for brand fetching
     selectedLogo: z.string().optional(), // User selected logo URL
     selectedColor: z.string().optional(), // User selected brand color
+    selectedContentTypes: z.array(z.string()).optional(), // Selected content types
 });
 // Get all sites for the current user
 router.get('/', async (req, res) => {
@@ -144,6 +145,7 @@ router.post('/', async (req, res) => {
         let logoUrl = null;
         let primaryColor = null;
         let brandColors = null;
+        let contentTypes = payload.selectedContentTypes || [];
         // If user provided selected brand assets, use those
         if (payload.selectedLogo || payload.selectedColor) {
             console.log('Using user-selected brand assets');
@@ -165,7 +167,8 @@ router.post('/', async (req, res) => {
             ownerId: currentUserId,
             state: 'pending',
             logoUrl,
-            primaryColor
+            primaryColor,
+            contentTypes
         });
         const siteInsertResult = await db
             .insert(sites)
@@ -177,6 +180,7 @@ router.post('/', async (req, res) => {
             logo_url: logoUrl,
             primary_color: primaryColor,
             brand_colors: brandColors,
+            content_types: contentTypes.length > 0 ? contentTypes : undefined,
         })
             .returning({
             id: sites.id,
@@ -190,6 +194,7 @@ router.post('/', async (req, res) => {
             logo_url: sites.logo_url,
             primary_color: sites.primary_color,
             brand_colors: sites.brand_colors,
+            content_types: sites.content_types,
         });
         if (!siteInsertResult || siteInsertResult.length === 0) {
             throw new Error('Failed to create the site record in the database.');

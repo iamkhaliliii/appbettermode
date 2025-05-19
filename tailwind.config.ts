@@ -1,5 +1,7 @@
 import type { Config } from "tailwindcss";
 import colors from "tailwindcss/colors";
+import animate from "tailwindcss-animate";
+import { setupInspiraUI } from "@inspira-ui/plugins";
 
 export default {
   darkMode: ["class"],
@@ -141,5 +143,5 @@ export default {
                 }
         }
   },
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography"), require("tailwind-scrollbar")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography"), require("tailwind-scrollbar"), setupInspiraUI, animate], 
 } satisfies Config;
