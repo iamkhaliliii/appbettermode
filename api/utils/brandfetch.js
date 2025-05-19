@@ -14,7 +14,7 @@ export async function fetchBrandData(domain, apiKey) {
         // Skip if domain is not provided
         if (!domain) {
             console.log('No domain provided, skipping Brandfetch API call');
-            return { logoUrl: null, primaryColor: null, brandColors: null, companyInfo: null };
+            return { logoUrl: null, brandColor: null, companyInfo: null };
         }
         console.log(`Fetching brand data for domain: ${domain}`);
         const response = await fetch(`https://api.brandfetch.io/v2/brands/${domain}`, {
@@ -26,7 +26,7 @@ export async function fetchBrandData(domain, apiKey) {
             const errorText = await response.text();
             console.error(`Brandfetch API error (${response.status}): ${errorText}`);
             // Don't throw, just return null values
-            return { logoUrl: null, primaryColor: null, brandColors: null, companyInfo: null };
+            return { logoUrl: null, brandColor: null, companyInfo: null };
         }
         const data = await response.json();
         // Extract the logo URL (prefer SVG format)
@@ -77,20 +77,19 @@ export async function fetchBrandData(domain, apiKey) {
             logoUrl = getBestFormatUrl(logos[0]);
         }
         // Extract the primary color
-        let primaryColor = null;
+        let brandColor = null;
         const colors = data.colors || [];
         // Look for a color with type "primary"
         const primaryColorObj = colors.find(color => color.type === 'primary');
-        primaryColor = primaryColorObj?.hex || null;
+        brandColor = primaryColorObj?.hex || null;
         // If no primary color, take the first color
-        if (!primaryColor && colors.length > 0) {
-            primaryColor = colors[0].hex;
+        if (!brandColor && colors.length > 0) {
+            brandColor = colors[0].hex;
         }
         console.log(`Successfully fetched brand data for ${domain}`);
         return {
             logoUrl,
-            primaryColor,
-            brandColors: colors.length > 0 ? colors : null,
+            brandColor,
             companyInfo: {
                 name: data.name,
                 description: data.description,
@@ -101,7 +100,7 @@ export async function fetchBrandData(domain, apiKey) {
     }
     catch (error) {
         console.error('Error fetching brand data:', error);
-        return { logoUrl: null, primaryColor: null, brandColors: null, companyInfo: null };
+        return { logoUrl: null, brandColor: null, companyInfo: null };
     }
 }
 /**
@@ -116,7 +115,7 @@ export async function testBrandfetchAPI(apiKey) {
         console.log('Testing Brandfetch API with brandfetch.com domain');
         const testDomain = 'brandfetch.com';
         const data = await fetchBrandData(testDomain, apiKey);
-        if (data.logoUrl || data.primaryColor || data.brandColors) {
+        if (data.logoUrl || data.brandColor) {
             console.log('Brandfetch API test successful');
             return {
                 success: true,

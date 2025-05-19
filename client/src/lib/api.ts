@@ -46,7 +46,7 @@ const siteSchema = z.object({
   role: z.string().optional(),
   // Brand data fields
   logo_url: z.string().nullable().optional(),
-  primary_color: z.string().nullable().optional(),
+  brand_color: z.string().nullable().optional(),
   brand_colors: z.any().nullable().optional(),
   content_types: z.array(z.string()).nullable().optional(),
 });

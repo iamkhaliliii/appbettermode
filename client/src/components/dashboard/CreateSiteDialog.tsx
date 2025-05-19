@@ -333,7 +333,12 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
   };
 
   const onSubmitHandler: SubmitHandler<SiteCreationFormInputs> = (data) => {
-    // Show creation process overlay
+    // Make sure we're in step 3 before proceeding with site creation
+    if (wizardStep !== 3) {
+      return;
+    }
+    
+    // Show creation process overlay only after form submission
     setIsCreatingProcess(true);
     
     // Call the API after a delay to allow for loading animation
@@ -429,7 +434,7 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
       {/* Multi-step loader for creation process */}
       <MultiStepLoader 
         loadingStates={siteCreationSteps} 
-        loading={isCreatingProcess} 
+        loading={isCreatingProcess && wizardStep === 3} 
         duration={2000} 
         loop={false}
       />
@@ -439,6 +444,8 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
           {/* Left panel - Form */}
           <div className="md:w-1/2 flex flex-col overflow-hidden bg-white dark:bg-gray-900">
             <div className="px-16 pt-16 pb-2">
+              <DialogTitle className="sr-only">Create New Site</DialogTitle>
+              <DialogDescription className="sr-only">Create and customize your new site with brand assets and content types</DialogDescription>
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center">
                   <div className="w-16 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
@@ -469,7 +476,17 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                     ? "Customize your community platform with your brand"
                     : "Select the content types for your community"}
                 </p>
-              <form id="create-site-form" onSubmit={handleSubmit(onSubmitHandler)} className="space-y-5">
+              <form 
+                id="create-site-form" 
+                onSubmit={handleSubmit(onSubmitHandler)} 
+                className="space-y-5"
+                onKeyDown={(e) => {
+                  // Prevent form submission on Enter key except when in step 3
+                  if (e.key === 'Enter' && wizardStep !== 3) {
+                    e.preventDefault();
+                  }
+                }}
+              >
                 <AnimatePresence mode="wait">
                   {wizardStep === 1 ? (
                     <motion.div 
@@ -828,9 +845,12 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                     Back
                   </Button>
                   <Button
-                    type="button"
+                    type="button" 
                     size="sm"
-                    onClick={() => setWizardStep(3)}
+                    onClick={() => {
+                      // Only change the wizard step without submitting the form
+                      setWizardStep(3);
+                    }}
                     disabled={!nameValue}
                     className="text-sm bg-gray-900 hover:bg-black text-white dark:bg-gray-800 dark:hover:bg-gray-700 min-w-24"
                   >

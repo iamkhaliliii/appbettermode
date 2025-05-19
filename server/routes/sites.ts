@@ -161,23 +161,21 @@ router.post('/', async (req, res) => {
 
     // Determine which brand data to use
     let logoUrl = null;
-    let primaryColor = null;
-    let brandColors = null;
+    let brandColor = null;
     let contentTypes = payload.selectedContentTypes || [];
     
     // If user provided selected brand assets, use those
     if (payload.selectedLogo || payload.selectedColor) {
       console.log('Using user-selected brand assets');
       logoUrl = payload.selectedLogo || null;
-      primaryColor = payload.selectedColor || null;
+      brandColor = payload.selectedColor || null;
     } 
     // Otherwise fetch from Brandfetch if domain is provided
     else if (payload.domain) {
       console.log(`Fetching brand data for domain: ${payload.domain}`);
       const brandData = await fetchBrandData(payload.domain, BRANDFETCH_API_KEY);
       logoUrl = brandData.logoUrl;
-      primaryColor = brandData.primaryColor;
-      brandColors = brandData.brandColors;
+      brandColor = brandData.brandColor;
     }
 
     // Skip transaction, create only the site without membership
@@ -187,7 +185,7 @@ router.post('/', async (req, res) => {
       ownerId: currentUserId,
       state: 'pending',
       logoUrl,
-      primaryColor,
+      brandColor,
       contentTypes
     });
     
@@ -199,8 +197,7 @@ router.post('/', async (req, res) => {
         owner_id: currentUserId,
         state: 'pending', // Default state for new sites
         logo_url: logoUrl,
-        primary_color: primaryColor,
-        brand_colors: brandColors,
+        brand_color: brandColor,
         content_types: contentTypes.length > 0 ? contentTypes : undefined,
       })
       .returning({
@@ -213,8 +210,7 @@ router.post('/', async (req, res) => {
         state: sites.state,
         status: sites.status,
         logo_url: sites.logo_url,
-        primary_color: sites.primary_color,
-        brand_colors: sites.brand_colors,
+        brand_color: sites.brand_color,
         content_types: sites.content_types,
       });
     

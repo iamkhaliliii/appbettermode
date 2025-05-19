@@ -12,8 +12,7 @@ export const sites = pgTable('sites', {
     state: text('state').default('pending'), // DB has default 'pending'
     status: text('status').default('active'), // New column from DB, varchar in DB, using text here. Default 'active'
     logo_url: text('logo_url'), // Brand logo URL from Brandfetch
-    primary_color: text('primary_color'), // Primary brand color from Brandfetch
-    brand_colors: jsonb('brand_colors'), // Array of brand colors from Brandfetch
+    brand_color: text('brand_color'), // Primary brand color from Brandfetch
     content_types: jsonb('content_types').default('[]'), // Array of enabled content types
 });
 export const users = pgTable('users', {

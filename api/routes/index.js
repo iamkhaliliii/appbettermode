@@ -33,7 +33,7 @@ apiRouter.get('/brand-fetch', async (req, res) => {
     try {
         logger.info(`[API] Fetching brand data for domain: ${domain}`);
         // Fetch brand data from Brandfetch API
-        const { logoUrl, primaryColor, brandColors } = await fetchBrandData(domain, BRANDFETCH_API_KEY);
+        const { logoUrl, brandColor } = await fetchBrandData(domain, BRANDFETCH_API_KEY);
         // Format the response to match the Brandfetch API structure
         // but include only the fields we need
         const response = {
@@ -58,17 +58,13 @@ apiRouter.get('/brand-fetch', async (req, res) => {
             ];
         }
         // Add colors
-        if (primaryColor) {
+        if (brandColor) {
             response.colors = [
                 {
-                    hex: primaryColor,
+                    hex: brandColor,
                     type: 'primary'
                 }
             ];
-            // Add additional colors if available
-            if (brandColors && Array.isArray(brandColors)) {
-                response.colors = brandColors;
-            }
         }
         logger.info(`[API] Successfully fetched brand data for ${domain}`);
         return res.status(200).json(response);
@@ -99,8 +95,7 @@ apiRouter.get('/test-brandfetch', async (_req, res) => {
                 message: 'Brandfetch API connection successful',
                 data: {
                     logoUrl: result.data?.logoUrl,
-                    primaryColor: result.data?.primaryColor,
-                    colorsCount: result.data?.brandColors?.length || 0
+                    primaryColor: result.data?.brandColor
                 }
             });
         }
