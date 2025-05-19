@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { useLocation, Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { sitesApi, Site } from "@/lib/api";
-import { APP_ROUTES } from "@/config/routes";
+import { APP_ROUTES, getSiteIdentifierFromRoute } from "@/config/routes";
 
 interface HeaderProps {
   onToggleMobileMenu: () => void;
@@ -371,10 +371,15 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                       variant="secondary" 
                       size="sm" 
                       className={cn(borderColor, buttonBg, primaryTextColor, buttonBgHover)}
-                      disabled={!siteData?.subdomain}
                       onClick={() => {
-                        if (siteData?.subdomain) {
-                          window.open(`https://${siteData.subdomain}.bettermode.com`, '_blank');
+                        // Use the current location to ensure it works in all scenarios
+                        const currentSiteIdentifier = siteIdentifier || getSiteIdentifierFromRoute(location);
+                        if (currentSiteIdentifier) {
+                          const targetUrl = `${window.location.origin}/site/${currentSiteIdentifier}`;
+                          console.log("Opening site URL:", targetUrl);
+                          window.location.href = targetUrl;
+                        } else {
+                          console.error("No site identifier found");
                         }
                       }}
                     >
@@ -382,21 +387,28 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                       View Site
                     </Button>
                   ) : (
-                     <Link href={siteIdentifier ? APP_ROUTES.DASHBOARD_SITE.INDEX(siteIdentifier) : "#"}>
-                       <Button 
-                         variant="secondary" 
-                         size="sm" 
-                         className={cn(
-                           borderColor, 
-                           buttonBg, 
-                           variant === 'site' ? "text-gray-300 dark:text-gray-700" : "text-gray-700 dark:text-gray-300",
-                           buttonBgHover
-                         )}
-                       >
-                         <ExternalLink className="h-4 w-4 mr-1" />
-                         Go to Dashboard
-                       </Button>
-                     </Link>
+                    <Button 
+                      variant="secondary" 
+                      size="sm" 
+                      className={cn(
+                        borderColor, 
+                        buttonBg, 
+                        variant === 'site' ? "text-gray-300 dark:text-gray-700" : "text-gray-700 dark:text-gray-300",
+                        buttonBgHover
+                      )}
+                      onClick={() => {
+                        if (siteIdentifier) {
+                          // Use APP_ROUTES with window.location.origin for proper linking
+                          const dashboardPath = APP_ROUTES.DASHBOARD_SITE.INDEX(siteIdentifier);
+                          const dashboardUrl = `${window.location.origin}${dashboardPath}`;
+                          console.log("Opening dashboard URL:", dashboardUrl);
+                          window.location.href = dashboardUrl;
+                        }
+                      }}
+                    >
+                      <ExternalLink className="h-4 w-4 mr-1" />
+                      Go to Dashboard
+                    </Button>
                   )}
 
                   {/* Conditional Close Button for Site Variant */} 
