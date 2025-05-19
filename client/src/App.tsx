@@ -7,7 +7,7 @@ import { APP_ROUTES } from "@/config/routes";
 
 // Import site list and search pages
 import SitesDashboardPage from "@/pages/sites/index";
-import SearchResults from "@/pages/site/[siteId]/search/index";
+import SearchResults from "@/pages/site/[siteSD]/search/index";
 
 // Import dashboard site-specific pages
 import DashboardSiteIndex from "@/pages/dashboard/site/[siteSD]/index";
@@ -26,7 +26,12 @@ import NotFound from "@/pages/404";
 import Content from "@/pages/dashboard/site/[siteSD]/content";
 
 // Import site frontend pages (public facing)
-import SiteFrontendSearch from "@/pages/site/[siteId]/search/index";
+import SiteFrontendSearch from "@/pages/site/[siteSD]/search/index";
+import SiteHomePage from "@/pages/site/[siteSD]/index";
+import SiteDiscussionPage from "@/pages/site/[siteSD]/discussion/index";
+import SiteQAPage from "@/pages/site/[siteSD]/qa/index";
+import SiteWishlistPage from "@/pages/site/[siteSD]/wishlist/index";
+import SiteAboutPage from "@/pages/site/[siteSD]/about/index";
 
 function Router() {
   return (
@@ -59,8 +64,12 @@ function Router() {
       <Route path="/dashboard/site/:siteSD/site-config" component={DashboardSiteSiteConfig} />
       
       {/* Site frontend routes (public facing) */}
+      <Route path="/site/:siteSD" component={SiteHomePage} />
+      <Route path="/site/:siteSD/discussion" component={SiteDiscussionPage} />
+      <Route path="/site/:siteSD/qa" component={SiteQAPage} />
+      <Route path="/site/:siteSD/wishlist" component={SiteWishlistPage} />
+      <Route path="/site/:siteSD/about" component={SiteAboutPage} />
       <Route path="/site/:siteSD/search" component={SiteFrontendSearch} />
-      <Route path="/site/:siteSD/search/:query" component={SiteFrontendSearch} />
       
       {/* Catch-all for 404 */}
       <Route component={NotFound} />

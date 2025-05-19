@@ -1,5 +1,5 @@
 
-import { DashboardLayout } from "@/components/layout/dashboard-layout";
+import { DashboardLayout } from "@/components/layout/dashboard/dashboard-layout";
 import { useLocation, useRoute } from "wouter";
 import { useEffect } from "react";
 

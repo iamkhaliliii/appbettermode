@@ -1,7 +1,7 @@
 
 
 
-import { DashboardLayout } from "@/components/layout/dashboard-layout";
+import { DashboardLayout } from "@/components/layout/dashboard/dashboard-layout";
 import { useLocation, useRoute } from "wouter";
 import { useState, useEffect } from "react";
 
@@ -19,8 +19,8 @@ import {
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { BrowserMockup } from "@/components/layout/browser-mockup";
-import { CommunityContent } from "@/components/layout/community-content";
+import { BrowserMockup } from "@/components/layout/dashboard/browser-mockup";
+import { CommunityContent } from "@/components/layout/dashboard/community-content";
 import { AddContentDialog } from "@/components/ui/add-content-dialog";
 import { sitesApi, Site } from "@/lib/api";
 

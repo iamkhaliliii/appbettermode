@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { type NavItem } from "./secondary-sidebar/types"; // مسیر جدید
+import { type NavItem } from "./secondary-sidebar/types"; // Updated to point to new location
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
