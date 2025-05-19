@@ -309,174 +309,134 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
         onOpenChange(open);
       }}
     >
-      <DialogContent className="sm:max-w-6xl p-0 overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border-0 shadow-xl">
-        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-primary-300 via-primary-500 to-violet-500"></div>
+      <DialogContent className="sm:max-w-7xl p-0 overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border-0 shadow-xl">
         
-        <div className="flex flex-col md:flex-row h-[80vh] max-h-[700px]">
+        <div className="flex flex-col md:flex-row h-[90vh] max-h-[800px]">
           {/* Left panel - Form */}
-          <div className="md:w-1/2 flex flex-col overflow-hidden border-r border-gray-100 dark:border-gray-800">
-            <DialogHeader className="px-8 pt-8 pb-6">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-primary-500 to-violet-500 flex items-center justify-center shadow-md shadow-primary-500/20">
-                  {wizardStep === 1 ? (
-                    <Globe className="h-6 w-6 text-white" />
-                  ) : (
-                    <Sparkles className="h-6 w-6 text-white" />
-                  )}
-                </div>
-                <div>
-                  <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-gray-50 tracking-tight">
-                    {wizardStep === 1 ? "Setup Your Site" : "Customize Your Site"}
-                  </DialogTitle>
-                  <DialogDescription className="text-gray-600 dark:text-gray-400 mt-1 text-base">
-                    {wizardStep === 1 
-                      ? "Enter your domain to get started" 
-                      : "Personalize your community platform"}
-                  </DialogDescription>
-                </div>
-              </div>
-            </DialogHeader>
-            
-            <div className="relative px-8 mb-6">
-              <div className="flex items-center justify-between">
+          <div className="md:w-1/2 flex flex-col overflow-hidden bg-white dark:bg-gray-900">
+            <div className="px-16 pt-16 pb-2">
+              <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    wizardStep === 1 
-                      ? 'bg-gradient-to-tr from-primary-500 to-violet-500 text-white shadow-md shadow-primary-500/20' 
-                      : 'bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500'
-                  }`}>
-                    {wizardStep === 1 ? (
-                      <span className="text-base font-semibold">1</span>
-                    ) : (
-                      <Check className="h-5 w-5" />
-                    )}
+                  <div className="w-16 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-green-500 rounded-full" 
+                      style={{ width: wizardStep === 1 ? '50%' : '100%' }}
+                    ></div>
                   </div>
-                  
-                  <div className={`h-0.5 w-16 ml-2 mr-2 ${
-                    wizardStep === 2 
-                      ? 'bg-gradient-to-r from-primary-500 to-violet-500' 
-                      : 'bg-gray-200 dark:bg-gray-700'
-                  }`} />
-                  
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    wizardStep === 2 
-                      ? 'bg-gradient-to-tr from-primary-500 to-violet-500 text-white shadow-md shadow-primary-500/20' 
-                      : 'bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500'
-                  }`}>
-                    <span className="text-base font-semibold">2</span>
-                  </div>
+                  <span className="text-sm ml-2 text-gray-600 dark:text-gray-400">{wizardStep}/2</span>
                 </div>
               </div>
+              
+
             </div>
             
-            <div className="flex-1 px-8 py-2 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700">
-              <form id="create-site-form" onSubmit={handleSubmit(onSubmitHandler)} className="space-y-6">
+            <div className="flex-1 items-center justify-center px-16 overflow-y-auto 
+            scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent hover:scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 dark:hover:scrollbar-thumb-gray-600">
+            <h1 className="text-l font-semibold text-gray-900 dark:text-white mt-8 mb-1">
+                {wizardStep === 1 ? "Enter your domain" : "Create your site"}
+              </h1>
+              <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
+                {wizardStep === 1 
+                  ? "We'll fetch your brand assets automatically" 
+                  : "Customize your community platform with your brand"}
+              </p>
+              <form id="create-site-form" onSubmit={handleSubmit(onSubmitHandler)} className="space-y-5">
                 <AnimatePresence mode="wait">
                   {wizardStep === 1 ? (
                     <motion.div 
                       key="step1"
-                      className="space-y-5"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      transition={{ duration: 0.3 }}
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      transition={{ duration: 0.2 }}
                     >
-                      <div className="space-y-3">
+                      <div className="space-y-2 mb-6">
                         <Label 
                           htmlFor="domain" 
-                          className="text-base font-medium text-gray-700 dark:text-gray-300 flex items-center"
+                          className="text-sm font-medium text-gray-700 dark:text-gray-300"
                         >
-                          <Globe className="h-4 w-4 mr-2 text-primary-500 dark:text-primary-400" />
-                          Website Domain
+                          Domain name
                         </Label>
                         <div className="relative">
                           <Input
                             id="domain"
                             {...register('domain')}
-                            placeholder="e.g., acme.com"
-                            className="w-full py-3 pl-4 pr-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 dark:focus:border-primary-400 dark:focus:ring-primary-400 text-base"
+                            placeholder="yourdomain.com"
+                            className="w-full py-2 pr-8 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700"
                             disabled={brandData.loading}
                           />
                           {domainValue && (
                             <button
                               type="button"
-                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                               onClick={() => setValue('domain', '')}
                             >
-                              <X className="h-5 w-5" />
+                              <X className="h-4 w-4" />
                             </button>
                           )}
                         </div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                          Enter your website domain to automatically fetch your brand assets.
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          We suggest using your company's official domain
                         </p>
                       </div>
                     </motion.div>
                   ) : (
                     <motion.div 
                       key="step2"
-                      className="space-y-7"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 20 }}
-                      transition={{ duration: 0.3 }}
+                      className="space-y-5"
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      transition={{ duration: 0.2 }}
                     >
-                      <div className="space-y-3">
-                        <Label htmlFor="name" className="text-base font-medium text-gray-700 dark:text-gray-300">
+                      <div className="mb-4">
+                        <Label htmlFor="name" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                           Site Name
                         </Label>
                         <Input
                           id="name"
                           {...register('name')}
-                          placeholder="e.g., Acme Community"
-                          className="w-full py-3 bg-white dark:bg-gray-800 text-base"
+                          placeholder="Acme Community"
+                          className="w-full mt-1 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700"
                           disabled={createSiteMutation.isPending}
                         />
-                        {errors.name ? (
-                          <p className="text-sm text-red-500 dark:text-red-400 mt-2">{errors.name.message}</p>
-                        ) : (
-                          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                            This is how your site will be identified.
-                          </p>
+                        {errors.name && (
+                          <p className="text-xs text-red-500 dark:text-red-400 mt-1">{errors.name.message}</p>
                         )}
                       </div>
                       
-                      <div className="space-y-3">
-                        <Label htmlFor="subdomain" className="text-base font-medium text-gray-700 dark:text-gray-300">
+                      <div className="mb-4">
+                        <Label htmlFor="subdomain" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                           Subdomain
                         </Label>
-                        <div className="flex items-center">
+                        <div className="flex items-center mt-1">
                           <Input
                             id="subdomain"
                             {...register('subdomain')}
-                            placeholder="e.g., community"
-                            className="rounded-r-none flex-1 py-3 text-base"
+                            placeholder="community"
+                            className="rounded-r-none flex-1 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700"
                             disabled={createSiteMutation.isPending}
                           />
-                          <div className="px-4 h-12 flex items-center rounded-r-md border border-l-0 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
-                            .yourdomain.com
+                          <div className="px-3 h-10 flex items-center rounded-r-md border border-l-0 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-sm">
+                            .bettermode.com
                           </div>
                         </div>
-                        {errors.subdomain ? (
-                          <p className="text-sm text-red-500 dark:text-red-400 mt-2">{errors.subdomain.message}</p>
-                        ) : (
-                          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                            This will be the URL for your site.
-                          </p>
+                        {errors.subdomain && (
+                          <p className="text-xs text-red-500 dark:text-red-400 mt-1">{errors.subdomain.message}</p>
                         )}
                       </div>
                       
                       {/* Logo Selection */}
-                      <div className="space-y-3">
+                      <div className="mb-4">
                         <div className="flex justify-between items-center">
-                          <Label className="text-base font-medium text-gray-700 dark:text-gray-300">
-                            Site Logo
+                          <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Brand Logo
                           </Label>
                           <Button 
                             type="button" 
                             variant="ghost" 
                             size="sm" 
-                            className="h-8 text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+                            className="h-7 text-xs text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300"
                             onClick={() => setShowManualLogoInput(!showManualLogoInput)}
                           >
                             {showManualLogoInput ? "Show Suggestions" : "Add Manually"}
@@ -484,8 +444,7 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                         </div>
                         
                         {!showManualLogoInput ? (
-                          // Logo suggestions
-                          <div className="grid grid-cols-2 gap-3 mt-2">
+                          <div className="grid grid-cols-3 gap-2 mt-1">
                             <Controller
                               name="selectedLogo"
                               control={control}
@@ -500,33 +459,31 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                                         if (b.theme === 'light' && a.theme !== 'light') return 1;
                                         return 0;
                                       })
-                                      .slice(0, 4) // Show up to 4 logos to save space
+                                      .slice(0, 6)
                                       .map((logo, index) => (
                                         <motion.div 
                                           key={index}
                                           onClick={() => field.onChange(logo.url)}
                                           className={cn(
-                                            "cursor-pointer rounded-lg p-3 h-20 transition-all flex items-center justify-center",
+                                            "cursor-pointer rounded-md p-2 h-16 transition-all flex items-center justify-center",
                                             field.value === logo.url 
-                                              ? 'ring-2 ring-primary-500 dark:ring-primary-400 bg-white dark:bg-gray-800 shadow-md' 
+                                              ? 'ring-1 ring-blue-500 bg-white dark:bg-gray-800' 
                                               : 'border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-white dark:hover:bg-gray-700'
                                           )}
-                                          initial={{ opacity: 0, y: 10 }}
+                                          initial={{ opacity: 0, y: 5 }}
                                           animate={{ opacity: 1, y: 0 }}
-                                          transition={{ delay: index * 0.1, duration: 0.3 }}
+                                          transition={{ delay: index * 0.05, duration: 0.2 }}
                                         >
-                                          <div className="h-full w-full flex items-center justify-center">
-                                            <img 
-                                              src={logo.url} 
-                                              alt={`Logo ${index + 1}`} 
-                                              className="max-h-full max-w-full object-contain"
-                                            />
-                                          </div>
+                                          <img 
+                                            src={logo.url} 
+                                            alt={`Logo ${index + 1}`} 
+                                            className="max-h-full max-w-full object-contain"
+                                          />
                                         </motion.div>
                                       ))
                                   ) : (
-                                    <div className="col-span-2 text-center p-5 bg-gray-50 dark:bg-gray-800 rounded-lg border border-dashed border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
-                                      No logos found for this domain
+                                    <div className="col-span-3 text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-md border border-dashed border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
+                                      No logos found
                                     </div>
                                   )}
                                 </>
@@ -534,39 +491,33 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                             />
                           </div>
                         ) : (
-                          // Manual logo input
-                          <div className="border border-dashed border-gray-200 dark:border-gray-700 rounded-lg p-5 mt-2 bg-gray-50 dark:bg-gray-800">
+                          <div className="mt-1 border border-dashed border-gray-200 dark:border-gray-700 rounded-md p-3 bg-gray-50 dark:bg-gray-800">
                             <Controller
                               name="selectedLogo"
                               control={control}
                               render={({ field }) => (
-                                <div className="flex flex-col items-center gap-4">
+                                <div className="flex flex-col items-center gap-2">
                                   {field.value ? (
-                                    <div className="relative p-3 bg-white dark:bg-gray-700 rounded-md shadow-sm">
+                                    <div className="relative p-2 bg-white dark:bg-gray-700 rounded-md">
                                       <img 
                                         src={field.value} 
                                         alt="Selected logo" 
-                                        className="max-h-24 object-contain"
+                                        className="max-h-16 object-contain"
                                       />
                                       <button
                                         type="button"
                                         onClick={() => field.onChange('')}
-                                        className="absolute -top-2 -right-2 bg-white dark:bg-gray-700 rounded-full p-1 border border-gray-200 dark:border-gray-600 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 shadow-sm"
+                                        className="absolute -top-1.5 -right-1.5 bg-white dark:bg-gray-700 rounded-full p-0.5 border border-gray-200 dark:border-gray-600 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                                       >
-                                        <X className="h-3.5 w-3.5" />
+                                        <X className="h-3 w-3" />
                                       </button>
                                     </div>
                                   ) : (
-                                    <>
-                                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                                        Enter logo URL
-                                      </p>
-                                      <Input
-                                        placeholder="https://example.com/logo.png"
-                                        className="w-full"
-                                        onChange={(e) => field.onChange(e.target.value)}
-                                      />
-                                    </>
+                                    <Input
+                                      placeholder="Logo URL"
+                                      className="text-xs w-full"
+                                      onChange={(e) => field.onChange(e.target.value)}
+                                    />
                                   )}
                                 </div>
                               )}
@@ -576,16 +527,16 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                       </div>
                       
                       {/* Color Selection */}
-                      <div className="space-y-3">
+                      <div className="mb-4">
                         <div className="flex justify-between items-center">
-                          <Label className="text-base font-medium text-gray-700 dark:text-gray-300">
+                          <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                             Brand Color
                           </Label>
                           <Button 
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="h-8 text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+                            className="h-7 text-xs text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300"
                             onClick={() => setShowManualColorInput(!showManualColorInput)}
                           >
                             {showManualColorInput ? "Show Suggestions" : "Add Manually"}
@@ -593,8 +544,7 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                         </div>
                         
                         {!showManualColorInput ? (
-                          // Color suggestions
-                          <div className="flex flex-wrap gap-3 mt-2">
+                          <div className="flex flex-wrap gap-2 mt-1">
                             <Controller
                               name="selectedColor"
                               control={control}
@@ -609,28 +559,28 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                                         if (b.type === 'accent' && a.type !== 'accent') return 1;
                                         return 0;
                                       })
-                                      .slice(0, 6) // Show up to 6 colors to save space
+                                      .slice(0, 8)
                                       .map((color, index) => (
                                         <motion.div 
                                           key={index}
                                           onClick={() => field.onChange(color.hex)}
                                           className={cn(
-                                            "cursor-pointer rounded-full border-2 transition-all p-0.5",
-                                            field.value === color.hex ? 'border-gray-800 dark:border-white scale-110 shadow-md' : 'border-transparent hover:border-gray-200 dark:hover:border-gray-700'
+                                            "cursor-pointer rounded-full border transition-all p-0.5",
+                                            field.value === color.hex ? 'border-gray-900 dark:border-white' : 'border-transparent hover:border-gray-200 dark:hover:border-gray-700'
                                           )}
                                           initial={{ opacity: 0, scale: 0.8 }}
-                                          animate={{ opacity: 1, scale: field.value === color.hex ? 1.1 : 1 }}
-                                          transition={{ delay: index * 0.05, duration: 0.3 }}
+                                          animate={{ opacity: 1, scale: 1 }}
+                                          transition={{ delay: index * 0.03, duration: 0.2 }}
                                         >
                                           <div 
-                                            className="w-10 h-10 rounded-full"
-                                            style={{ background: `linear-gradient(135deg, ${color.hex}, ${adjustColor(color.hex, -20)})` }}
+                                            className="w-8 h-8 rounded-full"
+                                            style={{ backgroundColor: color.hex }}
                                             title={color.type || color.hex}
                                           />
                                         </motion.div>
                                       ))
                                   ) : (
-                                    <div className="w-full text-center p-5 bg-gray-50 dark:bg-gray-800 rounded-lg border border-dashed border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
+                                    <div className="w-full text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-md border border-dashed border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
                                       No brand colors found
                                     </div>
                                   )}
@@ -639,23 +589,22 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                             />
                           </div>
                         ) : (
-                          // Manual color input
-                          <div className="border border-dashed border-gray-200 dark:border-gray-700 rounded-lg p-5 mt-2 bg-gray-50 dark:bg-gray-800">
+                          <div className="mt-1 border border-dashed border-gray-200 dark:border-gray-700 rounded-md p-3 bg-gray-50 dark:bg-gray-800">
                             <Controller
                               name="selectedColor"
                               control={control}
                               render={({ field }) => (
-                                <div className="flex flex-col items-center gap-4">
+                                <div className="flex items-center gap-3">
                                   {field.value && (
                                     <div 
-                                      className="w-16 h-16 rounded-full shadow-md"
-                                      style={{ background: `linear-gradient(135deg, ${field.value}, ${adjustColor(field.value, -20)})` }}
+                                      className="w-8 h-8 rounded-full flex-shrink-0"
+                                      style={{ backgroundColor: field.value }}
                                     />
                                   )}
                                   <Input
                                     placeholder="#6366f1"
                                     value={field.value}
-                                    className="w-full"
+                                    className="text-xs w-full"
                                     onChange={(e) => field.onChange(e.target.value)}
                                   />
                                 </div>
@@ -670,73 +619,59 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
               </form>
             </div>
             
-            <div className="border-t border-gray-100 dark:border-gray-800 p-6 flex justify-between items-center">
-              <Button
-                type="button"
-                variant="outline"
-                className="gap-2"
-                onClick={() => {
-                  if (wizardStep === 1) {
-                    onOpenChange(false);
-                  } else {
-                    setWizardStep(1);
-                  }
-                }}
-                disabled={brandData.loading || createSiteMutation.isPending}
-              >
-                {wizardStep === 1 ? "Cancel" : <ArrowLeft className="h-4 w-4" />}
-                {wizardStep === 1 ? "" : "Back"}
-              </Button>
-              
+            <div className="border-t border-gray-100 dark:border-gray-800 px-6 py-4 flex justify-end">
               {wizardStep === 1 ? (
                 <Button
                   type="button"
-                  variant="default"
+                  size="sm"
                   onClick={fetchBrandData}
                   disabled={!domainValue || brandData.loading}
+                  className="text-sm bg-gray-900 hover:bg-black text-white dark:bg-gray-800 dark:hover:bg-gray-700 min-w-24"
                 >
                   {brandData.loading ? (
                     <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Fetching Brand Data
+                      <Loader2 className="h-3.5 w-3.5 animate-spin mr-2" />
+                      <span>Fetching</span>
                     </>
                   ) : (
-                    <>
-                      Continue
-                      <motion.div 
-                        animate={{ x: [0, 4, 0] }}
-                        transition={{ duration: 1, repeat: Infinity, repeatDelay: 1.5 }}
-                      >
-                        <ChevronRight className="h-4 w-4" />
-                      </motion.div>
-                    </>
+                    <span>Next</span>
                   )}
                 </Button>
               ) : (
-                <Button
-                  type="submit"
-                  form="create-site-form"
-                  disabled={createSiteMutation.isPending || !nameValue}
-                  className="bg-gradient-to-r from-primary-500 to-violet-500 hover:from-primary-600 hover:to-violet-600 text-white gap-2 shadow-md shadow-primary-500/20"
-                >
-                  {createSiteMutation.isPending ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Creating Site
-                    </>
-                  ) : (
-                    <>
-                      Create Site
-                      <Sparkles className="h-4 w-4" />
-                    </>
-                  )}
-                </Button>
+                <div className="flex gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setWizardStep(1)}
+                    disabled={createSiteMutation.isPending}
+                    className="text-sm min-w-20"
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    type="submit"
+                    form="create-site-form"
+                    size="sm"
+                    disabled={createSiteMutation.isPending || !nameValue}
+                    className="text-sm bg-gray-900 hover:bg-black text-white dark:bg-gray-800 dark:hover:bg-gray-700 min-w-24"
+                  >
+                    {createSiteMutation.isPending ? (
+                      <>
+                        <Loader2 className="h-3.5 w-3.5 animate-spin mr-2" />
+                        <span>Creating</span>
+                      </>
+                    ) : (
+                      <span>Create Site</span>
+                    )}
+                  </Button>
+                </div>
               )}
             </div>
           </div>
           
           {/* Right panel - Preview */}
-          <div className="hidden md:block md:w-3/4 py-12 pl-20 bg-gradient-to-br from-gray-50/80 via-white to-gray-50/80 dark:from-gray-900/80 dark:via-gray-800 dark:to-gray-900/80">
+          <div className="hidden md:block md:w-3/4 py-12 pl-20 bg-gradient-to-br from-gray-100/80 to-gray-100/50 dark:from-gray-900/80 dark:to-gray-900/80">
             <div className="flex-1 flex items-center justify-center">
               <SitePreview 
                 previewName={nameValue || brandData.name || "Your Site Name"}
