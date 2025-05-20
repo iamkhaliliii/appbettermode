@@ -1,14 +1,10 @@
 import express from 'express';
 import { db } from '../db/index.js';
-import { sites, memberships, spaces } from '../db/schema.js';
+import { sites, memberships } from '../db/schema.js';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { setApiResponseHeaders, handleCorsPreflightRequest } from '../utils/environment.js';
 import { fetchBrandData } from '../utils/brandfetch.js';
-// Import with type any to avoid TypeScript errors
-import slugifyPkg from 'slugify';
-const slugify = slugifyPkg.default || slugifyPkg;
-import { sql } from 'drizzle-orm';
 const router = express.Router();
 // Brandfetch API key
 const BRANDFETCH_API_KEY = 'rPJ4fYfXffPHxhNAIo8lU7mDRQXHsrYqKXQ678ySJsc=';
@@ -138,23 +134,16 @@ router.use((req, res, next) => {
 // Create a new site
 router.post('/', async (req, res) => {
     try {
-        console.log("=== Site Creation Request ===");
-        console.log("Raw request body:", typeof req.body === 'string' ? req.body : JSON.stringify(req.body, null, 2));
         // Handle both string and object body formats (for Vercel compatibility)
         const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-        console.log("Parsed body:", JSON.stringify(body, null, 2));
         const validationResult = createSiteSchema.safeParse(body);
         if (!validationResult.success) {
-            console.error("Validation failed:", validationResult.error.flatten());
             return res.status(400).json({
                 message: 'Invalid site data.',
                 errors: { fieldErrors: validationResult.error.flatten().fieldErrors },
             });
         }
         const payload = validationResult.data;
-        console.log("Validated payload:", JSON.stringify(payload, null, 2));
-        console.log("Content types from payload:", payload.selectedContentTypes);
-        console.log(`Content types type: ${typeof payload.selectedContentTypes}, isArray: ${Array.isArray(payload.selectedContentTypes)}, length: ${payload.selectedContentTypes?.length || 0}`);
         // TODO: Replace with actual authenticated user ID from req.user
         const currentUserId = "49a44198-e6e5-4b1e-b8fb-b1c50ee0639d"; // Placeholder
         if (!currentUserId) {
@@ -172,27 +161,7 @@ router.post('/', async (req, res) => {
         // Determine which brand data to use
         let logoUrl = null;
         let brandColor = null;
-        // Ensure content types is always an array
-        let contentTypes = [];
-        if (payload.selectedContentTypes) {
-            if (Array.isArray(payload.selectedContentTypes)) {
-                contentTypes = payload.selectedContentTypes;
-            }
-            else if (typeof payload.selectedContentTypes === 'string') {
-                try {
-                    // Try to parse if it's a JSON string array
-                    const parsed = JSON.parse(payload.selectedContentTypes);
-                    if (Array.isArray(parsed)) {
-                        contentTypes = parsed;
-                    }
-                }
-                catch (e) {
-                    // If not JSON, treat as a comma-separated string
-                    contentTypes = payload.selectedContentTypes.split(',').map((item) => item.trim());
-                }
-            }
-        }
-        console.log("Processed content types:", contentTypes);
+        let contentTypes = payload.selectedContentTypes || [];
         // If user provided selected brand assets, use those
         if (payload.selectedLogo || payload.selectedColor) {
             console.log('Using user-selected brand assets');
@@ -256,140 +225,6 @@ router.post('/', async (req, res) => {
             role: 'admin', // Assigning 'admin' role to the creator
         });
         console.log(`User ${currentUserId} added as admin to site ${newSite.id}`);
-        // Create spaces for selected content types
-        if (contentTypes.length > 0) {
-            console.log(`Creating spaces for selected content types: ${contentTypes.join(', ')}`);
-            console.log(`Content types value type: ${typeof contentTypes}, isArray: ${Array.isArray(contentTypes)}, length: ${contentTypes?.length || 0}`);
-            // Map of content type IDs to readable names and space configurations
-            const contentTypeConfig = {
-                'discussion': {
-                    name: 'Discussions',
-                    description: 'Community discussions and conversations',
-                    visibility: 'public',
-                },
-                'qa': {
-                    name: 'Q&A',
-                    description: 'Questions and answers from the community',
-                    visibility: 'public',
-                },
-                'wishlist': {
-                    name: 'Ideas & Wishlist',
-                    description: 'Feature requests and suggestions',
-                    visibility: 'public',
-                },
-                'knowledge': {
-                    name: 'Knowledge Base',
-                    description: 'Helpful articles and resources',
-                    visibility: 'public',
-                },
-                'event': {
-                    name: 'Events',
-                    description: 'Upcoming and past events',
-                    visibility: 'public',
-                },
-                'blog': {
-                    name: 'Blog',
-                    description: 'News and updates',
-                    visibility: 'public',
-                },
-                'jobs': {
-                    name: 'Job Board',
-                    description: 'Career opportunities',
-                    visibility: 'public',
-                },
-                'landing': {
-                    name: 'Landing Pages',
-                    description: 'Marketing and information pages',
-                    visibility: 'public',
-                }
-            };
-            // Array to store created space IDs
-            const createdSpaceIds = [];
-            // Create a space for each selected content type
-            for (const contentType of contentTypes) {
-                console.log(`Processing content type: ${contentType}`);
-                // Get config for this content type or use defaults
-                const config = contentTypeConfig[contentType] || {
-                    name: contentType.charAt(0).toUpperCase() + contentType.slice(1),
-                    description: `${contentType} content`,
-                    visibility: 'public'
-                };
-                console.log(`Using config for ${contentType}:`, config);
-                // Generate slug from name
-                const spaceSlug = slugify(config.name, {
-                    lower: true,
-                    strict: true
-                });
-                console.log(`Generated slug for ${config.name}: ${spaceSlug}`);
-                try {
-                    console.log(`Attempting to create space in database for ${contentType}...`);
-                    // Use SQL template literal with drizzle's sql tag
-                    const query = sql `
-            INSERT INTO spaces 
-            (name, slug, description, creator_id, site_id, visibility, cms_type, hidden)
-            VALUES 
-            (${config.name}, ${spaceSlug}, ${config.description}, 
-             ${currentUserId}, ${newSite.id}, ${config.visibility}, 
-             ${contentType}, ${false})
-            RETURNING id;
-          `;
-                    try {
-                        const result = await db.execute(query);
-                        console.log(`Space created successfully for ${contentType}, SQL result:`, JSON.stringify(result));
-                        console.log(`Created ${contentType} space: ${config.name}`);
-                        // Extract the space ID from the result and add it to our array
-                        // Cast result to any to handle varying result structures
-                        const resultAny = result;
-                        if (resultAny && Array.isArray(resultAny) && resultAny.length > 0 && resultAny[0].id) {
-                            createdSpaceIds.push(resultAny[0].id);
-                            console.log(`Added space ID ${resultAny[0].id} to created spaces list`);
-                        }
-                    }
-                    catch (sqlError) {
-                        console.error(`SQL error creating space for ${contentType}:`, sqlError.message);
-                        // Check if there's a more detailed error structure
-                        if (sqlError.code) {
-                            console.error(`SQL error code: ${sqlError.code}, position: ${sqlError.position}`);
-                        }
-                        // Re-throw to ensure the outer catch block handles it
-                        throw sqlError;
-                    }
-                }
-                catch (spaceError) {
-                    console.error(`Error creating space for ${contentType}:`, spaceError);
-                    console.error(`Error details: ${spaceError.message}, code: ${spaceError.code}`);
-                    // Continue with other spaces even if one fails
-                }
-            }
-            // Verify spaces were created
-            try {
-                const createdSpaces = await db.select({
-                    id: spaces.id,
-                    name: spaces.name,
-                    cms_type: spaces.cms_type
-                })
-                    .from(spaces)
-                    .where(eq(spaces.site_id, newSite.id));
-                console.log(`Verification - Spaces created for site ${newSite.id}:`, createdSpaces);
-                // Update the site record with created space IDs
-                if (createdSpaceIds.length > 0) {
-                    console.log(`Updating site with space IDs: ${createdSpaceIds.join(', ')}`);
-                    // Update the site record to include the space IDs
-                    await db.update(sites)
-                        .set({
-                        space_ids: createdSpaceIds // Add space IDs field now in schema
-                    })
-                        .where(eq(sites.id, newSite.id));
-                    console.log(`Site updated with space IDs successfully`);
-                }
-            }
-            catch (verifyError) {
-                console.error('Error verifying created spaces:', verifyError);
-            }
-        }
-        else {
-            console.log('No content types selected, skipping space creation');
-        }
         return res.status(201).json(newSite);
     }
     catch (error) {

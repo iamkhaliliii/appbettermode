@@ -130,6 +130,7 @@ router.get('/:postId', async (req, res) => {
                 columns: {
                     id: true,
                     name: true,
+                    icon_url: true,
                 },
             });
         }

@@ -7,6 +7,8 @@ export const memberRoleEnum = pgEnum('member_role', ['member', 'admin', 'editor'
 export const contentStatusEnum = pgEnum('content_status', ['draft', 'published', 'archived', 'scheduled', 'pending_review']);
 // Enum for site plan
 export const sitePlanEnum = pgEnum('site_plan', ['lite', 'pro']);
+// First create a new enum for space visibility
+export const spaceVisibilityEnum = pgEnum('space_visibility', ['public', 'private', 'paid']);
 // Common tables
 export const sites = pgTable('sites', {
     id: uuid('id').primaryKey().default(sql `gen_random_uuid()`),
@@ -20,6 +22,7 @@ export const sites = pgTable('sites', {
     logo_url: text('logo_url'),
     brand_color: text('brand_color'),
     content_types: jsonb('content_types').default('[]'),
+    space_ids: jsonb('space_ids').default('[]'), // Store space IDs related to this site
 });
 export const users = pgTable('users', {
     id: uuid('id').primaryKey().default(sql `gen_random_uuid()`),
@@ -52,13 +55,15 @@ export const memberships = pgTable('memberships', {
 export const spaces = pgTable('spaces', {
     id: uuid('id').primaryKey().default(sql `gen_random_uuid()`),
     name: text('name').notNull(),
+    slug: text('slug').notNull(),
     description: text('description'),
+    creator_id: uuid('creator_id').references(() => users.id),
     site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
     created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updated_at: timestamp('updated_at', { withTimezone: true }).default(sql `now()`),
-    is_private: boolean('is_private').notNull().default(false),
-    cover_image_url: text('cover_image_url'),
-    icon_url: text('icon_url'),
+    hidden: boolean('hidden').default(false),
+    visibility: spaceVisibilityEnum('visibility').default('public').notNull(),
+    cms_type: text('cms_type'), // Optional field to specify CMS type for this space
 });
 export const tags = pgTable('tags', {
     id: uuid('id').primaryKey().default(sql `gen_random_uuid()`),
@@ -79,7 +84,8 @@ export const tags = pgTable('tags', {
 export const posts = pgTable('posts', {
     id: uuid('id').primaryKey().default(sql `gen_random_uuid()`),
     title: text('title').notNull(),
-    content: text('content').notNull(),
+    content: jsonb('content').notNull(),
+    content_format: text('content_format').default('richtext').notNull(),
     status: contentStatusEnum('status').default('draft'),
     author_id: uuid('author_id').references(() => users.id),
     space_id: uuid('space_id').references(() => spaces.id),
@@ -90,6 +96,8 @@ export const posts = pgTable('posts', {
     site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
     locked: boolean('locked').default(false),
     hidden: boolean('hidden').default(false),
+    cover_image_id: uuid('cover_image_id'),
+    pinned: boolean('pinned').default(false),
 });
 // Relation between posts and tags
 export const post_tags = pgTable('post_tags', {

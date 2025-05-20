@@ -13,7 +13,9 @@ import 'dotenv/config';
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { sql } from 'drizzle-orm';
-import slugify from 'slugify';
+// Import with type any to avoid TypeScript errors
+import slugifyPkg from 'slugify';
+const slugify = (slugifyPkg as any).default || slugifyPkg;
 
 // Connection string from environment variables
 const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;

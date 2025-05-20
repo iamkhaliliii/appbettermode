@@ -5,7 +5,9 @@ import { eq, and, or } from 'drizzle-orm';
 import { z } from 'zod';
 import { setApiResponseHeaders, handleCorsPreflightRequest } from '../utils/environment.js';
 import { fetchBrandData } from '../utils/brandfetch.js';
-import slugify from 'slugify';
+// Import with type any to avoid TypeScript errors
+import slugifyPkg from 'slugify';
+const slugify = (slugifyPkg as any).default || slugifyPkg;
 import { sql } from 'drizzle-orm';
 
 const router = express.Router();

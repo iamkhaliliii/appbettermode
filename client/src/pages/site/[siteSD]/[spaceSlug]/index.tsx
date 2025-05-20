@@ -269,7 +269,7 @@ export default function SpacePage() {
 
       {/* Main Content */}
       <div className="flex-1">
-        <div className="container mx-auto px-4 py-6 flex-grow">
+        <div className="container mx-auto px-4 flex-grow">
           <div className="flex flex-col md:flex-row gap-6">
             {/* Only render sidebar when not on mobile or when menu is open */}
               <SiteSidebar siteSD={siteSD || ''} activePage={spaceSlug} />
