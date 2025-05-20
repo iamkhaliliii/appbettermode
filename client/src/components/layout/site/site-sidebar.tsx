@@ -7,9 +7,26 @@ import {
   HelpCircle, 
   Star, 
   FileText, 
-  Search 
+  Search,
+  Calendar,
+  BookOpen,
+  Layout,
+  Briefcase,
+  Rss,
+  AlignLeft
 } from 'lucide-react';
 import { sitesApi } from '@/lib/api';
+
+// Interface for Space objects
+interface Space {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  cms_type: string;
+  hidden: boolean;
+  visibility: 'public' | 'private' | 'paid';
+}
 
 interface SiteSidebarProps {
   siteSD: string;
@@ -19,17 +36,71 @@ interface SiteSidebarProps {
 export function SiteSidebar({ siteSD, activePage = 'home' }: SiteSidebarProps) {
   const [location] = useLocation();
   const [site, setSite] = useState<any>(null);
+  const [spaces, setSpaces] = useState<Space[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeNavItem, setActiveNavItem] = useState(activePage);
 
+  // Fetch site data and spaces
   useEffect(() => {
     const fetchSiteData = async () => {
       if (!siteSD) return;
       
       setIsLoading(true);
       try {
+        // Fetch site data
         const siteData = await sitesApi.getSite(siteSD);
         setSite(siteData);
+        
+        // For now, we'll simulate spaces based on content_types
+        // This would be replaced with a real API call to get spaces
+        // const spacesData = await fetch(`/api/v1/sites/${siteData.id}/spaces`).then(res => res.json());
+        
+        // Simulate spaces from content types
+        if (siteData.content_types && Array.isArray(siteData.content_types)) {
+          const simulatedSpaces: Space[] = siteData.content_types.map((cmsType: string) => {
+            let name, icon;
+            
+            switch (cmsType) {
+              case 'discussion':
+                name = 'Discussions';
+                break;
+              case 'qa':
+                name = 'Q&A';
+                break;
+              case 'wishlist':
+                name = 'Ideas & Wishlist';
+                break;
+              case 'blog':
+                name = 'Blog';
+                break;
+              case 'event':
+                name = 'Events';
+                break;
+              case 'knowledge':
+                name = 'Knowledge Base';
+                break;
+              case 'landing':
+                name = 'Landing Pages';
+                break;
+              case 'jobs':
+                name = 'Job Board';
+                break;
+              default:
+                name = cmsType.charAt(0).toUpperCase() + cmsType.slice(1);
+            }
+            
+            return {
+              id: `simulated-${cmsType}`,
+              name,
+              slug: cmsType.toLowerCase(),
+              cms_type: cmsType,
+              hidden: false,
+              visibility: 'public'
+            };
+          });
+          
+          setSpaces(simulatedSpaces);
+        }
       } catch (error) {
         console.error('Failed to fetch site data:', error);
       } finally {
@@ -42,30 +113,62 @@ export function SiteSidebar({ siteSD, activePage = 'home' }: SiteSidebarProps) {
 
   // Set active navigation item based on current location
   useEffect(() => {
-    if (location.includes('/discussion')) {
-      setActiveNavItem('discussion');
-    } else if (location.includes('/qa')) {
-      setActiveNavItem('qa');
-    } else if (location.includes('/wishlist')) {
-      setActiveNavItem('wishlist');
-    } else if (location.includes('/search')) {
+    if (location === `/site/${siteSD}`) {
+      setActiveNavItem('home');
+      return;
+    }
+    
+    // Try to find which space the current path corresponds to
+    if (spaces.length > 0) {
+      const matchedSpace = spaces.find(space => 
+        location.includes(`/site/${siteSD}/${space.slug}`)
+      );
+      
+      if (matchedSpace) {
+        setActiveNavItem(matchedSpace.slug);
+        return;
+      }
+    }
+    
+    // Check for special pages
+    if (location.includes('/search')) {
       setActiveNavItem('search');
     } else if (location.includes('/about')) {
       setActiveNavItem('about');
-    } else {
-      setActiveNavItem('home');
     }
-  }, [location]);
+  }, [location, spaces, siteSD]);
 
-  // Dynamically determine available content types from the database
-  const contentTypes = Array.isArray(site?.content_types) ? site.content_types : [];
+  // Function to get the appropriate icon for a content type
+  const getIconForContentType = (cmsType: string) => {
+    switch (cmsType.toLowerCase()) {
+      case 'discussion':
+        return <MessageSquare className="mr-3 h-5 w-5 text-gray-400" />;
+      case 'qa':
+        return <HelpCircle className="mr-3 h-5 w-5 text-gray-400" />;
+      case 'wishlist':
+        return <Star className="mr-3 h-5 w-5 text-gray-400" />;
+      case 'blog':
+        return <FileText className="mr-3 h-5 w-5 text-gray-400" />;
+      case 'event':
+        return <Calendar className="mr-3 h-5 w-5 text-gray-400" />;
+      case 'knowledge':
+        return <BookOpen className="mr-3 h-5 w-5 text-gray-400" />;
+      case 'landing':
+        return <Layout className="mr-3 h-5 w-5 text-gray-400" />;
+      case 'jobs':
+        return <Briefcase className="mr-3 h-5 w-5 text-gray-400" />;
+      default:
+        return <FileText className="mr-3 h-5 w-5 text-gray-400" />;
+    }
+  };
 
   return (
     <div className="md:w-64 flex-shrink-0">
-      <div className="sticky top-20">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
-          <div className="p-4">
+      <div className="sticky top-16">
+        <div className="py-4">
+          <div className="">
             <nav className="space-y-1">
+              {/* Home changed to Feed - always present */}
               <Link 
                 href={`/site/${siteSD}`}
                 className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
@@ -75,106 +178,43 @@ export function SiteSidebar({ siteSD, activePage = 'home' }: SiteSidebarProps) {
                 }`}
                 onClick={() => setActiveNavItem('home')}
               >
-                <Home className="mr-3 h-5 w-5 text-gray-400" />
-                <span>Home</span>
+                <AlignLeft className="mr-3 h-5 w-5 text-gray-400" />
+                <span>Feed</span>
               </Link>
               
-              {/* Dynamic Content Type Navigation */}
-              {contentTypes.includes('discussion') && (
-                <Link 
-                  href={`/site/${siteSD}/discussion`}
-                  className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                    activeNavItem === 'discussion' 
-                      ? 'bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400' 
-                      : 'text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700/50'
-                  }`}
-                  onClick={() => setActiveNavItem('discussion')}
-                >
-                  <MessageSquare className="mr-3 h-5 w-5 text-gray-400" />
-                  <span>Discussions</span>
-                </Link>
+              {/* Spaces Label */}
+              {spaces.length > 0 && (
+                <div className="pt-4 pb-1">
+                  <h3 className="px-2 text-[0.7rem] text-gray-500 dark:text-gray-400 tracking-wider">
+                    Spaces:
+                  </h3>
+                </div>
               )}
-
-              {contentTypes.includes('qa') && (
-                <Link 
-                  href={`/site/${siteSD}/qa`}
-                  className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                    activeNavItem === 'qa' 
-                      ? 'bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400' 
-                      : 'text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700/50'
-                  }`}
-                  onClick={() => setActiveNavItem('qa')}
-                >
-                  <HelpCircle className="mr-3 h-5 w-5 text-gray-400" />
-                  <span>Q&A</span>
-                </Link>
-              )}
-
-              {contentTypes.includes('wishlist') && (
-                <Link 
-                  href={`/site/${siteSD}/wishlist`}
-                  className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                    activeNavItem === 'wishlist' 
-                      ? 'bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400' 
-                      : 'text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700/50'
-                  }`}
-                  onClick={() => setActiveNavItem('wishlist')}
-                >
-                  <Star className="mr-3 h-5 w-5 text-gray-400" />
-                  <span>Wishlist</span>
-                </Link>
-              )}
+              
+              {/* Dynamic Space Navigation Links */}
+              {spaces.map(space => (
+                !space.hidden && (
+                  <Link 
+                    key={space.id}
+                    href={`/site/${siteSD}/${space.slug}`}
+                    className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                      activeNavItem === space.slug 
+                        ? 'bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400' 
+                        : 'text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700/50'
+                    }`}
+                    onClick={() => setActiveNavItem(space.slug)}
+                  >
+                    {getIconForContentType(space.cms_type)}
+                    <span>{space.name}</span>
+                  </Link>
+                )
+              ))}
 
               {/* These are always present */}
-              <Link 
-                href={`/site/${siteSD}/search`}
-                className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                  activeNavItem === 'search' 
-                    ? 'bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400' 
-                    : 'text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700/50'
-                }`}
-                onClick={() => setActiveNavItem('search')}
-              >
-                <Search className="mr-3 h-5 w-5 text-gray-400" />
-                <span>Search</span>
-              </Link>
-
-              <Link 
-                href={`/site/${siteSD}/about`}
-                className={`flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                  activeNavItem === 'about' 
-                    ? 'bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400' 
-                    : 'text-gray-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700/50'
-                }`}
-                onClick={() => setActiveNavItem('about')}
-              >
-                <FileText className="mr-3 h-5 w-5 text-gray-400" />
-                <span>About</span>
-              </Link>
             </nav>
           </div>
         </div>
 
-        {/* Community Stats Card */}
-        <Card className="mt-4">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg">Community Stats</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500 dark:text-gray-400">Members</span>
-              <span className="text-sm font-medium">1,245</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500 dark:text-gray-400">Posts</span>
-              <span className="text-sm font-medium">3,872</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500 dark:text-gray-400">Online</span>
-              <span className="text-sm font-medium">42</span>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );

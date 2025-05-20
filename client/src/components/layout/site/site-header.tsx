@@ -276,42 +276,6 @@ export function SiteHeader({
       </div>
       
       {/* Desktop Navigation */}
-      <div className="hidden md:block bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800">
-        <div className="container mx-auto px-4">
-          <nav className="flex">
-            <Link 
-              href={`/site/${siteSD}`} 
-              className={`px-4 py-3 text-sm font-medium ${isActive('') && !isActive('/discussion') && !isActive('/qa') && !isActive('/wishlist') ? 'border-b-2 border-primary-600 dark:border-primary-500 text-primary-600 dark:text-primary-500' : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'}`}
-            >
-              Home
-            </Link>
-            <Link 
-              href={`/site/${siteSD}/discussion`} 
-              className={`px-4 py-3 text-sm font-medium ${isActive('/discussion') ? 'border-b-2 border-primary-600 dark:border-primary-500 text-primary-600 dark:text-primary-500' : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'}`}
-            >
-              Discussions
-            </Link>
-            <Link 
-              href={`/site/${siteSD}/qa`} 
-              className={`px-4 py-3 text-sm font-medium ${isActive('/qa') ? 'border-b-2 border-primary-600 dark:border-primary-500 text-primary-600 dark:text-primary-500' : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'}`}
-            >
-              Q&A
-            </Link>
-            <Link 
-              href={`/site/${siteSD}/wishlist`} 
-              className={`px-4 py-3 text-sm font-medium ${isActive('/wishlist') ? 'border-b-2 border-primary-600 dark:border-primary-500 text-primary-600 dark:text-primary-500' : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'}`}
-            >
-              Wishlist
-            </Link>
-            <Link 
-              href={`/site/${siteSD}/about`} 
-              className={`px-4 py-3 text-sm font-medium ${isActive('/about') ? 'border-b-2 border-primary-600 dark:border-primary-500 text-primary-600 dark:text-primary-500' : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100'}`}
-            >
-              About
-            </Link>
-          </nav>
-        </div>
-      </div>
     </>
   );
 } 
