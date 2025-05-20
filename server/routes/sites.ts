@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { setApiResponseHeaders, handleCorsPreflightRequest } from '../utils/environment.js';
 import { fetchBrandData } from '../utils/brandfetch.js';
 import slugify from 'slugify';
+import { sql } from 'drizzle-orm';
 
 const router = express.Router();
 
@@ -150,17 +151,25 @@ router.use((req, res, next) => {
 // Create a new site
 router.post('/', async (req, res) => {
   try {
+    console.log("=== Site Creation Request ===");
+    console.log("Raw request body:", typeof req.body === 'string' ? req.body : JSON.stringify(req.body, null, 2));
+    
     // Handle both string and object body formats (for Vercel compatibility)
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    console.log("Parsed body:", JSON.stringify(body, null, 2));
     
     const validationResult = createSiteSchema.safeParse(body);
     if (!validationResult.success) {
+      console.error("Validation failed:", validationResult.error.flatten());
       return res.status(400).json({
         message: 'Invalid site data.',
         errors: { fieldErrors: validationResult.error.flatten().fieldErrors },
       });
     }
     const payload = validationResult.data;
+    console.log("Validated payload:", JSON.stringify(payload, null, 2));
+    console.log("Content types from payload:", payload.selectedContentTypes);
+    console.log(`Content types type: ${typeof payload.selectedContentTypes}, isArray: ${Array.isArray(payload.selectedContentTypes)}, length: ${payload.selectedContentTypes?.length || 0}`);
 
     // TODO: Replace with actual authenticated user ID from req.user
     const currentUserId = "49a44198-e6e5-4b1e-b8fb-b1c50ee0639d"; // Placeholder
@@ -182,7 +191,27 @@ router.post('/', async (req, res) => {
     // Determine which brand data to use
     let logoUrl = null;
     let brandColor = null;
-    let contentTypes = payload.selectedContentTypes || [];
+    
+    // Ensure content types is always an array
+    let contentTypes: string[] = [];
+    if (payload.selectedContentTypes) {
+      if (Array.isArray(payload.selectedContentTypes)) {
+        contentTypes = payload.selectedContentTypes;
+      } else if (typeof payload.selectedContentTypes === 'string') {
+        try {
+          // Try to parse if it's a JSON string array
+          const parsed = JSON.parse(payload.selectedContentTypes);
+          if (Array.isArray(parsed)) {
+            contentTypes = parsed;
+          }
+        } catch (e) {
+          // If not JSON, treat as a comma-separated string
+          contentTypes = (payload.selectedContentTypes as string).split(',').map((item: string) => item.trim());
+        }
+      }
+    }
+    
+    console.log("Processed content types:", contentTypes);
     
     // If user provided selected brand assets, use those
     if (payload.selectedLogo || payload.selectedColor) {
@@ -256,6 +285,7 @@ router.post('/', async (req, res) => {
     // Create spaces for selected content types
     if (contentTypes.length > 0) {
       console.log(`Creating spaces for selected content types: ${contentTypes.join(', ')}`);
+      console.log(`Content types value type: ${typeof contentTypes}, isArray: ${Array.isArray(contentTypes)}`);
       
       // Map of content type IDs to readable names and space configurations
       const contentTypeConfig = {
@@ -303,6 +333,8 @@ router.post('/', async (req, res) => {
       
       // Create a space for each selected content type
       for (const contentType of contentTypes) {
+        console.log(`Processing content type: ${contentType}`);
+        
         // Get config for this content type or use defaults
         const config = contentTypeConfig[contentType as keyof typeof contentTypeConfig] || {
           name: contentType.charAt(0).toUpperCase() + contentType.slice(1),
@@ -310,31 +342,66 @@ router.post('/', async (req, res) => {
           visibility: 'public'
         };
         
+        console.log(`Using config for ${contentType}:`, config);
+        
         // Generate slug from name
         const spaceSlug = slugify(config.name, {
           lower: true,
           strict: true
         });
         
+        console.log(`Generated slug for ${config.name}: ${spaceSlug}`);
+        
         try {
-          // Create the space with the cms_type field set to the content type
-          await db.insert(spaces).values({
-            name: config.name,
-            slug: spaceSlug,
-            description: config.description,
-            creator_id: currentUserId,
-            site_id: newSite.id,
-            visibility: config.visibility as any,
-            cms_type: contentType, // Set the cms_type field to the content type
-            hidden: false,
-          });
+          console.log(`Attempting to create space in database for ${contentType}...`);
           
-          console.log(`Created ${contentType} space: ${config.name}`);
-        } catch (spaceError) {
+          // Use SQL template literal with drizzle's sql tag
+          const query = sql`
+            INSERT INTO spaces 
+            (name, slug, description, creator_id, site_id, visibility, cms_type, hidden)
+            VALUES 
+            (${config.name}, ${spaceSlug}, ${config.description}, 
+             ${currentUserId}, ${newSite.id}, ${config.visibility}, 
+             ${contentType}, ${false})
+            RETURNING id;
+          `;
+          
+          try {
+            const result = await db.execute(query);
+            console.log(`Space created successfully for ${contentType}, SQL result:`, JSON.stringify(result));
+            console.log(`Created ${contentType} space: ${config.name}`);
+          } catch (sqlError: any) {
+            console.error(`SQL error creating space for ${contentType}:`, sqlError.message);
+            // Check if there's a more detailed error structure
+            if (sqlError.code) {
+              console.error(`SQL error code: ${sqlError.code}, position: ${sqlError.position}`);
+            }
+            // Re-throw to ensure the outer catch block handles it
+            throw sqlError;
+          }
+        } catch (spaceError: any) {
           console.error(`Error creating space for ${contentType}:`, spaceError);
+          console.error(`Error details: ${spaceError.message}, code: ${spaceError.code}`);
           // Continue with other spaces even if one fails
         }
       }
+
+      // Verify spaces were created
+      try {
+        const createdSpaces = await db.select({
+          id: spaces.id,
+          name: spaces.name,
+          cms_type: spaces.cms_type
+        })
+        .from(spaces)
+        .where(eq(spaces.site_id, newSite.id));
+
+        console.log(`Verification - Spaces created for site ${newSite.id}:`, createdSpaces);
+      } catch (verifyError) {
+        console.error('Error verifying created spaces:', verifyError);
+      }
+    } else {
+      console.log('No content types selected, skipping space creation');
     }
 
     return res.status(201).json(newSite);

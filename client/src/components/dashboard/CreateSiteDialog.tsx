@@ -144,6 +144,15 @@ const siteCreationSteps = [
 
 // --- API Functions ---
 const createNewSite = async (data: SiteCreationFormInputs) => {
+  console.log("Creating site with data:", {
+    name: data.name,
+    subdomain: data.subdomain,
+    domain: data.domain,
+    selectedLogo: data.selectedLogo ? "Has logo" : "No logo",
+    selectedColor: data.selectedColor,
+    selectedContentTypes: data.selectedContentTypes
+  });
+  
   return sitesApi.createSite({
     name: data.name,
     subdomain: data.subdomain?.trim().toLowerCase() || undefined,
@@ -334,6 +343,8 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
 
   const onSubmitHandler: SubmitHandler<SiteCreationFormInputs> = (data) => {
     console.log("Submit handler called, current step:", wizardStep);
+    console.log("Form data to be submitted:", JSON.stringify(data, null, 2));
+    console.log("Selected content types:", data.selectedContentTypes);
     
     // Make sure we're in step 3 before proceeding with site creation
     if (wizardStep !== 3) {
@@ -417,10 +428,13 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
     
     if (index === -1) {
       // Add the item if not present
-      setValue('selectedContentTypes', [...currentSelection, id]);
+      const newSelection = [...currentSelection, id];
+      console.log(`Adding content type: ${id}, new selection:`, newSelection);
+      setValue('selectedContentTypes', newSelection);
     } else {
       // Remove the item if already selected
       currentSelection.splice(index, 1);
+      console.log(`Removing content type: ${id}, new selection:`, currentSelection);
       setValue('selectedContentTypes', currentSelection);
     }
   };

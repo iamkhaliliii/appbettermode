@@ -71,8 +71,6 @@ export const spaces = pgTable('spaces', {
   updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
   hidden: boolean('hidden').default(false),
   visibility: spaceVisibilityEnum('visibility').default('public').notNull(),
-  cover_image_url: text('cover_image_url'),
-  icon_url: text('icon_url'),
   cms_type: text('cms_type'), // Optional field to specify CMS type for this space
 });
 
