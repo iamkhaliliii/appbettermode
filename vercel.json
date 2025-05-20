@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
+  "buildCommand": "bash scripts/cleanup-api.sh && npm run build:client && npm run build:server && node scripts/build.mjs",
   "outputDirectory": "dist/public",
   "framework": "vite",
   "devCommand": "npm run dev",
