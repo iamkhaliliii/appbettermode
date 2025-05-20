@@ -45,14 +45,23 @@ router.get('/', async (req, res) => {
         role: memberships.role,
         createdAt: sites.createdAt,
         updatedAt: sites.updatedAt,
-        state: sites.state,
         status: sites.status,
+        logo_url: sites.logo_url,
+        brand_color: sites.brand_color,
+        content_types: sites.content_types,
+        plan: sites.plan,
       })
       .from(sites)
       .innerJoin(memberships, eq(memberships.siteId, sites.id))
       .where(eq(memberships.userId, currentUserId));
 
-    return res.status(200).json(userSites);
+    // Create a deep copy and add state with proper typing
+    const sitesWithState = JSON.parse(JSON.stringify(userSites));
+    sitesWithState.forEach((site: any) => {
+      site.state = site.status;
+    });
+
+    return res.status(200).json(sitesWithState);
   } catch (error) {
     console.error('Error fetching sites:', error);
     return res.status(500).json({ message: 'Error fetching sites from database' });
@@ -79,8 +88,11 @@ router.get('/:identifier', async (req, res) => {
         ownerId: sites.owner_id,
         createdAt: sites.createdAt,
         updatedAt: sites.updatedAt,
-        state: sites.state,
         status: sites.status,
+        logo_url: sites.logo_url,
+        brand_color: sites.brand_color,
+        content_types: sites.content_types,
+        plan: sites.plan,
       })
       .from(sites)
       .where(eq(sites.subdomain, identifier))
@@ -98,8 +110,11 @@ router.get('/:identifier', async (req, res) => {
           ownerId: sites.owner_id,
           createdAt: sites.createdAt,
           updatedAt: sites.updatedAt,
-          state: sites.state,
           status: sites.status,
+          logo_url: sites.logo_url,
+          brand_color: sites.brand_color,
+          content_types: sites.content_types,
+          plan: sites.plan,
         })
         .from(sites)
         .where(eq(sites.id, identifier))
@@ -112,8 +127,12 @@ router.get('/:identifier', async (req, res) => {
       return res.status(404).json({ message: 'Site not found.' });
     }
 
-    console.log(`Found site:`, site);
-    return res.status(200).json(site);
+    // Add state field for backward compatibility
+    const siteWithState = JSON.parse(JSON.stringify(site));
+    siteWithState.state = siteWithState.status;
+
+    console.log(`Found site:`, siteWithState);
+    return res.status(200).json(siteWithState);
   } catch (error) {
     console.error(`Error fetching site:`, error);
     return res.status(500).json({ message: 'Error fetching site from database' });
@@ -183,7 +202,7 @@ router.post('/', async (req, res) => {
       name: payload.name,
       subdomain: payload.subdomain,
       ownerId: currentUserId,
-      state: 'pending',
+      status: 'active',
       logoUrl,
       brandColor,
       contentTypes
@@ -195,10 +214,11 @@ router.post('/', async (req, res) => {
         name: payload.name,
         subdomain: payload.subdomain,
         owner_id: currentUserId,
-        state: 'pending', // Default state for new sites
+        status: 'active', // Default status for new sites
         logo_url: logoUrl,
         brand_color: brandColor,
         content_types: contentTypes.length > 0 ? contentTypes : undefined,
+        plan: 'lite', // Default plan is lite
       })
       .returning({
         id: sites.id,
@@ -207,18 +227,21 @@ router.post('/', async (req, res) => {
         ownerId: sites.owner_id,
         createdAt: sites.createdAt,
         updatedAt: sites.updatedAt,
-        state: sites.state,
         status: sites.status,
         logo_url: sites.logo_url,
         brand_color: sites.brand_color,
         content_types: sites.content_types,
+        plan: sites.plan,
       });
     
     if (!siteInsertResult || siteInsertResult.length === 0) {
       throw new Error('Failed to create the site record in the database.');
     }
     
-    const newSite = siteInsertResult[0];
+    // Add state field to the response
+    const newSiteRaw = siteInsertResult[0];
+    const newSite = JSON.parse(JSON.stringify(newSiteRaw));
+    newSite.state = newSite.status;
     console.log('Site created successfully:', newSite);
     
     // Automatically add the creator as an admin member of the new site

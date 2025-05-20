@@ -5,7 +5,9 @@ export interface Site {
   ownerId?: string;
   createdAt: string;
   updatedAt?: string | null;
+  /** @deprecated Use status instead */
   state?: string;
+  status: string;
   logo_url?: string | null;
   primary_color?: string | null;
   brand_colors?: any | null;

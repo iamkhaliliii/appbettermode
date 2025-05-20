@@ -51,7 +51,7 @@ export default async function handler(req, res) {
       ownerId: site.owner_id,
       createdAt: site.createdAt,
       updatedAt: site.updatedAt,
-      state: site.state,
+      state: site.status,
       status: site.status
     };
     

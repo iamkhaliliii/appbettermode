@@ -40,15 +40,21 @@ const siteSchema = z.object({
   ownerId: z.string().uuid(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime().nullable(),
-  state: z.string().nullable(),
+  state: z.string().nullable().optional(),
   status: z.string(),
-  // Role may be included in responses from the membership join
   role: z.string().optional(),
-  // Brand data fields
   logo_url: z.string().nullable().optional(),
   brand_color: z.string().nullable().optional(),
   brand_colors: z.any().nullable().optional(),
   content_types: z.array(z.string()).nullable().optional(),
+  plan: z.string().optional(),
+})
+.transform(data => {
+  const result = { ...data };
+  result.state = (data.state === undefined || data.state === null) 
+    ? data.status 
+    : data.state;
+  return result;
 });
 
 const sitesResponseSchema = z.array(siteSchema);
@@ -206,13 +212,27 @@ export const sitesApi = {
   // Get all sites for current user
   getAllSites: async (): Promise<Site[]> => {
     const data = await apiFetch<unknown>(ENDPOINTS.SITES);
-    return safelyParseData(sitesResponseSchema, data);
+    // Manually add state field to each site if it's missing
+    const sitesWithState = Array.isArray(data) 
+      ? data.map((site: any) => ({
+          ...site,
+          state: site.state || site.status // Set state to status if it doesn't exist
+        }))
+      : data;
+    return safelyParseData(sitesResponseSchema, sitesWithState);
   },
 
   // Get site by ID or subdomain
   getSite: async (identifier: string): Promise<Site> => {
     const data = await apiFetch<unknown>(ENDPOINTS.SITE(identifier));
-    return safelyParseData(siteSchema, data);
+    // Manually add state field if it's missing
+    const siteWithState = data && typeof data === 'object'
+      ? {
+          ...data as any,
+          state: (data as any).state || (data as any).status // Set state to status if it doesn't exist
+        }
+      : data;
+    return safelyParseData(siteSchema, siteWithState);
   },
 
   // Create a new site
@@ -228,7 +248,14 @@ export const sitesApi = {
       method: 'POST',
       body: JSON.stringify(newSite),
     });
-    return safelyParseData(siteSchema, data);
+    // Manually add state field if it's missing
+    const siteWithState = data && typeof data === 'object'
+      ? {
+          ...data as any,
+          state: (data as any).state || (data as any).status // Set state to status if it doesn't exist
+        }
+      : data;
+    return safelyParseData(siteSchema, siteWithState);
   },
   
   // Get members for a site

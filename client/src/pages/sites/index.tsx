@@ -55,6 +55,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SiteCreationFormInputs, BrandLogo, BrandColor, CompanyInfo } from './types';
 import CreateSiteDialog from '@/components/dashboard/CreateSiteDialog';
+import { Badge } from "@/components/ui/badge";
 
 // --- Validation Schema (for create site form) ---
 const siteCreationSchema = z.object({
@@ -89,37 +90,30 @@ const createNewSite = async (data: SiteCreationFormInputs): Promise<Site> => {
 };
 
 // --- Helper Components ---
-const SiteStateBadge: React.FC<{ state?: string | null }> = ({ state }) => {
-  if (!state) return null;
-
-  const normalizedState = state.toLowerCase();
-  let bgColor = 'bg-gray-100 dark:bg-gray-700';
-  let textColor = 'text-gray-600 dark:text-gray-300';
-  let dotColor = 'bg-gray-400';
-  let Icon = TagIcon;
-
-  if (normalizedState === 'active') {
-    bgColor = 'bg-green-100 dark:bg-green-900/30';
-    textColor = 'text-green-700 dark:text-green-300';
-    dotColor = 'bg-green-500';
-    Icon = CheckCircle2;
-  } else if (normalizedState === 'pending') {
-    bgColor = 'bg-yellow-100 dark:bg-yellow-900/30';
-    textColor = 'text-yellow-700 dark:text-yellow-400';
-    dotColor = 'bg-yellow-500';
-    Icon = Clock;
-  } else if (normalizedState === 'inactive') {
-    bgColor = 'bg-slate-100 dark:bg-slate-800';
-    textColor = 'text-slate-600 dark:text-slate-400';
-    dotColor = 'bg-slate-500';
+const SiteStatusBadge: React.FC<{ status?: string | null }> = ({ status }) => {
+  // Default to 'inactive' if status is not provided
+  const statusValue = status || 'inactive';
+  const normalizedStatus = statusValue.toLowerCase();
+  
+  if (normalizedStatus === 'active') {
+    return (
+      <Badge className="bg-green-100 text-green-800 border-green-300">
+        Active
+      </Badge>
+    );
+  } else if (normalizedStatus === 'inactive' || normalizedStatus === 'pending') {
+    return (
+      <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300">
+        Inactive
+      </Badge>
+    );
+  } else {
+    return (
+      <Badge className="bg-gray-100 text-gray-800 border-gray-300">
+        {status}
+      </Badge>
+    );
   }
-
-  return (
-    <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${bgColor} ${textColor} border border-transparent shadow-sm`}>
-      <Icon className={`w-3 h-3 mr-1.5 ${normalizedState === 'active' || normalizedState === 'pending' ? textColor : dotColor}`} />
-      {state.charAt(0).toUpperCase() + state.slice(1)}
-    </div>
-  );
 };
 
 const SiteCard: React.FC<{ site: Site }> = ({ site }) => {
@@ -139,8 +133,8 @@ const SiteCard: React.FC<{ site: Site }> = ({ site }) => {
       <Card className="bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/60 hover:shadow-xl dark:hover:border-primary-500/50 transition-all duration-300 ease-in-out h-full flex flex-col rounded-lg overflow-hidden will-change-transform group-hover:translate-y-[-4px]">
         <div 
           className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" 
-          style={site.primary_color ? {
-            background: `linear-gradient(to right, ${site.primary_color}15, ${site.primary_color}00)`
+          style={site.brand_color ? {
+            background: `linear-gradient(to right, ${site.brand_color}15, ${site.brand_color}00)`
           } : {
             background: 'linear-gradient(to right, rgba(var(--primary-500), 0.05), rgba(var(--primary-500), 0))'
           }}
@@ -167,7 +161,7 @@ const SiteCard: React.FC<{ site: Site }> = ({ site }) => {
                   {site.name}
                 </h3>
               </div>
-              <SiteStateBadge state={site.state} />
+              <SiteStatusBadge status={site.status} />
             </div>
           {site.subdomain ? (
             <p className="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -213,7 +207,7 @@ const SitesDashboardPage: React.FC = () => {
   const queryClient = useQueryClient();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [stateFilter, setStateFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const {
@@ -239,21 +233,21 @@ const SitesDashboardPage: React.FC = () => {
       const nameMatch = site.name.toLowerCase().includes(searchLower);
       const subdomainMatch = site.subdomain?.toLowerCase().includes(searchLower);
       const matchesSearch = nameMatch || subdomainMatch;
-      const siteStateNormalized = site.state?.toLowerCase();
-      const filterStateNormalized = stateFilter.toLowerCase();
-      const matchesState = filterStateNormalized === 'all' || (siteStateNormalized && siteStateNormalized === filterStateNormalized);
-      return matchesSearch && matchesState;
+      const siteStatusNormalized = site.status?.toLowerCase();
+      const filterStatusNormalized = statusFilter.toLowerCase();
+      const matchesStatus = filterStatusNormalized === 'all' || (siteStatusNormalized && siteStatusNormalized === filterStatusNormalized);
+      return matchesSearch && matchesStatus;
     });
-  }, [sites, searchQuery, stateFilter]);
+  }, [sites, searchQuery, statusFilter]);
 
-  const availableStates = useMemo(() => {
-    const uniqueStates = new Set(sites.map(site => site.state).filter(Boolean) as string[]);
-    return ['all', ...Array.from(uniqueStates).sort()];
+  const availableStatuses = useMemo(() => {
+    const uniqueStatuses = new Set(sites.map(site => site.status).filter(Boolean) as string[]);
+    return ['all', ...Array.from(uniqueStatuses).sort()];
   }, [sites]);
 
   const clearFilters = () => {
     setSearchQuery('');
-    setStateFilter('all');
+    setStatusFilter('all');
   };
 
   if (isLoading) {
@@ -372,19 +366,19 @@ const SitesDashboardPage: React.FC = () => {
                   >
                     <div className="flex items-center">
                       <Filter className="h-4 w-4 mr-2 text-gray-500 dark:text-gray-400" />
-                      {stateFilter === 'all' ? 'All States' : (stateFilter.charAt(0).toUpperCase() + stateFilter.slice(1))}
+                      {statusFilter === 'all' ? 'All Statuses' : (statusFilter.charAt(0).toUpperCase() + statusFilter.slice(1))}
                     </div>
                     <ChevronDown className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-full min-w-[220px]">
-                  {availableStates.map(s => (
+                  {availableStatuses.map(s => (
                     <DropdownMenuItem 
                       key={s} 
-                      onClick={() => setStateFilter(s.toLowerCase())}
-                      className={stateFilter === s.toLowerCase() ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300' : ''}
+                      onClick={() => setStatusFilter(s.toLowerCase())}
+                      className={statusFilter === s.toLowerCase() ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300' : ''}
                     >
-                      {s === 'all' ? 'All States' : (s.charAt(0).toUpperCase() + s.slice(1))}
+                      {s === 'all' ? 'All Statuses' : (s.charAt(0).toUpperCase() + s.slice(1))}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
@@ -401,7 +395,7 @@ const SitesDashboardPage: React.FC = () => {
               No Sites Match Your Filters
             </h3>
             <p className="text-md text-gray-600 dark:text-gray-400 mb-6">
-              Try adjusting your search query or changing the selected state filter.
+              Try adjusting your search query or changing the selected status filter.
             </p>
             <Button variant="secondary" onClick={clearFilters} className="px-6">
               <X className="h-4 w-4 mr-2" />

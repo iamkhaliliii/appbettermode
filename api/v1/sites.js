@@ -84,7 +84,7 @@ export default async function handler(req, res) {
         ownerId: insertResult[0].owner_id,
         createdAt: insertResult[0].createdAt,
         updatedAt: insertResult[0].updatedAt,
-        state: insertResult[0].state,
+        state: insertResult[0].status,
         status: insertResult[0].status
       };
       
@@ -114,7 +114,7 @@ export default async function handler(req, res) {
       ownerId: site.owner_id,
       createdAt: site.createdAt,
       updatedAt: site.updatedAt,
-      state: site.state,
+      state: site.status,
       status: site.status
     }));
     

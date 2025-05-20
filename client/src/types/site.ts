@@ -9,5 +9,7 @@ export interface SiteDetails {
   ownerId?: string;        // UUID of site owner
   createdAt?: string;      // Creation timestamp
   updatedAt?: string;      // Last update timestamp
-  state?: string;          // Site state
+  /** @deprecated Use status instead */
+  state?: string;          // Deprecated - use status instead
+  status: string;          // Site status (active, inactive, etc.)
 } 
