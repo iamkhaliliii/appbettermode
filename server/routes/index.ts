@@ -1,5 +1,6 @@
 import express from 'express';
 import sitesRouter from './sites.js';
+import postsRouter from './posts.js';
 import { fetchBrandData, testBrandfetchAPI } from '../utils/brandfetch.js';
 import { logger } from '../utils/logger.js';
 import { setApiResponseHeaders } from '../utils/environment.js';
@@ -30,6 +31,10 @@ apiRouter.use((req, res, next) => {
 // Register all API routes
 apiRouter.use('/sites', sitesRouter);
 logger.info('[API] Sites routes registered');
+
+// Register posts router for the new unified posts handling
+apiRouter.use('/posts', postsRouter);
+logger.info('[API] Posts routes registered');
 
 // Brand fetch endpoint
 apiRouter.get('/brand-fetch', async (req, res) => {

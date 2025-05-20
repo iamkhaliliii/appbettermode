@@ -12,7 +12,16 @@
     "start": "NODE_ENV=production node api/index.js",
     "check": "tsc",
     "db:push": "drizzle-kit push",
-    "vercel-build": "npm run build"
+    "vercel-build": "npm run build",
+    "db:migrate:posts:step1": "NODE_ENV=development tsx server/db/create-posts-migration.ts",
+    "db:migrate:posts:step2": "NODE_ENV=development tsx server/db/migrate-data-to-posts.ts",
+    "db:migrate:posts:step3": "NODE_ENV=development tsx server/db/remove-columns.ts",
+    "db:migrate:posts:step4": "NODE_ENV=development tsx server/db/update-image-fields.ts",
+    "db:migrate:posts:step5": "NODE_ENV=development tsx server/db/update-content-type.ts",
+    "db:migrate:posts": "npm run db:migrate:posts:step1 && npm run db:migrate:posts:step2 && npm run db:migrate:posts:step3 && npm run db:migrate:posts:step4 && npm run db:migrate:posts:step5",
+    "db:migrate:spaces": "NODE_ENV=development tsx server/db/update-spaces-table.ts",
+    "db:migrate:space-cms-type": "NODE_ENV=development tsx server/db/add-space-cms-type.ts",
+    "db:check:migration": "NODE_ENV=development tsx server/db/check-migration.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -82,6 +91,7 @@
     "react-lottie": "^1.2.10",
     "react-resizable-panels": "^2.1.4",
     "recharts": "^2.13.0",
+    "slugify": "^1.6.6",
     "vaul": "^1.1.0",
     "wouter": "^3.3.5",
     "ws": "^8.18.0",

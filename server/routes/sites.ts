@@ -1,10 +1,11 @@
 import express from 'express';
 import { db } from '../db/index.js';
-import { sites, memberships } from '../db/schema.js';
+import { sites, memberships, spaces } from '../db/schema.js';
 import { eq, and, or } from 'drizzle-orm';
 import { z } from 'zod';
 import { setApiResponseHeaders, handleCorsPreflightRequest } from '../utils/environment.js';
 import { fetchBrandData } from '../utils/brandfetch.js';
+import slugify from 'slugify';
 
 const router = express.Router();
 
@@ -251,6 +252,90 @@ router.post('/', async (req, res) => {
       role: 'admin', // Assigning 'admin' role to the creator
     });
     console.log(`User ${currentUserId} added as admin to site ${newSite.id}`);
+
+    // Create spaces for selected content types
+    if (contentTypes.length > 0) {
+      console.log(`Creating spaces for selected content types: ${contentTypes.join(', ')}`);
+      
+      // Map of content type IDs to readable names and space configurations
+      const contentTypeConfig = {
+        'discussion': {
+          name: 'Discussions',
+          description: 'Community discussions and conversations',
+          visibility: 'public',
+        },
+        'qa': {
+          name: 'Q&A',
+          description: 'Questions and answers from the community',
+          visibility: 'public',
+        },
+        'wishlist': {
+          name: 'Ideas & Wishlist',
+          description: 'Feature requests and suggestions',
+          visibility: 'public',
+        },
+        'knowledge': {
+          name: 'Knowledge Base',
+          description: 'Helpful articles and resources',
+          visibility: 'public',
+        },
+        'event': {
+          name: 'Events',
+          description: 'Upcoming and past events',
+          visibility: 'public',
+        },
+        'blog': {
+          name: 'Blog',
+          description: 'News and updates',
+          visibility: 'public',
+        },
+        'jobs': {
+          name: 'Job Board',
+          description: 'Career opportunities',
+          visibility: 'public',
+        },
+        'landing': {
+          name: 'Landing Pages',
+          description: 'Marketing and information pages',
+          visibility: 'public',
+        }
+      };
+      
+      // Create a space for each selected content type
+      for (const contentType of contentTypes) {
+        // Get config for this content type or use defaults
+        const config = contentTypeConfig[contentType as keyof typeof contentTypeConfig] || {
+          name: contentType.charAt(0).toUpperCase() + contentType.slice(1),
+          description: `${contentType} content`,
+          visibility: 'public'
+        };
+        
+        // Generate slug from name
+        const spaceSlug = slugify(config.name, {
+          lower: true,
+          strict: true
+        });
+        
+        try {
+          // Create the space with the cms_type field set to the content type
+          await db.insert(spaces).values({
+            name: config.name,
+            slug: spaceSlug,
+            description: config.description,
+            creator_id: currentUserId,
+            site_id: newSite.id,
+            visibility: config.visibility as any,
+            cms_type: contentType, // Set the cms_type field to the content type
+            hidden: false,
+          });
+          
+          console.log(`Created ${contentType} space: ${config.name}`);
+        } catch (spaceError) {
+          console.error(`Error creating space for ${contentType}:`, spaceError);
+          // Continue with other spaces even if one fails
+        }
+      }
+    }
 
     return res.status(201).json(newSite);
   } catch (error: any) {

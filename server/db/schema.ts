@@ -5,11 +5,14 @@ import { relations } from 'drizzle-orm';
 // Enum for membership roles
 export const memberRoleEnum = pgEnum('member_role', ['member', 'admin', 'editor']);
 
-// Enum for content status
-export const contentStatusEnum = pgEnum('content_status', ['draft', 'published', 'archived']);
+// Enum for content status - updated to include all required statuses
+export const contentStatusEnum = pgEnum('content_status', ['draft', 'published', 'archived', 'scheduled', 'pending_review']);
 
 // Enum for site plan
 export const sitePlanEnum = pgEnum('site_plan', ['lite', 'pro']);
+
+// First create a new enum for space visibility
+export const spaceVisibilityEnum = pgEnum('space_visibility', ['public', 'private', 'paid']);
 
 // Common tables
 export const sites = pgTable('sites', {
@@ -60,13 +63,17 @@ export const memberships = pgTable('memberships', {
 export const spaces = pgTable('spaces', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   name: text('name').notNull(),
+  slug: text('slug').notNull(),
   description: text('description'),
+  creator_id: uuid('creator_id').references(() => users.id),
   site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
   created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
-  is_private: boolean('is_private').notNull().default(false),
+  hidden: boolean('hidden').default(false),
+  visibility: spaceVisibilityEnum('visibility').default('public').notNull(),
   cover_image_url: text('cover_image_url'),
   icon_url: text('icon_url'),
+  cms_type: text('cms_type'), // Optional field to specify CMS type for this space
 });
 
 export const tags = pgTable('tags', {
@@ -85,6 +92,53 @@ export const tags = pgTable('tags', {
   };
 });
 
+// New posts table for common fields across all CMS content types
+export const posts = pgTable('posts', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  title: text('title').notNull(),
+  content: jsonb('content').notNull(),
+  content_format: text('content_format').default('richtext').notNull(),
+  status: contentStatusEnum('status').default('draft'),
+  author_id: uuid('author_id').references(() => users.id),
+  space_id: uuid('space_id').references(() => spaces.id),
+  published_at: timestamp('published_at', { withTimezone: true }),
+  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
+  cms_type: text('cms_type').notNull(), // The type of CMS content this post relates to
+  site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
+  locked: boolean('locked').default(false),
+  hidden: boolean('hidden').default(false),
+  cover_image_id: uuid('cover_image_id'),
+  pinned: boolean('pinned').default(false),
+});
+
+// Relation between posts and tags
+export const post_tags = pgTable('post_tags', {
+  post_id: uuid('post_id').notNull().references(() => posts.id, { onDelete: 'cascade' }),
+  tag_id: uuid('tag_id').notNull().references(() => tags.id, { onDelete: 'cascade' }),
+}, (table) => {
+  return {
+    pk: primaryKey({ columns: [table.post_id, table.tag_id] })
+  };
+});
+
+// Relations for posts
+export const postsRelations = relations(posts, ({ one, many }) => ({
+  author: one(users, {
+    fields: [posts.author_id],
+    references: [users.id],
+  }),
+  space: one(spaces, {
+    fields: [posts.space_id],
+    references: [spaces.id],
+  }),
+  site: one(sites, {
+    fields: [posts.site_id],
+    references: [sites.id],
+  }),
+  tags: many(post_tags),
+}));
+
 // Define answer table first to avoid circular references
 export const cms_qa_answers = pgTable('cms_qa_answers', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
@@ -99,16 +153,11 @@ export const cms_qa_answers = pgTable('cms_qa_answers', {
 // Then define questions with reference to answers
 export const cms_qa_questions = pgTable('cms_qa_questions', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  post_id: uuid('post_id').references(() => posts.id), // Reference to common post data
   question: text('question').notNull(),
   details: text('details').notNull(),
-  site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
-  author_id: uuid('author_id').references(() => users.id),
   accepted_answer_id: uuid('accepted_answer_id').references(() => cms_qa_answers.id),
   upvotes: integer('upvotes').default(0),
-  space_id: uuid('space_id').references(() => spaces.id),
-  status: contentStatusEnum('status').default('published'),
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
 
 // Now we can update qa_answers to reference qa_questions
@@ -125,38 +174,28 @@ export const qaQuestionsRelations = relations(cms_qa_questions, ({ one, many }) 
     references: [cms_qa_answers.id],
   }),
   answers: many(cms_qa_answers),
+  post: one(posts, {
+    fields: [cms_qa_questions.post_id],
+    references: [posts.id],
+  }),
 }));
 
-// Content Type Tables based on CMS_Field_Structure.csv
+// Content Type Tables based on CMS_Field_Structure.csv - updated to use posts table
 
 // 1. Discussion
 export const cms_discussions = pgTable('cms_discussions', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  title: text('title').notNull(),
-  body: text('body').notNull(),
-  site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
-  author_id: uuid('author_id').references(() => users.id),
-  space_id: uuid('space_id').references(() => spaces.id),
+  post_id: uuid('post_id').references(() => posts.id), // Reference to common post data
   featured_image_id: uuid('featured_image_id'),
   allow_replies: boolean('allow_replies').default(true),
   pinned: boolean('pinned').default(false),
-  status: contentStatusEnum('status').default('published'),
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
 
 // 3. Knowledge Base
 export const cms_knowledge_base_articles = pgTable('cms_knowledge_base_articles', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  title: text('title').notNull(),
-  body: text('body').notNull(),
-  site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
-  author_id: uuid('author_id').references(() => users.id),
-  space_id: uuid('space_id').references(() => spaces.id),
+  post_id: uuid('post_id').references(() => posts.id), // Reference to common post data
   last_updated: timestamp('last_updated', { withTimezone: true }).default(sql`now()`),
-  status: contentStatusEnum('status').default('published'),
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
 
 export const cms_related_articles = pgTable('cms_related_articles', {
@@ -171,91 +210,58 @@ export const cms_related_articles = pgTable('cms_related_articles', {
 // 4. Idea & Feedback
 export const cms_ideas = pgTable('cms_ideas', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  title: text('idea_title').notNull(),
-  description: text('description').notNull(),
-  site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
-  submitter_id: uuid('submitter_id').references(() => users.id),
-  status: text('status').default('Under Review'),
+  post_id: uuid('post_id').references(() => posts.id), // Reference to common post data
+  status: text('status').default('Under Review'), // Keep specific status for ideas
   votes: integer('votes').default(0),
-  space_id: uuid('space_id').references(() => spaces.id),
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
 
 // 5. Changelog
 export const cms_changelogs = pgTable('cms_changelogs', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  title: text('update_title').notNull(),
-  description: text('description').notNull(),
+  post_id: uuid('post_id').references(() => posts.id), // Reference to common post data
   date: timestamp('date', { withTimezone: true }).notNull(),
-  site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
-  author_id: uuid('author_id').references(() => users.id),
   feature_area: text('feature_area'),
   version: text('version'),
-  space_id: uuid('space_id').references(() => spaces.id),
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
 
 // 6. Product Update
 export const cms_product_updates = pgTable('cms_product_updates', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  title: text('title').notNull(),
-  description: text('description').notNull(),
+  post_id: uuid('post_id').references(() => posts.id), // Reference to common post data
   date: timestamp('date', { withTimezone: true }).notNull(),
-  site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
-  author_id: uuid('author_id').references(() => users.id),
   release_notes: text('release_notes'),
   feature: text('feature'),
   version: text('version'),
   media_id: uuid('media_id'),
-  space_id: uuid('space_id').references(() => spaces.id),
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
 
 // 7. Roadmap
 export const cms_roadmap_items = pgTable('cms_roadmap_items', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  feature: text('feature').notNull(),
-  status: text('status').notNull(),
-  description: text('description').notNull(),
-  site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
+  post_id: uuid('post_id').references(() => posts.id), // Reference to common post data
+  status: text('status').notNull(), // Specific status field for roadmap items
   timeline: text('timeline'),
   priority: text('priority'),
   owner_id: uuid('owner_id').references(() => users.id),
-  space_id: uuid('space_id').references(() => spaces.id),
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
 
 // 8. Announcements
 export const cms_announcements = pgTable('cms_announcements', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  title: text('title').notNull(),
-  message: text('message').notNull(),
-  site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
+  post_id: uuid('post_id').references(() => posts.id), // Reference to common post data
   audience: text('audience'),
   date: timestamp('date', { withTimezone: true }).defaultNow(),
   call_to_action: text('call_to_action'),
   banner_image_id: uuid('banner_image_id'),
-  space_id: uuid('space_id').references(() => spaces.id),
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
 
 // 9. Wiki
 export const cms_wiki_pages = pgTable('cms_wiki_pages', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  title: text('page_title').notNull(),
-  content: text('content').notNull(),
-  site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
+  post_id: uuid('post_id').references(() => posts.id), // Reference to common post data
   parent_page_id: uuid('parent_page_id'), // Self-reference will be set up in relations
   last_updated: timestamp('last_updated', { withTimezone: true }).default(sql`now()`),
   editor_id: uuid('editor_id').references(() => users.id),
-  space_id: uuid('space_id').references(() => spaces.id),
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
 
 export const wikiPagesRelations = relations(cms_wiki_pages, ({ one, many }) => ({
@@ -264,127 +270,93 @@ export const wikiPagesRelations = relations(cms_wiki_pages, ({ one, many }) => (
     references: [cms_wiki_pages.id],
   }),
   children: many(cms_wiki_pages),
+  post: one(posts, {
+    fields: [cms_wiki_pages.post_id],
+    references: [posts.id],
+  }),
 }));
 
-// 10. Events (already exists, but updating to match CMS structure)
+// 10. Events
 export const cms_events = pgTable('cms_events', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  title: text('event_title').notNull(),
+  post_id: uuid('post_id').references(() => posts.id), // Reference to common post data
   date_time: timestamp('date_time', { withTimezone: true }).notNull(),
   location: text('location').notNull(),
-  description: text('description'),
-  site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
   speaker_id: uuid('speaker_id').references(() => users.id),
   rsvp_limit: integer('rsvp_limit'),
   banner_image_id: uuid('banner_image_id'),
-  space_id: uuid('space_id').references(() => spaces.id),
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
 
 // 11. Course
 export const cms_courses = pgTable('cms_courses', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  title: text('course_title').notNull(),
-  description: text('description').notNull(),
+  post_id: uuid('post_id').references(() => posts.id), // Reference to common post data
   start_date: timestamp('start_date', { withTimezone: true }).notNull(),
-  site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
   instructor_id: uuid('instructor_id').references(() => users.id),
   duration: text('duration'),
   materials: text('materials'),
   enrollment_limit: integer('enrollment_limit'),
-  space_id: uuid('space_id').references(() => spaces.id),
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
 
 // 12. Jobs
 export const cms_jobs = pgTable('cms_jobs', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  title: text('job_title').notNull(),
-  description: text('description').notNull(),
+  post_id: uuid('post_id').references(() => posts.id), // Reference to common post data
   location: text('location').notNull(),
-  site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
   department: text('department'),
   type: text('type'),
   salary: text('salary'),
   apply_link: text('apply_link'),
-  space_id: uuid('space_id').references(() => spaces.id),
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
 
 // 13. Speakers
 export const cms_speakers = pgTable('cms_speakers', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  post_id: uuid('post_id').references(() => posts.id), // Reference to common post data
   name: text('name').notNull(),
   title: text('title').notNull(),
-  bio: text('bio').notNull(),
-  site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
   linkedin: text('linkedin'),
   image_id: uuid('image_id'),
   company: text('company'),
   topic: text('topic'),
-  space_id: uuid('space_id').references(() => spaces.id),
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
 
 // 14. Article
 export const cms_articles = pgTable('cms_articles', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  title: text('title').notNull(),
-  body: text('body').notNull(),
-  site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
+  post_id: uuid('post_id').references(() => posts.id), // Reference to common post data
   cover_image_id: uuid('cover_image_id'),
-  author_id: uuid('author_id').references(() => users.id),
   estimated_reading_time: integer('estimated_reading_time'),
-  space_id: uuid('space_id').references(() => spaces.id),
-  status: contentStatusEnum('status').default('published'),
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
 
 // 15. Poll Voting
 export const cms_polls = pgTable('cms_polls', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  question: text('question').notNull(),
+  post_id: uuid('post_id').references(() => posts.id), // Reference to common post data
   options: jsonb('options').notNull(), // Array of options
-  site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
   allow_multiple: boolean('allow_multiple').default(false),
   deadline: timestamp('deadline', { withTimezone: true }),
   voter_list: jsonb('voter_list').default('[]'), // Array of voter IDs or null if anonymous
   anonymous: boolean('anonymous').default(false),
-  space_id: uuid('space_id').references(() => spaces.id),
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
 
 // 16. File Library
 export const cms_file_library = pgTable('cms_file_library', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  post_id: uuid('post_id').references(() => posts.id), // Reference to common post data
   file_name: text('file_name').notNull(),
   file_id: uuid('file_id').notNull(),
-  site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
   description: text('description'),
   uploader_id: uuid('uploader_id').references(() => users.id),
   access_level: text('access_level').default('public'),
-  space_id: uuid('space_id').references(() => spaces.id),
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
 
 // 17. Gallery
 export const cms_gallery_items = pgTable('cms_gallery_items', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
-  title: text('title').notNull(),
+  post_id: uuid('post_id').references(() => posts.id), // Reference to common post data
   image_id: uuid('image_id').notNull(),
-  site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
   caption: text('caption'),
-  author_id: uuid('author_id').references(() => users.id),
-  space_id: uuid('space_id').references(() => spaces.id),
-  created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  updated_at: timestamp('updated_at', { withTimezone: true }).default(sql`now()`),
 });
 
 // Type exports
@@ -393,6 +365,8 @@ export type User = InferSelectModel<typeof users>;
 export type Membership = InferSelectModel<typeof memberships>;
 export type Space = InferSelectModel<typeof spaces>;
 export type Tag = InferSelectModel<typeof tags>;
+export type Post = InferSelectModel<typeof posts>; // New Post type
+export type PostTag = InferSelectModel<typeof post_tags>; // New PostTag type
 export type Discussion = InferSelectModel<typeof cms_discussions>;
 export type QAQuestion = InferSelectModel<typeof cms_qa_questions>;
 export type QAAnswer = InferSelectModel<typeof cms_qa_answers>;
