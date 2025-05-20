@@ -13,6 +13,7 @@ interface DashboardLayoutProps {
   siteName?: string;        // Optional: Name of the current site, to be displayed possibly in Header or SecondarySidebar
   currentSiteIdentifier?: string;   // Optional: ID of the current site, can be used for dynamic links or data fetching within layout
   navItems?: NavItem[];     // Optional: Navigation items specific to the current site/context for SecondarySidebar
+  onNewContent?: () => void; // Optional: Function to call when the New button is clicked in the secondary sidebar
 }
 
 export function DashboardLayout({
@@ -20,6 +21,7 @@ export function DashboardLayout({
   siteName,
   currentSiteIdentifier, // Renamed from currentSiteId
   navItems = [],   // Default to an empty array if no navItems are provided
+  onNewContent,
 }: DashboardLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
@@ -94,7 +96,12 @@ export function DashboardLayout({
           <div className="w-64 flex-shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
             {/* Pass siteName and navItems to SecondarySidebar */}
             {/* Ensure SecondarySidebar is designed to accept and use these props */}
-            <SecondarySidebar siteName={siteName} navItems={navItems} currentSiteIdentifier={currentSiteIdentifier} />
+            <SecondarySidebar 
+              siteName={siteName} 
+              navItems={navItems} 
+              currentSiteIdentifier={currentSiteIdentifier} 
+              onNewContent={onNewContent}
+            />
           </div>
         )}
         

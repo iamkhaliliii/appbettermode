@@ -59,8 +59,9 @@ export interface NavItem {
 // Common props for all sidebar components
 export interface BaseSidebarProps {
   currentPathname: string;
-  isActiveUrl?: (url: string | undefined, currentPathname: string | undefined) => boolean;
   currentSiteIdentifier?: string;
+  isActiveUrl?: (url: string | undefined, currentPathname: string | undefined) => boolean;
+  onNewContent?: () => void; // Callback for when the New button is clicked
 }
 
 // Specific props for each sidebar type

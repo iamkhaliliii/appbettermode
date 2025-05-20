@@ -22,12 +22,14 @@ interface SecondarySidebarProps {
   currentSiteIdentifier?: string; // This is the canonical ID (e.g., UUID) passed from DashboardLayout
   siteName?: string;
   navItems?: NavItem[];
+  onNewContent?: () => void; // Callback for when the New button is clicked
 }
 
 export function SecondarySidebar({
   currentSiteIdentifier, // This is the canonical ID (e.g., UUID) passed from DashboardLayout
   siteName,
   navItems = [],
+  onNewContent,
 }: SecondarySidebarProps) {
   const [currentPathname] = useLocation();
 
@@ -41,7 +43,7 @@ export function SecondarySidebar({
   const getSidebarForLocation = () => {
     if (isAdminSite && siteIdentifierFromUrl) {
       if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.CONTENT(siteIdentifierFromUrl))) {
-        return <ContentSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+        return <ContentSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} onNewContent={onNewContent} />;
       }
       if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.PEOPLE(siteIdentifierFromUrl))) {
         return <PeopleSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
@@ -65,7 +67,7 @@ export function SecondarySidebar({
         return <DesignStudioSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
       }
       if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(siteIdentifierFromUrl))) {
-        return <SiteConfigSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+        return <SiteConfigSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} onNewContent={onNewContent} />;
       }
       if (currentPathname === APP_ROUTES.DASHBOARD_SITE.INDEX(siteIdentifierFromUrl)) {
         // Pass siteIdentifierFromUrl for link building, but DashboardSidebar might also want the canonicalId via currentSiteIdentifier

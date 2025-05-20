@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { APP_ROUTES } from "@/config/routes";
 import { BaseSidebarProps } from "./types";
 import {
@@ -22,12 +22,31 @@ import {
   SquareMousePointer,
   SquareDashedBottomCode,
   AppWindowMac,
-  Folder
+  Folder,
+  MessageSquare,
+  HelpCircle,
+  FileText,
+  Calendar,
+  Star,
+  Loader2,
+  BookOpen,
+  Layout,
+  Briefcase
 } from "lucide-react";
 import { NavigationItem as NavItemUI } from "@/components/ui/navigation-item";
 import { NavigationSection as NavSectionUI } from "@/components/ui/navigation-section";
 import { SideNavItem } from "./SidebarNavigationItems";
 import { MinimalItem, TreeFolder } from "./SidebarTreeComponents";
+import { sitesApi } from "@/lib/api";
+
+// Define type for space data
+interface Space {
+  id: string;
+  name: string;
+  slug: string;
+  type: string;
+  icon?: string;
+}
 
 // Local NavigationSection and NavigationItem components
 const NavigationSection: React.FC<{
@@ -51,7 +70,8 @@ const NavigationItem: React.FC<{ icon: React.ReactNode; title: string }> = ({ ic
 export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({ 
   currentPathname, 
   isActiveUrl,
-  currentSiteIdentifier
+  currentSiteIdentifier,
+  onNewContent
 }) => {
   // If no currentSiteIdentifier is provided, show nothing
   if (!currentSiteIdentifier) {
@@ -59,6 +79,108 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
   }
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [spaces, setSpaces] = useState<Space[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch site data and create spaces from content_types
+  useEffect(() => {
+    const fetchSiteData = async () => {
+      if (!currentSiteIdentifier) return;
+      
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        // Fetch site data using the sitesApi
+        const siteData = await sitesApi.getSite(currentSiteIdentifier);
+        
+        // Create spaces from content_types
+        if (siteData.content_types && Array.isArray(siteData.content_types)) {
+          const generatedSpaces: Space[] = siteData.content_types.map((cmsType: string) => {
+            let name;
+            
+            switch (cmsType) {
+              case 'discussion':
+                name = 'Discussions';
+                break;
+              case 'qa':
+                name = 'Q&A';
+                break;
+              case 'wishlist':
+                name = 'Ideas & Wishlist';
+                break;
+              case 'blog':
+                name = 'Blog';
+                break;
+              case 'event':
+                name = 'Events';
+                break;
+              case 'knowledge':
+                name = 'Knowledge Base';
+                break;
+              case 'landing':
+                name = 'Landing Pages';
+                break;
+              case 'jobs':
+                name = 'Job Board';
+                break;
+              default:
+                name = cmsType.charAt(0).toUpperCase() + cmsType.slice(1);
+            }
+            
+            return {
+              id: `space-${cmsType}`,
+              name,
+              slug: cmsType.toLowerCase(),
+              type: cmsType,
+            };
+          });
+          
+          setSpaces(generatedSpaces);
+        } else {
+          console.log("No content_types found in site data");
+          setSpaces([]);
+        }
+      } catch (err) {
+        console.error("Error fetching site data:", err);
+        setError(err instanceof Error ? err.message : "Failed to load site data");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchSiteData();
+  }, [currentSiteIdentifier]);
+
+  // Get icon based on space type
+  const getSpaceIcon = (type: string) => {
+    switch (type.toLowerCase()) {
+      case 'discussion':
+        return <MessageSquare className="h-3.5 w-3.5" />;
+      case 'qa':
+        return <HelpCircle className="h-3.5 w-3.5" />;
+      case 'blog':
+        return <FileText className="h-3.5 w-3.5" />;
+      case 'event':
+        return <Calendar className="h-3.5 w-3.5" />;
+      case 'wishlist':
+        return <Star className="h-3.5 w-3.5" />;
+      case 'knowledge':
+        return <BookOpen className="h-3.5 w-3.5" />;
+      case 'landing':
+        return <Layout className="h-3.5 w-3.5" />;
+      case 'jobs':
+        return <Briefcase className="h-3.5 w-3.5" />;
+      default:
+        return <AppWindowMac className="h-3.5 w-3.5" />;
+    }
+  };
+
+  // Filter spaces based on search term
+  const filteredSpaces = spaces.filter(space => 
+    space.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   // Determine if the accordion should be expanded by default
   const accordionShouldBeExpanded = currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(currentSiteIdentifier));
@@ -74,7 +196,10 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
             <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">
               Site
             </h2>
-            <button className="p-0.5 px-1 rounded-md bg-blue-500 hover:bg-blue-600 flex items-center justify-center cursor-pointer">
+            <button 
+              className="p-0.5 px-1 rounded-md bg-blue-500 hover:bg-blue-600 flex items-center justify-center cursor-pointer"
+              onClick={onNewContent}
+            >
               <Plus className="h-3 w-3 text-white" />
               <span className="text-[11px] font-medium text-white">New</span>
             </button>
@@ -156,24 +281,42 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
                 isPrimary={true}
                 isHomepage={true}
               />
-              {/* Connect folder */}
+              {/* Spaces folder with real data */}
               <TreeFolder
                 name="Spaces"
                 path={basePath}
                 currentPathname={currentPathname}
                 isExpanded={currentPathname.startsWith(basePath)}
               >
-                <MinimalItem
-                  name="Discussions"
-                  path={`${basePath}/spaces/discussions`}
-                  currentPathname={currentPathname}
-                  icon={<AppWindowMac className="h-3.5 w-3.5" />}
-                  iconColor="text-gray-500"
-                  inSpaces={true}
-                  level={1}
-                  showToggle={false}
-                  isPrimary={false}
-                />
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-2">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin text-gray-400" />
+                    <span className="text-xs text-gray-500 ml-2">Loading spaces...</span>
+                  </div>
+                ) : error ? (
+                  <div className="text-xs text-red-500 py-2 px-2">
+                    {error}
+                  </div>
+                ) : filteredSpaces.length === 0 ? (
+                  <div className="text-xs text-gray-500 py-2 px-2">
+                    {searchTerm ? "No spaces match your search" : "No spaces found"}
+                  </div>
+                ) : (
+                  filteredSpaces.map((space) => (
+                    <MinimalItem
+                      key={space.id}
+                      name={space.name}
+                      path={`${basePath}/spaces/${space.slug}`}
+                      currentPathname={currentPathname}
+                      icon={getSpaceIcon(space.type)}
+                      iconColor="text-gray-500"
+                      inSpaces={true}
+                      level={1}
+                      showToggle={false}
+                      isPrimary={false}
+                    />
+                  ))
+                )}
               </TreeFolder>
             </div>
           </AccordionContent>
