@@ -120,9 +120,6 @@ function NavItem({
             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200"
       )}
     >
-      {!isPro && isActive && (
-        <span className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1.5 h-6 bg-primary-600 dark:bg-primary-300 rounded-r-sm"></span>
-      )}
       <span className={cn(
         disabled ? "text-gray-400 dark:text-gray-600" : "",
         isPro 

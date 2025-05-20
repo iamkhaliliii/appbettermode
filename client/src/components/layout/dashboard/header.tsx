@@ -131,11 +131,6 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
         {/* Conditionally Render Rest of Header Content (NO INNER ANIMATION) */}
         {(variant === 'dashboard' || (variant === 'site' && isSiteHeaderVisible)) && (
             <div className="flex-1 flex items-center">
-              {siteData && (
-                <div className={cn("hidden sm:block absolute left-14 text-sm font-medium", primaryTextColor, "max-w-[120px] truncate")}>
-                  {displaySiteName}
-                </div>
-              )}
               {/* Middle Section - App Navigation */}
               <div className={cn("w-64 flex-shrink-0 h-full border-r", borderColor)}>
 
