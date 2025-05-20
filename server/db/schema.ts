@@ -27,6 +27,7 @@ export const sites = pgTable('sites', {
   logo_url: text('logo_url'),
   brand_color: text('brand_color'),
   content_types: jsonb('content_types').default('[]'),
+  space_ids: jsonb('space_ids').default('[]'), // Store space IDs related to this site
 });
 
 export const users = pgTable('users', {

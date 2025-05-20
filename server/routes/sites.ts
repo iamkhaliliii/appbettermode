@@ -285,7 +285,7 @@ router.post('/', async (req, res) => {
     // Create spaces for selected content types
     if (contentTypes.length > 0) {
       console.log(`Creating spaces for selected content types: ${contentTypes.join(', ')}`);
-      console.log(`Content types value type: ${typeof contentTypes}, isArray: ${Array.isArray(contentTypes)}`);
+      console.log(`Content types value type: ${typeof contentTypes}, isArray: ${Array.isArray(contentTypes)}, length: ${contentTypes?.length || 0}`);
       
       // Map of content type IDs to readable names and space configurations
       const contentTypeConfig = {
@@ -331,6 +331,9 @@ router.post('/', async (req, res) => {
         }
       };
       
+      // Array to store created space IDs
+      const createdSpaceIds: string[] = [];
+      
       // Create a space for each selected content type
       for (const contentType of contentTypes) {
         console.log(`Processing content type: ${contentType}`);
@@ -370,6 +373,14 @@ router.post('/', async (req, res) => {
             const result = await db.execute(query);
             console.log(`Space created successfully for ${contentType}, SQL result:`, JSON.stringify(result));
             console.log(`Created ${contentType} space: ${config.name}`);
+            
+            // Extract the space ID from the result and add it to our array
+            // Cast result to any to handle varying result structures
+            const resultAny = result as any;
+            if (resultAny && Array.isArray(resultAny) && resultAny.length > 0 && resultAny[0].id) {
+              createdSpaceIds.push(resultAny[0].id);
+              console.log(`Added space ID ${resultAny[0].id} to created spaces list`);
+            }
           } catch (sqlError: any) {
             console.error(`SQL error creating space for ${contentType}:`, sqlError.message);
             // Check if there's a more detailed error structure
@@ -397,6 +408,20 @@ router.post('/', async (req, res) => {
         .where(eq(spaces.site_id, newSite.id));
 
         console.log(`Verification - Spaces created for site ${newSite.id}:`, createdSpaces);
+        
+        // Update the site record with created space IDs
+        if (createdSpaceIds.length > 0) {
+          console.log(`Updating site with space IDs: ${createdSpaceIds.join(', ')}`);
+          
+          // Update the site record to include the space IDs
+          await db.update(sites)
+            .set({
+              space_ids: createdSpaceIds    // Add space IDs field now in schema
+            })
+            .where(eq(sites.id, newSite.id));
+            
+          console.log(`Site updated with space IDs successfully`);
+        }
       } catch (verifyError) {
         console.error('Error verifying created spaces:', verifyError);
       }
