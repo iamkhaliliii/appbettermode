@@ -81,6 +81,69 @@ interface Post {
   locked: boolean;
 }
 
+// Add a type for space data from API
+interface SpaceData {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  site_id: string;
+  visibility?: string;
+  cms_type?: string;
+  hidden?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// Add a utility function to get API base URL
+function getApiBaseUrl() {
+  // Use environment variable if available, otherwise default to localhost
+  return import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+}
+
+// Map database post data to UI post data structure
+function mapPostData(postData: any): Post {
+  // Handle different status formats
+  let status: Post['status'] = 'Draft';
+  switch(postData.status) {
+    case 'published':
+      status = 'Published';
+      break;
+    case 'scheduled':
+      status = 'Schedule';
+      break;
+    case 'pending_review':
+      status = 'Pending review';
+      break;
+    default:
+      status = 'Draft';
+  }
+
+  // Generate a more human-friendly author name
+  const authorName = postData.author?.full_name || postData.author?.username || 
+                    (postData.author_id ? `Author ${postData.author_id.substring(0, 4)}` : 'Anonymous');
+
+  return {
+    id: postData.id || '',
+    title: postData.title || 'Untitled',
+    status,
+    author: {
+      name: authorName,
+      avatar: postData.author?.avatar_url || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+    },
+    space: {
+      name: postData.space?.name || 'General',
+      color: postData.space?.color || '#6366f1'
+    },
+    publishedAt: postData.published_at 
+      ? new Date(postData.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      : 'Not published',
+    cmsModel: postData.cms_type || 'Unknown',
+    tags: (postData.tags || []).map((tag: any) => tag.name || tag),
+    locked: postData.locked || false
+  };
+}
+
 // Column definitions for the table
 const columns: ColumnDef<Post>[] = [
   {
@@ -550,8 +613,8 @@ const columns: ColumnDef<Post>[] = [
   },
 ]
 
-// Sample data for the demonstration
-const data: Post[] = [
+// Sample data for fallback use when API fails
+const MOCK_DATA: Post[] = [
   {
     id: "dOUwwAq3Lc9vmA",
     title: "Level Up Your Community",
@@ -742,6 +805,167 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
+  // Data fetching state
+  const [data, setData] = useState<Post[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Status counts
+  const [statusCounts, setStatusCounts] = useState({
+    total: 0,
+    published: 0,
+    scheduled: 0,
+    draft: 0,
+    pending: 0
+  });
+
+  // Fetch posts data from API
+  const fetchPosts = async () => {
+    // We need to use siteDetails.id (UUID) instead of siteId (subdomain)
+    if (!siteDetails?.id) return;
+    
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // Get the API base URL
+      const API_BASE = getApiBaseUrl();
+      
+      // Define status filter based on active tab
+      let statusFilter = '';
+      if (activeTab === 'published') statusFilter = 'published';
+      if (activeTab === 'scheduled') statusFilter = 'scheduled';
+      if (activeTab === 'drafts') statusFilter = 'draft';
+      if (activeTab === 'pending') statusFilter = 'pending_review';
+      
+      // First, fetch all spaces for this site to get their names
+      console.log(`Fetching spaces for site: ${siteDetails.id}`);
+      let spacesMap = new Map<string, SpaceData>();
+      try {
+        const spacesResponse = await fetch(`${API_BASE}/api/v1/sites/${siteDetails.id}/spaces`);
+        
+        if (spacesResponse.ok) {
+          const spacesData = await spacesResponse.json();
+          console.log('Fetched spaces:', spacesData);
+          
+          // Create a map of space_id to space data for easy lookup
+          spacesMap = new Map(spacesData.map((space: SpaceData) => [space.id, space]));
+        }
+      } catch (err) {
+        console.error('Error fetching spaces:', err);
+        // Continue with posts fetch even if spaces fetch fails
+      }
+      
+      // Build API URL with filters using siteDetails.id (UUID) instead of siteId (subdomain)
+      let url = `${API_BASE}/api/v1/posts/site/${siteDetails.id}?limit=50`;
+      if (statusFilter) url += `&status=${statusFilter}`;
+      
+      console.log(`Fetching posts from: ${url}`);
+      
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch posts: ${response.statusText}`);
+      }
+      
+      const rawData = await response.json();
+      console.log('Fetched posts:', rawData);
+      
+      if (Array.isArray(rawData) && rawData.length > 0) {
+        // Collect all unique author IDs by filtering and converting to array
+        const uniqueAuthorIds: string[] = [];
+        rawData.forEach(post => {
+          if (post.author_id && !uniqueAuthorIds.includes(post.author_id)) {
+            uniqueAuthorIds.push(post.author_id);
+          }
+        });
+        
+        // Create a map to store author data
+        const authorsMap = new Map();
+        
+        // Fetch author details for each author ID
+        await Promise.all(uniqueAuthorIds.map(async (authorId) => {
+          try {
+            const authorResponse = await fetch(`${API_BASE}/api/v1/users/${authorId}`);
+            if (authorResponse.ok) {
+              const authorData = await authorResponse.json();
+              authorsMap.set(authorId, authorData);
+            }
+          } catch (err) {
+            console.error(`Error fetching author ${authorId}:`, err);
+          }
+        }));
+        
+        // Map the API response to our Post interface with author and space data
+        const formattedPosts = rawData.map(post => {
+          // Get space info from our spaces map
+          const spaceInfo = post.space_id ? spacesMap.get(post.space_id) : null;
+          
+          // Get author info from our authors map
+          const authorInfo = post.author_id ? authorsMap.get(post.author_id) : null;
+          
+          // Use available data directly without fetching additional info
+          return mapPostData({
+            ...post,
+            // Include actual author data when available
+            author: authorInfo || {
+              id: post.author_id,
+              username: `Author ${post.author_id?.substring(0, 4) || 'Unknown'}`,
+              full_name: `Author ${post.author_id?.substring(0, 4) || 'Anonymous'}`,
+              avatar_url: null
+            },
+            space: spaceInfo ? {
+              id: spaceInfo.id,
+              name: spaceInfo.name,
+              color: '#6366f1'
+            } : {
+              id: post.space_id,
+              name: `Space ${post.space_id?.substring(0, 6) || 'General'}`,
+              color: '#6366f1'
+            }
+          });
+        });
+        
+        setData(formattedPosts);
+        
+        // Calculate counts for each status
+        const counts = {
+          total: formattedPosts.length,
+          published: formattedPosts.filter(post => post.status === 'Published').length,
+          scheduled: formattedPosts.filter(post => post.status === 'Schedule').length,
+          draft: formattedPosts.filter(post => post.status === 'Draft').length,
+          pending: formattedPosts.filter(post => post.status === 'Pending review').length
+        };
+        setStatusCounts(counts);
+      } else {
+        console.log('No posts found, using empty array');
+        setData([]);
+        setStatusCounts({
+          total: 0,
+          published: 0,
+          scheduled: 0,
+          draft: 0,
+          pending: 0
+        });
+      }
+    } catch (err) {
+      console.error('Error fetching posts:', err);
+      setError('Failed to load posts. Using demo data as a fallback.');
+      
+      // Fall back to mock data on error
+      setData(MOCK_DATA);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fetch posts when component mounts or filters change
+  useEffect(() => {
+    if (siteDetails?.id) {
+      fetchPosts();
+    }
+  }, [siteDetails?.id, activeTab]);
+
   // Filter data for published content if needed
   const filteredData = useMemo(() => {
     if (showPublishedOnly) {
@@ -879,7 +1103,7 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
             <div className="mb-3 flex flex-row items-center justify-between gap-3">
               <div>
                 <h1 className="text-xl font-medium text-gray-900 dark:text-white">
-                  All Posts <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">14 items</span>
+                  All Posts <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">{isLoading ? 'Loading...' : `${statusCounts.total} item${statusCounts.total !== 1 ? 's' : ''}`}</span>
                 </h1>
               </div>
             </div>
@@ -895,7 +1119,7 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
                     setShowStatusFilter(false);
                   }}
                 >
-                  All <span className="ml-1 text-[10px] text-gray-500 dark:text-gray-400">14</span>
+                  All <span className="ml-1 text-[10px] text-gray-500 dark:text-gray-400">{isLoading ? '...' : statusCounts.total}</span>
                 </button>
                 <button 
                   className={`inline-flex items-center px-2 py-1.5 text-xs font-medium ${activeTab === 'published' ? 'text-gray-900 dark:text-white border-b border-gray-900 dark:border-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'} transition-colors`}
@@ -905,7 +1129,7 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
                     setShowStatusFilter(true);
                   }}
                 >
-                  Published <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">6</span>
+                  Published <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">{isLoading ? '...' : statusCounts.published}</span>
                 </button>
                 <button 
                   className={`inline-flex items-center px-2 py-1.5 text-xs font-medium ${activeTab === 'scheduled' ? 'text-gray-900 dark:text-white border-b border-gray-900 dark:border-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'} transition-colors`}
@@ -915,7 +1139,7 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
                     setShowStatusFilter(false);
                   }}
                 >
-                  Scheduled <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">3</span>
+                  Scheduled <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">{isLoading ? '...' : statusCounts.scheduled}</span>
                 </button>
                 <button 
                   className={`inline-flex items-center px-2 py-1.5 text-xs font-medium ${activeTab === 'drafts' ? 'text-gray-900 dark:text-white border-b border-gray-900 dark:border-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'} transition-colors`}
@@ -925,7 +1149,7 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
                     setShowStatusFilter(false);
                   }}
                 >
-                  Drafts <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">0</span>
+                  Drafts <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">{isLoading ? '...' : statusCounts.draft}</span>
                 </button>
                 <button 
                   className={`inline-flex items-center px-2 py-1.5 text-xs font-medium ${activeTab === 'pending' ? 'text-gray-900 dark:text-white border-b border-gray-900 dark:border-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'} transition-colors`}
@@ -935,7 +1159,7 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
                     setShowStatusFilter(false);
                   }}
                 >
-                  Pending <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">0</span>
+                  Pending <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">{isLoading ? '...' : statusCounts.pending}</span>
                 </button>
               </div>
             </div>
@@ -1037,14 +1261,6 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
                       
                       <DropdownMenuItem className="flex cursor-pointer items-center whitespace-nowrap px-2 py-1 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750">
                         <svg className="h-2.5 w-2.5 mr-1.5 text-gray-400 dark:text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                          <circle cx="12" cy="7" r="4" />
-                        </svg>
-                        <span>Change author</span>
-                      </DropdownMenuItem>
-                      
-                      <DropdownMenuItem className="flex cursor-pointer items-center whitespace-nowrap px-2 py-1 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750">
-                        <svg className="h-2.5 w-2.5 mr-1.5 text-gray-400 dark:text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <circle cx="12" cy="12" r="10" />
                           <polyline points="12 6 12 12 16 14" />
                         </svg>
@@ -1072,59 +1288,95 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
 
           {/* Main table - Full width with no padding */}
           <div className="bg-background dark:bg-background border-y border-border/30 dark:border-border/30 overflow-auto mt-[1px] scrollbar-minimal">
-            <Table className="w-full">
-              <TableHeader>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id} className="bg-transparent border-b border-border/20 dark:border-border/20 h-8">
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead key={header.id} className="px-4 py-2.5 h-9 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground tracking-wide sticky top-0 bg-background dark:bg-background">
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </TableHead>
-                      )
-                    })}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row, i) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && "selected"}
-                      className={`
-                        hover:bg-secondary/40 dark:hover:bg-secondary/40
-                        ${row.getIsSelected() ? 'bg-primary/5 dark:bg-primary/5' : ''}
-                        ${i % 2 === 0 ? 'bg-background dark:bg-background' : 'bg-secondary/30 dark:bg-secondary/30'}
-                        transition-colors
-                      `}
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id} className="px-4 py-1 whitespace-nowrap text-xs border-b border-border/15 dark:border-border/15">
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </TableCell>
-                      ))}
+            {isLoading ? (
+              <div className="flex items-center justify-center h-32">
+                <div className="flex flex-col items-center space-y-2">
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">Loading posts...</span>
+                </div>
+              </div>
+            ) : error ? (
+              <div className="flex items-center justify-center h-32">
+                <div className="flex flex-col items-center text-center max-w-md px-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-amber-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">{error}</p>
+                  <button 
+                    onClick={() => fetchPosts()}
+                    className="mt-3 px-3 py-1 text-xs bg-primary-50 text-primary-600 dark:bg-primary-900/20 dark:text-primary-400 rounded-md border border-primary-200 dark:border-primary-800 hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors"
+                  >
+                    Try Again
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <Table className="w-full">
+                <TableHeader>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id} className="bg-transparent border-b border-border/20 dark:border-border/20 h-8">
+                      {headerGroup.headers.map((header) => {
+                        return (
+                          <TableHead key={header.id} className="px-4 py-2.5 h-9 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground tracking-wide sticky top-0 bg-background dark:bg-background">
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                                )}
+                          </TableHead>
+                        )
+                      })}
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={columns.length} className="h-32 text-center text-muted-foreground dark:text-muted-foreground">
-                      <div className="flex flex-col items-center justify-center space-y-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-muted dark:text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                        </svg>
-                        <span>No results found</span>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                  ))}
+                </TableHeader>
+                <TableBody>
+                  {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row, i) => (
+                      <TableRow
+                        key={row.id}
+                        data-state={row.getIsSelected() && "selected"}
+                        className={`
+                          hover:bg-secondary/40 dark:hover:bg-secondary/40
+                          ${row.getIsSelected() ? 'bg-primary/5 dark:bg-primary/5' : ''}
+                          ${i % 2 === 0 ? 'bg-background dark:bg-background' : 'bg-secondary/30 dark:bg-secondary/30'}
+                          transition-colors
+                        `}
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id} className="px-4 py-1 whitespace-nowrap text-xs border-b border-border/15 dark:border-border/15">
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={columns.length} className="h-32 text-center text-muted-foreground dark:text-muted-foreground">
+                        <div className="flex flex-col items-center justify-center space-y-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-muted dark:text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                          </svg>
+                          <span>No posts found</span>
+                          {activeTab !== 'all' && (
+                            <button 
+                              onClick={() => {
+                                setActiveTab('all');
+                                setShowPublishedOnly(false);
+                                setShowStatusFilter(false);
+                              }}
+                              className="text-xs text-primary-600 dark:text-primary-400 hover:underline"
+                            >
+                              Show all posts
+                            </button>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            )}
           </div>
           
           {/* Pagination controls - container with padding */}
@@ -1132,7 +1384,7 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
             <div className="flex items-center justify-between gap-2">
               <div>
                 <div className="text-xs text-muted-foreground dark:text-muted-foreground">
-                  {table.getFilteredSelectedRowModel().rows.length > 0 ? (
+                  {!isLoading && table.getFilteredSelectedRowModel().rows.length > 0 ? (
                     <span className="flex items-center">
                       <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-primary/10 text-primary dark:bg-primary/10 dark:text-primary text-xs font-semibold mr-1">
                         {table.getFilteredSelectedRowModel().rows.length}
@@ -1154,6 +1406,7 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
                       table.setPageSize(Number(e.target.value))
                     }}
                     className="h-6 w-14 rounded-md border-none bg-secondary dark:bg-secondary text-foreground dark:text-foreground text-xs"
+                    disabled={isLoading}
                   >
                     {[5, 10, 20, 30, 40, 50].map((pageSize) => (
                       <option key={pageSize} value={pageSize}>
@@ -1167,7 +1420,7 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
                   <button
                     className="h-6 w-6 flex items-center justify-center bg-secondary dark:bg-secondary text-muted-foreground dark:text-muted-foreground hover:text-foreground dark:hover:text-foreground rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
                     onClick={() => table.setPageIndex(0)}
-                    disabled={!table.getCanPreviousPage()}
+                    disabled={!table.getCanPreviousPage() || isLoading}
                   >
                     <span className="sr-only">Go to first page</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1179,7 +1432,7 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
                   <button
                     className="h-6 w-6 flex items-center justify-center bg-secondary dark:bg-secondary text-muted-foreground dark:text-muted-foreground hover:text-foreground dark:hover:text-foreground rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
                     onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
+                    disabled={!table.getCanPreviousPage() || isLoading}
                   >
                     <span className="sr-only">Go to previous page</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1196,7 +1449,7 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
                   <button
                     className="h-6 w-6 flex items-center justify-center bg-secondary dark:bg-secondary text-muted-foreground dark:text-muted-foreground hover:text-foreground dark:hover:text-foreground rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
                     onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
+                    disabled={!table.getCanNextPage() || isLoading}
                   >
                     <span className="sr-only">Go to next page</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1207,7 +1460,7 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
                   <button
                     className="h-6 w-6 flex items-center justify-center bg-secondary dark:bg-secondary text-muted-foreground dark:text-muted-foreground hover:text-foreground dark:hover:text-foreground rounded-md disabled:opacity-40 disabled:cursor-not-allowed"
                     onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                    disabled={!table.getCanNextPage()}
+                    disabled={!table.getCanNextPage() || isLoading}
                   >
                     <span className="sr-only">Go to last page</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

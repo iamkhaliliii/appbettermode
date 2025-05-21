@@ -258,7 +258,28 @@ router.get('/site/:siteId', async (req, res) => {
     // Log the results for debugging
     console.log(`Found ${result.length} posts matching the criteria`);
     
-    return res.status(200).json(result);
+    // For each post, fetch its tags
+    const postsWithTags = await Promise.all(result.map(async (post) => {
+      // Get related tags for this post
+      const postTags = await db
+        .select({
+          id: tags.id,
+          name: tags.name,
+          color: tags.color,
+          icon: tags.icon,
+        })
+        .from(tags)
+        .innerJoin(post_tags, eq(post_tags.tag_id, tags.id))
+        .where(eq(post_tags.post_id, post.id));
+      
+      // Return post with tags included
+      return {
+        ...post,
+        tags: postTags,
+      };
+    }));
+    
+    return res.status(200).json(postsWithTags);
   } catch (error) {
     console.error('Error fetching posts:', error);
     return res.status(500).json({ message: 'Error fetching posts from database' });
