@@ -82,7 +82,6 @@ export const tags = pgTable('tags', {
   id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
   name: text('name').notNull(),
   site_id: uuid('site_id').notNull().references(() => sites.id, { onDelete: 'cascade' }),
-  color: text('color'),
   icon: text('icon'),
   content_id: uuid('content_id'),
   content_type: text('content_type'),

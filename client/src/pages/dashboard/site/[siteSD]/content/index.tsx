@@ -798,6 +798,7 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
   const [activeTab, setActiveTab] = useState<string>("all");
   const [showPublishedOnly, setShowPublishedOnly] = useState<boolean>(false);
   const [showStatusFilter, setShowStatusFilter] = useState<boolean>(false);
+  const [selectedCmsType, setSelectedCmsType] = useState<string | null>(null);
   
   // Table state
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -806,6 +807,7 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
   const [rowSelection, setRowSelection] = useState({});
 
   // Data fetching state
+  const [allPosts, setAllPosts] = useState<Post[]>([]);
   const [data, setData] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -819,7 +821,22 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
     pending: 0
   });
 
-  // Fetch posts data from API
+  // Update selected CMS type based on the section parameter
+  useEffect(() => {
+    if (section && section !== 'all' && section !== 'activity' && section !== 'inbox') {
+      setSelectedCmsType(section);
+    } else {
+      setSelectedCmsType(null);
+    }
+  }, [section]);
+
+  // Utility function to check if a string is a valid UUID
+  function isValidUUID(uuid: string) {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(uuid);
+  }
+
+  // Fetch posts data from API - only done once when component mounts
   const fetchPosts = async () => {
     // We need to use siteDetails.id (UUID) instead of siteId (subdomain)
     if (!siteDetails?.id) return;
@@ -831,48 +848,41 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
       // Get the API base URL
       const API_BASE = getApiBaseUrl();
       
-      // Define status filter based on active tab
-      let statusFilter = '';
-      if (activeTab === 'published') statusFilter = 'published';
-      if (activeTab === 'scheduled') statusFilter = 'scheduled';
-      if (activeTab === 'drafts') statusFilter = 'draft';
-      if (activeTab === 'pending') statusFilter = 'pending_review';
+      // Build API URL to fetch ALL posts for this site
+      let url = `${API_BASE}/api/v1/posts/site/${siteDetails.id}?limit=100`;
       
-      // First, fetch all spaces for this site to get their names
-      console.log(`Fetching spaces for site: ${siteDetails.id}`);
-      let spacesMap = new Map<string, SpaceData>();
-      try {
-        const spacesResponse = await fetch(`${API_BASE}/api/v1/sites/${siteDetails.id}/spaces`);
-        
-        if (spacesResponse.ok) {
-          const spacesData = await spacesResponse.json();
-          console.log('Fetched spaces:', spacesData);
-          
-          // Create a map of space_id to space data for easy lookup
-          spacesMap = new Map(spacesData.map((space: SpaceData) => [space.id, space]));
-        }
-      } catch (err) {
-        console.error('Error fetching spaces:', err);
-        // Continue with posts fetch even if spaces fetch fails
-      }
-      
-      // Build API URL with filters using siteDetails.id (UUID) instead of siteId (subdomain)
-      let url = `${API_BASE}/api/v1/posts/site/${siteDetails.id}?limit=50`;
-      if (statusFilter) url += `&status=${statusFilter}`;
-      
-      console.log(`Fetching posts from: ${url}`);
+      console.log(`Fetching all posts from: ${url}`);
       
       const response = await fetch(url);
       
       if (!response.ok) {
-        throw new Error(`Failed to fetch posts: ${response.statusText}`);
+        const errorText = await response.text().catch(() => 'Unknown error');
+        throw new Error(`Failed to fetch posts (${response.status}): ${errorText}`);
       }
       
-      const rawData = await response.json();
-      console.log('Fetched posts:', rawData);
+      let rawData;
+      try {
+        rawData = await response.json();
+        console.log('Fetched posts:', rawData);
+      } catch (err: unknown) {
+        throw new Error(`Failed to parse response as JSON: ${err instanceof Error ? err.message : String(err)}`);
+      }
       
       if (Array.isArray(rawData) && rawData.length > 0) {
-        // Collect all unique author IDs by filtering and converting to array
+        // Fetch spaces for this site
+        let spacesMap = new Map<string, SpaceData>();
+        try {
+          const spacesResponse = await fetch(`${API_BASE}/api/v1/sites/${siteDetails.id}/spaces`);
+          
+          if (spacesResponse.ok) {
+            const spacesData = await spacesResponse.json();
+            spacesMap = new Map(spacesData.map((space: SpaceData) => [space.id, space]));
+          }
+        } catch (err) {
+          console.error('Error fetching spaces:', err);
+        }
+
+        // Collect all unique author IDs
         const uniqueAuthorIds: string[] = [];
         rawData.forEach(post => {
           if (post.author_id && !uniqueAuthorIds.includes(post.author_id)) {
@@ -926,54 +936,70 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
           });
         });
         
-        setData(formattedPosts);
-        
-        // Calculate counts for each status
-        const counts = {
-          total: formattedPosts.length,
-          published: formattedPosts.filter(post => post.status === 'Published').length,
-          scheduled: formattedPosts.filter(post => post.status === 'Schedule').length,
-          draft: formattedPosts.filter(post => post.status === 'Draft').length,
-          pending: formattedPosts.filter(post => post.status === 'Pending review').length
-        };
-        setStatusCounts(counts);
+        // Store all posts in state
+        setAllPosts(formattedPosts);
       } else {
         console.log('No posts found, using empty array');
-        setData([]);
-        setStatusCounts({
-          total: 0,
-          published: 0,
-          scheduled: 0,
-          draft: 0,
-          pending: 0
-        });
+        setAllPosts([]);
       }
     } catch (err) {
       console.error('Error fetching posts:', err);
       setError('Failed to load posts. Using demo data as a fallback.');
       
       // Fall back to mock data on error
-      setData(MOCK_DATA);
+      setAllPosts(MOCK_DATA);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Fetch posts when component mounts or filters change
+  // Fetch all posts when component mounts
   useEffect(() => {
     if (siteDetails?.id) {
       fetchPosts();
     }
-  }, [siteDetails?.id, activeTab]);
+  }, [siteDetails?.id]);
 
-  // Filter data for published content if needed
-  const filteredData = useMemo(() => {
-    if (showPublishedOnly) {
-      return data.filter(post => post.status === "Published");
+  // Filter posts client-side based on selected tab and CMS type
+  useEffect(() => {
+    // Filter posts based on status (activeTab)
+    let filteredPosts = [...allPosts];
+    
+    if (activeTab === 'published') {
+      filteredPosts = filteredPosts.filter(post => post.status === 'Published');
+    } else if (activeTab === 'scheduled') {
+      filteredPosts = filteredPosts.filter(post => post.status === 'Schedule');
+    } else if (activeTab === 'drafts') {
+      filteredPosts = filteredPosts.filter(post => post.status === 'Draft');
+    } else if (activeTab === 'pending') {
+      filteredPosts = filteredPosts.filter(post => post.status === 'Pending review');
     }
-    return data;
-  }, [data, showPublishedOnly]);
-  
+    
+    // Filter by CMS type if selected
+    if (selectedCmsType) {
+      filteredPosts = filteredPosts.filter(post => 
+        post.cmsModel.toLowerCase() === selectedCmsType.toLowerCase()
+      );
+    }
+    
+    // Update the data state with filtered posts
+    setData(filteredPosts);
+    
+    // Calculate status counts for the filtered data
+    const counts = {
+      total: filteredPosts.length,
+      published: filteredPosts.filter(post => post.status === 'Published').length,
+      scheduled: filteredPosts.filter(post => post.status === 'Schedule').length,
+      draft: filteredPosts.filter(post => post.status === 'Draft').length,
+      pending: filteredPosts.filter(post => post.status === 'Pending review').length
+    };
+    setStatusCounts(counts);
+    
+  }, [allPosts, activeTab, selectedCmsType]);
+
+  // Filter data for published content if needed (this is now redundant with our filtering above)
+  const filteredData = useMemo(() => data, [data]);
+
   // Create table instance
   const table = useReactTable({
     data: filteredData,
@@ -999,16 +1025,15 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
     },
   });
 
-  // Show appropriate content based on section
-  const getTitle = () => {
-    switch(section) {
-      case 'activity':
-        return 'Activity Hub';
-      case 'inbox':
-        return 'Inbox';
-      default:
-        return 'CMS Collections';
+  // Get page title based on the section/CMS type
+  const getPageTitle = () => {
+    if (section === 'activity') return 'Activity Hub';
+    if (section === 'inbox') return 'Inbox';
+    if (selectedCmsType) {
+      // Capitalize the first letter of the CMS type
+      return selectedCmsType.charAt(0).toUpperCase() + selectedCmsType.slice(1);
     }
+    return 'All Posts';
   };
   
   // For the Inbox section
@@ -1103,7 +1128,7 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
             <div className="mb-3 flex flex-row items-center justify-between gap-3">
               <div>
                 <h1 className="text-xl font-medium text-gray-900 dark:text-white">
-                  All Posts <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">{isLoading ? 'Loading...' : `${statusCounts.total} item${statusCounts.total !== 1 ? 's' : ''}`}</span>
+                  {getPageTitle()} <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">{isLoading ? 'Loading...' : `${statusCounts.total} item${statusCounts.total !== 1 ? 's' : ''}`}</span>
                 </h1>
               </div>
             </div>
@@ -1168,13 +1193,25 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
             <div className="mb-0 flex items-center justify-between gap-1.5">
               {/* Left side - Filter, Sort, Column buttons */}
               <div className="flex items-center gap-1.5">
-                {showStatusFilter ? (
-                  <button 
-                    className="inline-flex items-center justify-center h-6 px-2 rounded text-blue-500 dark:text-blue-400 border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/20 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors text-xs font-medium"
-                  >
-                    <Filter className="h-3 w-3 mr-1" />
-                    Status: Published
-                  </button>
+                {showStatusFilter || selectedCmsType ? (
+                  <div className="flex gap-1">
+                    {showStatusFilter && (
+                      <button 
+                        className="inline-flex items-center justify-center h-6 px-2 rounded text-blue-500 dark:text-blue-400 border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/20 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors text-xs font-medium"
+                      >
+                        <Filter className="h-3 w-3 mr-1" />
+                        Status: Published
+                      </button>
+                    )}
+                    {selectedCmsType && (
+                      <button 
+                        className="inline-flex items-center justify-center h-6 px-2 rounded text-purple-500 dark:text-purple-400 border border-purple-200 dark:border-purple-800 bg-purple-50/50 dark:bg-purple-900/20 hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-colors text-xs font-medium"
+                      >
+                        <FileText className="h-3 w-3 mr-1" />
+                        Type: {selectedCmsType.charAt(0).toUpperCase() + selectedCmsType.slice(1)}
+                      </button>
+                    )}
+                  </div>
                 ) : (
                   <button className="inline-flex items-center justify-center h-7 w-7 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                     <Filter className="h-3.5 w-3.5" />

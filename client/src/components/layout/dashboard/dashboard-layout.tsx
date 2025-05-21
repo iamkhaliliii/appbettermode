@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "./header";
 import { MainSidebar } from "./main-sidebar";
 import { SecondarySidebar } from "./secondary-sidebar/index";

@@ -265,7 +265,6 @@ router.get('/site/:siteId', async (req, res) => {
         .select({
           id: tags.id,
           name: tags.name,
-          color: tags.color,
           icon: tags.icon,
         })
         .from(tags)
@@ -309,7 +308,6 @@ router.get('/:postId', async (req, res) => {
       .select({
         id: tags.id,
         name: tags.name,
-        color: tags.color,
         icon: tags.icon,
       })
       .from(tags)

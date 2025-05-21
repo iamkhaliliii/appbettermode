@@ -12,9 +12,22 @@ export interface SiteDetails {
   // Add other site details as needed
 }
 
+// Utility function to check if a string is a valid UUID
+export function isValidUUID(uuid: string) {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(uuid);
+}
+
 // Function to fetch site details
 export const fetchSiteDetails = async (siteId: string): Promise<SiteDetails | null> => {
   try {
+    // Validate site ID format before making API call
+    if (!isValidUUID(siteId)) {
+      console.warn(`Invalid site identifier format: ${siteId}. Should be a UUID.`);
+      // No need to return a mock object, just continue with the API call
+      // The server will handle looking up by subdomain
+    }
+
     const response = await fetch(`/api/v1/sites/${siteId}`);
     if (!response.ok) {
       throw new Error('Failed to fetch site details');
