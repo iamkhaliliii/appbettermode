@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -42,6 +42,19 @@ import { z } from 'zod';
 import { BrandLogo, BrandColor, CompanyInfo } from '@/pages/sites/types';
 import { cn } from '@/lib/utils';
 import { SitePreview } from './SitePreview';
+import { getPreviewComponent } from '@/components/ui/add-content-dialog/content-types';
+
+// CMS Type from database
+interface CmsType {
+  id: string;
+  name: string;
+  description: string;
+  color: string;
+  icon_name: string;
+  favorite: boolean;
+  type: string;
+  fields: any[];
+}
 
 // --- Validation Schema (for create site form) ---
 export const siteCreationSchema = z.object({
@@ -64,6 +77,110 @@ export const siteCreationSchema = z.object({
 
 export type SiteCreationFormInputs = z.infer<typeof siteCreationSchema>;
 
+// Map icon name to Lucide icon
+const getIconComponent = (iconName: string) => {
+  if (!iconName) return <Plus className="h-5 w-5" />;
+  
+  const normalizedIcon = iconName?.toLowerCase().trim();
+  
+  // Knowledge Base icons
+  if (normalizedIcon?.includes('knowledge') || normalizedIcon === 'kb' || 
+      normalizedIcon === 'book' || normalizedIcon?.includes('doc')) {
+    return <BookOpen className="h-4 w-4 text-rose-500" />;
+  }
+  
+  // Job List icons
+  if (normalizedIcon?.includes('job') || normalizedIcon?.includes('career') || 
+      normalizedIcon === 'work' || normalizedIcon === 'briefcase') {
+    return <Briefcase className="h-4 w-4 text-cyan-500" />;
+  }
+  
+  // Event icons
+  if (normalizedIcon?.includes('calendar') || normalizedIcon?.includes('event')) {
+    return <Calendar className="h-4 w-4 text-emerald-500" />;
+  }
+  
+  // Discussion icons
+  if (normalizedIcon?.includes('message') || normalizedIcon?.includes('discussion') || 
+      normalizedIcon?.includes('chat') || normalizedIcon?.includes('forum')) {
+    return <MessageSquare className="h-4 w-4 text-blue-500" />;
+  }
+  
+  // Q&A icons
+  if (normalizedIcon?.includes('help') || normalizedIcon?.includes('qa') || 
+      normalizedIcon?.includes('q&a') || normalizedIcon?.includes('question')) {
+    return <HelpCircle className="h-4 w-4 text-violet-500" />;
+  }
+  
+  // Wishlist icons
+  if (normalizedIcon?.includes('star') || normalizedIcon?.includes('wishlist') || 
+      normalizedIcon?.includes('idea') || normalizedIcon?.includes('lightbulb')) {
+    return <Star className="h-4 w-4 text-amber-500" />;
+  }
+  
+  // Landing page icons
+  if (normalizedIcon?.includes('layout') || normalizedIcon?.includes('landing') || 
+      normalizedIcon?.includes('home')) {
+    return <Layout className="h-4 w-4 text-indigo-500" />;
+  }
+  
+  // Blog icons
+  if (normalizedIcon?.includes('file') || normalizedIcon?.includes('blog') || 
+      normalizedIcon?.includes('post') || normalizedIcon?.includes('feather')) {
+    return <FileText className="h-4 w-4 text-purple-500" />;
+  }
+  
+  // Default icon
+  console.log(`Unknown icon name: ${iconName}, using default icon`);
+  return <Plus className="h-4 w-4" />;
+};
+
+// Get color class from color name
+const getColorClass = (color: string) => {
+  if (!color) return 'gray';
+  
+  const normalizedColor = color?.toLowerCase().trim();
+  
+  // Knowledge Base related colors (typically rose/red)
+  if (normalizedColor?.includes('knowledge') || normalizedColor?.includes('book') || 
+      normalizedColor?.includes('doc')) {
+    return 'rose';
+  }
+  
+  // Job List related colors (typically cyan/blue)
+  if (normalizedColor?.includes('job') || normalizedColor?.includes('career') || 
+      normalizedColor?.includes('work')) {
+    return 'cyan';
+  }
+  
+  // Map common color names to Tailwind color classes
+  const colorMap: Record<string, string> = {
+    'green': 'emerald',
+    'emerald': 'emerald',
+    'blue': 'blue',
+    'azure': 'blue',
+    'purple': 'violet',
+    'violet': 'violet',
+    'yellow': 'amber',
+    'amber': 'amber',
+    'orange': 'amber',
+    'indigo': 'indigo',
+    'red': 'rose',
+    'rose': 'rose',
+    'pink': 'rose',
+    'cyan': 'cyan',
+    'teal': 'cyan',
+    'fuchsia': 'purple',
+    'magenta': 'purple',
+    'gray': 'gray',
+    'grey': 'gray',
+    'black': 'gray',
+    'white': 'gray'
+  };
+  
+  return colorMap[normalizedColor] || normalizedColor || 'gray';
+};
+
 // --- Content Types for Step 3 ---
 interface ContentType {
   id: string;
@@ -71,66 +188,12 @@ interface ContentType {
   description: string;
   icon: React.ReactNode;
   color: string;
+  preview: React.ReactNode;
+  name: string;
 }
 
-const contentTypes: ContentType[] = [
-  {
-    id: "event",
-    title: "Event",
-    description: "Organize events with scheduling and registrations.",
-    icon: <Calendar className="h-5 w-5 text-emerald-500" />,
-    color: "emerald"
-  },
-  {
-    id: "discussion",
-    title: "Discussion",
-    description: "Start conversations with community members.",
-    icon: <MessageSquare className="h-5 w-5 text-blue-500" />,
-    color: "blue"
-  },
-  {
-    id: "qa",
-    title: "Q&A",
-    description: "Enable community Q&A with voting system.",
-    icon: <HelpCircle className="h-5 w-5 text-violet-500" />,
-    color: "violet"
-  },
-  {
-    id: "wishlist",
-    title: "Wishlist",
-    description: "Collect and prioritize community ideas.",
-    icon: <Star className="h-5 w-5 text-amber-500" />,
-    color: "amber"
-  },
-  {
-    id: "landing",
-    title: "Landing Page",
-    description: "Create beautiful marketing pages.",
-    icon: <Layout className="h-5 w-5 text-indigo-500" />,
-    color: "indigo"
-  },
-  {
-    id: "knowledge",
-    title: "Knowledge Base",
-    description: "Build a searchable help center.",
-    icon: <BookOpen className="h-5 w-5 text-rose-500" />,
-    color: "rose"
-  },
-  {
-    id: "jobs",
-    title: "Job List",
-    description: "Post and manage job openings.",
-    icon: <Briefcase className="h-5 w-5 text-cyan-500" />,
-    color: "cyan"
-  },
-  {
-    id: "blog",
-    title: "Blog",
-    description: "Share updates and stories.",
-    icon: <FileText className="h-5 w-5 text-purple-500" />,
-    color: "purple"
-  }
-];
+// API base URL
+const API_BASE = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:4000';
 
 // Loading states for the creation process
 const siteCreationSteps = [
@@ -197,6 +260,100 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
   // Manual upload options
   const [showManualLogoInput, setShowManualLogoInput] = useState(false);
   const [showManualColorInput, setShowManualColorInput] = useState(false);
+  
+  // Content types state
+  const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
+  const [loadingContentTypes, setLoadingContentTypes] = useState(false);
+  
+  // Fetch content types from API
+  useEffect(() => {
+    const fetchContentTypes = async () => {
+      if (wizardStep !== 3) return; // Only fetch when reaching step 3
+      
+      setLoadingContentTypes(true);
+      try {
+        // Fetch all official content types
+        const response = await fetch(`${API_BASE}/api/v1/cms-types/category/official`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          
+          if (Array.isArray(data)) {
+            // Transform CMS types to ContentType format
+            const transformedTypes = data.map((item: CmsType) => {
+              // Normalize the content type name for consistent mapping
+              let normalizedName = item.name.toLowerCase().trim();
+              
+              // Special case mappings to ensure consistent naming
+              const nameMap: Record<string, string> = {
+                'job_list': 'jobs',
+                'jobs_list': 'jobs',
+                'job_board': 'jobs',
+                'joblist': 'jobs',
+                'jobboard': 'jobs',
+                'careers': 'jobs',
+                'career': 'jobs',
+                'knowledge_base': 'knowledge',
+                'KnowledgeBase': 'knowledge',
+                'kb': 'knowledge',
+                'knowledgebase': 'knowledge',
+                'documentation': 'knowledge',
+                'docs': 'knowledge',
+                'q_and_a': 'qa',
+                'q&a': 'qa',
+                'questions': 'qa',
+                'questions_and_answers': 'qa'
+              };
+              
+              if (nameMap[normalizedName]) {
+                normalizedName = nameMap[normalizedName];
+              }
+              
+              // For debugging
+              console.log(`CMS Type: ${item.name} -> Normalized: ${normalizedName}`);
+              
+              return {
+                id: normalizedName, // Use normalized name as ID
+                title: item.name.charAt(0).toUpperCase() + item.name.slice(1).replace(/_/g, ' '),
+                description: item.description || `Create ${item.name} content`,
+                icon: getIconComponent(item.icon_name),
+                color: getColorClass(item.color),
+                preview: getPreviewComponent(item.name),
+                name: normalizedName // Use normalized name for consistency
+              };
+            });
+            
+            setContentTypes(transformedTypes);
+          } else {
+            console.error('CMS types data is not an array:', data);
+            toast({
+              title: "Error Loading Content Types",
+              description: "Failed to load content types from server",
+              variant: "destructive",
+            });
+          }
+        } else {
+          console.error('Failed to fetch content types:', response.statusText);
+          toast({
+            title: "Error Loading Content Types",
+            description: `Failed to load content types: ${response.statusText}`,
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching content types:', error);
+        toast({
+          title: "Error Loading Content Types",
+          description: error instanceof Error ? error.message : "Unknown error",
+          variant: "destructive",
+        });
+      } finally {
+        setLoadingContentTypes(false);
+      }
+    };
+    
+    fetchContentTypes();
+  }, [wizardStep, toast]);
   
   const {
     register,
@@ -795,43 +952,57 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                       transition={{ duration: 0.2 }}
                     >
                       <div className="mb-4">
-                        
-                        <div className="grid grid-cols-2 sm:grid-cols-2 gap-2">
-                          {contentTypes.map((content, index) => (
-                            <motion.div 
-                              key={content.id}
-                              initial={{ opacity: 0, y: 10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{ duration: 0.2, delay: index * 0.05 }}
-                              onClick={() => toggleContentType(content.id)}
-                              className={cn(
-                                "cursor-pointer rounded-md p-3 transition-all border",
-                                selectedContentTypes.includes(content.id) 
-                                  ? 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 shadow-sm' 
-                                  : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800'
-                              )}
-                            >
-                              <div className="flex items-start gap-3">
-                                <div className={`w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 bg-${content.color}-100 dark:bg-${content.color}-900/20`}>
-                                  {content.icon}
-                                </div>
-                                <div className="flex-1">
+                        {loadingContentTypes ? (
+                          <div className="flex flex-col items-center justify-center py-8">
+                            <Loader2 className="h-10 w-10 animate-spin text-gray-400 mb-4" />
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Loading content types...</p>
+                          </div>
+                        ) : contentTypes.length === 0 ? (
+                          <div className="flex flex-col items-center justify-center py-8 text-center">
+                            <div className="p-3 rounded-full bg-gray-100 dark:bg-gray-800 mb-4">
+                              <Layout className="h-6 w-6 text-gray-500" />
+                            </div>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">No content types available</p>
+                            <p className="text-xs text-gray-400 dark:text-gray-500 max-w-xs">
+                              Please try refreshing or contact support if this issue persists.
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
+                            {contentTypes.map((content, index) => (
+                              <motion.div 
+                                key={content.id}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.2, delay: index * 0.05 }}
+                                onClick={() => toggleContentType(content.id)}
+                                className={`
+                                  cursor-pointer relative overflow-hidden group
+                                  bg-gradient-to-br rounded-xl transition-all duration-200
+                                  ${selectedContentTypes.includes(content.id) 
+                                    ? `from-${content.color}-50/90 to-${content.color}-100/50 dark:from-${content.color}-900/40 dark:to-${content.color}-800/30 shadow-md` 
+                                    : `from-${content.color}-50/60 to-${content.color}-100/10 dark:from-${content.color}-900/15 dark:to-${content.color}-800/5 hover:from-${content.color}-50/95 hover:to-${content.color}-100/50 dark:hover:from-${content.color}-900/40 dark:hover:to-${content.color}-800/25`}
+                                  border border-${content.color}-200/30 dark:border-${content.color}-800/20
+                                `}
+                              >
+                                <div className="flex flex-col p-3">
                                   <div className="flex items-center justify-between">
-                                    <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                      {content.title}
-                                    </h3>
+                                    <div className="flex items-center gap-2">
+                                      {content.icon}
+                                      <h3 className="text-[0.8rem] font-medium text-gray-900 dark:text-gray-100">{content.title}</h3>
+                                    </div>
                                     {selectedContentTypes.includes(content.id) && (
-                                      <Check className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                                      <div className={`p-1 rounded-full bg-${content.color}-100/60 dark:bg-${content.color}-800/40`}>
+                                        <Check className={`h-4 w-4 text-${content.color}-600 dark:text-${content.color}-400`} />
+                                      </div>
                                     )}
                                   </div>
-                                  <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
-                                    {content.description}
-                                  </p>
+                                  <p className="text-[0.7rem] text-gray-600 dark:text-gray-400 mt-1">{content.description}</p>
                                 </div>
-                              </div>
-                            </motion.div>
-                          ))}
-                        </div>
+                              </motion.div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </motion.div>
                   )}

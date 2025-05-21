@@ -16,6 +16,7 @@ import {
   AlignLeft
 } from 'lucide-react';
 import { sitesApi } from '@/lib/api';
+import { getApiBaseUrl } from '@/lib/utils';
 
 // Interface for Space objects
 interface Space {
@@ -39,8 +40,9 @@ export function SiteSidebar({ siteSD, activePage = 'home' }: SiteSidebarProps) {
   const [spaces, setSpaces] = useState<Space[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeNavItem, setActiveNavItem] = useState(activePage);
+  const [siteId, setSiteId] = useState<string | null>(null);
 
-  // Fetch site data and spaces
+  // Fetch site data
   useEffect(() => {
     const fetchSiteData = async () => {
       if (!siteSD) return;
@@ -50,15 +52,12 @@ export function SiteSidebar({ siteSD, activePage = 'home' }: SiteSidebarProps) {
         // Fetch site data
         const siteData = await sitesApi.getSite(siteSD);
         setSite(siteData);
+        setSiteId(siteData.id);
         
-        // For now, we'll simulate spaces based on content_types
-        // This would be replaced with a real API call to get spaces
-        // const spacesData = await fetch(`/api/v1/sites/${siteData.id}/spaces`).then(res => res.json());
-        
-        // Simulate spaces from content types
+        // Generate spaces from content types as a fallback
         if (siteData.content_types && Array.isArray(siteData.content_types)) {
           const simulatedSpaces: Space[] = siteData.content_types.map((cmsType: string) => {
-            let name, icon;
+            let name;
             
             switch (cmsType) {
               case 'discussion':
@@ -110,6 +109,45 @@ export function SiteSidebar({ siteSD, activePage = 'home' }: SiteSidebarProps) {
 
     fetchSiteData();
   }, [siteSD]);
+
+  // Fetch actual spaces once we have the site ID
+  useEffect(() => {
+    const fetchSpaces = async () => {
+      if (!siteId) return;
+      
+      try {
+        const API_BASE = getApiBaseUrl();
+        const response = await fetch(`${API_BASE}/api/v1/sites/${siteId}/spaces`);
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to fetch spaces');
+        }
+        
+        const spacesData = await response.json();
+        console.log('Fetched spaces for site sidebar:', spacesData);
+        
+        if (Array.isArray(spacesData)) {
+          const mappedSpaces: Space[] = spacesData.map((space: any) => ({
+            id: space.id,
+            name: space.name,
+            slug: space.slug,
+            description: space.description,
+            cms_type: space.cms_type || 'custom',
+            hidden: space.hidden || false,
+            visibility: space.visibility || 'public'
+          }));
+          
+          setSpaces(mappedSpaces);
+        }
+      } catch (err) {
+        console.error("Error fetching spaces for site sidebar:", err);
+        // We'll keep the fallback spaces if we can't fetch real ones
+      }
+    };
+    
+    fetchSpaces();
+  }, [siteId]);
 
   // Set active navigation item based on current location
   useEffect(() => {

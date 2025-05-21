@@ -22,7 +22,8 @@
     "db:migrate:spaces": "NODE_ENV=development tsx server/db/update-spaces-table.ts",
     "db:migrate:space-cms-type": "NODE_ENV=development tsx server/db/add-space-cms-type.ts",
     "db:migrate:sites-space-ids": "NODE_ENV=development tsx server/db/add-sites-space-ids.ts",
-    "db:check:migration": "NODE_ENV=development tsx server/db/check-migration.ts"
+    "db:check:migration": "NODE_ENV=development tsx server/db/check-migration.ts",
+    "update-images": "node --experimental-specifier-resolution=node scripts/update-image-urls.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -63,6 +64,7 @@
     "@types/cors": "^2.8.18",
     "@types/pg": "^8.15.2",
     "@types/react-lottie": "^1.2.10",
+    "@vercel/postgres": "^0.10.0",
     "@vueuse/core": "^13.2.0",
     "cmdk": "^1.0.0",
     "connect-pg-simple": "^10.0.0",

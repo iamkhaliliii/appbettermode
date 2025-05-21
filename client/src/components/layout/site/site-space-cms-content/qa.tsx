@@ -14,11 +14,14 @@ import {
   Search,
   BookmarkPlus,
   ArrowUp,
-  Eye
+  Eye,
+  Loader2,
+  RefreshCw
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { getApiBaseUrl } from '@/lib/utils';
 
 // Interfaces
 interface Space {
@@ -35,20 +38,27 @@ interface Space {
 interface QAQuestion {
   id: string;
   title: string;
-  excerpt: string;
-  author: {
+  content: any;
+  status: string;
+  author_id: string;
+  space_id: string;
+  published_at: string;
+  created_at: string;
+  updated_at: string;
+  cms_type: string;
+  site_id: string;
+  qa_metadata?: {
+    solved: boolean;
+    votes: number;
+    views: number;
+  };
+  author?: {
     id: string;
     name: string;
     avatar?: string;
   };
-  createdAt: string;
-  updatedAt: string;
-  votes: number;
-  answers: number;
-  views: number;
-  isVoted: boolean;
-  isSolved: boolean;
-  tags: string[];
+  comments_count?: number;
+  tags?: string[];
 }
 
 interface QaContentProps {
@@ -57,6 +67,76 @@ interface QaContentProps {
   site: any;
 }
 
+// Mock data for Q&A questions - only used as fallback if API fails
+const MOCK_QUESTIONS: QAQuestion[] = [
+  {
+    id: 'mock-qa-1',
+    title: 'How do I set up two-factor authentication?',
+    content: JSON.stringify({
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [{ type: 'text', text: "I want to secure my account better. What's the process for enabling 2FA?" }]
+        }
+      ]
+    }),
+    status: 'published',
+    author_id: 'user1',
+    space_id: '',
+    published_at: new Date().toISOString(),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    cms_type: 'qa',
+    site_id: '',
+    qa_metadata: {
+      solved: true,
+      votes: 18,
+      views: 124
+    },
+    author: {
+      id: 'user1',
+      name: 'Alex Morgan',
+      avatar: 'https://i.pravatar.cc/150?img=4'
+    },
+    comments_count: 3,
+    tags: ['Security', 'Authentication']
+  },
+  {
+    id: 'mock-qa-2',
+    title: 'What are the hardware requirements for the desktop app?',
+    content: JSON.stringify({
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [{ type: 'text', text: "I'm trying to run the desktop app but it's very slow. What specs do I need?" }]
+        }
+      ]
+    }),
+    status: 'published',
+    author_id: 'user2',
+    space_id: '',
+    published_at: new Date().toISOString(),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    cms_type: 'qa',
+    site_id: '',
+    qa_metadata: {
+      solved: false,
+      votes: 12,
+      views: 89
+    },
+    author: {
+      id: 'user2',
+      name: 'Jamie Rodriguez',
+      avatar: 'https://i.pravatar.cc/150?img=5'
+    },
+    comments_count: 2,
+    tags: ['Desktop App', 'Performance', 'Hardware']
+  }
+];
+
 export function QaContent({ siteSD, space, site }: QaContentProps) {
   const [, setLocation] = useLocation();
   const [questions, setQuestions] = useState<QAQuestion[]>([]);
@@ -64,87 +144,82 @@ export function QaContent({ siteSD, space, site }: QaContentProps) {
   const [error, setError] = useState<string | null>(null);
   const [filterOption, setFilterOption] = useState('latest');
   const [searchQuery, setSearchQuery] = useState('');
+  const [useMockData, setUseMockData] = useState(false);
 
-  // Simulate fetching questions
-  useEffect(() => {
-    const fetchQuestions = async () => {
+  // Fetch Q&A data
+  const fetchQAData = async () => {
+    try {
       setIsLoading(true);
+      setError(null);
       
-      try {
-        // This would be replaced with a real API call
-        // const data = await fetch(`/api/v1/sites/${site.id}/spaces/${space.id}/questions`).then(res => res.json());
-        
-        // Simulate API response
-        setTimeout(() => {
-          const mockQuestions: QAQuestion[] = [
-            {
-              id: '1',
-              title: 'How do I set up two-factor authentication?',
-              excerpt: "I want to secure my account better. What's the process for enabling 2FA?",
-              author: {
-                id: 'user1',
-                name: 'Alex Morgan',
-                avatar: 'https://i.pravatar.cc/150?img=4'
-              },
-              createdAt: '2025-05-15T14:30:00Z',
-              updatedAt: '2025-05-15T14:30:00Z',
-              votes: 18,
-              answers: 3,
-              views: 124,
-              isVoted: false,
-              isSolved: true,
-              tags: ['Security', 'Authentication']
-            },
-            {
-              id: '2',
-              title: 'What are the hardware requirements for the desktop app?',
-              excerpt: "I'm trying to run the desktop app but it's very slow. What specs do I need?",
-              author: {
-                id: 'user2',
-                name: 'Jamie Rodriguez',
-                avatar: 'https://i.pravatar.cc/150?img=5'
-              },
-              createdAt: '2025-05-14T11:45:00Z',
-              updatedAt: '2025-05-15T13:15:00Z',
-              votes: 12,
-              answers: 2,
-              views: 89,
-              isVoted: true,
-              isSolved: false,
-              tags: ['Desktop App', 'Performance', 'Hardware']
-            },
-            {
-              id: '3',
-              title: 'Can I migrate data from my old account?',
-              excerpt: "I have a legacy account and want to move everything to the new platform. Is there a migration tool?",
-              author: {
-                id: 'user3',
-                name: 'Taylor Kim',
-                avatar: 'https://i.pravatar.cc/150?img=6'
-              },
-              createdAt: '2025-05-13T09:20:00Z',
-              updatedAt: '2025-05-13T09:20:00Z',
-              votes: 24,
-              answers: 4,
-              views: 235,
-              isVoted: false,
-              isSolved: true,
-              tags: ['Migration', 'Data', 'Account']
-            }
-          ];
-          
-          setQuestions(mockQuestions);
-          setIsLoading(false);
-        }, 800);
-      } catch (err) {
-        console.error('Error fetching questions:', err);
-        setError('Failed to load questions. Please try again later.');
-        setIsLoading(false);
+      // Get the API base URL
+      const API_BASE = getApiBaseUrl();
+      
+      // If we don't have site ID or space ID, we can't fetch
+      if (!site?.id || !space?.id) {
+        throw new Error('Missing site or space information');
       }
-    };
-    
-    fetchQuestions();
-  }, [site.id, space.id]);
+      
+      console.log(`Fetching Q&A questions for site ${site.id} and space ${space.id}`);
+      
+      // Use the site ID and space ID to fetch Q&A questions
+      const response = await fetch(`${API_BASE}/api/v1/posts/site/${site.id}?cmsType=qa&spaceId=${space.id}&status=published`);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch Q&A questions: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      console.log('Fetched Q&A questions:', data);
+      
+      if (Array.isArray(data) && data.length > 0) {
+        // Format the data to match our interface
+        const formattedQuestions = data.map((post: any) => {
+          // Enhanced post with additional metadata and defaults
+          return {
+            ...post,
+            author: post.author || {
+              id: post.author_id,
+              name: 'Anonymous User',
+            },
+            comments_count: post.comments_count || 0,
+            tags: post.tags || [],
+            qa_metadata: post.qa_metadata || {
+              solved: false,
+              votes: 0,
+              views: 0
+            }
+          };
+        });
+        setQuestions(formattedQuestions);
+        setUseMockData(false);
+      } else {
+        console.log('No Q&A questions found, using empty array');
+        setQuestions([]);
+        setUseMockData(false);
+      }
+    } catch (err) {
+      console.error('Error fetching Q&A questions:', err);
+      setError('Failed to load questions. Using demo data as a fallback.');
+      
+      // Fall back to mock data on error
+      setQuestions(MOCK_QUESTIONS.map(question => ({
+        ...question,
+        space_id: space.id,
+        site_id: site.id
+      })));
+      setUseMockData(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fetch questions when component mounts
+  useEffect(() => {
+    if (site && space) {
+      fetchQAData();
+    }
+  }, [site?.id, space?.id]);
 
   // Handle ask new question
   const handleAskQuestion = () => {
@@ -161,27 +236,21 @@ export function QaContent({ siteSD, space, site }: QaContentProps) {
     });
   };
 
-  // Loading state
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center p-12">
-        <div className="text-center">
-          <div className="animate-spin h-8 w-8 border-4 border-primary-600 border-t-transparent rounded-full mb-4 mx-auto"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading questions...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Error state
-  if (error) {
-    return (
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center">
-        <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
-        <Button onClick={() => window.location.reload()}>Try Again</Button>
-      </div>
-    );
-  }
+  // Get excerpt from JSON content
+  const getExcerpt = (content: string, maxLength = 150) => {
+    try {
+      if (!content) return '';
+      if (typeof content === 'string' && content.startsWith('{')) {
+        const parsedContent = JSON.parse(content);
+        const textContent = parsedContent?.content?.[0]?.content?.[0]?.text || '';
+        if (textContent.length <= maxLength) return textContent;
+        return textContent.substring(0, maxLength) + '...';
+      }
+      return '';
+    } catch (err) {
+      return '';
+    }
+  };
 
   return (
     <div className="qa-container">
@@ -232,33 +301,75 @@ export function QaContent({ siteSD, space, site }: QaContentProps) {
             <Filter className="h-4 w-4" />
           </Button>
           
-          <Button onClick={handleAskQuestion} className="md:w-auto w-full">
-            <Plus className="h-4 w-4 mr-2" />
-            Ask Question
-          </Button>
+          <div className="flex space-x-2">
+            <Button variant="outline" onClick={fetchQAData} disabled={isLoading}>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
+            </Button>
+            <Button onClick={handleAskQuestion} className="md:w-auto w-full">
+              <Plus className="h-4 w-4 mr-2" />
+              Ask Question
+            </Button>
+          </div>
         </div>
       </div>
       
-      {/* Questions List */}
-      <div className="space-y-4">
-        {questions.length === 0 ? (
-          <Card className="text-center p-6">
-            <CardContent className="pt-6">
-              <HelpCircle className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-              <h3 className="text-lg font-medium mb-2">No questions yet</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                Be the first to ask a question in this space.
-              </p>
-              <Button onClick={handleAskQuestion}>
-                <Plus className="h-4 w-4 mr-2" />
-                Ask Question
-              </Button>
-            </CardContent>
-          </Card>
-        ) : (
-          questions.map((question) => (
-            <Card key={question.id} className={question.isSolved ? 'border-green-200 dark:border-green-900' : ''}>
-              {question.isSolved && (
+      {/* Status indicator for mock data */}
+      {useMockData && (
+        <div className="mb-4">
+          <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-md p-2 text-amber-800 dark:text-amber-400 text-sm flex items-center justify-between">
+            <div className="flex items-center">
+              <span className="inline-block h-2 w-2 rounded-full bg-amber-500 mr-2"></span>
+              <span>Demo Data</span>
+            </div>
+            <Button variant="outline" size="sm" onClick={fetchQAData} disabled={isLoading}>
+              <RefreshCw className="h-3 w-3 mr-1" />
+              Try Again
+            </Button>
+          </div>
+        </div>
+      )}
+      
+      {/* Loading/Error States */}
+      {isLoading ? (
+        <div className="flex items-center justify-center p-12">
+          <div className="text-center">
+            <Loader2 className="h-8 w-8 animate-spin text-primary-600 dark:text-primary-400 mx-auto mb-4" />
+            <p className="text-gray-600 dark:text-gray-400">Loading questions...</p>
+          </div>
+        </div>
+      ) : error ? (
+        <Card className="text-center p-6 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
+          <CardContent className="pt-6">
+            <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
+            <Button 
+              variant="outline" 
+              onClick={fetchQAData}
+            >
+              Try Again
+            </Button>
+          </CardContent>
+        </Card>
+      ) : questions.length === 0 ? (
+        <Card className="text-center p-6">
+          <CardContent className="pt-6">
+            <HelpCircle className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+            <h3 className="text-lg font-medium mb-2">No questions yet</h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              Be the first to ask a question in this space.
+            </p>
+            <Button onClick={handleAskQuestion}>
+              <Plus className="h-4 w-4 mr-2" />
+              Ask Question
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        // Questions List
+        <div className="space-y-4">
+          {questions.map((question) => (
+            <Card key={question.id} className={question.qa_metadata?.solved ? 'border-green-200 dark:border-green-900' : ''}>
+              {question.qa_metadata?.solved && (
                 <div className="bg-green-50 dark:bg-green-900/20 px-4 py-1 text-xs font-medium text-green-600 dark:text-green-400 flex items-center">
                   <CheckCircle className="h-3 w-3 mr-2" />
                   Solved Question
@@ -267,32 +378,28 @@ export function QaContent({ siteSD, space, site }: QaContentProps) {
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
                   <div className="flex flex-col items-center space-y-2 w-14">
-                    <button 
-                      className={`flex flex-col items-center ${
-                        question.isVoted ? 'text-primary-600 dark:text-primary-400' : 'text-gray-500 dark:text-gray-400'
-                      } hover:text-primary-600 dark:hover:text-primary-400`}
-                    >
+                    <button className="flex flex-col items-center text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">
                       <ArrowUp className="h-5 w-5" />
-                      <span className="font-medium mt-1">{question.votes}</span>
+                      <span className="font-medium mt-1">{question.qa_metadata?.votes || 0}</span>
                     </button>
                     <div className="flex flex-col items-center text-gray-500 dark:text-gray-400 text-xs">
                       <Eye className="h-4 w-4 mb-1" />
-                      <span>{question.views}</span>
+                      <span>{question.qa_metadata?.views || 0}</span>
                     </div>
                   </div>
                   
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <Avatar className="h-7 w-7">
-                        <AvatarImage src={question.author.avatar} />
-                        <AvatarFallback>{question.author.name.substring(0, 2)}</AvatarFallback>
+                        <AvatarImage src={question.author?.avatar} />
+                        <AvatarFallback>{(question.author?.name || 'User').substring(0, 2)}</AvatarFallback>
                       </Avatar>
                       <span className="font-medium text-sm text-gray-700 dark:text-gray-300">
-                        {question.author.name}
+                        {question.author?.name || 'Anonymous User'}
                       </span>
                       <span className="text-gray-500 dark:text-gray-400 text-xs flex items-center">
                         <Clock className="h-3 w-3 mr-1" />
-                        {formatDate(question.createdAt)}
+                        {formatDate(question.published_at || question.created_at)}
                       </span>
                     </div>
                     
@@ -304,22 +411,24 @@ export function QaContent({ siteSD, space, site }: QaContentProps) {
                     </h3>
                     
                     <p className="text-gray-600 dark:text-gray-400 mb-3">
-                      {question.excerpt}
+                      {getExcerpt(question.content)}
                     </p>
                     
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {question.tags.map((tag) => (
-                        <Badge key={tag} variant="secondary">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
+                    {question.tags && question.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {question.tags.map((tag) => (
+                          <Badge key={tag} variant="secondary">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
                     
                     <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
                       <div className="flex items-center">
                         <MessageCircle className="h-4 w-4 mr-1" />
                         <span>
-                          {question.answers} {question.answers === 1 ? 'answer' : 'answers'}
+                          {question.comments_count || 0} {(question.comments_count || 0) === 1 ? 'answer' : 'answers'}
                         </span>
                       </div>
                       
@@ -340,17 +449,17 @@ export function QaContent({ siteSD, space, site }: QaContentProps) {
                 </div>
               </CardContent>
             </Card>
-          ))
-        )}
-      </div>
-      
-      {/* Pagination */}
-      {questions.length > 0 && (
-        <div className="flex justify-center mt-8">
-          <Button variant="outline" className="text-sm">
-            Load More
-            <ChevronDown className="h-4 w-4 ml-2" />
-          </Button>
+          ))}
+          
+          {/* Pagination */}
+          {questions.length > 5 && (
+            <div className="flex justify-center mt-8">
+              <Button variant="outline" className="text-sm">
+                Load More
+                <ChevronDown className="h-4 w-4 ml-2" />
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </div>

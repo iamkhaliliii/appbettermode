@@ -44,7 +44,18 @@ export function SpaceCmsContent({ siteSD, space, site }: SpaceCmsContentProps) {
     }
 
     // Normalize CMS type to handle potential casing or format issues
-    const cmsType = space.cms_type.toLowerCase();
+    let cmsType = space.cms_type.toLowerCase();
+    
+    // Special handling for "q&a" format
+    if (cmsType === 'q&a') {
+      cmsType = 'qa';
+    }
+    
+    // Remove any special characters and normalize
+    cmsType = cmsType.replace(/[^a-z0-9]/g, '');
+    
+    console.log("Original cms_type:", space.cms_type);
+    console.log("Normalized cms_type for rendering:", cmsType);
     
     // Render component based on CMS type
     switch (cmsType) {

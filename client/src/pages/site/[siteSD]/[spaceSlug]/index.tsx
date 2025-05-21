@@ -8,6 +8,7 @@ import { Loader2 } from 'lucide-react';
 import { Header } from '@/components/layout/dashboard/header';
 import { Skeleton } from '@/components/ui/skeleton';
 import { motion } from 'framer-motion';
+import { getApiBaseUrl } from '@/lib/utils';
 
 // Types
 interface Space {
@@ -66,6 +67,7 @@ export default function SpacePage() {
       try {
         // 1. Fetch site data
         const siteData = await sitesApi.getSite(siteSD);
+        console.log("Site data fetched:", siteData.name, siteData.id);
         setSite(siteData);
         setIsLoading(false);
       } catch (err) {
@@ -87,112 +89,84 @@ export default function SpacePage() {
 
       setIsContentLoading(true);
       setSpace(null); // Clear previous space while loading new one
+      setError(null); // Clear previous errors
 
       try {
-        // Simulate space fetching by looking in space_ids or checking associated spaces
-        if ((site as any).space_ids && Array.isArray((site as any).space_ids)) {
-          // Proper implementation would fetch the space by ID or slug
-          console.log("Would fetch space with slugs:", spaceSlug);
-          console.log("Site has space_ids:", (site as any).space_ids);
+        console.log(`Fetching space with slug: ${spaceSlug}`);
+        console.log(`Site ID: ${site.id}`);
+        
+        // Get the API base URL
+        const API_BASE = getApiBaseUrl();
+        
+        // Fetch all spaces for the site
+        const response = await fetch(`${API_BASE}/api/v1/sites/${site.id}/spaces`);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch spaces: ${response.statusText}`);
+        }
+        
+        const spaces = await response.json();
+        console.log("All spaces for site:", spaces);
+        
+        if (!Array.isArray(spaces)) {
+          throw new Error("Invalid response format for spaces");
+        }
+        
+        // Case-insensitive matching to be more forgiving with slugs
+        const matchedSpace = spaces.find((s: any) => 
+          s.slug.toLowerCase() === spaceSlug.toLowerCase()
+        );
+        
+        console.log("Matched space:", matchedSpace);
+        
+        if (matchedSpace) {
+          // We found a real space that matches the slug
+          setSpace(matchedSpace);
+          setIsContentLoading(false);
+          return;
+        } 
+        
+        // If we can't find the space by slug directly,
+        // check if this might be a content type instead (fallback mechanism)
+        if (site.content_types && Array.isArray(site.content_types)) {
+          console.log("No direct space match. Checking content types:", site.content_types);
           
-          // Temporary simulation - get spaces for the site and find by slug
-          try {
-            const spaces = await fetch(`/api/v1/sites/${site.id}/spaces`).then(res => res.json());
-            const matchedSpace = spaces.find((s: any) => s.slug === spaceSlug);
-            
-            if (matchedSpace) {
-              setSpace(matchedSpace);
-            } else {
-              // If we can't find the space, try to guess from the content_types
-              if (site.content_types && Array.isArray(site.content_types)) {
-                // Assume the spaceSlug might directly match a content type
-                const matchedType = site.content_types.find((type: string) => 
-                  type === spaceSlug || 
-                  type.toLowerCase() === spaceSlug ||
-                  (spaceSlug === 'qa' && type === 'qa')
-                );
-                
-                if (matchedType) {
-                  // Create a simulated space based on the content type
-                  setSpace({
-                    id: `simulated-${matchedType}`,
-                    name: matchedType.charAt(0).toUpperCase() + matchedType.slice(1),
-                    slug: spaceSlug,
-                    description: `${matchedType} content`,
-                    cms_type: matchedType,
-                    hidden: false,
-                    visibility: 'public',
-                    site_id: site.id
-                  });
-                  setIsContentLoading(false);
-                  return;
-                } else {
-                  setError(`Space "${spaceSlug}" not found for this site`);
-                }
-              } else {
-                setError(`Space "${spaceSlug}" not found for this site`);
-              }
-            }
-          } catch (spaceError) {
-            console.error("Error fetching spaces:", spaceError);
-            
-            // Fallback if API is not implemented: use the slug as the CMS type
-            if (site.content_types && Array.isArray(site.content_types)) {
-              const matchedType = site.content_types.find((type: string) => 
-                type === spaceSlug || 
-                type.toLowerCase() === spaceSlug ||
-                (spaceSlug === 'qa' && type === 'qa')
-              );
-              
-              if (matchedType) {
-                // Create a simulated space based on the content type
-                setSpace({
-                  id: `simulated-${matchedType}`,
-                  name: matchedType.charAt(0).toUpperCase() + matchedType.slice(1),
-                  slug: spaceSlug,
-                  description: `${matchedType} content`,
-                  cms_type: matchedType,
-                  hidden: false,
-                  visibility: 'public',
-                  site_id: site.id
-                });
-                setIsContentLoading(false);
-                return;
-              } else {
-                setError(`Space "${spaceSlug}" not found for this site`);
-              }
-            }
+          // Normalize content type matching
+          let normalizedSlug = spaceSlug.toLowerCase();
+          if (normalizedSlug === 'qa' || normalizedSlug === 'q-a') {
+            normalizedSlug = 'qa';
           }
-        } else {
-          // No space_ids, try to match with content_types
-          if (site.content_types && Array.isArray(site.content_types)) {
-            const matchedType = site.content_types.find((type: string) => 
-              type === spaceSlug || 
-              type.toLowerCase() === spaceSlug ||
-              (spaceSlug === 'qa' && type === 'qa')
-            );
+          
+          // Check if the spaceSlug matches a content type
+          const matchedType = site.content_types.find((type: string) => 
+            type.toLowerCase() === normalizedSlug || 
+            type.toLowerCase().replace(/[^a-z0-9]/g, '') === normalizedSlug.replace(/[^a-z0-9]/g, '')
+          );
+          
+          console.log("Matched content type:", matchedType);
+          
+          if (matchedType) {
+            // Create a simulated space based on the content type
+            const simulatedSpace = {
+              id: `simulated-${matchedType}`,
+              name: matchedType.charAt(0).toUpperCase() + matchedType.slice(1),
+              slug: spaceSlug,
+              description: `${matchedType} content`,
+              cms_type: matchedType,
+              hidden: false,
+              visibility: 'public' as 'public' | 'private' | 'paid',
+              site_id: site.id
+            };
             
-            if (matchedType) {
-              // Create a simulated space based on the content type
-              setSpace({
-                id: `simulated-${matchedType}`,
-                name: matchedType.charAt(0).toUpperCase() + matchedType.slice(1),
-                slug: spaceSlug,
-                description: `${matchedType} content`,
-                cms_type: matchedType,
-                hidden: false,
-                visibility: 'public',
-                site_id: site.id
-              });
-              setIsContentLoading(false);
-              return;
-            } else {
-              setError(`Space "${spaceSlug}" not found for this site`);
-            }
-          } else {
-            setError(`No content types found for site "${site.name}"`);
+            console.log("Created simulated space:", simulatedSpace);
+            setSpace(simulatedSpace);
+            setIsContentLoading(false);
+            return;
           }
         }
+        
+        // If we get here, neither a real space nor a content type match was found
+        setError(`Space "${spaceSlug}" not found for this site`);
       } catch (err) {
         console.error("Error fetching space data:", err);
         setError('Failed to load space data. Please try again later.');

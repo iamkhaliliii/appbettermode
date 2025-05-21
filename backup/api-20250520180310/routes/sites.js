@@ -1,0 +1,506 @@
+import express from 'express';
+import { db } from '../db/index.js';
+import { sites, memberships, spaces } from '../db/schema.js';
+import { eq, and } from 'drizzle-orm';
+import { z } from 'zod';
+import { setApiResponseHeaders, handleCorsPreflightRequest } from '../utils/environment.js';
+import { fetchBrandData } from '../utils/brandfetch.js';
+import { logger } from '../utils/logger.js';
+// Import with type any to avoid TypeScript errors
+import slugifyPkg from 'slugify';
+const slugify = slugifyPkg.default || slugifyPkg;
+import { sql } from 'drizzle-orm';
+const router = express.Router();
+// Brandfetch API key
+const BRANDFETCH_API_KEY = 'rPJ4fYfXffPHxhNAIo8lU7mDRQXHsrYqKXQ678ySJsc=';
+// Zod schema for site creation
+const createSiteSchema = z.object({
+    name: z.string().min(2, { message: 'Site name must be at least 2 characters.' }),
+    subdomain: z.string()
+        .min(3, { message: 'Subdomain must be at least 3 characters.' })
+        .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
+        message: 'Subdomain can only contain lowercase letters, numbers, and hyphens, and cannot start or end with a hyphen.',
+    })
+        .optional(),
+    domain: z.string().optional(), // Optional domain for brand fetching
+    selectedLogo: z.string().optional(), // User selected logo URL
+    selectedColor: z.string().optional(), // User selected brand color
+    selectedContentTypes: z.array(z.string()).optional(), // Selected content types
+});
+// Get all sites for the current user
+router.get('/', async (req, res) => {
+    try {
+        // TODO: Replace with actual authenticated user ID from req.user
+        const currentUserId = "49a44198-e6e5-4b1e-b8fb-b1c50ee0639d"; // Placeholder
+        if (!currentUserId) {
+            return res.status(401).json({ message: 'User not authenticated.' });
+        }
+        const userSites = await db
+            .select({
+            id: sites.id,
+            name: sites.name,
+            subdomain: sites.subdomain,
+            ownerId: sites.owner_id,
+            role: memberships.role,
+            createdAt: sites.createdAt,
+            updatedAt: sites.updatedAt,
+            status: sites.status,
+            logo_url: sites.logo_url,
+            brand_color: sites.brand_color,
+            content_types: sites.content_types,
+            plan: sites.plan,
+        })
+            .from(sites)
+            .innerJoin(memberships, eq(memberships.siteId, sites.id))
+            .where(eq(memberships.userId, currentUserId));
+        // Create a deep copy and add state with proper typing
+        const sitesWithState = JSON.parse(JSON.stringify(userSites));
+        sitesWithState.forEach((site) => {
+            site.state = site.status;
+        });
+        return res.status(200).json(sitesWithState);
+    }
+    catch (error) {
+        console.error('Error fetching sites:', error);
+        return res.status(500).json({ message: 'Error fetching sites from database' });
+    }
+});
+// Get a site by ID or subdomain
+router.get('/:identifier', async (req, res) => {
+    try {
+        const { identifier } = req.params;
+        if (!identifier) {
+            return res.status(400).json({ message: 'Site identifier is required.' });
+        }
+        console.log(`Looking for site with identifier: ${identifier}`);
+        // Try to find site by subdomain first
+        let site = await db
+            .select({
+            id: sites.id,
+            name: sites.name,
+            subdomain: sites.subdomain,
+            ownerId: sites.owner_id,
+            createdAt: sites.createdAt,
+            updatedAt: sites.updatedAt,
+            status: sites.status,
+            logo_url: sites.logo_url,
+            brand_color: sites.brand_color,
+            content_types: sites.content_types,
+            plan: sites.plan,
+        })
+            .from(sites)
+            .where(eq(sites.subdomain, identifier))
+            .limit(1)
+            .then((results) => results[0] || null);
+        // If not found by subdomain, try UUID (if it looks like a UUID)
+        if (!site && identifier.includes('-') && identifier.length > 30) {
+            console.log(`Not found by subdomain, trying UUID: ${identifier}`);
+            site = await db
+                .select({
+                id: sites.id,
+                name: sites.name,
+                subdomain: sites.subdomain,
+                ownerId: sites.owner_id,
+                createdAt: sites.createdAt,
+                updatedAt: sites.updatedAt,
+                status: sites.status,
+                logo_url: sites.logo_url,
+                brand_color: sites.brand_color,
+                content_types: sites.content_types,
+                plan: sites.plan,
+            })
+                .from(sites)
+                .where(eq(sites.id, identifier))
+                .limit(1)
+                .then((results) => results[0] || null);
+        }
+        if (!site) {
+            console.log(`Site not found with identifier: ${identifier}`);
+            return res.status(404).json({ message: 'Site not found.' });
+        }
+        // Add state field for backward compatibility
+        const siteWithState = JSON.parse(JSON.stringify(site));
+        siteWithState.state = siteWithState.status;
+        console.log(`Found site:`, siteWithState);
+        return res.status(200).json(siteWithState);
+    }
+    catch (error) {
+        console.error(`Error fetching site:`, error);
+        return res.status(500).json({ message: 'Error fetching site from database' });
+    }
+});
+// Apply CORS headers and handle OPTIONS requests for all routes
+router.use((req, res, next) => {
+    setApiResponseHeaders(res);
+    if (handleCorsPreflightRequest(req, res))
+        return;
+    next();
+});
+// Create a new site
+router.post('/', async (req, res) => {
+    try {
+        console.log("=== Site Creation Request ===");
+        console.log("Raw request body:", typeof req.body === 'string' ? req.body : JSON.stringify(req.body, null, 2));
+        // Handle both string and object body formats (for Vercel compatibility)
+        const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+        console.log("Parsed body:", JSON.stringify(body, null, 2));
+        const validationResult = createSiteSchema.safeParse(body);
+        if (!validationResult.success) {
+            console.error("Validation failed:", validationResult.error.flatten());
+            return res.status(400).json({
+                message: 'Invalid site data.',
+                errors: { fieldErrors: validationResult.error.flatten().fieldErrors },
+            });
+        }
+        const payload = validationResult.data;
+        console.log("Validated payload:", JSON.stringify(payload, null, 2));
+        console.log("Content types from payload:", payload.selectedContentTypes);
+        console.log(`Content types type: ${typeof payload.selectedContentTypes}, isArray: ${Array.isArray(payload.selectedContentTypes)}, length: ${payload.selectedContentTypes?.length || 0}`);
+        // TODO: Replace with actual authenticated user ID from req.user
+        const currentUserId = "49a44198-e6e5-4b1e-b8fb-b1c50ee0639d"; // Placeholder
+        if (!currentUserId) {
+            return res.status(401).json({ message: 'User not authenticated for creating a site.' });
+        }
+        // Check for subdomain uniqueness
+        if (payload.subdomain) {
+            const existingSiteWithSubdomain = await db.query.sites.findFirst({
+                where: eq(sites.subdomain, payload.subdomain),
+            });
+            if (existingSiteWithSubdomain) {
+                return res.status(409).json({ message: 'Subdomain is already taken.' });
+            }
+        }
+        // Determine which brand data to use
+        let logoUrl = null;
+        let brandColor = null;
+        // Ensure content types is always an array
+        let contentTypes = [];
+        if (payload.selectedContentTypes) {
+            if (Array.isArray(payload.selectedContentTypes)) {
+                contentTypes = payload.selectedContentTypes;
+            }
+            else if (typeof payload.selectedContentTypes === 'string') {
+                try {
+                    // Try to parse if it's a JSON string array
+                    const parsed = JSON.parse(payload.selectedContentTypes);
+                    if (Array.isArray(parsed)) {
+                        contentTypes = parsed;
+                    }
+                }
+                catch (e) {
+                    // If not JSON, treat as a comma-separated string
+                    contentTypes = payload.selectedContentTypes.split(',').map((item) => item.trim());
+                }
+            }
+        }
+        console.log("Processed content types:", contentTypes);
+        // If user provided selected brand assets, use those
+        if (payload.selectedLogo || payload.selectedColor) {
+            console.log('Using user-selected brand assets');
+            logoUrl = payload.selectedLogo || null;
+            brandColor = payload.selectedColor || null;
+        }
+        // Otherwise fetch from Brandfetch if domain is provided
+        else if (payload.domain) {
+            console.log(`Fetching brand data for domain: ${payload.domain}`);
+            const brandData = await fetchBrandData(payload.domain, BRANDFETCH_API_KEY);
+            logoUrl = brandData.logoUrl;
+            brandColor = brandData.brandColor;
+        }
+        // Skip transaction, create only the site without membership
+        console.log('Creating site with data:', {
+            name: payload.name,
+            subdomain: payload.subdomain,
+            ownerId: currentUserId,
+            status: 'active',
+            logoUrl,
+            brandColor,
+            contentTypes
+        });
+        const siteInsertResult = await db
+            .insert(sites)
+            .values({
+            name: payload.name,
+            subdomain: payload.subdomain,
+            owner_id: currentUserId,
+            status: 'active', // Default status for new sites
+            logo_url: logoUrl,
+            brand_color: brandColor,
+            content_types: contentTypes.length > 0 ? contentTypes : undefined,
+            plan: 'lite', // Default plan is lite
+        })
+            .returning({
+            id: sites.id,
+            name: sites.name,
+            subdomain: sites.subdomain,
+            ownerId: sites.owner_id,
+            createdAt: sites.createdAt,
+            updatedAt: sites.updatedAt,
+            status: sites.status,
+            logo_url: sites.logo_url,
+            brand_color: sites.brand_color,
+            content_types: sites.content_types,
+            plan: sites.plan,
+        });
+        if (!siteInsertResult || siteInsertResult.length === 0) {
+            throw new Error('Failed to create the site record in the database.');
+        }
+        // Add state field to the response
+        const newSiteRaw = siteInsertResult[0];
+        const newSite = JSON.parse(JSON.stringify(newSiteRaw));
+        newSite.state = newSite.status;
+        console.log('Site created successfully:', newSite);
+        // Automatically add the creator as an admin member of the new site
+        await db.insert(memberships).values({
+            userId: currentUserId,
+            siteId: newSite.id,
+            role: 'admin', // Assigning 'admin' role to the creator
+        });
+        console.log(`User ${currentUserId} added as admin to site ${newSite.id}`);
+        // Create spaces for selected content types
+        if (contentTypes.length > 0) {
+            console.log(`Creating spaces for selected content types: ${contentTypes.join(', ')}`);
+            console.log(`Content types value type: ${typeof contentTypes}, isArray: ${Array.isArray(contentTypes)}, length: ${contentTypes?.length || 0}`);
+            // Map of content type IDs to readable names and space configurations
+            const contentTypeConfig = {
+                'discussion': {
+                    name: 'Discussions',
+                    description: 'Community discussions and conversations',
+                    visibility: 'public',
+                },
+                'qa': {
+                    name: 'Q&A',
+                    description: 'Questions and answers from the community',
+                    visibility: 'public',
+                },
+                'wishlist': {
+                    name: 'Ideas & Wishlist',
+                    description: 'Feature requests and suggestions',
+                    visibility: 'public',
+                },
+                'knowledge': {
+                    name: 'Knowledge Base',
+                    description: 'Helpful articles and resources',
+                    visibility: 'public',
+                },
+                'event': {
+                    name: 'Events',
+                    description: 'Upcoming and past events',
+                    visibility: 'public',
+                },
+                'blog': {
+                    name: 'Blog',
+                    description: 'News and updates',
+                    visibility: 'public',
+                },
+                'jobs': {
+                    name: 'Job Board',
+                    description: 'Career opportunities',
+                    visibility: 'public',
+                },
+                'landing': {
+                    name: 'Landing Pages',
+                    description: 'Marketing and information pages',
+                    visibility: 'public',
+                }
+            };
+            // Array to store created space IDs
+            const createdSpaceIds = [];
+            // Create a space for each selected content type
+            for (const contentType of contentTypes) {
+                console.log(`Processing content type: ${contentType}`);
+                // Get config for this content type or use defaults
+                const config = contentTypeConfig[contentType] || {
+                    name: contentType.charAt(0).toUpperCase() + contentType.slice(1),
+                    description: `${contentType} content`,
+                    visibility: 'public'
+                };
+                console.log(`Using config for ${contentType}:`, config);
+                // Generate slug from name
+                const spaceSlug = slugify(config.name, {
+                    lower: true,
+                    strict: true
+                });
+                console.log(`Generated slug for ${config.name}: ${spaceSlug}`);
+                try {
+                    console.log(`Attempting to create space in database for ${contentType}...`);
+                    // Use SQL template literal with drizzle's sql tag
+                    const query = sql `
+            INSERT INTO spaces 
+            (name, slug, description, creator_id, site_id, visibility, cms_type, hidden)
+            VALUES 
+            (${config.name}, ${spaceSlug}, ${config.description}, 
+             ${currentUserId}, ${newSite.id}, ${config.visibility}, 
+             ${contentType}, ${false})
+            RETURNING id;
+          `;
+                    try {
+                        const result = await db.execute(query);
+                        console.log(`Space created successfully for ${contentType}, SQL result:`, JSON.stringify(result));
+                        console.log(`Created ${contentType} space: ${config.name}`);
+                        // Extract the space ID from the result and add it to our array
+                        // Cast result to any to handle varying result structures
+                        const resultAny = result;
+                        if (resultAny && Array.isArray(resultAny) && resultAny.length > 0 && resultAny[0].id) {
+                            createdSpaceIds.push(resultAny[0].id);
+                            console.log(`Added space ID ${resultAny[0].id} to created spaces list`);
+                        }
+                    }
+                    catch (sqlError) {
+                        console.error(`SQL error creating space for ${contentType}:`, sqlError.message);
+                        // Check if there's a more detailed error structure
+                        if (sqlError.code) {
+                            console.error(`SQL error code: ${sqlError.code}, position: ${sqlError.position}`);
+                        }
+                        // Re-throw to ensure the outer catch block handles it
+                        throw sqlError;
+                    }
+                }
+                catch (spaceError) {
+                    console.error(`Error creating space for ${contentType}:`, spaceError);
+                    console.error(`Error details: ${spaceError.message}, code: ${spaceError.code}`);
+                    // Continue with other spaces even if one fails
+                }
+            }
+            // Verify spaces were created
+            try {
+                const createdSpaces = await db.select({
+                    id: spaces.id,
+                    name: spaces.name,
+                    cms_type: spaces.cms_type
+                })
+                    .from(spaces)
+                    .where(eq(spaces.site_id, newSite.id));
+                console.log(`Verification - Spaces created for site ${newSite.id}:`, createdSpaces);
+                // Update the site record with created space IDs
+                if (createdSpaceIds.length > 0) {
+                    console.log(`Updating site with space IDs: ${createdSpaceIds.join(', ')}`);
+                    // Update the site record to include the space IDs
+                    await db.update(sites)
+                        .set({
+                        space_ids: createdSpaceIds // Add space IDs field now in schema
+                    })
+                        .where(eq(sites.id, newSite.id));
+                    console.log(`Site updated with space IDs successfully`);
+                }
+            }
+            catch (verifyError) {
+                console.error('Error verifying created spaces:', verifyError);
+            }
+        }
+        else {
+            console.log('No content types selected, skipping space creation');
+        }
+        return res.status(201).json(newSite);
+    }
+    catch (error) {
+        console.error('Error creating site:', error);
+        return res.status(500).json({
+            message: 'Error creating site in database',
+            details: error.message || 'Unknown error',
+            code: error.code,
+            position: error.position
+        });
+    }
+});
+// Debug endpoint to check table structure
+router.get('/debug/schema', async (req, res) => {
+    try {
+        // Get column information for sites table
+        const sitesColumns = await db.execute(`SELECT column_name, data_type, is_nullable 
+       FROM information_schema.columns 
+       WHERE table_name = 'sites'
+       ORDER BY ordinal_position`);
+        // Get column information for memberships table
+        const membershipsColumns = await db.execute(`SELECT column_name, data_type, is_nullable 
+       FROM information_schema.columns 
+       WHERE table_name = 'memberships'
+       ORDER BY ordinal_position`);
+        return res.status(200).json({
+            sites: sitesColumns,
+            memberships: membershipsColumns
+        });
+    }
+    catch (error) {
+        console.error('Error fetching schema:', error);
+        return res.status(500).json({ message: 'Error fetching schema information' });
+    }
+});
+// Create a space for a site
+router.post('/:siteId/spaces', async (req, res) => {
+    try {
+        const { siteId } = req.params;
+        // Get site to verify it exists
+        const site = await db.query.sites.findFirst({
+            where: eq(sites.id, siteId)
+        });
+        if (!site) {
+            return res.status(404).json({ message: 'Site not found' });
+        }
+        // TODO: Replace with actual authenticated user ID from req.user
+        const currentUserId = "49a44198-e6e5-4b1e-b8fb-b1c50ee0639d"; // Placeholder
+        // Validate request body
+        const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+        logger.info(`Creating space for site ${siteId}:`, body);
+        const { name, slug, cms_type, visibility = 'public', invite_only = false, anyone_can_invite = false, post_permission = 'all', reply_permission = 'all', react_permission = 'all', space_icon_URL, space_banner_URL, meta_title, meta_description, ogg_url, hide_from_search = false } = body;
+        if (!name || !slug) {
+            return res.status(400).json({ message: 'Name and slug are required fields' });
+        }
+        // Validate slug format and uniqueness
+        if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+            return res.status(400).json({
+                message: 'Invalid slug format. Use lowercase letters, numbers, and hyphens only.'
+            });
+        }
+        // Check if a space with this slug already exists for this site
+        const existingSpace = await db.query.spaces.findFirst({
+            where: and(eq(spaces.site_id, siteId), eq(spaces.slug, slug))
+        });
+        if (existingSpace) {
+            return res.status(409).json({ message: 'A space with this slug already exists for this site' });
+        }
+        // Insert the new space
+        const query = sql `
+      INSERT INTO spaces 
+      (name, slug, description, creator_id, site_id, visibility, cms_type, hidden, 
+       invite_only, anyone_can_invite, post_permission, reply_permission, react_permission,
+       meta_title, meta_description, ogg_url)
+      VALUES 
+      (${name}, ${slug}, ${meta_description || `${name} space`}, 
+       ${currentUserId}, ${siteId}, ${visibility}, 
+       ${cms_type || 'custom'}, ${hide_from_search},
+       ${invite_only}, ${anyone_can_invite}, ${post_permission}, 
+       ${reply_permission}, ${react_permission},
+       ${meta_title || name}, ${meta_description || `${name} space`}, ${ogg_url || ''})
+      RETURNING *;
+    `;
+        const result = await db.execute(query);
+        // Format the response
+        const space = result[0];
+        logger.info(`Space created successfully:`, space);
+        // Also update the site's space_ids array
+        if (space && space.id) {
+            // First get the current space_ids
+            const siteData = await db.query.sites.findFirst({
+                where: eq(sites.id, siteId),
+                columns: { space_ids: true }
+            });
+            const currentSpaceIds = siteData?.space_ids || [];
+            const updatedSpaceIds = [...currentSpaceIds, space.id];
+            // Update the site
+            await db.update(sites)
+                .set({ space_ids: updatedSpaceIds })
+                .where(eq(sites.id, siteId));
+            logger.info(`Updated site ${siteId} with new space ID ${space.id}`);
+        }
+        return res.status(201).json(space);
+    }
+    catch (error) {
+        logger.error('Error creating space:', error);
+        return res.status(500).json({
+            message: 'Error creating space',
+            details: error instanceof Error ? error.message : 'Unknown error'
+        });
+    }
+});
+export default router;

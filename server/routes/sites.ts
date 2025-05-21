@@ -5,6 +5,7 @@ import { eq, and, or } from 'drizzle-orm';
 import { z } from 'zod';
 import { setApiResponseHeaders, handleCorsPreflightRequest } from '../utils/environment.js';
 import { fetchBrandData } from '../utils/brandfetch.js';
+import { logger } from '../utils/logger.js';
 // Import with type any to avoid TypeScript errors
 import slugifyPkg from 'slugify';
 const slugify = (slugifyPkg as any).default || slugifyPkg;
@@ -469,6 +470,189 @@ router.get('/debug/schema', async (req, res) => {
   } catch (error) {
     console.error('Error fetching schema:', error);
     return res.status(500).json({ message: 'Error fetching schema information' });
+  }
+});
+
+// Create a space for a site
+router.post('/:siteId/spaces', async (req, res) => {
+  try {
+    const { siteId } = req.params;
+    
+    // Get site to verify it exists
+    const site = await db.query.sites.findFirst({
+      where: eq(sites.id, siteId)
+    });
+    
+    if (!site) {
+      return res.status(404).json({ message: 'Site not found' });
+    }
+    
+    // TODO: Replace with actual authenticated user ID from req.user
+    const currentUserId = "49a44198-e6e5-4b1e-b8fb-b1c50ee0639d"; // Placeholder
+    
+    // Validate request body
+    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    logger.info(`Creating space for site ${siteId}:`, body);
+    
+    const { 
+      name, 
+      slug, 
+      cms_type,
+      visibility = 'public',
+      description,
+      hidden = false 
+    } = body;
+    
+    if (!name || !slug) {
+      return res.status(400).json({ message: 'Name and slug are required fields' });
+    }
+    
+    // Validate slug format and uniqueness
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+      return res.status(400).json({ 
+        message: 'Invalid slug format. Use lowercase letters, numbers, and hyphens only.'
+      });
+    }
+    
+    // Check if a space with this slug already exists for this site
+    const existingSpace = await db.query.spaces.findFirst({
+      where: and(
+        eq(spaces.site_id, siteId),
+        eq(spaces.slug, slug)
+      )
+    });
+    
+    if (existingSpace) {
+      return res.status(409).json({ message: 'A space with this slug already exists for this site' });
+    }
+    
+    // Insert the new space
+    const spaceResult = await db.execute(sql`
+      INSERT INTO spaces 
+      (name, slug, description, creator_id, site_id, visibility, cms_type, hidden)
+      VALUES 
+      (${name}, ${slug}, ${description || `${name} space`}, 
+       ${currentUserId}, ${siteId}, ${visibility}, 
+       ${cms_type || 'custom'}, ${hidden})
+      RETURNING id, name, slug, description, site_id, visibility, cms_type, hidden;
+    `);
+    
+    logger.info(`Space creation result:`, spaceResult);
+    
+    // Extract the space ID from the result
+    let spaceId = null;
+    if (Array.isArray(spaceResult) && spaceResult.length > 0 && spaceResult[0].id) {
+      spaceId = spaceResult[0].id;
+      logger.info(`Space created with ID ${spaceId}`);
+    } else {
+      // Try alternative method to extract space ID
+      const resultString = JSON.stringify(spaceResult);
+      const idMatch = resultString.match(/"id":"([^"]+)"/);
+      if (idMatch && idMatch[1]) {
+        spaceId = idMatch[1];
+        logger.info(`Space ID extracted from result: ${spaceId}`);
+      }
+    }
+    
+    if (!spaceId) {
+      logger.error("Failed to extract space ID from result:", spaceResult);
+      return res.status(500).json({ message: 'Space was created but ID could not be retrieved' });
+    }
+    
+    // Fetch the newly created space
+    let spaceData = await db.query.spaces.findFirst({
+      where: eq(spaces.id, spaceId)
+    });
+    
+    logger.info(`Space created successfully:`, spaceData);
+    
+    if (!spaceData) {
+      // Try again with slug if ID query fails
+      const spaceBySlug = await db.query.spaces.findFirst({
+        where: and(
+          eq(spaces.site_id, siteId),
+          eq(spaces.slug, slug)
+        )
+      });
+      
+      if (!spaceBySlug) {
+        return res.status(500).json({ message: 'Space was created but could not be retrieved' });
+      }
+      
+      logger.info(`Space found by slug:`, spaceBySlug);
+      
+      // Use this space for the rest of the processing
+      spaceData = spaceBySlug;
+    }
+    
+    // Update the site's space_ids array and content_types array
+    // First get the current values
+    const siteData = await db.query.sites.findFirst({
+      where: eq(sites.id, siteId),
+      columns: { space_ids: true, content_types: true }
+    });
+    
+    // Update space_ids
+    const currentSpaceIds = siteData?.space_ids as string[] || [];
+    const updatedSpaceIds = [...currentSpaceIds];
+    
+    if (!updatedSpaceIds.includes(spaceData.id)) {
+      updatedSpaceIds.push(spaceData.id);
+      logger.info(`Adding space ID ${spaceData.id} to site's space_ids array`);
+    }
+    
+    // Update content_types if cms_type is provided and not already in the list
+    const currentContentTypes = siteData?.content_types as string[] || [];
+    const updatedContentTypes = [...currentContentTypes];
+    
+    if (cms_type && !updatedContentTypes.includes(cms_type)) {
+      updatedContentTypes.push(cms_type);
+      logger.info(`Adding cms_type ${cms_type} to site's content_types array`);
+    }
+    
+    // Update the site with both fields
+    await db.update(sites)
+      .set({ 
+        space_ids: updatedSpaceIds,
+        content_types: updatedContentTypes 
+      })
+      .where(eq(sites.id, siteId));
+      
+    logger.info(`Updated site ${siteId} with new space ID ${spaceData.id} and content type ${cms_type}`);
+    
+    return res.status(201).json(spaceData);
+  } catch (error) {
+    logger.error('Error creating space:', error);
+    return res.status(500).json({ 
+      message: 'Error creating space',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Get all spaces for a site
+router.get('/:siteId/spaces', async (req, res) => {
+  try {
+    const { siteId } = req.params;
+    
+    // Get site to verify it exists
+    const site = await db.query.sites.findFirst({
+      where: eq(sites.id, siteId)
+    });
+    
+    if (!site) {
+      return res.status(404).json({ message: 'Site not found' });
+    }
+    
+    // Fetch all spaces for this site
+    const spacesList = await db.query.spaces.findMany({
+      where: eq(spaces.site_id, siteId)
+    });
+    
+    return res.status(200).json(spacesList);
+  } catch (error) {
+    console.error('Error fetching spaces:', error);
+    return res.status(500).json({ message: 'Failed to fetch spaces', details: error instanceof Error ? error.message : 'Unknown error' });
   }
 });
 

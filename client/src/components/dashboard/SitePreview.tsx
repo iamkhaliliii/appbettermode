@@ -22,10 +22,67 @@ export const SitePreview: React.FC<SitePreviewProps> = ({
 
   // Helper function to get icon and name for each content type
   const getContentTypeInfo = (type: string) => {
-    switch (type) {
+    // Special handling for specific content types that might have multiple formats
+    if (!type) {
+      console.log("Undefined content type received");
+      return { 
+        icon: <FileText className="h-4 w-4 text-gray-500" />, 
+        name: "Unknown", 
+        previewContent: null 
+      };
+    }
+    
+    // Knowledge Base special handling
+    if (type.toLowerCase().includes('knowledge') || type.toLowerCase() === 'kb' || type.toLowerCase().includes('docs')) {
+      return { 
+        icon: <BookOpen className="h-4 w-4 text-rose-500" />, 
+        name: 'Knowledge Base',
+        previewContent: (
+          <div className="mt-1 grid grid-cols-2 gap-2 w-full">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-16 rounded bg-gray-100 dark:bg-gray-800 p-2">
+                <div className="h-3 w-10 bg-gray-200 dark:bg-gray-700 rounded-md mb-2"></div>
+                <div className="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-md"></div>
+              </div>
+            ))}
+          </div>
+        )
+      };
+    }
+    
+    // Jobs/Job List special handling
+    if (type.toLowerCase().includes('job') || type.toLowerCase().includes('career')) {
+      return { 
+        icon: <Briefcase className="h-4 w-4 text-cyan-500" />, 
+        name: 'Jobs',
+        previewContent: (
+          <div className="mt-1 space-y-3 w-full">
+            {[...Array(2)].map((_, i) => (
+              <div key={i} className="p-2 border border-gray-100 dark:border-gray-800 rounded">
+                <div className="flex justify-between mb-1">
+                  <div className="h-3 w-24 bg-gray-100 dark:bg-gray-800 rounded-md"></div>
+                  <div className="h-4 w-16 rounded-full bg-gray-100 dark:bg-gray-800"></div>
+                </div>
+                <div className="h-2 w-full bg-gray-100 dark:bg-gray-800 rounded-md mb-2"></div>
+                <div className="flex gap-2">
+                  <div className="h-5 px-2 rounded-full bg-gray-100 dark:bg-gray-800"></div>
+                  <div className="h-5 px-2 rounded-full bg-gray-100 dark:bg-gray-800"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      };
+    }
+    
+    const normalizedType = type.toLowerCase().trim();
+    
+    switch (normalizedType) {
       case 'event':
+      case 'events':
+      case 'calendar':
         return { 
-          icon: <Calendar className="h-4 w-4" />, 
+          icon: <Calendar className="h-4 w-4 text-emerald-500" />, 
           name: 'Events',
           previewContent: (
             <div className="mt-1 w-full">
@@ -43,8 +100,11 @@ export const SitePreview: React.FC<SitePreviewProps> = ({
           )
         };
       case 'discussion':
+      case 'discussions':
+      case 'forum':
+      case 'forums':
         return { 
-          icon: <MessageSquare className="h-4 w-4" />, 
+          icon: <MessageSquare className="h-4 w-4 text-blue-500" />, 
           name: 'Discussions',
           previewContent: (
             <div className="mt-1 space-y-1.5 w-full">
@@ -62,8 +122,14 @@ export const SitePreview: React.FC<SitePreviewProps> = ({
           )
         };
       case 'qa':
+      case 'q&a':
+      case 'questions':
+      case 'question':
+      case 'questions_and_answers':
+      case 'questionsandanswers':
+      case 'q_and_a':
         return { 
-          icon: <HelpCircle className="h-4 w-4" />, 
+          icon: <HelpCircle className="h-4 w-4 text-violet-500" />, 
           name: 'Q&A',
           previewContent: (
             <div className="mt-1 space-y-3 w-full">
@@ -86,8 +152,13 @@ export const SitePreview: React.FC<SitePreviewProps> = ({
           )
         };
       case 'wishlist':
+      case 'wishlists':
+      case 'ideas':
+      case 'idea':
+      case 'feature_requests':
+      case 'feature_request':
         return { 
-          icon: <Star className="h-4 w-4" />, 
+          icon: <Star className="h-4 w-4 text-amber-500" />, 
           name: 'Wishlist',
           previewContent: (
             <div className="mt-1 space-y-2 w-full">
@@ -103,8 +174,12 @@ export const SitePreview: React.FC<SitePreviewProps> = ({
           )
         };
       case 'landing':
+      case 'landingpage':
+      case 'landing_page':
+      case 'home':
+      case 'homepage':
         return { 
-          icon: <Layout className="h-4 w-4" />, 
+          icon: <Layout className="h-4 w-4 text-indigo-500" />, 
           name: 'Landing',
           previewContent: (
             <div className="mt-1 space-y-2 w-full">
@@ -116,46 +191,14 @@ export const SitePreview: React.FC<SitePreviewProps> = ({
             </div>
           )
         };
-      case 'knowledge':
-        return { 
-          icon: <BookOpen className="h-4 w-4" />, 
-          name: 'Knowledge',
-          previewContent: (
-            <div className="mt-1 grid grid-cols-2 gap-2 w-full">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-16 rounded bg-gray-100 dark:bg-gray-800 p-2">
-                  <div className="h-3 w-10 bg-gray-200 dark:bg-gray-700 rounded-md mb-2"></div>
-                  <div className="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-md"></div>
-                </div>
-              ))}
-            </div>
-          )
-        };
-      case 'jobs':
-        return { 
-          icon: <Briefcase className="h-4 w-4" />, 
-          name: 'Jobs',
-          previewContent: (
-            <div className="mt-1 space-y-3 w-full">
-              {[...Array(2)].map((_, i) => (
-                <div key={i} className="p-2 border border-gray-100 dark:border-gray-800 rounded">
-                  <div className="flex justify-between mb-1">
-                    <div className="h-3 w-24 bg-gray-100 dark:bg-gray-800 rounded-md"></div>
-                    <div className="h-4 w-16 rounded-full bg-gray-100 dark:bg-gray-800"></div>
-                  </div>
-                  <div className="h-2 w-full bg-gray-100 dark:bg-gray-800 rounded-md mb-2"></div>
-                  <div className="flex gap-2">
-                    <div className="h-5 px-2 rounded-full bg-gray-100 dark:bg-gray-800"></div>
-                    <div className="h-5 px-2 rounded-full bg-gray-100 dark:bg-gray-800"></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )
-        };
       case 'blog':
+      case 'blogs':
+      case 'posts':
+      case 'post':
+      case 'articles':
+      case 'article':
         return { 
-          icon: <FileText className="h-4 w-4" />, 
+          icon: <FileText className="h-4 w-4 text-purple-500" />, 
           name: 'Blog',
           previewContent: (
             <div className="mt-1 space-y-3 w-full">
@@ -169,7 +212,13 @@ export const SitePreview: React.FC<SitePreviewProps> = ({
           )
         };
       default:
-        return { icon: null, name: type, previewContent: null };
+        // Default fallback
+        console.log(`Unknown content type: ${type}`);
+        return { 
+          icon: <FileText className="h-4 w-4 text-gray-500" />, 
+          name: type.charAt(0).toUpperCase() + type.slice(1).replace(/_/g, ' '), 
+          previewContent: null 
+        };
     }
   };
 
@@ -385,7 +434,7 @@ export const SitePreview: React.FC<SitePreviewProps> = ({
                   </div>
                   <div className="h-4 w-12 flex items-center">
                     {wizardStep >= 2 ? (
-                      <span className="text-sm font-medium">Feed</span>
+                      <span className="text-[0.8rem] font-medium">Feed</span>
                     ) : (
                       <div className="h-3 w-12 bg-gray-200 dark:bg-gray-600 rounded-full"></div>
                     )}
@@ -404,10 +453,10 @@ export const SitePreview: React.FC<SitePreviewProps> = ({
                       className={`flex items-center gap-3 px-2 py-2 rounded-md cursor-pointer transition-colors
                         ${index === 0 ? 'bg-gray-100 dark:bg-gray-700' : 'hover:bg-gray-50 dark:hover:bg-gray-700'}`}
                     >
-                      <div className={`w-5 h-5 ${index === 0 ? 'text-gray-800 dark:text-gray-200' : 'text-gray-500 dark:text-gray-400'}`}>
+                      <div className={`w-4 h-4 ${index === 0 ? 'text-gray-800 dark:text-gray-200' : 'text-gray-500 dark:text-gray-400'}`}>
                         {icon}
                       </div>
-                      <span className={`text-sm font-medium ${index === 0 ? 'text-gray-800 dark:text-gray-200' : 'text-gray-700 dark:text-gray-300'}`}>
+                      <span className={`text-[0.8rem] font-medium ${index === 0 ? 'text-gray-800 dark:text-gray-200' : 'text-gray-700 dark:text-gray-300'}`}>
                         {name}
                       </span>
                     </motion.div>

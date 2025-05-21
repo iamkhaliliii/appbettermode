@@ -2,11 +2,7 @@ import { Client } from 'pg';
 import 'dotenv/config';
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { sites, users, contentStatusEnum, memberships, spaces, tags, 
-  cms_discussions, cms_qa_questions, cms_qa_answers, cms_knowledge_base_articles,
-  cms_ideas, cms_changelogs, cms_product_updates, cms_roadmap_items,
-  cms_announcements, cms_wiki_pages, cms_events, cms_courses, cms_jobs,
-  cms_speakers, cms_articles, cms_polls, cms_file_library, cms_gallery_items, posts, post_tags } from './schema.js';
+import { sites, users, contentStatusEnum, memberships, spaces, tags, posts, post_tags } from './schema.js';
 import { sql } from 'drizzle-orm';
 
 // Connect directly using the Client for better error handling

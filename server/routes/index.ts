@@ -1,6 +1,7 @@
 import express from 'express';
 import sitesRouter from './sites.js';
 import postsRouter from './posts.js';
+import cmsTypesRouter from './cms-types.js';
 import { fetchBrandData, testBrandfetchAPI } from '../utils/brandfetch.js';
 import { logger } from '../utils/logger.js';
 import { setApiResponseHeaders } from '../utils/environment.js';
@@ -15,9 +16,31 @@ const BRANDFETCH_API_KEY = 'rPJ4fYfXffPHxhNAIo8lU7mDRQXHsrYqKXQ678ySJsc=';
 // List all registered routes for debugging
 const listRoutes = () => {
   logger.info('[API] Registered routes:');
-  apiRouter.stack.forEach((r) => {
+  
+  // Direct routes on the apiRouter
+  apiRouter.stack.forEach((r: any) => {
     if (r.route && r.route.path) {
       logger.info(`[API] Route: ${r.route.path}`);
+    }
+  });
+  
+  // Log nested routes
+  const stackToLog = (apiRouter.stack as any[]).filter(layer => layer.name === 'router' && layer.handle);
+  
+  stackToLog.forEach((layer: any) => {
+    if (!layer.regexp) return;
+    
+    const path = layer.regexp.toString().replace('\\/?(?=\\/|$)', '').replace(/^\/\^/, '').replace(/\\/g, '');
+    const mountPath = path.replace(/\(\?:\(\[\^\\\/]\+\?\)\)/g, ':params').replace(/\(\?=\\\/\|\$\)/g, '').replace(/\(\?:\(\.\*\)\)/g, ':params');
+    
+    logger.info(`[API] Router mounted at: ${mountPath}`);
+    
+    if (layer.handle && layer.handle.stack) {
+      layer.handle.stack.forEach((nestedLayer: any) => {
+        if (nestedLayer.route && nestedLayer.route.path) {
+          logger.info(`[API] ---> ${mountPath}${nestedLayer.route.path}`);
+        }
+      });
     }
   });
 };
@@ -35,6 +58,10 @@ logger.info('[API] Sites routes registered');
 // Register posts router for the new unified posts handling
 apiRouter.use('/posts', postsRouter);
 logger.info('[API] Posts routes registered');
+
+// Register cms-types router for content type management
+apiRouter.use('/cms-types', cmsTypesRouter);
+logger.info('[API] CMS Types routes registered');
 
 // Brand fetch endpoint
 apiRouter.get('/brand-fetch', async (req, res) => {

@@ -38,13 +38,14 @@ import { NavigationSection as NavSectionUI } from "@/components/ui/navigation-se
 import { SideNavItem } from "./SidebarNavigationItems";
 import { MinimalItem, TreeFolder } from "./SidebarTreeComponents";
 import { sitesApi } from "@/lib/api";
+import { getApiBaseUrl } from "@/lib/utils";
 
 // Define type for space data
 interface Space {
   id: string;
   name: string;
   slug: string;
-  type: string;
+  cms_type: string;
   icon?: string;
 }
 
@@ -82,8 +83,9 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
   const [spaces, setSpaces] = useState<Space[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [siteId, setSiteId] = useState<string | null>(null);
 
-  // Fetch site data and create spaces from content_types
+  // First fetch the site to get its UUID
   useEffect(() => {
     const fetchSiteData = async () => {
       if (!currentSiteIdentifier) return;
@@ -94,8 +96,9 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
       try {
         // Fetch site data using the sitesApi
         const siteData = await sitesApi.getSite(currentSiteIdentifier);
+        setSiteId(siteData.id);
         
-        // Create spaces from content_types
+        // Continue with generating spaces if we can't fetch real ones yet
         if (siteData.content_types && Array.isArray(siteData.content_types)) {
           const generatedSpaces: Space[] = siteData.content_types.map((cmsType: string) => {
             let name;
@@ -133,14 +136,11 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
               id: `space-${cmsType}`,
               name,
               slug: cmsType.toLowerCase(),
-              type: cmsType,
+              cms_type: cmsType,
             };
           });
           
           setSpaces(generatedSpaces);
-        } else {
-          console.log("No content_types found in site data");
-          setSpaces([]);
         }
       } catch (err) {
         console.error("Error fetching site data:", err);
@@ -152,6 +152,47 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
 
     fetchSiteData();
   }, [currentSiteIdentifier]);
+
+  // Fetch actual spaces from API once we have the siteId
+  useEffect(() => {
+    const fetchSpaces = async () => {
+      if (!siteId) return;
+      
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        const API_BASE = getApiBaseUrl();
+        const response = await fetch(`${API_BASE}/api/v1/sites/${siteId}/spaces`);
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to fetch spaces');
+        }
+        
+        const spacesData = await response.json();
+        console.log('Fetched spaces:', spacesData);
+        
+        if (Array.isArray(spacesData)) {
+          const mappedSpaces: Space[] = spacesData.map((space: any) => ({
+            id: space.id,
+            name: space.name,
+            slug: space.slug,
+            cms_type: space.cms_type || 'custom',
+          }));
+          
+          setSpaces(mappedSpaces);
+        }
+      } catch (err) {
+        console.error("Error fetching spaces:", err);
+        // Don't set error - we'll keep the generated spaces if we can't fetch real ones
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchSpaces();
+  }, [siteId]);
 
   // Get icon based on space type
   const getSpaceIcon = (type: string) => {
@@ -251,6 +292,10 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
                     <a
                       href="#"
                       className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (onNewContent) onNewContent();
+                      }}
                     >
                       <Files className="h-3 w-3 mr-2 text-gray-500" />
                       <span>Create new Space</span>
@@ -308,7 +353,7 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
                       name={space.name}
                       path={`${basePath}/spaces/${space.slug}`}
                       currentPathname={currentPathname}
-                      icon={getSpaceIcon(space.type)}
+                      icon={getSpaceIcon(space.cms_type)}
                       iconColor="text-gray-500"
                       inSpaces={true}
                       level={1}
