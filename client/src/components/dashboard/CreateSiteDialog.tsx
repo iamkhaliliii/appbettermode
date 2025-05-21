@@ -181,9 +181,9 @@ const getColorClass = (color: string) => {
   return colorMap[normalizedColor] || normalizedColor || 'gray';
 };
 
-// --- Content Types for Step 3 ---
+// Content Types for Step 3 ---
 interface ContentType {
-  id: string;
+  id: string;        // This should be the actual UUID from cms_types table
   title: string;
   description: string;
   icon: React.ReactNode;
@@ -281,45 +281,20 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
           if (Array.isArray(data)) {
             // Transform CMS types to ContentType format
             const transformedTypes = data.map((item: CmsType) => {
-              // Normalize the content type name for consistent mapping
+              // Get a normalized name for display purposes
               let normalizedName = item.name.toLowerCase().trim();
               
-              // Special case mappings to ensure consistent naming
-              const nameMap: Record<string, string> = {
-                'job_list': 'jobs',
-                'jobs_list': 'jobs',
-                'job_board': 'jobs',
-                'joblist': 'jobs',
-                'jobboard': 'jobs',
-                'careers': 'jobs',
-                'career': 'jobs',
-                'knowledge_base': 'knowledge',
-                'KnowledgeBase': 'knowledge',
-                'kb': 'knowledge',
-                'knowledgebase': 'knowledge',
-                'documentation': 'knowledge',
-                'docs': 'knowledge',
-                'q_and_a': 'qa',
-                'q&a': 'qa',
-                'questions': 'qa',
-                'questions_and_answers': 'qa'
-              };
-              
-              if (nameMap[normalizedName]) {
-                normalizedName = nameMap[normalizedName];
-              }
-              
               // For debugging
-              console.log(`CMS Type: ${item.name} -> Normalized: ${normalizedName}`);
+              console.log(`CMS Type: ${item.name} (ID: ${item.id})`);
               
               return {
-                id: normalizedName, // Use normalized name as ID
+                id: item.id, // Use the actual UUID from the cms_types table
                 title: item.name.charAt(0).toUpperCase() + item.name.slice(1).replace(/_/g, ' '),
                 description: item.description || `Create ${item.name} content`,
                 icon: getIconComponent(item.icon_name),
                 color: getColorClass(item.color),
                 preview: getPreviewComponent(item.name),
-                name: normalizedName // Use normalized name for consistency
+                name: normalizedName // Keep normalized name for display
               };
             });
             

@@ -24,6 +24,7 @@ const ENDPOINTS = {
   SITES: `${API_BASE}/sites`,
   SITE: (identifier: string) => `${API_BASE}/sites/${identifier}`,
   SITE_MEMBERS: (siteId: string) => `${API_BASE}/sites/${siteId}/members`,
+  CMS_TYPES: `${API_BASE}/cms-types`,
 };
 
 // Legacy API endpoints - to be gradually deprecated
@@ -314,5 +315,29 @@ export const sitesApi = {
           member.role.toLowerCase() === options.role?.toLowerCase()
         )
       : mockMembers;
+  },
+};
+
+// CMS Types API functions
+export const cmsTypesApi = {
+  // Get all CMS types
+  getAllCmsTypes: async (): Promise<any[]> => {
+    return apiFetch<any[]>(ENDPOINTS.CMS_TYPES);
+  },
+  
+  // Get CMS types by category (official/custom)
+  getCmsTypesByCategory: async (category: string): Promise<any[]> => {
+    return apiFetch<any[]>(`${ENDPOINTS.CMS_TYPES}/category/${category}`);
+  },
+  
+  // Get a single CMS type by ID
+  getCmsTypeById: async (id: string): Promise<any> => {
+    console.log(`Fetching CMS type with ID: ${id}`);
+    return apiFetch<any>(`${ENDPOINTS.CMS_TYPES}/${id}`);
+  },
+  
+  // Get favorite CMS types
+  getFavoriteCmsTypes: async (): Promise<any[]> => {
+    return apiFetch<any[]>(`${ENDPOINTS.CMS_TYPES}/favorites`);
   },
 }; 

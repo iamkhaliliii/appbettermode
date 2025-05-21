@@ -1,6 +1,6 @@
 import express from 'express';
 import { db } from '../db/index.js';
-import { sites, memberships, spaces } from '../db/schema.js';
+import { sites, memberships, spaces, cms_types } from '../db/schema.js';
 import { eq, and, or } from 'drizzle-orm';
 import { z } from 'zod';
 import { setApiResponseHeaders, handleCorsPreflightRequest } from '../utils/environment.js';
@@ -28,7 +28,7 @@ const createSiteSchema = z.object({
   domain: z.string().optional(), // Optional domain for brand fetching
   selectedLogo: z.string().optional(), // User selected logo URL
   selectedColor: z.string().optional(), // User selected brand color
-  selectedContentTypes: z.array(z.string()).optional(), // Selected content types
+  selectedContentTypes: z.array(z.string()).optional(), // Selected content type IDs
 });
 
 // Get all sites for the current user
@@ -196,25 +196,25 @@ router.post('/', async (req, res) => {
     let brandColor = null;
     
     // Ensure content types is always an array
-    let contentTypes: string[] = [];
+    let contentTypeIds: string[] = [];
     if (payload.selectedContentTypes) {
       if (Array.isArray(payload.selectedContentTypes)) {
-        contentTypes = payload.selectedContentTypes;
+        contentTypeIds = payload.selectedContentTypes;
       } else if (typeof payload.selectedContentTypes === 'string') {
         try {
           // Try to parse if it's a JSON string array
           const parsed = JSON.parse(payload.selectedContentTypes);
           if (Array.isArray(parsed)) {
-            contentTypes = parsed;
+            contentTypeIds = parsed;
           }
         } catch (e) {
           // If not JSON, treat as a comma-separated string
-          contentTypes = (payload.selectedContentTypes as string).split(',').map((item: string) => item.trim());
+          contentTypeIds = (payload.selectedContentTypes as string).split(',').map((item: string) => item.trim());
         }
       }
     }
     
-    console.log("Processed content types:", contentTypes);
+    console.log("Processed content type IDs:", contentTypeIds);
     
     // If user provided selected brand assets, use those
     if (payload.selectedLogo || payload.selectedColor) {
@@ -230,6 +230,27 @@ router.post('/', async (req, res) => {
       brandColor = brandData.brandColor;
     }
 
+    // Fetch CMS type details for the selected IDs
+    let cmsTypes: { id: string; name: string; description: string | null; color: string | null; icon_name: string | null }[] = [];
+    if (contentTypeIds && contentTypeIds.length > 0) {
+      try {
+        cmsTypes = await db.select({
+          id: cms_types.id,
+          name: cms_types.name,
+          description: cms_types.description,
+          color: cms_types.color,
+          icon_name: cms_types.icon_name,
+        })
+        .from(cms_types)
+        .where(sql`${cms_types.id} IN (${sql.join(contentTypeIds, sql`, `)})`);
+        
+        console.log(`Found ${cmsTypes.length} CMS types for the selected IDs`);
+      } catch (error) {
+        console.error('Error fetching CMS types:', error);
+        // Continue with site creation even if CMS types fetch fails
+      }
+    }
+
     // Skip transaction, create only the site without membership
     console.log('Creating site with data:', {
       name: payload.name,
@@ -238,7 +259,7 @@ router.post('/', async (req, res) => {
       status: 'active',
       logoUrl,
       brandColor,
-      contentTypes
+      contentTypeIds
     });
     
     const siteInsertResult = await db
@@ -250,7 +271,7 @@ router.post('/', async (req, res) => {
         status: 'active', // Default status for new sites
         logo_url: logoUrl,
         brand_color: brandColor,
-        content_types: contentTypes.length > 0 ? contentTypes : undefined,
+        content_types: contentTypeIds.length > 0 ? contentTypeIds : undefined, // Store CMS type IDs
         plan: 'lite', // Default plan is lite
       })
       .returning({
@@ -286,115 +307,92 @@ router.post('/', async (req, res) => {
     console.log(`User ${currentUserId} added as admin to site ${newSite.id}`);
 
     // Create spaces for selected content types
-    if (contentTypes.length > 0) {
-      console.log(`Creating spaces for selected content types: ${contentTypes.join(', ')}`);
-      console.log(`Content types value type: ${typeof contentTypes}, isArray: ${Array.isArray(contentTypes)}, length: ${contentTypes?.length || 0}`);
-      
-      // Map of content type IDs to readable names and space configurations
-      const contentTypeConfig = {
-        'discussion': {
-          name: 'Discussions',
-          description: 'Community discussions and conversations',
-          visibility: 'public',
-        },
-        'qa': {
-          name: 'Q&A',
-          description: 'Questions and answers from the community',
-          visibility: 'public',
-        },
-        'wishlist': {
-          name: 'Ideas & Wishlist',
-          description: 'Feature requests and suggestions',
-          visibility: 'public',
-        },
-        'knowledge': {
-          name: 'Knowledge Base',
-          description: 'Helpful articles and resources',
-          visibility: 'public',
-        },
-        'event': {
-          name: 'Events',
-          description: 'Upcoming and past events',
-          visibility: 'public',
-        },
-        'blog': {
-          name: 'Blog',
-          description: 'News and updates',
-          visibility: 'public',
-        },
-        'jobs': {
-          name: 'Job Board',
-          description: 'Career opportunities',
-          visibility: 'public',
-        },
-        'landing': {
-          name: 'Landing Pages',
-          description: 'Marketing and information pages',
-          visibility: 'public',
-        }
-      };
+    if (contentTypeIds.length > 0 && cmsTypes.length > 0) {
+      console.log(`Creating spaces for selected CMS types: ${cmsTypes.map(ct => ct.name).join(', ')}`);
       
       // Array to store created space IDs
       const createdSpaceIds: string[] = [];
       
       // Create a space for each selected content type
-      for (const contentType of contentTypes) {
-        console.log(`Processing content type: ${contentType}`);
+      for (const cmsType of cmsTypes) {
+        console.log(`Processing CMS type: ${cmsType.name} (${cmsType.id})`);
         
-        // Get config for this content type or use defaults
-        const config = contentTypeConfig[contentType as keyof typeof contentTypeConfig] || {
-          name: contentType.charAt(0).toUpperCase() + contentType.slice(1),
-          description: `${contentType} content`,
-          visibility: 'public'
-        };
+        // Generate readable name for the space based on CMS type name
+        let spaceName = '';
         
-        console.log(`Using config for ${contentType}:`, config);
+        // Use the CMS type name directly if it's available
+        if (cmsType.name) {
+          spaceName = cmsType.name;
+        } else {
+          // Otherwise, try to generate a good name from any available information
+          if (cmsType.id.toLowerCase().includes('discussion')) {
+            spaceName = 'Discussions';
+          } else if (cmsType.id.toLowerCase().includes('qa')) {
+            spaceName = 'Q&A';
+          } else if (cmsType.id.toLowerCase().includes('wishlist')) {
+            spaceName = 'Wishlist';
+          } else if (cmsType.id.toLowerCase().includes('blog')) {
+            spaceName = 'Blog';
+          } else if (cmsType.id.toLowerCase().includes('knowledge')) {
+            spaceName = 'Knowledge Base';
+          } else if (cmsType.id.toLowerCase().includes('event')) {
+            spaceName = 'Events';
+          } else if (cmsType.id.toLowerCase().includes('landing')) {
+            spaceName = 'Landing Pages';
+          } else if (cmsType.id.toLowerCase().includes('job')) {
+            spaceName = 'Job Board';
+          } else {
+            // Fall back to a generic name
+            spaceName = `Space for ${cmsType.id.substring(0, 8)}`;
+          }
+        }
+        
+        console.log(`Using name "${spaceName}" for space`);
         
         // Generate slug from name
-        const spaceSlug = slugify(config.name, {
+        const spaceSlug = slugify(spaceName, {
           lower: true,
           strict: true
         });
         
-        console.log(`Generated slug for ${config.name}: ${spaceSlug}`);
+        console.log(`Generated slug for ${spaceName}: ${spaceSlug}`);
         
         try {
-          console.log(`Attempting to create space in database for ${contentType}...`);
+          console.log(`Attempting to create space in database for ${cmsType.name}...`);
           
-          // Use SQL template literal with drizzle's sql tag
-          const query = sql`
-            INSERT INTO spaces 
-            (name, slug, description, creator_id, site_id, visibility, cms_type, hidden)
-            VALUES 
-            (${config.name}, ${spaceSlug}, ${config.description}, 
-             ${currentUserId}, ${newSite.id}, ${config.visibility}, 
-             ${contentType}, ${false})
-            RETURNING id;
-          `;
+          // Insert the space using the spaces table object instead of raw SQL
+          const spaceInsertResult = await db.insert(spaces)
+            .values({
+              name: spaceName,
+              slug: spaceSlug,
+              description: cmsType.description || `${spaceName} space`,
+              creator_id: currentUserId,
+              site_id: newSite.id,
+              visibility: 'public',
+              cms_type: cmsType.id, // This is now a UUID foreign key
+              hidden: false
+            })
+            .returning({
+              id: spaces.id,
+              name: spaces.name,
+              slug: spaces.slug,
+              description: spaces.description,
+              site_id: spaces.site_id,
+              visibility: spaces.visibility,
+              cms_type: spaces.cms_type,
+              hidden: spaces.hidden
+            });
           
-          try {
-            const result = await db.execute(query);
-            console.log(`Space created successfully for ${contentType}, SQL result:`, JSON.stringify(result));
-            console.log(`Created ${contentType} space: ${config.name}`);
-            
-            // Extract the space ID from the result and add it to our array
-            // Cast result to any to handle varying result structures
-            const resultAny = result as any;
-            if (resultAny && Array.isArray(resultAny) && resultAny.length > 0 && resultAny[0].id) {
-              createdSpaceIds.push(resultAny[0].id);
-              console.log(`Added space ID ${resultAny[0].id} to created spaces list`);
-            }
-          } catch (sqlError: any) {
-            console.error(`SQL error creating space for ${contentType}:`, sqlError.message);
-            // Check if there's a more detailed error structure
-            if (sqlError.code) {
-              console.error(`SQL error code: ${sqlError.code}, position: ${sqlError.position}`);
-            }
-            // Re-throw to ensure the outer catch block handles it
-            throw sqlError;
+          console.log(`Space created successfully for ${cmsType.name}, result:`, JSON.stringify(spaceInsertResult));
+          console.log(`Created ${cmsType.name} space: ${spaceName}`);
+          
+          // Extract the space ID from the result and add it to our array
+          if (spaceInsertResult && spaceInsertResult.length > 0) {
+            createdSpaceIds.push(spaceInsertResult[0].id);
+            console.log(`Added space ID ${spaceInsertResult[0].id} to created spaces list`);
           }
         } catch (spaceError: any) {
-          console.error(`Error creating space for ${contentType}:`, spaceError);
+          console.error(`Error creating space for ${cmsType.name}:`, spaceError);
           console.error(`Error details: ${spaceError.message}, code: ${spaceError.code}`);
           // Continue with other spaces even if one fails
         }
@@ -419,7 +417,7 @@ router.post('/', async (req, res) => {
           // Update the site record to include the space IDs
           await db.update(sites)
             .set({
-              space_ids: createdSpaceIds    // Add space IDs field now in schema
+              space_ids: createdSpaceIds
             })
             .where(eq(sites.id, newSite.id));
             
@@ -429,7 +427,7 @@ router.post('/', async (req, res) => {
         console.error('Error verifying created spaces:', verifyError);
       }
     } else {
-      console.log('No content types selected, skipping space creation');
+      console.log('No CMS types found or selected, skipping space creation');
     }
 
     return res.status(201).json(newSite);
@@ -527,31 +525,35 @@ router.post('/:siteId/spaces', async (req, res) => {
     }
     
     // Insert the new space
-    const spaceResult = await db.execute(sql`
-      INSERT INTO spaces 
-      (name, slug, description, creator_id, site_id, visibility, cms_type, hidden)
-      VALUES 
-      (${name}, ${slug}, ${description || `${name} space`}, 
-       ${currentUserId}, ${siteId}, ${visibility}, 
-       ${cms_type || 'custom'}, ${hidden})
-      RETURNING id, name, slug, description, site_id, visibility, cms_type, hidden;
-    `);
+    const spaceResult = await db.insert(spaces)
+      .values({
+        name,
+        slug,
+        description: description || `${name} space`, 
+        creator_id: currentUserId,
+        site_id: siteId,
+        visibility,
+        cms_type,
+        hidden
+      })
+      .returning({
+        id: spaces.id,
+        name: spaces.name,
+        slug: spaces.slug,
+        description: spaces.description,
+        site_id: spaces.site_id,
+        visibility: spaces.visibility,
+        cms_type: spaces.cms_type,
+        hidden: spaces.hidden
+      });
     
     logger.info(`Space creation result:`, spaceResult);
     
     // Extract the space ID from the result
     let spaceId = null;
-    if (Array.isArray(spaceResult) && spaceResult.length > 0 && spaceResult[0].id) {
+    if (spaceResult && spaceResult.length > 0) {
       spaceId = spaceResult[0].id;
       logger.info(`Space created with ID ${spaceId}`);
-    } else {
-      // Try alternative method to extract space ID
-      const resultString = JSON.stringify(spaceResult);
-      const idMatch = resultString.match(/"id":"([^"]+)"/);
-      if (idMatch && idMatch[1]) {
-        spaceId = idMatch[1];
-        logger.info(`Space ID extracted from result: ${spaceId}`);
-      }
     }
     
     if (!spaceId) {
@@ -634,6 +636,7 @@ router.post('/:siteId/spaces', async (req, res) => {
 router.get('/:siteId/spaces', async (req, res) => {
   try {
     const { siteId } = req.params;
+    console.log(`Spaces API: Fetching spaces for site ID: ${siteId}`);
     
     // Get site to verify it exists
     const site = await db.query.sites.findFirst({
@@ -641,13 +644,24 @@ router.get('/:siteId/spaces', async (req, res) => {
     });
     
     if (!site) {
+      console.error(`Spaces API: Site not found with ID: ${siteId}`);
       return res.status(404).json({ message: 'Site not found' });
     }
+    
+    console.log(`Spaces API: Found site: ${site.name} (${site.id})`);
     
     // Fetch all spaces for this site
     const spacesList = await db.query.spaces.findMany({
       where: eq(spaces.site_id, siteId)
     });
+    
+    console.log(`Spaces API: Found ${spacesList.length} spaces for site ${siteId}`);
+    
+    if (spacesList.length > 0) {
+      console.log(`Spaces API: First space: ${spacesList[0].name} (${spacesList[0].id})`);
+    } else {
+      console.log(`Spaces API: No spaces found for site ${siteId}`);
+    }
     
     return res.status(200).json(spacesList);
   } catch (error) {

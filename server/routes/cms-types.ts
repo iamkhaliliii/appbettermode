@@ -102,16 +102,22 @@ router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
 
+    console.log(`[DEBUG] Fetching CMS type with ID: ${id}`);
+
     if (!id) {
+      console.log(`[DEBUG] CMS type ID is missing`);
       return res.status(400).json({ message: 'CMS type ID is required' });
     }
 
     const result = await db.select().from(cms_types).where(eq(cms_types.id, id));
+    console.log(`[DEBUG] CMS type query result:`, result);
 
     if (result.length === 0) {
+      console.log(`[DEBUG] CMS type not found with ID: ${id}`);
       return res.status(404).json({ message: 'CMS type not found' });
     }
 
+    console.log(`[DEBUG] Returning CMS type:`, result[0]);
     return res.status(200).json(result[0]);
   } catch (error) {
     console.error('Error fetching CMS type:', error);

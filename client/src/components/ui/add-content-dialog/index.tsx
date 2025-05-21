@@ -384,6 +384,43 @@ export function AddContentDialog({
       // Simple description for the space
       const description = `${spaceConfig.name} space`;
       
+      // First, we need to find the right CMS type ID
+      let cmsTypeId = cmsType; // Default to the value we have
+      
+      // If cmsType doesn't look like a UUID, we need to look it up
+      if (cmsType && !cmsType.includes('-')) {
+        try {
+          // Try to find the CMS type by name
+          const cmsTypeResponse = await fetch(`${API_BASE}/api/v1/cms-types/name/${cmsType}`);
+          
+          if (cmsTypeResponse.ok) {
+            const cmsTypeData = await cmsTypeResponse.json();
+            if (cmsTypeData && cmsTypeData.id) {
+              console.log(`Found CMS type: ${cmsTypeData.name} (${cmsTypeData.id})`);
+              cmsTypeId = cmsTypeData.id;
+            }
+          } else {
+            // Fallback to getting the first official CMS type
+            const officialTypesResponse = await fetch(`${API_BASE}/api/v1/cms-types/category/official`);
+            if (officialTypesResponse.ok) {
+              const officialTypes = await officialTypesResponse.json();
+              if (officialTypes && officialTypes.length > 0) {
+                const bestMatch = officialTypes.find((t: any) => 
+                  t.name.toLowerCase() === cmsType.toLowerCase()
+                ) || officialTypes[0];
+                
+                console.log(`Using fallback CMS type: ${bestMatch.name} (${bestMatch.id})`);
+                cmsTypeId = bestMatch.id;
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Error finding CMS type ID:", error);
+        }
+      }
+      
+      console.log(`Creating space with cms_type ID: ${cmsTypeId}`);
+      
       // Use the correct API endpoint with the UUID
       const response = await fetch(`${API_BASE}/api/v1/sites/${siteId}/spaces`, {
         method: 'POST',
@@ -393,7 +430,7 @@ export function AddContentDialog({
         body: JSON.stringify({
           name: spaceConfig.name,
           slug: cleanSlug,
-          cms_type: cmsType,
+          cms_type: cmsTypeId, // Now using the proper UUID
           description: description,
           visibility: spaceConfig.isPrivate ? 'private' : 'public',
           hidden: spaceConfig.hide_from_search || false

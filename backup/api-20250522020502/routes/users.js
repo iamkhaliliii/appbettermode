@@ -19,8 +19,10 @@ router.get('/:userId', async (req, res) => {
                 username: true,
                 full_name: true,
                 email: true,
-                // Don't include any fields that don't exist in the database
+                avatar_url: true,
+                bio: true,
                 createdAt: true,
+                // Don't return sensitive information like password
             }
         });
         if (!user) {

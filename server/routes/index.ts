@@ -2,6 +2,7 @@ import express from 'express';
 import sitesRouter from './sites.js';
 import postsRouter from './posts.js';
 import cmsTypesRouter from './cms-types.js';
+import spacesRouter from './spaces.js';
 import { usersRouter } from './users.js';
 import { fetchBrandData, testBrandfetchAPI } from '../utils/brandfetch.js';
 import { logger } from '../utils/logger.js';
@@ -67,6 +68,10 @@ logger.info('[API] CMS Types routes registered');
 // Register users router for user data
 apiRouter.use('/users', usersRouter);
 logger.info('[API] Users routes registered');
+
+// Register dedicated spaces router for space management
+apiRouter.use('/spaces', spacesRouter);
+logger.info('[API] Spaces routes registered');
 
 // Brand fetch endpoint
 apiRouter.get('/brand-fetch', async (req, res) => {

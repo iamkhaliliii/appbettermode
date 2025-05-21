@@ -37,16 +37,16 @@ import { NavigationItem as NavItemUI } from "@/components/ui/navigation-item";
 import { NavigationSection as NavSectionUI } from "@/components/ui/navigation-section";
 import { SideNavItem } from "./SidebarNavigationItems";
 import { MinimalItem, TreeFolder } from "./SidebarTreeComponents";
-import { sitesApi } from "@/lib/api";
+import { sitesApi, cmsTypesApi } from "@/lib/api";
 import { getApiBaseUrl } from "@/lib/utils";
 
-// Define type for space data
+// Define interface for spaces
 interface Space {
   id: string;
   name: string;
   slug: string;
-  cms_type: string;
-  icon?: string;
+  cms_type?: string; // This is now a CMS type ID
+  cms_type_name?: string; // Human-readable name for display
 }
 
 // Local NavigationSection and NavigationItem components
@@ -182,6 +182,65 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
           }));
           
           setSpaces(mappedSpaces);
+          
+          // If we have CMS type IDs, we should also fetch CMS type details to get the names
+          if (mappedSpaces.some(space => space.cms_type)) {
+            try {
+              // Get a list of unique CMS type IDs, filtering out undefined values
+              const cmsTypeIds = Array.from(
+                new Set(
+                  mappedSpaces
+                    .map(space => space.cms_type)
+                    .filter((id): id is string => !!id) // Type guard to ensure non-null values
+                )
+              );
+              
+              if (cmsTypeIds.length > 0) {
+                console.log('Fetching CMS type details for IDs:', cmsTypeIds);
+                
+                // Fetch each CMS type one by one
+                const cmsTypeDetails = await Promise.all(
+                  cmsTypeIds.map(async (typeId) => {
+                    try {
+                      return await cmsTypesApi.getCmsTypeById(typeId);
+                    } catch (err) {
+                      console.error(`Error fetching CMS type ${typeId}:`, err);
+                      return null;
+                    }
+                  })
+                );
+                
+                // Create a mapping of ID to CMS type details
+                const cmsTypeMap = new Map();
+                cmsTypeDetails
+                  .filter(Boolean)
+                  .forEach(cmsType => {
+                    if (cmsType && cmsType.id) {
+                      cmsTypeMap.set(cmsType.id, cmsType);
+                    }
+                  });
+                
+                // Update spaces with CMS type names
+                if (cmsTypeMap.size > 0) {
+                  setSpaces(prevSpaces => prevSpaces.map(space => {
+                    const cmsTypeId = space.cms_type;
+                    if (cmsTypeId && cmsTypeMap.has(cmsTypeId)) {
+                      const cmsType = cmsTypeMap.get(cmsTypeId);
+                      if (cmsType) {
+                        return {
+                          ...space,
+                          cms_type_name: cmsType.name // Store the name separately
+                        };
+                      }
+                    }
+                    return space;
+                  }));
+                }
+              }
+            } catch (err) {
+              console.error("Error fetching CMS type details:", err);
+            }
+          }
         }
       } catch (err) {
         console.error("Error fetching spaces:", err);
@@ -195,8 +254,11 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
   }, [siteId]);
 
   // Get icon based on space type
-  const getSpaceIcon = (type: string) => {
-    switch (type.toLowerCase()) {
+  const getSpaceIcon = (space: Space) => {
+    // Use cms_type_name if available, otherwise fall back to cms_type
+    const typeForIcon = space.cms_type_name || space.cms_type || 'custom';
+    
+    switch (typeForIcon.toLowerCase()) {
       case 'discussion':
         return <MessageSquare className="h-3.5 w-3.5" />;
       case 'qa':
@@ -353,7 +415,7 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
                       name={space.name}
                       path={`${basePath}/spaces/${space.slug}`}
                       currentPathname={currentPathname}
-                      icon={getSpaceIcon(space.cms_type)}
+                      icon={getSpaceIcon(space)}
                       iconColor="text-gray-500"
                       inSpaces={true}
                       level={1}
