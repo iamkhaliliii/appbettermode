@@ -26,6 +26,7 @@ interface SiteDataProviderProps {
 export const SiteDataProvider: React.FC<SiteDataProviderProps> = ({ children }) => {
   const [sites, setSites] = useState<Record<string, Site>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [cmsTypes, setCmsTypes] = useState<any[]>([]);
   
   // Load site data and cache it
   const loadSite = useCallback(async (siteSD: string): Promise<Site | null> => {
@@ -76,7 +77,7 @@ export const SiteDataProvider: React.FC<SiteDataProviderProps> = ({ children }) 
     <SiteDataContext.Provider value={{ 
       sites, 
       isLoading, 
-      cmsTypes: [],
+      cmsTypes,
       loadSite,
       clearCache,
       invalidateSite
