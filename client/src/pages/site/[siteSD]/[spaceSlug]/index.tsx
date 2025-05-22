@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useLocation } from 'wouter';
 import { sitesApi } from '@/lib/api';
 import { SiteHeader } from '@/components/layout/site/site-header';
@@ -7,8 +7,9 @@ import { SpaceCmsContent } from '@/components/layout/site/site-space-cms-content
 import { Loader2 } from 'lucide-react';
 import { Header } from '@/components/layout/dashboard/header';
 import { Skeleton } from '@/components/ui/skeleton';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { getApiBaseUrl } from '@/lib/utils';
+import { useSiteData } from '@/lib/SiteDataContext';
 
 // Types
 interface Space {
@@ -47,6 +48,10 @@ function ContentSkeleton() {
 export default function SpacePage() {
   const { siteSD, spaceSlug } = useParams();
   const [, setLocation] = useLocation();
+  
+  // Use the site data context for centralized data management
+  const { sites, loadSite, isLoading: contextLoading } = useSiteData();
+  
   const [site, setSite] = useState<any>(null);
   const [space, setSpace] = useState<Space | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -55,98 +60,151 @@ export default function SpacePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Fetch site data once
+  // Memoize handlers to prevent unnecessary re-renders
+  const handleToggleMobileMenu = useCallback(() => {
+    setIsMenuOpen(prev => !prev);
+  }, []);
+
+  // Handle search
+  const handleSearch = useCallback((e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      setLocation(`/site/${siteSD}/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  }, [searchQuery, siteSD, setLocation]);
+
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchQuery(value);
+  }, []);
+
+  const handleBackToHomepage = useCallback(() => {
+    setLocation(`/site/${siteSD}`);
+  }, [siteSD, setLocation]);
+
+  // Animations for page transitions
+  const pageVariants = useMemo(() => ({
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 },
+    transition: { duration: 0.15 }
+  }), []);
+
+  // Animation for loading state
+  const loadingVariants = useMemo(() => ({
+    initial: { opacity: 0 },
+    animate: { 
+      opacity: 1,
+      transition: {
+        duration: 0.2
+      }
+    },
+    exit: { 
+      opacity: 0,
+      transition: {
+        duration: 0.15
+      }
+    }
+  }), []);
+
+  // Memoize the footer component to prevent re-renders - MOVED BEFORE CONDITIONS
+  const Footer = useMemo(() => (
+    <footer className="bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 py-8">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="flex items-center space-x-2 mb-4 md:mb-0">
+            {site?.logo_url ? (
+              <img src={site.logo_url} alt={site.name} className="h-8 w-8 object-contain" />
+            ) : (
+              <div 
+                className="h-8 w-8 rounded-md flex items-center justify-center font-bold text-white"
+                style={{ 
+                  backgroundColor: site?.brand_color || '#6366f1',
+                }}
+              >
+                {site?.name?.substring(0, 1) || 'S'}
+              </div>
+            )}
+            <span className="font-semibold text-gray-900 dark:text-white">
+              {site?.name || 'Community'}
+            </span>
+          </div>
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+            © {new Date().getFullYear()} {site?.name || 'Community'} - Powered by BetterMode
+          </div>
+        </div>
+      </div>
+    </footer>
+  ), [site]);
+  
+  // Combined async fetch for site and spaces data to prevent sequential loading
   useEffect(() => {
-    const fetchSiteData = async () => {
+    const fetchAllData = async () => {
       if (!siteSD) {
         setError('Invalid site identifier');
         setIsLoading(false);
+        setIsContentLoading(false);
         return;
       }
 
-      try {
-        // 1. Fetch site data
-        const siteData = await sitesApi.getSite(siteSD);
-        console.log("Site data fetched:", siteData.name, siteData.id);
-        setSite(siteData);
-        setIsLoading(false);
-      } catch (err) {
-        console.error("Error fetching site data:", err);
-        setError('Failed to load site data. Please try again later.');
-        setIsLoading(false);
-      }
-    };
-
-    fetchSiteData();
-  }, [siteSD]);
-
-  // Fetch space data when spaceSlug changes
-  useEffect(() => {
-    const fetchSpaceData = async () => {
-      if (!siteSD || !spaceSlug || !site) {
-        return;
-      }
-
+      setIsLoading(true);
       setIsContentLoading(true);
-      setSpace(null); // Clear previous space while loading new one
-      setError(null); // Clear previous errors
 
       try {
-        console.log(`Fetching space with slug: ${spaceSlug}`);
-        console.log(`Site ID: ${site.id}`);
+        // 1. Get the site data (either from context or API)
+        let siteData;
+        if (sites[siteSD]) {
+          siteData = sites[siteSD];
+        } else {
+          siteData = await loadSite(siteSD);
+          if (!siteData) {
+            throw new Error('Failed to load site data');
+          }
+        }
         
-        // Get the API base URL
+        setSite(siteData);
+        
+        // Stop here if we don't have a space slug
+        if (!spaceSlug) {
+          setIsLoading(false);
+          setIsContentLoading(false);
+          return;
+        }
+        
+        // 2. Fetch spaces data
         const API_BASE = getApiBaseUrl();
-        
-        // Fetch all spaces for the site
-        const response = await fetch(`${API_BASE}/api/v1/sites/${site.id}/spaces`);
+        const response = await fetch(`${API_BASE}/api/v1/sites/${siteData.id}/spaces`);
         
         if (!response.ok) {
           throw new Error(`Failed to fetch spaces: ${response.statusText}`);
         }
         
         const spaces = await response.json();
-        console.log("All spaces for site:", spaces);
         
         if (!Array.isArray(spaces)) {
           throw new Error("Invalid response format for spaces");
         }
         
-        // Case-insensitive matching to be more forgiving with slugs
+        // 3. Find matching space
         const matchedSpace = spaces.find((s: any) => 
           s.slug.toLowerCase() === spaceSlug.toLowerCase()
         );
         
-        console.log("Matched space:", matchedSpace);
-        
         if (matchedSpace) {
-          // We found a real space that matches the slug
           setSpace(matchedSpace);
-          setIsContentLoading(false);
-          return;
-        } 
-        
-        // If we can't find the space by slug directly,
-        // check if this might be a content type instead (fallback mechanism)
-        if (site.content_types && Array.isArray(site.content_types)) {
-          console.log("No direct space match. Checking content types:", site.content_types);
-          
-          // Normalize content type matching
+        } else if (siteData.content_types && Array.isArray(siteData.content_types)) {
+          // Try to match with a content type
           let normalizedSlug = spaceSlug.toLowerCase();
           if (normalizedSlug === 'qa' || normalizedSlug === 'q-a') {
             normalizedSlug = 'qa';
           }
           
-          // Check if the spaceSlug matches a content type
-          const matchedType = site.content_types.find((type: string) => 
+          const matchedType = siteData.content_types.find((type: string) => 
             type.toLowerCase() === normalizedSlug || 
             type.toLowerCase().replace(/[^a-z0-9]/g, '') === normalizedSlug.replace(/[^a-z0-9]/g, '')
           );
           
-          console.log("Matched content type:", matchedType);
-          
           if (matchedType) {
-            // Create a simulated space based on the content type
+            // Create simulated space
             const simulatedSpace = {
               id: `simulated-${matchedType}`,
               name: matchedType.charAt(0).toUpperCase() + matchedType.slice(1),
@@ -155,50 +213,50 @@ export default function SpacePage() {
               cms_type: matchedType,
               hidden: false,
               visibility: 'public' as 'public' | 'private' | 'paid',
-              site_id: site.id
+              site_id: siteData.id
             };
             
-            console.log("Created simulated space:", simulatedSpace);
             setSpace(simulatedSpace);
-            setIsContentLoading(false);
-            return;
+          } else {
+            // No space or matching content type found
+            setError(`Space "${spaceSlug}" not found for this site`);
           }
+        } else {
+          setError(`Space "${spaceSlug}" not found for this site`);
         }
-        
-        // If we get here, neither a real space nor a content type match was found
-        setError(`Space "${spaceSlug}" not found for this site`);
       } catch (err) {
-        console.error("Error fetching space data:", err);
-        setError('Failed to load space data. Please try again later.');
+        console.error("Error fetching data:", err);
+        setError(err instanceof Error ? err.message : 'Failed to load data');
       } finally {
+        // Set both loading states to false at the same time
+        setIsLoading(false);
         setIsContentLoading(false);
       }
     };
 
-    if (site) {
-      fetchSpaceData();
-    }
-  }, [siteSD, spaceSlug, site]);
+    fetchAllData();
+  }, [siteSD, spaceSlug, sites, loadSite]);
 
-  const handleToggleMobileMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  // Handle search
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      setLocation(`/site/${siteSD}/search?q=${encodeURIComponent(searchQuery)}`);
-    }
-  };
-
-  // Full page loading state (first load)
-  if (isLoading) {
+  // Show a single unified loading state for the whole page
+  if (isLoading || isContentLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-primary-600 dark:text-primary-400 mx-auto" />
-          <span className="mt-4 block text-lg font-medium text-gray-700 dark:text-gray-300">Loading site...</span>
+      <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+        <Header
+          onToggleMobileMenu={handleToggleMobileMenu}
+          variant="site"
+          siteName={site?.name || "Loading..."}
+          siteIdentifier={siteSD}
+        />
+        <div className="flex-1 flex items-center justify-center">
+          <motion.div 
+            className="text-center p-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Loader2 className="h-12 w-12 animate-spin text-primary-600 dark:text-primary-400 mx-auto mb-4" />
+            <div className="mt-2 text-lg font-medium text-gray-700 dark:text-gray-300">Loading content...</div>
+          </motion.div>
         </div>
       </div>
     );
@@ -207,16 +265,29 @@ export default function SpacePage() {
   // Error state
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-md w-full text-center">
-          <h2 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Error</h2>
-          <p className="text-gray-700 dark:text-gray-300 mb-6">{error}</p>
-          <button 
-            onClick={() => setLocation(`/site/${siteSD}`)}
-            className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
+      <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
+        <Header
+          onToggleMobileMenu={handleToggleMobileMenu}
+          variant="site"
+          siteName={site?.name || "Error"}
+          siteIdentifier={siteSD}
+        />
+        <div className="flex-1 flex items-center justify-center p-4">
+          <motion.div 
+            className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-md w-full text-center"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
           >
-            Back to Homepage
-          </button>
+            <h2 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Error</h2>
+            <p className="text-gray-700 dark:text-gray-300 mb-6">{error}</p>
+            <button 
+              onClick={handleBackToHomepage}
+              className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
+            >
+              Back to Homepage
+            </button>
+          </motion.div>
         </div>
       </div>
     );
@@ -237,7 +308,7 @@ export default function SpacePage() {
         isMenuOpen={isMenuOpen} 
         setIsMenuOpen={setIsMenuOpen}
         searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
+        setSearchQuery={handleSearchChange}
         handleSearch={handleSearch}
       />
 
@@ -245,25 +316,18 @@ export default function SpacePage() {
       <div className="flex-1">
         <div className="container mx-auto px-4 flex-grow">
           <div className="flex flex-col md:flex-row gap-6">
-            {/* Only render sidebar when not on mobile or when menu is open */}
-              <SiteSidebar siteSD={siteSD || ''} activePage={spaceSlug} />
+            {/* Sidebar */}
+            <SiteSidebar siteSD={siteSD || ''} activePage={spaceSlug} />
 
-
-            {/* Main content area that changes based on space CMS type */}
+            {/* Main content area with content or empty state */}
             <div className="flex-1 p-4 md:p-6">
               <motion.div
+                key={`space-${spaceSlug}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                key={spaceSlug} // Re-renders animation when space changes
+                transition={{ duration: 0.2 }}
               >
-                {isContentLoading ? (
-                  // Skeleton UI while content is loading
-                  <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                    <ContentSkeleton />
-                  </div>
-                ) : space ? (
+                {space ? (
                   <SpaceCmsContent 
                     siteSD={siteSD || ''}
                     space={space}
@@ -281,32 +345,9 @@ export default function SpacePage() {
           </div>
         </div>
       </div>
-      <footer className="bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 py-8">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center space-x-2 mb-4 md:mb-0">
-              {site?.logo_url ? (
-                <img src={site.logo_url} alt={site.name} className="h-8 w-8 object-contain" />
-              ) : (
-                <div 
-                  className="h-8 w-8 rounded-md flex items-center justify-center font-bold text-white"
-                  style={{ 
-                    backgroundColor: site?.brand_color || '#6366f1',
-                  }}
-                >
-                  {site?.name?.substring(0, 1) || 'S'}
-                </div>
-              )}
-              <span className="font-semibold text-gray-900 dark:text-white">
-                {site?.name || 'Community'}
-              </span>
-            </div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">
-              © {new Date().getFullYear()} {site?.name || 'Community'} - Powered by BetterMode
-            </div>
-          </div>
-        </div>
-      </footer>
+      
+      {/* Footer */}
+      {Footer}
     </div>
   );
 } 
