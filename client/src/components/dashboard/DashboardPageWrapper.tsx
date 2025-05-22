@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState, Suspense } from "react";
 import { AlertTriangle } from "lucide-react";
 import { DashboardLayout } from "@/components/layout/dashboard/dashboard-layout";
-import { useSiteData } from "@/lib/SiteDataContext";
+import { useSiteData } from "../../lib/SiteDataContext";
 import { Site } from "@/lib/api";
 import { DashboardSkeleton } from "./DashboardSkeleton";
 import { motion, AnimatePresence } from "framer-motion";

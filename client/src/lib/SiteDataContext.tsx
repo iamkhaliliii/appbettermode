@@ -1,90 +1,89 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { sitesApi, cmsTypesApi, Site } from '@/lib/api';
+import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
+import { sitesApi, Site } from '@/lib/api';
 
-// Data context interface
 interface SiteDataContextType {
   sites: Record<string, Site>;
+  isLoading: boolean;
   cmsTypes: any[];
   loadSite: (siteSD: string) => Promise<Site | null>;
-  isLoading: boolean;
+  clearCache: () => void;
+  invalidateSite: (siteSD: string) => void;
 }
 
-// Create context with default values
 const SiteDataContext = createContext<SiteDataContextType>({
   sites: {},
+  isLoading: false,
   cmsTypes: [],
   loadSite: async () => null,
-  isLoading: false,
+  clearCache: () => {},
+  invalidateSite: () => {},
 });
-
-// Hook to use the site data context
-export const useSiteData = () => useContext(SiteDataContext);
 
 interface SiteDataProviderProps {
   children: ReactNode;
 }
 
-export function SiteDataProvider({ children }: SiteDataProviderProps) {
+export const SiteDataProvider: React.FC<SiteDataProviderProps> = ({ children }) => {
   const [sites, setSites] = useState<Record<string, Site>>({});
-  const [cmsTypes, setCmsTypes] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [cmsTypesLoaded, setCmsTypesLoaded] = useState(false);
-
-  // Load CMS types once
-  useEffect(() => {
-    const loadCmsTypes = async () => {
-      try {
-        const types = await cmsTypesApi.getAllCmsTypes();
-        setCmsTypes(types);
-        setCmsTypesLoaded(true);
-      } catch (err) {
-        console.error("Error loading CMS types:", err);
-        setCmsTypesLoaded(true);
-      }
-    };
-
-    if (!cmsTypesLoaded) {
-      loadCmsTypes();
-    }
-  }, [cmsTypesLoaded]);
-
-  // Function to load a site data (cached or from API)
-  const loadSite = async (siteSD: string): Promise<Site | null> => {
-    // If we already have the site data cached, return it
+  
+  // Load site data and cache it
+  const loadSite = useCallback(async (siteSD: string): Promise<Site | null> => {
+    // Check cache first
     if (sites[siteSD]) {
       return sites[siteSD];
     }
-
-    // Otherwise, fetch from API
+    
     setIsLoading(true);
+    
     try {
       const siteData = await sitesApi.getSite(siteSD);
       
-      // Cache the result
-      setSites(prev => ({
-        ...prev,
-        [siteSD]: siteData
-      }));
+      if (siteData) {
+        // Update cache
+        setSites(prev => ({
+          ...prev,
+          [siteSD]: siteData
+        }));
+        
+        return siteData;
+      }
       
-      setIsLoading(false);
-      return siteData;
-    } catch (err) {
-      console.error(`Error loading site ${siteSD}:`, err);
-      setIsLoading(false);
       return null;
+    } catch (error) {
+      console.error(`Error loading site data for ${siteSD}:`, error);
+      return null;
+    } finally {
+      setIsLoading(false);
     }
-  };
-
-  const value = {
-    sites,
-    cmsTypes,
-    loadSite,
-    isLoading
-  };
-
+  }, [sites]);
+  
+  // Clear the entire cache
+  const clearCache = useCallback(() => {
+    setSites({});
+  }, []);
+  
+  // Invalidate a specific site in the cache
+  const invalidateSite = useCallback((siteSD: string) => {
+    setSites(prev => {
+      const newSites = { ...prev };
+      delete newSites[siteSD];
+      return newSites;
+    });
+  }, []);
+  
   return (
-    <SiteDataContext.Provider value={value}>
+    <SiteDataContext.Provider value={{ 
+      sites, 
+      isLoading, 
+      cmsTypes: [],
+      loadSite,
+      clearCache,
+      invalidateSite
+    }}>
       {children}
     </SiteDataContext.Provider>
   );
-} 
+};
+
+export const useSiteData = () => useContext(SiteDataContext); 

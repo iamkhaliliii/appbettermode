@@ -41,7 +41,7 @@ import { MinimalItem, TreeFolder } from "./SidebarTreeComponents";
 import { sitesApi } from "@/lib/api";
 import { getApiBaseUrl } from "@/lib/utils";
 import { EditSpaceDialog } from "@/components/ui/edit-space-dialog";
-import { useSiteData } from "@/lib/SiteDataContext";
+import { useSiteData } from "../../../../lib/SiteDataContext";
 
 // Define interface for spaces
 interface Space {
