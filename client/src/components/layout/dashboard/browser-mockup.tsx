@@ -12,6 +12,7 @@ interface BrowserMockupProps {
   setThemeDropdownOpen: (open: boolean) => void;
   responsiveDropdownOpen: boolean;
   setResponsiveDropdownOpen: (open: boolean) => void;
+  siteUrl?: string;
 }
 
 export function BrowserMockup({
@@ -24,7 +25,15 @@ export function BrowserMockup({
   setThemeDropdownOpen,
   responsiveDropdownOpen,
   setResponsiveDropdownOpen,
+  siteUrl,
 }: BrowserMockupProps) {
+  // Format URL for display in the address bar
+  const displayUrl = siteUrl ? 
+    (siteUrl.startsWith('/') ? 
+      siteUrl.substring(1) :  // If it's a relative URL, just use the path
+      new URL(siteUrl).host + new URL(siteUrl).pathname) : 
+    "community.bettermode.io";
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-3xl w-full h-[calc(100vh-100px)]"
       style={{
@@ -44,7 +53,7 @@ export function BrowserMockup({
         <div className="flex-1 flex justify-center">
           <div className="w-56">
             <div className="bg-white dark:bg-gray-800 px-3 py-1 rounded-md border border-gray-300 dark:border-gray-600 flex items-center justify-center text-xs text-gray-500 dark:text-gray-400 truncate">
-              <span className="opacity-50 mr-1">https://</span>community.bettermode.io
+              <span className="opacity-50 mr-1">https://</span>{displayUrl}
             </div>
           </div>
         </div>

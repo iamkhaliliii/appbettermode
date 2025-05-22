@@ -143,6 +143,12 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
     const fetchSpaces = async () => {
       if (!siteId) return;
       
+      // Only proceed if siteId looks like a UUID (basic check)
+      if (!siteId.includes('-')) {
+        console.log('Waiting for site UUID to be fetched...');
+        return;
+      }
+      
       setIsLoading(true);
       setError(null);
       
@@ -213,6 +219,12 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
   const handleSpaceUpdated = () => {
     // Refetch spaces to get the updated data
     if (siteId) {
+      // Only proceed if siteId looks like a UUID (basic check)
+      if (!siteId.includes('-')) {
+        console.log('Waiting for site UUID to be fetched...');
+        return;
+      }
+      
       const fetchSpaces = async () => {
         setIsLoading(true);
         try {
@@ -419,7 +431,7 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
                     <MinimalItem
                       key={space.id}
                       name={space.name}
-                      path={`${basePath}/spaces/${space.slug}`}
+                      path={APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG_SPACE(currentSiteIdentifier, space.slug)}
                       currentPathname={currentPathname}
                       icon={getSpaceIcon(space)}
                       iconColor="text-gray-500"

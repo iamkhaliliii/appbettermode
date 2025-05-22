@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, AlertTriangle, Users, Layout, Search, FileImage, Trash2, MessageSquare, ThumbsUp, Share, Settings } from "lucide-react";
+import { Loader2, AlertTriangle, Users, Layout, Search, FileImage, Trash2, MessageSquare, ThumbsUp, Share, Settings, X, Upload } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 
@@ -214,43 +214,153 @@ export function EditSpaceDialog({
     switch (activeTab) {
       case 'general':
         return (
-          <div className="space-y-5">
-            <div className="grid gap-5">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right font-medium">
+          <div className="space-y-6">
+            <div>
+              <div className="flex items-center gap-1 mb-1.5">
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Icon</h3>
+                <div className="text-gray-400 w-3.5 h-3.5 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center">
+                  <span className="text-[10px]">?</span>
+                </div>
+              </div>
+              <div className="mt-1">
+                {spaceIconUrl ? (
+                  <div className="inline-flex relative">
+                    <img 
+                      src={spaceIconUrl} 
+                      alt="Icon" 
+                      className="h-12 w-12 rounded-md object-cover" 
+                      onError={(e) => {
+                        e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMTZDMTQuMjA5MSAxNiAxNiAxNC4yMDkxIDE2IDEyQzE2IDkuNzkwODYgMTQuMjA5MSA4IDEyIDhDOS43OTA4NiA4IDggOS43OTA4NiA4IDEyQzggMTQuMjA5MSA5Ljc5MDg2IDE2IDEyIDE2WiIgc3Ryb2tlPSIjNjk3MDg2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0zIDEyQzMgMTIgNyAyMSAxMiAyMUMxNyAyMSAyMSAxMiAyMSAxMkMyMSAxMiAxNyAzIDEyIDNDNyAzIDMgMTIgMyAxMloiIHN0cm9rZT0iIzY5NzA4NiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=';
+                      }}
+                    />
+                    <button
+                      onClick={() => setSpaceIconUrl('')}
+                      className="absolute -top-1.5 -right-1.5 bg-gray-500/90 text-white rounded-full w-4 h-4 flex items-center justify-center"
+                      type="button"
+                    >
+                      <X className="h-2.5 w-2.5" />
+                    </button>
+                  </div>
+                ) : (
+                  <div 
+                    onClick={() => {
+                      const input = document.createElement('input');
+                      input.type = 'file';
+                      input.accept = 'image/*';
+                      input.onchange = (e) => {
+                        const file = (e.target as HTMLInputElement).files?.[0];
+                        if (file) {
+                          // This would normally upload to server, but for now we'll use a placeholder
+                          setSpaceIconUrl(URL.createObjectURL(file));
+                        }
+                      };
+                      input.click();
+                    }}
+                    className="cursor-pointer border border-dashed border-gray-300 dark:border-gray-600 rounded-md h-12 w-12 flex flex-col items-center justify-center"
+                  >
+                    <Upload className="h-3.5 w-3.5 text-gray-400 mb-0.5" />
+                    <div className="text-[10px] text-indigo-500 dark:text-indigo-400">Upload</div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <div className="mb-1.5">
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Name
-                </Label>
-                <Input
-                  id="name"
-                  className="col-span-3"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
+                </label>
               </div>
-              
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="description" className="text-right font-medium">
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full h-9 text-sm"
+                required
+              />
+            </div>
+            
+            <div>
+              <div className="flex items-center gap-1 mb-1.5">
+                <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Description
-                </Label>
-                <Textarea
-                  id="description"
-                  className="col-span-3"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={3}
-                />
+                </label>
+                <div className="text-gray-400 w-3.5 h-3.5 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center">
+                  <span className="text-[10px]">?</span>
+                </div>
+              </div>
+              <Textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full min-h-[80px] text-sm"
+                rows={3}
+              />
+            </div>
+            
+            <div>
+              <div className="mb-1.5">
+                <label htmlFor="banner" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Banner
+                </label>
               </div>
               
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="slug" className="text-right font-medium">
-                  Slug
-                </Label>
-                <Input
-                  id="slug"
-                  className="col-span-3"
-                  value={slug}
-                  onChange={(e) => setSlug(e.target.value)}
+              {spaceBannerUrl ? (
+                <div className="relative">
+                  <img 
+                    src={spaceBannerUrl} 
+                    alt="Banner" 
+                    className="w-full h-24 object-cover rounded-md" 
+                    onError={(e) => {
+                      e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTkgM0g1QzMuODk1NDMgMyAzIDMuODk1NDMgMyA1VjE5QzMgMjAuMTA0NiAzLjg5NTQzIDIxIDUgMjFIMTlDMjAuMTA0NiAyMSAyMSAyMC4xMDQ2IDIxIDE5VjVDMjEgMy44OTU0MyAyMC4xMDQ2IDMgMTkgM1oiIHN0cm9rZT0iIzY5NzA4NiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNOC41IDEwQzkuMzI4NDMgMTAgMTAgOS4zMjg0MyAxMCA4LjVDMTAgNy42NzE1NyA5LjMyODQzIDcgOC41IDdDNy42NzE1NyA3IDcgNy42NzE1NyA3IDguNUM3IDkuMzI4NDMgNy42NzE1NyAxMCA4LjUgMTBaIiBzdHJva2U9IiM2OTcwODYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIxIDE1TDE2IDEwTDUgMjEiIHN0cm9rZT0iIzY5NzA4NiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=';
+                    }}
+                  />
+                  <button
+                    onClick={() => setSpaceBannerUrl('')}
+                    className="absolute top-1.5 right-1.5 bg-gray-600/90 text-white rounded-full w-5 h-5 flex items-center justify-center"
+                    type="button"
+                  >
+                    <X className="h-2.5 w-2.5" />
+                  </button>
+                </div>
+              ) : (
+                <div 
+                  onClick={() => {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = (e) => {
+                      const file = (e.target as HTMLInputElement).files?.[0];
+                      if (file) {
+                        // This would normally upload to server, but for now we'll use a placeholder
+                        setSpaceBannerUrl(URL.createObjectURL(file));
+                      }
+                    };
+                    input.click();
+                  }}
+                  className="cursor-pointer border border-dashed border-gray-300 dark:border-gray-600 rounded-md h-24 flex flex-col items-center justify-center"
+                >
+                  <Upload className="h-4 w-4 text-gray-400 mb-1" />
+                  <div className="text-xs text-indigo-500 dark:text-indigo-400">Click to upload</div>
+                  <div className="text-[10px] text-gray-500 mt-0.5">SVG, PNG, JPG or GIF (max. 800×400px)</div>
+                </div>
+              )}
+            </div>
+            
+            <div>
+              <div className="mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Web address
+                </label>
+              </div>
+              <div className="flex rounded-md">
+                <span className="flex items-center px-2 rounded-l-md border border-r-0 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-500 text-xs">
+                  bettermode.com/.../
+                </span>
+                <Input 
+                  value={slug} 
+                  onChange={(e) => setSlug(e.target.value)} 
+                  className="rounded-l-none h-9 text-sm" 
                   required
                   pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$"
                   title="Use lowercase letters, numbers, and hyphens only"
@@ -258,114 +368,44 @@ export function EditSpaceDialog({
               </div>
             </div>
             
-            <div className="border-t pt-4 mt-2">
-              <h3 className="font-medium text-sm mb-3">Visibility Settings</h3>
-              <div className="grid gap-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="visibility" className="text-right font-medium">
-                    Visibility
-                  </Label>
-                  <Select
-                    value={visibility}
-                    onValueChange={setVisibility}
-                  >
-                    <SelectTrigger className="col-span-3">
-                      <SelectValue placeholder="Select visibility" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="public">Public</SelectItem>
-                      <SelectItem value="private">Private</SelectItem>
-                      <SelectItem value="paid">Paid</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="hidden" className="text-right font-medium">
-                    Hidden
-                  </Label>
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="hidden"
-                      checked={hidden}
-                      onCheckedChange={setHidden}
-                    />
-                    <Label htmlFor="hidden" className="cursor-pointer">
-                      {hidden ? "Yes" : "No"}
-                    </Label>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="border-t pt-4 mt-2">
-              <h3 className="font-medium text-sm mb-3">Space Identity</h3>
-              <div className="grid gap-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="space_icon_url" className="text-right font-medium">
-                    Space Icon URL
-                  </Label>
-                  <Input
-                    id="space_icon_url"
-                    className="col-span-3"
-                    value={spaceIconUrl}
-                    onChange={(e) => setSpaceIconUrl(e.target.value)}
-                    placeholder="URL for space icon"
+            <div>
+              <div className="pt-1 pb-3">
+                <div className="flex items-center py-1.5">
+                  <Switch
+                    id="make_private"
+                    checked={visibility === 'private'}
+                    onCheckedChange={(checked) => setVisibility(checked ? 'private' : 'public')}
+                    className="scale-90"
                   />
+                  <label htmlFor="make_private" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                    Make private
+                  </label>
                 </div>
                 
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="space_banner_url" className="text-right font-medium">
-                    Space Banner URL
-                  </Label>
-                  <Input
-                    id="space_banner_url"
-                    className="col-span-3"
-                    value={spaceBannerUrl}
-                    onChange={(e) => setSpaceBannerUrl(e.target.value)}
-                    placeholder="URL for space banner"
+                <div className="flex items-center py-1.5">
+                  <Switch
+                    id="invite_only"
+                    checked={inviteOnly}
+                    onCheckedChange={setInviteOnly}
+                    disabled={visibility === 'private'}
+                    className="scale-90"
                   />
+                  <label htmlFor="invite_only" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                    Make invite-only
+                  </label>
                 </div>
                 
-                <div className="grid grid-cols-4 gap-4">
-                  <div className="text-right text-xs text-gray-500 pt-1">
-                    Preview
-                  </div>
-                  <div className="col-span-3 flex gap-3">
-                    {spaceIconUrl ? (
-                      <div className="p-2 border rounded flex-shrink-0">
-                        <img 
-                          src={spaceIconUrl} 
-                          alt="Icon" 
-                          className="h-14 w-14 object-contain" 
-                          onError={(e) => {
-                            e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMTZDMTQuMjA5MSAxNiAxNiAxNC4yMDkxIDE2IDEyQzE2IDkuNzkwODYgMTQuMjA5MSA4IDEyIDhDOS43OTA4NiA4IDggOS43OTA4NiA4IDEyQzggMTQuMjA5MSA5Ljc5MDg2IDE2IDEyIDE2WiIgc3Ryb2tlPSIjNjk3MDg2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0zIDEyQzMgMTIgNyAyMSAxMiAyMUMxNyAyMSAyMSAxMiAyMSAxMkMyMSAxMiAxNyAzIDEyIDNDNyAzIDMgMTIgMyAxMloiIHN0cm9rZT0iIzY5NzA4NiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=';
-                          }}
-                        />
-                      </div>
-                    ) : (
-                      <div className="p-2 border rounded flex-shrink-0 h-14 w-14 flex items-center justify-center text-gray-300">
-                        <FileImage className="h-8 w-8" />
-                      </div>
-                    )}
-                    
-                    {spaceBannerUrl ? (
-                      <div className="flex-1 p-2 border rounded">
-                        <img 
-                          src={spaceBannerUrl} 
-                          alt="Banner" 
-                          className="w-full h-14 object-cover rounded" 
-                          onError={(e) => {
-                            e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTkgM0g1QzMuODk1NDMgMyAzIDMuODk1NDMgMyA1VjE5QzMgMjAuMTA0NiAzLjg5NTQzIDIxIDUgMjFIMTlDMjAuMTA0NiAyMSAyMSAyMC4xMDQ2IDIxIDE5VjVDMjEgMy44OTU0MyAyMC4xMDQ2IDMgMTkgM1oiIHN0cm9rZT0iIzY5NzA4NiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNOC41IDEwQzkuMzI4NDMgMTAgMTAgOS4zMjg0MyAxMCA4LjVDMTAgNy42NzE1NyA5LjMyODQzIDcgOC41IDdDNy42NzE1NyA3IDcgNy42NzE1NyA3IDguNUM3IDkuMzI4NDMgNy42NzE1NyAxMCA4LjUgMTBaIiBzdHJva2U9IiM2OTcwODYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIxIDE1TDE2IDEwTDUgMjEiIHN0cm9rZT0iIzY5NzA4NiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=';
-                          }}
-                        />
-                      </div>
-                    ) : (
-                      <div className="flex-1 border rounded h-14 flex items-center justify-center text-gray-300">
-                        <FileImage className="h-8 w-8" />
-                      </div>
-                    )}
-                  </div>
+                <div className="flex items-center py-1.5">
+                  <Switch
+                    id="anyone_can_invite"
+                    checked={anyoneCanInvite}
+                    onCheckedChange={setAnyoneCanInvite}
+                    disabled={!inviteOnly || visibility === 'private'}
+                    className="scale-90"
+                  />
+                  <label htmlFor="anyone_can_invite" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                    Anyone can invite
+                  </label>
                 </div>
               </div>
             </div>
@@ -374,234 +414,170 @@ export function EditSpaceDialog({
 
       case 'permissions':
         return (
-          <div className="space-y-5">
-            <div className="border-b pb-4 mb-2">
-              <h3 className="font-medium mb-4">Access Control</h3>
-              <div className="space-y-4">
-                <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4 border border-gray-100 dark:border-gray-800">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="invite_only" className="font-medium">
-                          Invite Only
-                        </Label>
-                        <Switch
-                          id="invite_only"
-                          checked={inviteOnly}
-                          onCheckedChange={setInviteOnly}
-                        />
-                      </div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Only invited users can join this space
-                      </p>
-                    </div>
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <Label htmlFor="anyone_can_invite" className="font-medium">
-                          Anyone Can Invite
-                        </Label>
-                        <Switch
-                          id="anyone_can_invite"
-                          checked={anyoneCanInvite}
-                          onCheckedChange={setAnyoneCanInvite}
-                        />
-                      </div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Allow all members to invite new users
-                      </p>
-                    </div>
-                  </div>
+          <div className="space-y-6">
+            <div>
+              <div className="flex items-center gap-1 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Who can post?
+                </label>
+                <div className="text-gray-400 w-3.5 h-3.5 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center">
+                  <span className="text-[10px]">?</span>
                 </div>
               </div>
+              <Select
+                value={postPermission}
+                onValueChange={setPostPermission}
+              >
+                <SelectTrigger className="w-full h-9 text-sm">
+                  <SelectValue placeholder="Select who can post" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All members</SelectItem>
+                  <SelectItem value="members">Members Only</SelectItem>
+                  <SelectItem value="staff">Staff Only</SelectItem>
+                  <SelectItem value="admin">Admin Only</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             
             <div>
-              <h3 className="font-medium mb-4">Permission Settings</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4 border border-gray-100 dark:border-gray-800">
-                  <div className="flex items-center mb-2">
-                    <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-300 mr-2">
-                      <MessageSquare className="h-4 w-4" />
-                    </div>
-                    <h4 className="font-medium">Post</h4>
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                    Who can create new posts
-                  </p>
-                  <Select
-                    value={postPermission}
-                    onValueChange={setPostPermission}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select permission" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Everyone</SelectItem>
-                      <SelectItem value="members">Members Only</SelectItem>
-                      <SelectItem value="staff">Staff Only</SelectItem>
-                      <SelectItem value="admin">Admin Only</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4 border border-gray-100 dark:border-gray-800">
-                  <div className="flex items-center mb-2">
-                    <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-300 mr-2">
-                      <MessageSquare className="h-4 w-4" />
-                    </div>
-                    <h4 className="font-medium">Reply</h4>
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                    Who can reply to posts
-                  </p>
-                  <Select
-                    value={replyPermission}
-                    onValueChange={setReplyPermission}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select permission" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Everyone</SelectItem>
-                      <SelectItem value="members">Members Only</SelectItem>
-                      <SelectItem value="staff">Staff Only</SelectItem>
-                      <SelectItem value="admin">Admin Only</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4 border border-gray-100 dark:border-gray-800">
-                  <div className="flex items-center mb-2">
-                    <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-300 mr-2">
-                      <ThumbsUp className="h-4 w-4" />
-                    </div>
-                    <h4 className="font-medium">React</h4>
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                    Who can react to posts
-                  </p>
-                  <Select
-                    value={reactPermission}
-                    onValueChange={setReactPermission}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select permission" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Everyone</SelectItem>
-                      <SelectItem value="members">Members Only</SelectItem>
-                      <SelectItem value="staff">Staff Only</SelectItem>
-                      <SelectItem value="admin">Admin Only</SelectItem>
-                    </SelectContent>
-                  </Select>
+              <div className="flex items-center gap-1 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Who can reply?
+                </label>
+                <div className="text-gray-400 w-3.5 h-3.5 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center">
+                  <span className="text-[10px]">?</span>
                 </div>
               </div>
+              <Select
+                value={replyPermission}
+                onValueChange={setReplyPermission}
+              >
+                <SelectTrigger className="w-full h-9 text-sm">
+                  <SelectValue placeholder="Select who can reply" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All members</SelectItem>
+                  <SelectItem value="members">Members Only</SelectItem>
+                  <SelectItem value="staff">Staff Only</SelectItem>
+                  <SelectItem value="admin">Admin Only</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <div className="flex items-center gap-1 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Who can react?
+                </label>
+                <div className="text-gray-400 w-3.5 h-3.5 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center">
+                  <span className="text-[10px]">?</span>
+                </div>
+              </div>
+              <Select
+                value={reactPermission}
+                onValueChange={setReactPermission}
+              >
+                <SelectTrigger className="w-full h-9 text-sm">
+                  <SelectValue placeholder="Select who can react" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All members</SelectItem>
+                  <SelectItem value="members">Members Only</SelectItem>
+                  <SelectItem value="staff">Staff Only</SelectItem>
+                  <SelectItem value="admin">Admin Only</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         );
 
       case 'seo':
         return (
-          <div className="space-y-5">
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-5 border border-gray-100 dark:border-gray-800">
-              <div className="flex items-center mb-4">
-                <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-300 mr-3">
-                  <Search className="h-4 w-4" />
-                </div>
-                <div>
-                  <h4 className="font-medium">Search Engine Optimization</h4>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                    Optimize how this space appears in search results
-                  </p>
+          <div className="space-y-6">
+            <div>
+              <div className="flex items-center gap-1 mb-1.5">
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Search Engine Optimization</h3>
+                <div className="text-gray-400 w-3.5 h-3.5 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center">
+                  <span className="text-[10px]">?</span>
                 </div>
               </div>
-              
-              <div className="space-y-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="meta_title" className="text-right font-medium">
+              <div className="space-y-3 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-md border border-gray-100 dark:border-gray-800">
+                <div className="grid grid-cols-4 items-center gap-3">
+                  <label htmlFor="meta_title" className="text-right text-xs font-medium text-gray-600 dark:text-gray-400">
                     Meta Title
-                  </Label>
+                  </label>
                   <div className="col-span-3 space-y-1">
                     <Input
                       id="meta_title"
                       value={metaTitle}
                       onChange={(e) => setMetaTitle(e.target.value)}
-                      placeholder={name || "SEO title (if different from space name)"}
-                      className="border-gray-200 dark:border-gray-700"
+                      placeholder={name || "SEO title"}
+                      className="h-8 text-sm"
                     />
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {metaTitle.length > 0 ? metaTitle.length : 0}/60 characters recommended
+                    <p className="text-[10px] text-gray-500 dark:text-gray-400">
+                      {metaTitle.length}/60 characters recommended
                     </p>
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-4 items-start gap-4">
-                  <Label htmlFor="meta_description" className="text-right font-medium pt-2">
+                <div className="grid grid-cols-4 items-start gap-3">
+                  <label htmlFor="meta_description" className="text-right text-xs font-medium text-gray-600 dark:text-gray-400 pt-1.5">
                     Meta Description
-                  </Label>
+                  </label>
                   <div className="col-span-3 space-y-1">
                     <Textarea
                       id="meta_description"
                       value={metaDescription}
                       onChange={(e) => setMetaDescription(e.target.value)}
-                      rows={3}
-                      placeholder="A brief description of this space for search engines"
-                      className="border-gray-200 dark:border-gray-700"
+                      rows={2}
+                      placeholder="Brief description for search engines"
+                      className="text-sm min-h-[60px]"
                     />
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {metaDescription.length > 0 ? metaDescription.length : 0}/160 characters recommended
+                    <p className="text-[10px] text-gray-500 dark:text-gray-400">
+                      {metaDescription.length}/160 characters recommended
                     </p>
                   </div>
                 </div>
               </div>
             </div>
             
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-5 border border-gray-100 dark:border-gray-800">
-              <div className="flex items-center mb-4">
-                <div className="w-8 h-8 rounded-full bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center text-pink-600 dark:text-pink-300 mr-3">
-                  <Share className="h-4 w-4" />
-                </div>
-                <div>
-                  <h4 className="font-medium">Social Sharing</h4>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                    Control how this space appears when shared on social media
-                  </p>
+            <div>
+              <div className="flex items-center gap-1 mb-1.5">
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Social Sharing</h3>
+                <div className="text-gray-400 w-3.5 h-3.5 rounded-full border border-gray-300 dark:border-gray-600 flex items-center justify-center">
+                  <span className="text-[10px]">?</span>
                 </div>
               </div>
-              
-              <div className="grid grid-cols-4 items-start gap-4">
-                <Label htmlFor="ogg_url" className="text-right font-medium pt-2">
-                  Social Image URL
-                </Label>
-                <div className="col-span-3">
-                  <div className="space-y-3">
+              <div className="space-y-3 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-md border border-gray-100 dark:border-gray-800">
+                <div className="grid grid-cols-4 items-start gap-3">
+                  <label htmlFor="ogg_url" className="text-right text-xs font-medium text-gray-600 dark:text-gray-400 pt-1.5">
+                    Social Image URL
+                  </label>
+                  <div className="col-span-3 space-y-2">
                     <Input
                       id="ogg_url"
                       value={oggUrl}
                       onChange={(e) => setOggUrl(e.target.value)}
                       placeholder="URL for social media preview image"
-                      className="border-gray-200 dark:border-gray-700"
+                      className="h-8 text-sm"
                     />
                     
                     {oggUrl && (
-                      <div className="rounded-md border border-gray-200 dark:border-gray-700 overflow-hidden">
+                      <div className="rounded-md border overflow-hidden">
                         <img 
                           src={oggUrl} 
-                          alt="Social Media Preview" 
-                          className="w-full h-32 object-cover" 
+                          alt="Social Preview" 
+                          className="w-full h-20 object-cover" 
                           onError={(e) => {
                             e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTkgM0g1QzMuODk1NDMgMyAzIDMuODk1NDMgMyA1VjE5QzMgMjAuMTA0NiAzLjg5NTQzIDIxIDUgMjFIMTlDMjAuMTA0NiAyMSAyMSAyMC4xMDQ2IDIxIDE5VjVDMjEgMy44OTU0MyAyMC4xMDQ2IDMgMTkgM1oiIHN0cm9rZT0iIzY5NzA4NiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNOC41IDEwQzkuMzI4NDMgMTAgMTAgOS4zMjg0MyAxMCA4LjVDMTAgNy42NzE1NyA5LjMyODQzIDcgOC41IDdDNy42NzE1NyA3IDcgNy42NzE1NyA3IDguNUM3IDkuMzI4NDMgNy42NzE1NyAxMCA4LjUgMTBaIiBzdHJva2U9IiM2OTcwODYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIxIDE1TDE2IDEwTDUgMjEiIHN0cm9rZT0iIzY5NzA4NiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=';
                           }}
                         />
-                        <div className="p-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-                          <div className="text-sm font-medium truncate">{metaTitle || name || "Space Title"}</div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mt-1">{metaDescription || description || "Space description would appear here..."}</div>
-                        </div>
                       </div>
                     )}
                     
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Recommended size: 1200x630 pixels with 1.91:1 aspect ratio
+                    <p className="text-[10px] text-gray-500 dark:text-gray-400">
+                      Recommended: 1200×630 pixels, 1.91:1 ratio
                     </p>
                   </div>
                 </div>
@@ -612,181 +588,147 @@ export function EditSpaceDialog({
 
       case 'layout':
         return (
-          <div className="space-y-5">
-            <div className="border-b pb-5 mb-4">
-              <h3 className="font-medium mb-4">Display Mode</h3>
-              <div className="grid grid-cols-3 gap-3">
-                <div 
-                  className={cn(
-                    "border rounded-lg p-3 cursor-pointer transition-colors",
-                    layoutMode === 'list' 
-                      ? "bg-primary-50 border-primary-200 dark:bg-primary-900/20 dark:border-primary-700" 
-                      : "hover:bg-gray-50 dark:hover:bg-gray-800"
-                  )}
-                  onClick={() => setLayoutMode('list')}
-                >
-                  <div className="flex justify-center mb-2">
-                    <div className="h-16 w-full flex flex-col gap-1">
-                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
-                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
-                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
-                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+          <div className="space-y-6">
+            <div>
+              <div className="flex items-center gap-1 mb-1.5">
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Content Display Mode</h3>
+              </div>
+              <div className="bg-gray-50 dark:bg-gray-900/50 p-3 rounded-md border border-gray-100 dark:border-gray-800">
+                <div className="grid grid-cols-3 gap-2">
+                  <div 
+                    className={cn(
+                      "border rounded-md p-2 cursor-pointer transition-colors",
+                      layoutMode === 'list' 
+                        ? "bg-white dark:bg-gray-800 border-primary-300 dark:border-primary-700 shadow-sm" 
+                        : "bg-white/60 dark:bg-gray-800/40 hover:bg-white dark:hover:bg-gray-800"
+                    )}
+                    onClick={() => setLayoutMode('list')}
+                  >
+                    <div className="mb-1.5 h-12 flex flex-col gap-1 items-center justify-center">
+                      <div className="h-1.5 bg-gray-200 dark:bg-gray-700 rounded w-4/5"></div>
+                      <div className="h-1.5 bg-gray-200 dark:bg-gray-700 rounded w-4/5"></div>
+                      <div className="h-1.5 bg-gray-200 dark:bg-gray-700 rounded w-4/5"></div>
                     </div>
+                    <div className="text-center text-[10px] font-medium">List View</div>
                   </div>
-                  <div className="text-center text-sm font-medium">List View</div>
-                </div>
-                
-                <div 
-                  className={cn(
-                    "border rounded-lg p-3 cursor-pointer transition-colors",
-                    layoutMode === 'gallery' 
-                      ? "bg-primary-50 border-primary-200 dark:bg-primary-900/20 dark:border-primary-700" 
-                      : "hover:bg-gray-50 dark:hover:bg-gray-800"
-                  )}
-                  onClick={() => setLayoutMode('gallery')}
-                >
-                  <div className="flex justify-center mb-2">
-                    <div className="h-16 w-full grid grid-cols-2 gap-1">
-                      <div className="bg-gray-200 dark:bg-gray-700 rounded"></div>
-                      <div className="bg-gray-200 dark:bg-gray-700 rounded"></div>
-                      <div className="bg-gray-200 dark:bg-gray-700 rounded"></div>
-                      <div className="bg-gray-200 dark:bg-gray-700 rounded"></div>
+                  
+                  <div 
+                    className={cn(
+                      "border rounded-md p-2 cursor-pointer transition-colors",
+                      layoutMode === 'gallery' 
+                        ? "bg-white dark:bg-gray-800 border-primary-300 dark:border-primary-700 shadow-sm" 
+                        : "bg-white/60 dark:bg-gray-800/40 hover:bg-white dark:hover:bg-gray-800"
+                    )}
+                    onClick={() => setLayoutMode('gallery')}
+                  >
+                    <div className="mb-1.5 h-12 grid grid-cols-2 gap-1 items-center justify-center">
+                      <div className="bg-gray-200 dark:bg-gray-700 rounded aspect-square"></div>
+                      <div className="bg-gray-200 dark:bg-gray-700 rounded aspect-square"></div>
+                      <div className="bg-gray-200 dark:bg-gray-700 rounded aspect-square"></div>
+                      <div className="bg-gray-200 dark:bg-gray-700 rounded aspect-square"></div>
                     </div>
+                    <div className="text-center text-[10px] font-medium">Gallery</div>
                   </div>
-                  <div className="text-center text-sm font-medium">Gallery</div>
-                </div>
-                
-                <div 
-                  className={cn(
-                    "border rounded-lg p-3 cursor-pointer transition-colors",
-                    layoutMode === 'cards' 
-                      ? "bg-primary-50 border-primary-200 dark:bg-primary-900/20 dark:border-primary-700" 
-                      : "hover:bg-gray-50 dark:hover:bg-gray-800"
-                  )}
-                  onClick={() => setLayoutMode('cards')}
-                >
-                  <div className="flex justify-center mb-2">
-                    <div className="h-16 w-full grid grid-cols-2 gap-2">
-                      <div className="bg-gray-200 dark:bg-gray-700 rounded flex flex-col">
-                        <div className="h-2/3 bg-gray-300 dark:bg-gray-600 rounded-t"></div>
-                        <div className="h-1/3 flex items-center justify-center">
-                          <div className="w-2/3 h-1 bg-gray-300 dark:bg-gray-600 rounded"></div>
-                        </div>
-                      </div>
-                      <div className="bg-gray-200 dark:bg-gray-700 rounded flex flex-col">
-                        <div className="h-2/3 bg-gray-300 dark:bg-gray-600 rounded-t"></div>
-                        <div className="h-1/3 flex items-center justify-center">
-                          <div className="w-2/3 h-1 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                  
+                  <div 
+                    className={cn(
+                      "border rounded-md p-2 cursor-pointer transition-colors",
+                      layoutMode === 'cards' 
+                        ? "bg-white dark:bg-gray-800 border-primary-300 dark:border-primary-700 shadow-sm" 
+                        : "bg-white/60 dark:bg-gray-800/40 hover:bg-white dark:hover:bg-gray-800"
+                    )}
+                    onClick={() => setLayoutMode('cards')}
+                  >
+                    <div className="mb-1.5 h-12 flex items-center justify-center">
+                      <div className="h-full w-4/5 bg-gray-200 dark:bg-gray-700 rounded flex flex-col overflow-hidden">
+                        <div className="h-3/5 bg-gray-300 dark:bg-gray-600"></div>
+                        <div className="flex-1 flex items-center justify-center">
+                          <div className="w-3/5 h-0.5 bg-gray-300 dark:bg-gray-600 rounded"></div>
                         </div>
                       </div>
                     </div>
+                    <div className="text-center text-[10px] font-medium">Card View</div>
                   </div>
-                  <div className="text-center text-sm font-medium">Cards</div>
                 </div>
               </div>
             </div>
             
             <div>
-              <h3 className="font-medium mb-4">Layout Presets</h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="mb-1.5">
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Quick Layout Presets</h3>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
                 <button 
                   type="button"
-                  className={cn(
-                    "border rounded-lg p-4 text-left transition-colors",
-                    "hover:bg-gray-50 dark:hover:bg-gray-800/70"
-                  )}
+                  className="flex items-center p-2 border rounded-md bg-white/60 dark:bg-gray-900/40 hover:bg-white dark:hover:bg-gray-900/60"
                   onClick={() => {
                     setLayoutMode('list');
                     setItemsPerPage('20');
                     setSidebarPosition('right');
                   }}
                 >
-                  <div className="flex items-center">
-                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-300 mr-3">
-                      <Layout className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <div className="font-medium mb-1">Forum Layout</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">List view optimized for discussions</div>
-                    </div>
+                  <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-300 mr-2 flex-shrink-0">
+                    <Layout className="h-3 w-3" />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-xs font-medium mb-0.5">Forum Layout</div>
+                    <div className="text-[10px] text-gray-500 dark:text-gray-400">List view with sidebar</div>
                   </div>
                 </button>
                 
                 <button 
                   type="button"
-                  className={cn(
-                    "border rounded-lg p-4 text-left transition-colors",
-                    "hover:bg-gray-50 dark:hover:bg-gray-800/70"
-                  )}
+                  className="flex items-center p-2 border rounded-md bg-white/60 dark:bg-gray-900/40 hover:bg-white dark:hover:bg-gray-900/60"
                   onClick={() => {
                     setLayoutMode('gallery');
                     setItemsPerPage('30');
                     setSidebarPosition('left');
                   }}
                 >
-                  <div className="flex items-center">
-                    <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-300 mr-3">
-                      <Layout className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <div className="font-medium mb-1">Gallery Layout</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">Grid view for visual content</div>
-                    </div>
+                  <div className="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-300 mr-2 flex-shrink-0">
+                    <Layout className="h-3 w-3" />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-xs font-medium mb-0.5">Gallery Layout</div>
+                    <div className="text-[10px] text-gray-500 dark:text-gray-400">Grid view for visuals</div>
                   </div>
                 </button>
                 
                 <button 
                   type="button"
-                  className={cn(
-                    "border rounded-lg p-4 text-left transition-colors",
-                    "hover:bg-gray-50 dark:hover:bg-gray-800/70"
-                  )}
+                  className="flex items-center p-2 border rounded-md bg-white/60 dark:bg-gray-900/40 hover:bg-white dark:hover:bg-gray-900/60"
                   onClick={() => {
                     setLayoutMode('cards');
                     setItemsPerPage('10');
                     setSidebarPosition('none');
                   }}
                 >
-                  <div className="flex items-center">
-                    <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-300 mr-3">
-                      <Layout className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <div className="font-medium mb-1">Blog Layout</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">Card view for featured articles</div>
-                    </div>
+                  <div className="w-6 h-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-300 mr-2 flex-shrink-0">
+                    <Layout className="h-3 w-3" />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-xs font-medium mb-0.5">Blog Layout</div>
+                    <div className="text-[10px] text-gray-500 dark:text-gray-400">Featured cards view</div>
                   </div>
                 </button>
                 
                 <button 
                   type="button"
-                  className={cn(
-                    "border rounded-lg p-4 text-left transition-colors",
-                    "hover:bg-gray-50 dark:hover:bg-gray-800/70"
-                  )}
+                  className="flex items-center p-2 border rounded-md bg-white/60 dark:bg-gray-900/40 hover:bg-white dark:hover:bg-gray-900/60"
                   onClick={() => {
                     setLayoutMode('list');
                     setItemsPerPage('50');
                     setSidebarPosition('right');
                   }}
                 >
-                  <div className="flex items-center">
-                    <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-300 mr-3">
-                      <Layout className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <div className="font-medium mb-1">Knowledge Base</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">Compact view for documentation</div>
-                    </div>
+                  <div className="w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-300 mr-2 flex-shrink-0">
+                    <Layout className="h-3 w-3" />
+                  </div>
+                  <div className="text-left">
+                    <div className="text-xs font-medium mb-0.5">Knowledge Base</div>
+                    <div className="text-[10px] text-gray-500 dark:text-gray-400">Compact documentation</div>
                   </div>
                 </button>
-              </div>
-              
-              <div className="mt-8 text-xs text-gray-500 dark:text-gray-400 flex items-center">
-                <div className="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-400 mr-2">
-                  <span className="text-xs">ℹ</span>
-                </div>
-                <p>Select a preset to quickly apply optimized layout settings</p>
               </div>
             </div>
           </div>
@@ -794,30 +736,19 @@ export function EditSpaceDialog({
 
       case 'customize':
         return (
-          <div className="space-y-5">
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-5 border border-gray-100 dark:border-gray-800">
-              <div className="flex items-center mb-4">
-                <div className="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center text-teal-600 dark:text-teal-300 mr-3">
-                  <FileImage className="h-4 w-4" />
-                </div>
-                <div>
-                  <h4 className="font-medium">Content Fields</h4>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                    Customize which fields are shown in {cmsType} content
-                  </p>
-                </div>
+          <div className="space-y-6">
+            <div>
+              <div className="flex items-center gap-1 mb-1.5">
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Content Field Visibility</h3>
               </div>
-              
-              <div className="space-y-3">
+              <div className="space-y-1.5 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-md border border-gray-100 dark:border-gray-800">
                 {Object.keys(fieldVisibility).map(field => (
-                  <div key={field} className="flex items-center justify-between p-3 border border-gray-100 dark:border-gray-800 rounded-md bg-white dark:bg-gray-900">
-                    <div className="flex items-center">
-                      <div className="capitalize font-medium">{field}</div>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <Label htmlFor={`field-${field}`} className="text-sm text-gray-500 dark:text-gray-400 mr-2">
+                  <div key={field} className="flex items-center justify-between py-1.5 px-2 border border-gray-100 dark:border-gray-800 rounded bg-white dark:bg-gray-900">
+                    <div className="text-xs capitalize">{field}</div>
+                    <div className="flex items-center space-x-1">
+                      <span className="text-[10px] text-gray-500 dark:text-gray-400 mr-1">
                         Visible
-                      </Label>
+                      </span>
                       <Switch
                         id={`field-${field}`}
                         checked={fieldVisibility[field]}
@@ -827,6 +758,7 @@ export function EditSpaceDialog({
                             [field]: checked
                           }));
                         }}
+                        className="scale-75"
                       />
                     </div>
                   </div>
@@ -834,28 +766,19 @@ export function EditSpaceDialog({
               </div>
             </div>
             
-            <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-5 border border-gray-100 dark:border-gray-800">
-              <div className="flex items-center mb-4">
-                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-300 mr-3">
-                  <Settings className="h-4 w-4" />
-                </div>
-                <div>
-                  <h4 className="font-medium">Custom Field Labels</h4>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                    Rename fields to match your content structure
-                  </p>
-                </div>
+            <div>
+              <div className="flex items-center gap-1 mb-1.5">
+                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Custom Field Labels</h3>
               </div>
-              
-              <div className="space-y-3">
+              <div className="space-y-2 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-md border border-gray-100 dark:border-gray-800">
                 {Object.keys(fieldVisibility).filter(field => fieldVisibility[field]).map(field => (
-                  <div key={field} className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor={`label-${field}`} className="text-right capitalize font-medium">
+                  <div key={field} className="grid grid-cols-4 items-center gap-2">
+                    <label htmlFor={`label-${field}`} className="text-right text-xs capitalize text-gray-600 dark:text-gray-400">
                       {field}
-                    </Label>
+                    </label>
                     <Input
                       id={`label-${field}`}
-                      className="col-span-3"
+                      className="col-span-3 h-7 text-xs"
                       value={customFields[field] || ""}
                       onChange={(e) => {
                         setCustomFields(prev => ({
@@ -867,6 +790,9 @@ export function EditSpaceDialog({
                     />
                   </div>
                 ))}
+                <div className="pt-1 text-[10px] text-gray-500 dark:text-gray-400">
+                  Customize field labels to match your content structure
+                </div>
               </div>
             </div>
           </div>
@@ -874,62 +800,64 @@ export function EditSpaceDialog({
 
       case 'danger':
         return (
-          <div className="space-y-5">
-            <div className="bg-red-50 dark:bg-red-900/10 rounded-lg p-5 border border-red-200 dark:border-red-800">
-              <div className="flex items-start">
-                <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-300 mr-4 mt-0.5 flex-shrink-0">
-                  <AlertTriangle className="h-5 w-5" />
+          <div className="space-y-6">
+            <div className="bg-red-50/50 dark:bg-red-900/10 p-3 rounded-md border border-red-200 dark:border-red-900/30">
+              <div className="flex items-center mb-3">
+                <div className="w-6 h-6 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 mr-2 flex-shrink-0">
+                  <AlertTriangle className="h-3.5 w-3.5" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-red-700 dark:text-red-400 text-lg">Danger Zone</h3>
-                  <p className="text-sm text-red-600 dark:text-red-300 mt-1 mb-4">
-                    These actions cannot be undone. Please be careful.
+                  <h3 className="text-sm font-medium text-red-700 dark:text-red-400">Danger Zone</h3>
+                  <p className="text-[10px] text-red-600/80 dark:text-red-400/80 mt-0.5">
+                    These actions cannot be undone
                   </p>
-                  
-                  <div className="space-y-5">
-                    <div className="p-4 bg-white dark:bg-gray-900 border border-red-200 dark:border-red-800 rounded-md">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h4 className="font-medium">Archive Space</h4>
-                          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                            Hide this space from navigation but keep all content.
-                          </p>
-                        </div>
-                        <Button 
-                          variant="outline" 
-                          className="border-red-200 hover:bg-red-50 hover:text-red-600"
-                          type="button"
-                          onClick={() => {
-                            // This would typically archive the space
-                            alert("This feature would archive the space.");
-                          }}
-                        >
-                          Archive
-                        </Button>
-                      </div>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="p-2 bg-white dark:bg-gray-900 border border-red-200 dark:border-red-900/30 rounded-md">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-xs font-medium">Archive Space</h4>
+                      <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">
+                        Hide this space from navigation
+                      </p>
                     </div>
-                    
-                    <div className="p-4 bg-white dark:bg-gray-900 border border-red-200 dark:border-red-800 rounded-md">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h4 className="font-medium">Delete Space</h4>
-                          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                            Permanently delete this space and all its content.
-                          </p>
-                        </div>
-                        <Button 
-                          variant="destructive"
-                          type="button"
-                          onClick={() => {
-                            // This would typically open a confirmation dialog
-                            alert("This feature would delete the space permanently.");
-                          }}
-                        >
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Delete
-                        </Button>
-                      </div>
+                    <Button 
+                      variant="outline" 
+                      className="h-6 text-[10px] border-gray-200 px-2"
+                      type="button"
+                      onClick={() => {
+                        // This would typically archive the space
+                        alert("This would archive the space.");
+                      }}
+                    >
+                      Archive
+                    </Button>
+                  </div>
+                </div>
+                
+                <div className="p-2 bg-white dark:bg-gray-900 border border-red-200 dark:border-red-900/30 rounded-md">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-xs font-medium">Delete Space</h4>
+                      <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">
+                        Permanently remove this space
+                      </p>
                     </div>
+                    <Button 
+                      variant="destructive"
+                      size="sm"
+                      className="h-6 text-[10px] px-2"
+                      type="button"
+                      onClick={() => {
+                        // This would typically open a confirmation dialog
+                        alert("This would delete the space permanently.");
+                      }}
+                    >
+                      <Trash2 className="h-3 w-3 mr-1" />
+                      Delete
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -945,127 +873,82 @@ export function EditSpaceDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[860px] p-0 overflow-hidden rounded-lg shadow-xl border-0">
-        <form onSubmit={handleSubmit}>
-          <DialogHeader className="px-6 pt-6 pb-4 border-b bg-white dark:bg-gray-950">
-            <div className="flex items-center">
+        <form onSubmit={handleSubmit} className="flex flex-col h-full">
+          <DialogHeader className="px-6 pt-5 pb-4 border-b bg-white dark:bg-gray-950 flex-shrink-0">
+            <div className="flex items-start">
               {space?.space_icon_URL ? (
                 <img 
                   src={space.space_icon_URL} 
                   alt="Space Icon" 
-                  className="w-8 h-8 mr-3 rounded" 
+                  className="w-9 h-9 mr-3 rounded-md object-cover" 
                   onError={(e) => {
                     e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMTZDMTQuMjA5MSAxNiAxNiAxNC4yMDkxIDE2IDEyQzE2IDkuNzkwODYgMTQuMjA5MSA4IDEyIDhDOS43OTA4NiA4IDggOS43OTA4NiA4IDEyQzggMTQuMjA5MSA5Ljc5MDg2IDE2IDEyIDE2WiIgc3Ryb2tlPSIjNjk3MDg2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0zIDEyQzMgMTIgNyAyMSAxMiAyMUMxNyAyMSAyMSAxMiAyMSAxMkMyMSAxMiAxNyAzIDEyIDNDNyAzIDMgMTIgMyAxMloiIHN0cm9rZT0iIzY5NzA4NiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48L3N2Zz4=';
                   }}
                 />
               ) : (
-                <div className="w-8 h-8 mr-3 bg-primary-100 dark:bg-primary-900/30 rounded flex items-center justify-center text-primary-600 dark:text-primary-300">
+                <div className="w-9 h-9 mr-3 bg-primary-100 dark:bg-primary-900/30 rounded-md flex items-center justify-center text-primary-600 dark:text-primary-300">
                   <FileImage className="h-4 w-4" />
                 </div>
               )}
               <div>
-                <DialogTitle className="text-lg">{name || 'Edit Space'}</DialogTitle>
-                <DialogDescription className="text-sm">
-                  Customize your space settings and properties
+                <DialogTitle className="text-lg font-medium tracking-tight text-gray-900 dark:text-white">
+                  {name ? `Edit ${name}` : 'Edit Space'}
+                </DialogTitle>
+                <DialogDescription className="text-sm text-gray-500 dark:text-gray-400">
+                  Manage space settings and appearance
                 </DialogDescription>
               </div>
             </div>
           </DialogHeader>
           
-          <div className="flex h-[520px]">
+          <div className="flex h-[520px] overflow-hidden">
             {/* Sidebar */}
-            <div className="w-52 border-r bg-gray-50 dark:bg-gray-900/70 overflow-y-auto p-3">
-              <nav className="space-y-1.5">
-                <button
-                  type="button"
-                  className={cn(
-                    "w-full flex items-center px-3.5 py-2.5 text-sm rounded-md transition-all text-left",
-                    activeTab === 'general'
-                      ? "bg-white dark:bg-gray-800 shadow-sm text-gray-900 dark:text-white font-medium border border-gray-100 dark:border-gray-700"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-gray-800/70 hover:shadow-sm"
-                  )}
-                  onClick={() => setActiveTab('general')}
-                >
-                  <Layout className="h-4 w-4 mr-2.5 opacity-80" />
-                  General
-                </button>
+            <div className="w-48 bg-gray-50 dark:bg-gray-900/70 overflow-y-auto flex-shrink-0">
+              <nav className="p-2 space-y-0.5">
+                {[
+                  { id: 'general', label: 'General', icon: Layout },
+                  { id: 'permissions', label: 'Permissions', icon: Users },
+                  { id: 'seo', label: 'SEO', icon: Search },
+                  { id: 'layout', label: 'Display', icon: Layout },
+                  { id: 'customize', label: 'Customize', icon: Settings }
+                ].map(tab => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    className={cn(
+                      "w-full flex items-center px-3 py-2 text-sm rounded-md transition-all text-left",
+                      activeTab === tab.id
+                        ? "bg-white dark:bg-gray-800 shadow-sm text-gray-900 dark:text-white font-medium border border-gray-100 dark:border-gray-700"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-gray-800/70 hover:shadow-sm"
+                    )}
+                    onClick={() => setActiveTab(tab.id as TabType)}
+                  >
+                    <tab.icon className="h-4 w-4 mr-2.5 opacity-80" />
+                    {tab.label}
+                  </button>
+                ))}
+                
+                <div className="h-px bg-gray-200 dark:bg-gray-700 my-1.5"></div>
                 
                 <button
                   type="button"
                   className={cn(
-                    "w-full flex items-center px-3.5 py-2.5 text-sm rounded-md transition-all text-left",
-                    activeTab === 'permissions'
-                      ? "bg-white dark:bg-gray-800 shadow-sm text-gray-900 dark:text-white font-medium border border-gray-100 dark:border-gray-700"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-gray-800/70 hover:shadow-sm"
+                    "w-full flex items-center px-3 py-2 text-sm rounded-md transition-all text-left",
+                    activeTab === 'danger'
+                      ? "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 font-medium border border-red-100 dark:border-red-800/50"
+                      : "text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10"
                   )}
-                  onClick={() => setActiveTab('permissions')}
+                  onClick={() => setActiveTab('danger')}
                 >
-                  <Users className="h-4 w-4 mr-2.5 opacity-80" />
-                  Permissions
-                </button>
-                
-                <button
-                  type="button"
-                  className={cn(
-                    "w-full flex items-center px-3.5 py-2.5 text-sm rounded-md transition-all text-left",
-                    activeTab === 'seo'
-                      ? "bg-white dark:bg-gray-800 shadow-sm text-gray-900 dark:text-white font-medium border border-gray-100 dark:border-gray-700"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-gray-800/70 hover:shadow-sm"
-                  )}
-                  onClick={() => setActiveTab('seo')}
-                >
-                  <Search className="h-4 w-4 mr-2.5 opacity-80" />
-                  SEO
-                </button>
-                
-                <button
-                  type="button"
-                  className={cn(
-                    "w-full flex items-center px-3.5 py-2.5 text-sm rounded-md transition-all text-left",
-                    activeTab === 'layout'
-                      ? "bg-white dark:bg-gray-800 shadow-sm text-gray-900 dark:text-white font-medium border border-gray-100 dark:border-gray-700"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-gray-800/70 hover:shadow-sm"
-                  )}
-                  onClick={() => setActiveTab('layout')}
-                >
-                  <FileImage className="h-4 w-4 mr-2.5 opacity-80" />
-                  Display Settings
-                </button>
-                
-                <button
-                  type="button"
-                  className={cn(
-                    "w-full flex items-center px-3.5 py-2.5 text-sm rounded-md transition-all text-left",
-                    activeTab === 'customize'
-                      ? "bg-white dark:bg-gray-800 shadow-sm text-gray-900 dark:text-white font-medium border border-gray-100 dark:border-gray-700"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-gray-800/70 hover:shadow-sm"
-                  )}
-                  onClick={() => setActiveTab('customize')}
-                >
-                  <FileImage className="h-4 w-4 mr-2.5 opacity-80" />
-                  Customize Fields
+                  <AlertTriangle className="h-4 w-4 mr-2.5 opacity-80" />
+                  Danger Zone
                 </button>
               </nav>
-              
-              <div className="h-px bg-gray-200 dark:bg-gray-700 my-4"></div>
-              
-              <button
-                type="button"
-                className={cn(
-                  "w-full flex items-center px-3.5 py-2.5 text-sm rounded-md transition-all text-left",
-                  activeTab === 'danger'
-                    ? "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 font-medium border border-red-100 dark:border-red-800/50"
-                    : "text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10"
-                )}
-                onClick={() => setActiveTab('danger')}
-              >
-                <AlertTriangle className="h-4 w-4 mr-2.5 opacity-80" />
-                Danger Zone
-              </button>
             </div>
             
             {/* Main content */}
             <div className="flex-1 bg-white dark:bg-gray-950 overflow-y-auto">
-              <div className="py-6 px-7">
+              <div className="py-5 px-6">
                 {renderTabContent()}
                 
                 {/* Error and success messages */}
@@ -1088,7 +971,7 @@ export function EditSpaceDialog({
             </div>
           </div>
           
-          <DialogFooter className="border-t px-6 py-4 bg-gray-50 dark:bg-gray-900/70">
+          <DialogFooter className="border-t px-6 py-4 bg-gray-50 dark:bg-gray-900/70 flex-shrink-0">
             <div className="flex items-center justify-between w-full">
               <div className="text-xs text-gray-500 dark:text-gray-400">
                 Last updated: {new Date().toLocaleDateString()}
@@ -1099,10 +982,15 @@ export function EditSpaceDialog({
                   variant="outline"
                   onClick={() => onOpenChange(false)}
                   disabled={isLoading}
+                  className="h-9 px-4"
                 >
                   Cancel
                 </Button>
-                <Button type="submit" disabled={isLoading} className="min-w-[100px] font-medium">
+                <Button 
+                  type="submit" 
+                  disabled={isLoading} 
+                  className="h-9 px-4 min-w-[100px] font-medium"
+                >
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -22,6 +22,7 @@ import DashboardSiteReports from "@/pages/dashboard/site/[siteSD]/reports/index"
 import DashboardSiteAppStore from "@/pages/dashboard/site/[siteSD]/app-store/index";
 import DashboardSiteDesignStudio from "@/pages/dashboard/site/[siteSD]/design-studio/index";
 import DashboardSiteSiteConfig from "@/pages/dashboard/site/[siteSD]/site-config/index";
+import DashboardSiteSiteConfigSpace from "@/pages/dashboard/site/[siteSD]/site-config/spaces/[spacesSlug]/index";
 import NotFound from "@/pages/404";
 import Content from "@/pages/dashboard/site/[siteSD]/content";
 
@@ -60,6 +61,7 @@ function Router() {
       <Route path="/dashboard/site/:siteSD/design-studio" component={DashboardSiteDesignStudio} />
       <Route path="/dashboard/site/:siteSD/design-studio/:section" component={DashboardSiteDesignStudio} />
       <Route path="/dashboard/site/:siteSD/site-config" component={DashboardSiteSiteConfig} />
+      <Route path="/dashboard/site/:siteSD/site-config/spaces/:spacesSlug" component={DashboardSiteSiteConfigSpace} />
       
       {/* Site frontend routes (public facing) */}
       <Route path="/site/:siteSD" component={SiteHomePage} />

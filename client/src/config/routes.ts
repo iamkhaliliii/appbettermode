@@ -29,6 +29,8 @@ export const APP_ROUTES = {
     DESIGN_STUDIO: (siteSD: string) => `/dashboard/site/${siteSD}/design-studio`,
     DESIGN_STUDIO_SECTION: (siteSD: string, section: string) => `/dashboard/site/${siteSD}/design-studio/${section}`,
     SITE_CONFIG: (siteSD: string) => `/dashboard/site/${siteSD}/site-config`,
+    SITE_CONFIG_SPACES: (siteSD: string) => `/dashboard/site/${siteSD}/site-config/spaces`,
+    SITE_CONFIG_SPACE: (siteSD: string, spaceSlug: string) => `/dashboard/site/${siteSD}/site-config/spaces/${spaceSlug}`,
   },
   
   // Content Types (for use in content sections)

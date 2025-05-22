@@ -331,34 +331,36 @@ router.post('/', async (req, res) => {
                 console.log(`Generated slug for ${spaceName}: ${spaceSlug}`);
                 try {
                     console.log(`Attempting to create space in database for ${cmsType.name}...`);
-                    // Insert the space using the spaces table object instead of raw SQL
-                    const spaceInsertResult = await db.insert(spaces)
-                        .values({
-                        name: spaceName,
-                        slug: spaceSlug,
-                        description: cmsType.description || `${spaceName} space`,
-                        creator_id: currentUserId,
-                        site_id: newSite.id,
-                        visibility: 'public',
-                        cms_type: cmsType.id, // This is now a UUID foreign key
-                        hidden: false
-                    })
-                        .returning({
-                        id: spaces.id,
-                        name: spaces.name,
-                        slug: spaces.slug,
-                        description: spaces.description,
-                        site_id: spaces.site_id,
-                        visibility: spaces.visibility,
-                        cms_type: spaces.cms_type,
-                        hidden: spaces.hidden
-                    });
-                    console.log(`Space created successfully for ${cmsType.name}, result:`, JSON.stringify(spaceInsertResult));
-                    console.log(`Created ${cmsType.name} space: ${spaceName}`);
-                    // Extract the space ID from the result and add it to our array
-                    if (spaceInsertResult && spaceInsertResult.length > 0) {
-                        createdSpaceIds.push(spaceInsertResult[0].id);
-                        console.log(`Added space ID ${spaceInsertResult[0].id} to created spaces list`);
+                    // Use SQL template literal with drizzle's sql tag
+                    const query = sql `
+            INSERT INTO spaces 
+            (name, slug, description, creator_id, site_id, visibility, cms_type, hidden)
+            VALUES 
+            (${spaceName}, ${spaceSlug}, ${cmsType.description || `${spaceName} space`}, 
+             ${currentUserId}, ${newSite.id}, ${'public'}, 
+             ${cmsType.id}, ${false})
+            RETURNING id;
+          `;
+                    try {
+                        const result = await db.execute(query);
+                        console.log(`Space created successfully for ${cmsType.name}, SQL result:`, JSON.stringify(result));
+                        console.log(`Created ${cmsType.name} space: ${spaceName}`);
+                        // Extract the space ID from the result and add it to our array
+                        // Cast result to any to handle varying result structures
+                        const resultAny = result;
+                        if (resultAny && Array.isArray(resultAny) && resultAny.length > 0 && resultAny[0].id) {
+                            createdSpaceIds.push(resultAny[0].id);
+                            console.log(`Added space ID ${resultAny[0].id} to created spaces list`);
+                        }
+                    }
+                    catch (sqlError) {
+                        console.error(`SQL error creating space for ${cmsType.name}:`, sqlError.message);
+                        // Check if there's a more detailed error structure
+                        if (sqlError.code) {
+                            console.error(`SQL error code: ${sqlError.code}, position: ${sqlError.position}`);
+                        }
+                        // Re-throw to ensure the outer catch block handles it
+                        throw sqlError;
                     }
                 }
                 catch (spaceError) {
@@ -465,33 +467,30 @@ router.post('/:siteId/spaces', async (req, res) => {
             return res.status(409).json({ message: 'A space with this slug already exists for this site' });
         }
         // Insert the new space
-        const spaceResult = await db.insert(spaces)
-            .values({
-            name,
-            slug,
-            description: description || `${name} space`,
-            creator_id: currentUserId,
-            site_id: siteId,
-            visibility,
-            cms_type,
-            hidden
-        })
-            .returning({
-            id: spaces.id,
-            name: spaces.name,
-            slug: spaces.slug,
-            description: spaces.description,
-            site_id: spaces.site_id,
-            visibility: spaces.visibility,
-            cms_type: spaces.cms_type,
-            hidden: spaces.hidden
-        });
+        const spaceResult = await db.execute(sql `
+      INSERT INTO spaces 
+      (name, slug, description, creator_id, site_id, visibility, cms_type, hidden)
+      VALUES 
+      (${name}, ${slug}, ${description || `${name} space`}, 
+       ${currentUserId}, ${siteId}, ${visibility}, 
+       ${cms_type || 'custom'}, ${hidden})
+      RETURNING id, name, slug, description, site_id, visibility, cms_type, hidden;
+    `);
         logger.info(`Space creation result:`, spaceResult);
         // Extract the space ID from the result
         let spaceId = null;
-        if (spaceResult && spaceResult.length > 0) {
+        if (Array.isArray(spaceResult) && spaceResult.length > 0 && spaceResult[0].id) {
             spaceId = spaceResult[0].id;
             logger.info(`Space created with ID ${spaceId}`);
+        }
+        else {
+            // Try alternative method to extract space ID
+            const resultString = JSON.stringify(spaceResult);
+            const idMatch = resultString.match(/"id":"([^"]+)"/);
+            if (idMatch && idMatch[1]) {
+                spaceId = idMatch[1];
+                logger.info(`Space ID extracted from result: ${spaceId}`);
+            }
         }
         if (!spaceId) {
             logger.error("Failed to extract space ID from result:", spaceResult);
@@ -582,6 +581,108 @@ router.get('/:siteId/spaces', async (req, res) => {
     catch (error) {
         console.error('Error fetching spaces:', error);
         return res.status(500).json({ message: 'Failed to fetch spaces', details: error instanceof Error ? error.message : 'Unknown error' });
+    }
+});
+// Update a space
+router.put('/:siteId/spaces/:spaceId', async (req, res) => {
+    try {
+        const { siteId, spaceId } = req.params;
+        
+        // Verify site exists
+        const site = await db.query.sites.findFirst({
+            where: eq(sites.id, siteId)
+        });
+        
+        if (!site) {
+            return res.status(404).json({ message: 'Site not found' });
+        }
+        
+        // Verify space exists and belongs to the site
+        const existingSpace = await db.query.spaces.findFirst({
+            where: and(
+                eq(spaces.id, spaceId),
+                eq(spaces.site_id, siteId)
+            )
+        });
+        
+        if (!existingSpace) {
+            return res.status(404).json({ message: 'Space not found or does not belong to this site' });
+        }
+        
+        logger.info(`Updating space ${spaceId} for site ${siteId}`);
+        
+        // Parse request body
+        const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+        const { name, slug, description, cms_type, hidden, visibility } = body;
+        
+        // Validate slug format if it's being changed
+        if (slug && slug !== existingSpace.slug) {
+            if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+                return res.status(400).json({
+                    message: 'Invalid slug format. Use lowercase letters, numbers, and hyphens only.'
+                });
+            }
+            
+            // Check if slug is already in use by another space
+            const slugExists = await db.query.spaces.findFirst({
+                where: and(
+                    eq(spaces.site_id, siteId),
+                    eq(spaces.slug, slug),
+                    ne(spaces.id, spaceId)
+                )
+            });
+            
+            if (slugExists) {
+                return res.status(409).json({ message: 'A space with this slug already exists for this site' });
+            }
+        }
+        
+        // Create update data object with only fields that are provided
+        const updateData = {};
+        if (name !== undefined) updateData.name = name;
+        if (slug !== undefined) updateData.slug = slug;
+        if (description !== undefined) updateData.description = description;
+        if (cms_type !== undefined) updateData.cms_type = cms_type;
+        if (hidden !== undefined) updateData.hidden = hidden;
+        if (visibility !== undefined) updateData.visibility = visibility;
+        
+        // Additional fields
+        if (body.invite_only !== undefined) updateData.invite_only = body.invite_only;
+        if (body.anyone_can_invite !== undefined) updateData.anyone_can_invite = body.anyone_can_invite;
+        if (body.post_permission !== undefined) updateData.post_permission = body.post_permission;
+        if (body.reply_permission !== undefined) updateData.reply_permission = body.reply_permission;
+        if (body.react_permission !== undefined) updateData.react_permission = body.react_permission;
+        
+        // SEO fields
+        if (body.meta_title !== undefined) updateData.meta_title = body.meta_title;
+        if (body.meta_description !== undefined) updateData.meta_description = body.meta_description;
+        if (body.ogg_url !== undefined) updateData.ogg_url = body.ogg_url;
+        
+        // Layout fields
+        if (body.space_icon_URL !== undefined) updateData.space_icon_URL = body.space_icon_URL;
+        if (body.space_banner_URL !== undefined) updateData.space_banner_URL = body.space_banner_URL;
+        
+        // Update the space
+        await db.update(spaces)
+            .set(updateData)
+            .where(and(
+                eq(spaces.id, spaceId),
+                eq(spaces.site_id, siteId)
+            ));
+        
+        // Fetch the updated space
+        const updatedSpace = await db.query.spaces.findFirst({
+            where: eq(spaces.id, spaceId)
+        });
+        
+        logger.info(`Space ${spaceId} updated successfully`);
+        return res.status(200).json(updatedSpace);
+    } catch (error) {
+        logger.error('Error updating space:', error);
+        return res.status(500).json({ 
+            message: 'Failed to update space', 
+            details: error instanceof Error ? error.message : 'Unknown error' 
+        });
     }
 });
 export default router;
