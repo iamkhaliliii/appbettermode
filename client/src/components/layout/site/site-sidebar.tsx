@@ -395,15 +395,6 @@ export function SiteSidebar({ siteSD, activePage = 'home' }: SiteSidebarProps) {
         </div>
 
       </div>
-      {/* For debugging only */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="mt-4 p-3 text-xs bg-gray-100 rounded">
-          <p>Debug: {spaces.length} spaces found</p>
-          <p>Site ID: {siteId}</p>
-          <p>Loading: {isLoading ? 'Yes' : 'No'}</p>
-          <p>Error: {error || 'None'}</p>
-        </div>
-      )}
     </div>
   );
 } 

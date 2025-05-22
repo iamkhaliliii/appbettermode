@@ -39,6 +39,7 @@ import { SideNavItem } from "./SidebarNavigationItems";
 import { MinimalItem, TreeFolder } from "./SidebarTreeComponents";
 import { sitesApi, cmsTypesApi } from "@/lib/api";
 import { getApiBaseUrl } from "@/lib/utils";
+import { EditSpaceDialog } from "@/components/ui/edit-space-dialog";
 
 // Define interface for spaces
 interface Space {
@@ -47,6 +48,10 @@ interface Space {
   slug: string;
   cms_type?: string; // This is now a CMS type ID
   cms_type_name?: string; // Human-readable name for display
+  description?: string;
+  hidden?: boolean;
+  visibility?: string;
+  site_id: string;
 }
 
 // Local NavigationSection and NavigationItem components
@@ -80,77 +85,57 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
   }
 
   const [searchTerm, setSearchTerm] = useState("");
+  
+  // Space management states
   const [spaces, setSpaces] = useState<Space[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [siteId, setSiteId] = useState<string | null>(null);
+  const [siteId, setSiteId] = useState<string | null>(currentSiteIdentifier || null);
+  
+  // Space editing states
+  const [editSpaceDialogOpen, setEditSpaceDialogOpen] = useState(false);
+  const [selectedSpace, setSelectedSpace] = useState<Space | null>(null);
 
-  // First fetch the site to get its UUID
+  // CMS Types for proper naming
+  const [cmsTypes, setCmsTypes] = useState<Record<string, string>>({});
+  
+  // Fetch CMS types for better labels
   useEffect(() => {
-    const fetchSiteData = async () => {
-      if (!currentSiteIdentifier) return;
-      
-      setIsLoading(true);
-      setError(null);
-      
+    const fetchCmsTypes = async () => {
       try {
-        // Fetch site data using the sitesApi
-        const siteData = await sitesApi.getSite(currentSiteIdentifier);
-        setSiteId(siteData.id);
+        const types = await cmsTypesApi.getAllCmsTypes();
         
-        // Continue with generating spaces if we can't fetch real ones yet
-        if (siteData.content_types && Array.isArray(siteData.content_types)) {
-          const generatedSpaces: Space[] = siteData.content_types.map((cmsType: string) => {
-            let name;
-            
-            switch (cmsType) {
-              case 'discussion':
-                name = 'Discussions';
-                break;
-              case 'qa':
-                name = 'Q&A';
-                break;
-              case 'wishlist':
-                name = 'Ideas & Wishlist';
-                break;
-              case 'blog':
-                name = 'Blog';
-                break;
-              case 'event':
-                name = 'Events';
-                break;
-              case 'knowledge':
-                name = 'Knowledge Base';
-                break;
-              case 'landing':
-                name = 'Landing Pages';
-                break;
-              case 'jobs':
-                name = 'Job Board';
-                break;
-              default:
-                name = cmsType.charAt(0).toUpperCase() + cmsType.slice(1);
-            }
-            
-            return {
-              id: `space-${cmsType}`,
-              name,
-              slug: cmsType.toLowerCase(),
-              cms_type: cmsType,
-            };
-          });
-          
-          setSpaces(generatedSpaces);
-        }
-      } catch (err) {
-        console.error("Error fetching site data:", err);
-        setError(err instanceof Error ? err.message : "Failed to load site data");
-      } finally {
-        setIsLoading(false);
+        // Create a mapping of CMS type IDs to names
+        const typeMap: Record<string, string> = {};
+        types.forEach((type: any) => {
+          typeMap[type.id] = type.name;
+        });
+        
+        setCmsTypes(typeMap);
+      } catch (error) {
+        console.error("Error fetching CMS types:", error);
       }
     };
+    
+    fetchCmsTypes();
+  }, []);
 
-    fetchSiteData();
+  // Fetch site details to get proper ID if needed
+  useEffect(() => {
+    const fetchSiteDetails = async () => {
+      if (!currentSiteIdentifier) return;
+      
+      try {
+        // Get the site details to ensure we have the UUID
+        const siteData = await sitesApi.getSite(currentSiteIdentifier);
+        setSiteId(siteData.id);
+      } catch (error) {
+        console.error("Error fetching site details:", error);
+        setError("Failed to load site details");
+      }
+    };
+    
+    fetchSiteDetails();
   }, [currentSiteIdentifier]);
 
   // Fetch actual spaces from API once we have the siteId
@@ -179,72 +164,19 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
             name: space.name,
             slug: space.slug,
             cms_type: space.cms_type || 'custom',
+            description: space.description,
+            hidden: space.hidden,
+            visibility: space.visibility,
+            site_id: space.site_id || siteId
           }));
           
           setSpaces(mappedSpaces);
-          
-          // If we have CMS type IDs, we should also fetch CMS type details to get the names
-          if (mappedSpaces.some(space => space.cms_type)) {
-            try {
-              // Get a list of unique CMS type IDs, filtering out undefined values
-              const cmsTypeIds = Array.from(
-                new Set(
-                  mappedSpaces
-                    .map(space => space.cms_type)
-                    .filter((id): id is string => !!id) // Type guard to ensure non-null values
-                )
-              );
-              
-              if (cmsTypeIds.length > 0) {
-                console.log('Fetching CMS type details for IDs:', cmsTypeIds);
-                
-                // Fetch each CMS type one by one
-                const cmsTypeDetails = await Promise.all(
-                  cmsTypeIds.map(async (typeId) => {
-                    try {
-                      return await cmsTypesApi.getCmsTypeById(typeId);
-                    } catch (err) {
-                      console.error(`Error fetching CMS type ${typeId}:`, err);
-                      return null;
-                    }
-                  })
-                );
-                
-                // Create a mapping of ID to CMS type details
-                const cmsTypeMap = new Map();
-                cmsTypeDetails
-                  .filter(Boolean)
-                  .forEach(cmsType => {
-                    if (cmsType && cmsType.id) {
-                      cmsTypeMap.set(cmsType.id, cmsType);
-                    }
-                  });
-                
-                // Update spaces with CMS type names
-                if (cmsTypeMap.size > 0) {
-                  setSpaces(prevSpaces => prevSpaces.map(space => {
-                    const cmsTypeId = space.cms_type;
-                    if (cmsTypeId && cmsTypeMap.has(cmsTypeId)) {
-                      const cmsType = cmsTypeMap.get(cmsTypeId);
-                      if (cmsType) {
-                        return {
-                          ...space,
-                          cms_type_name: cmsType.name // Store the name separately
-                        };
-                      }
-                    }
-                    return space;
-                  }));
-                }
-              }
-            } catch (err) {
-              console.error("Error fetching CMS type details:", err);
-            }
-          }
+        } else {
+          throw new Error('Invalid response format');
         }
-      } catch (err) {
-        console.error("Error fetching spaces:", err);
-        // Don't set error - we'll keep the generated spaces if we can't fetch real ones
+      } catch (error) {
+        console.error('Error fetching spaces:', error);
+        setError(error instanceof Error ? error.message : 'Unknown error');
       } finally {
         setIsLoading(false);
       }
@@ -252,6 +184,71 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
     
     fetchSpaces();
   }, [siteId]);
+
+  // Update spaces with CMS type names
+  useEffect(() => {
+    if (Object.keys(cmsTypes).length > 0 && spaces.length > 0) {
+      // Add CMS type names to spaces
+      const updatedSpaces = spaces.map(space => {
+        if (space.cms_type && cmsTypes[space.cms_type]) {
+          return {
+            ...space,
+            cms_type_name: cmsTypes[space.cms_type]
+          };
+        }
+        return space;
+      });
+      
+      setSpaces(updatedSpaces);
+    }
+  }, [cmsTypes, spaces]);
+
+  // Handle space edit request
+  const handleEditSpace = (space: Space) => {
+    setSelectedSpace(space);
+    setEditSpaceDialogOpen(true);
+  };
+
+  // Handle space update completion
+  const handleSpaceUpdated = () => {
+    // Refetch spaces to get the updated data
+    if (siteId) {
+      const fetchSpaces = async () => {
+        setIsLoading(true);
+        try {
+          const API_BASE = getApiBaseUrl();
+          const response = await fetch(`${API_BASE}/api/v1/sites/${siteId}/spaces`);
+          
+          if (!response.ok) {
+            throw new Error('Failed to refresh spaces');
+          }
+          
+          const spacesData = await response.json();
+          
+          if (Array.isArray(spacesData)) {
+            const mappedSpaces: Space[] = spacesData.map((space: any) => ({
+              id: space.id,
+              name: space.name,
+              slug: space.slug,
+              cms_type: space.cms_type || 'custom',
+              description: space.description,
+              hidden: space.hidden,
+              visibility: space.visibility,
+              site_id: space.site_id || siteId
+            }));
+            
+            setSpaces(mappedSpaces);
+          }
+        } catch (error) {
+          console.error('Error refreshing spaces:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
+      fetchSpaces();
+    }
+  };
 
   // Get icon based on space type
   const getSpaceIcon = (space: Space) => {
@@ -293,6 +290,15 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
 
   return (
     <div className="p-3">
+      {/* Edit Space Dialog */}
+      <EditSpaceDialog 
+        open={editSpaceDialogOpen} 
+        onOpenChange={setEditSpaceDialogOpen} 
+        space={selectedSpace} 
+        siteId={siteId || ''} 
+        onSpaceUpdated={handleSpaceUpdated}
+      />
+      
       <div className="mb-3">
         <div className="space-y-2">
           <div className="flex items-center justify-between mb-2">
@@ -421,6 +427,7 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
                       level={1}
                       showToggle={false}
                       isPrimary={false}
+                      onEdit={() => handleEditSpace(space)}
                     />
                   ))
                 )}
@@ -429,9 +436,6 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
           </AccordionContent>
         </AccordionItem>
 
-        <div className="h-px bg-gray-100 dark:bg-gray-700 mx-1"></div>
-
-        {/* Navigation Sections */}
         <div className="border-0">
           <div
             className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline cursor-pointer"

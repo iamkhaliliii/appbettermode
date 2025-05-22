@@ -583,4 +583,106 @@ router.get('/:siteId/spaces', async (req, res) => {
         return res.status(500).json({ message: 'Failed to fetch spaces', details: error instanceof Error ? error.message : 'Unknown error' });
     }
 });
+// Update a space
+router.put('/:siteId/spaces/:spaceId', async (req, res) => {
+    try {
+        const { siteId, spaceId } = req.params;
+        
+        // Verify site exists
+        const site = await db.query.sites.findFirst({
+            where: eq(sites.id, siteId)
+        });
+        
+        if (!site) {
+            return res.status(404).json({ message: 'Site not found' });
+        }
+        
+        // Verify space exists and belongs to the site
+        const existingSpace = await db.query.spaces.findFirst({
+            where: and(
+                eq(spaces.id, spaceId),
+                eq(spaces.site_id, siteId)
+            )
+        });
+        
+        if (!existingSpace) {
+            return res.status(404).json({ message: 'Space not found or does not belong to this site' });
+        }
+        
+        logger.info(`Updating space ${spaceId} for site ${siteId}`);
+        
+        // Parse request body
+        const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+        const { name, slug, description, cms_type, hidden, visibility } = body;
+        
+        // Validate slug format if it's being changed
+        if (slug && slug !== existingSpace.slug) {
+            if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+                return res.status(400).json({
+                    message: 'Invalid slug format. Use lowercase letters, numbers, and hyphens only.'
+                });
+            }
+            
+            // Check if slug is already in use by another space
+            const slugExists = await db.query.spaces.findFirst({
+                where: and(
+                    eq(spaces.site_id, siteId),
+                    eq(spaces.slug, slug),
+                    ne(spaces.id, spaceId)
+                )
+            });
+            
+            if (slugExists) {
+                return res.status(409).json({ message: 'A space with this slug already exists for this site' });
+            }
+        }
+        
+        // Create update data object with only fields that are provided
+        const updateData = {};
+        if (name !== undefined) updateData.name = name;
+        if (slug !== undefined) updateData.slug = slug;
+        if (description !== undefined) updateData.description = description;
+        if (cms_type !== undefined) updateData.cms_type = cms_type;
+        if (hidden !== undefined) updateData.hidden = hidden;
+        if (visibility !== undefined) updateData.visibility = visibility;
+        
+        // Additional fields
+        if (body.invite_only !== undefined) updateData.invite_only = body.invite_only;
+        if (body.anyone_can_invite !== undefined) updateData.anyone_can_invite = body.anyone_can_invite;
+        if (body.post_permission !== undefined) updateData.post_permission = body.post_permission;
+        if (body.reply_permission !== undefined) updateData.reply_permission = body.reply_permission;
+        if (body.react_permission !== undefined) updateData.react_permission = body.react_permission;
+        
+        // SEO fields
+        if (body.meta_title !== undefined) updateData.meta_title = body.meta_title;
+        if (body.meta_description !== undefined) updateData.meta_description = body.meta_description;
+        if (body.ogg_url !== undefined) updateData.ogg_url = body.ogg_url;
+        
+        // Layout fields
+        if (body.space_icon_URL !== undefined) updateData.space_icon_URL = body.space_icon_URL;
+        if (body.space_banner_URL !== undefined) updateData.space_banner_URL = body.space_banner_URL;
+        
+        // Update the space
+        await db.update(spaces)
+            .set(updateData)
+            .where(and(
+                eq(spaces.id, spaceId),
+                eq(spaces.site_id, siteId)
+            ));
+        
+        // Fetch the updated space
+        const updatedSpace = await db.query.spaces.findFirst({
+            where: eq(spaces.id, spaceId)
+        });
+        
+        logger.info(`Space ${spaceId} updated successfully`);
+        return res.status(200).json(updatedSpace);
+    } catch (error) {
+        logger.error('Error updating space:', error);
+        return res.status(500).json({ 
+            message: 'Failed to update space', 
+            details: error instanceof Error ? error.message : 'Unknown error' 
+        });
+    }
+});
 export default router;

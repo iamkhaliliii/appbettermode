@@ -43,6 +43,7 @@ export function MinimalItem({
   toggleOn,
   isPrimary,
   isHomepage,
+  onEdit,
 }: MinimalItemProps) {
   const [hidden, setHidden] = useState(isHidden);
   
@@ -172,7 +173,10 @@ export function MinimalItem({
                 <Pencil className="h-3 w-3 mr-1.5 text-gray-500" />
                 <span>Rename</span>
               </DropdownMenuItem>
-              <DropdownMenuItem className="flex items-center px-2 py-0.5 text-[11px] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+              <DropdownMenuItem 
+                className="flex items-center px-2 py-0.5 text-[11px] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={() => onEdit && onEdit()}
+              >
                 <Settings2 className="h-3 w-3 mr-1.5 text-gray-500" />
                 <span>Edit</span>
               </DropdownMenuItem>

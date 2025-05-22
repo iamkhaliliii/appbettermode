@@ -60,7 +60,6 @@ export const SiteSidebar: React.FC<SiteSidebarProps> = ({
     const fetchSpaces = async () => {
       if (!currentSiteId) return;
       
-      console.log(`Fetching spaces for site ID: ${currentSiteId}`);
       setIsLoading(true);
       setError(null);
       
@@ -68,12 +67,10 @@ export const SiteSidebar: React.FC<SiteSidebarProps> = ({
         // First get the site details to ensure we have the UUID if needed
         const siteData = await sitesApi.getSite(currentSiteId);
         setSiteId(siteData.id);
-        console.log(`Site details fetched: ID=${siteData.id}, name=${siteData.name}`);
         
         // Fetch spaces using the site UUID
         const API_BASE = getApiBaseUrl();
         const spaceApiUrl = `${API_BASE}/api/v1/sites/${siteData.id}/spaces`;
-        console.log(`Fetching spaces from: ${spaceApiUrl}`);
         
         const response = await fetch(spaceApiUrl);
         
@@ -83,7 +80,6 @@ export const SiteSidebar: React.FC<SiteSidebarProps> = ({
         }
         
         const spacesData = await response.json();
-        console.log('Fetched spaces for site sidebar:', spacesData);
         
         if (Array.isArray(spacesData)) {
           const mappedSpaces: Space[] = spacesData.map((space: any) => ({
@@ -95,8 +91,6 @@ export const SiteSidebar: React.FC<SiteSidebarProps> = ({
             hidden: space.hidden || false,
             visibility: space.visibility || 'public'
           }));
-          
-          console.log('Mapped spaces:', mappedSpaces);
           
           setSpaces(mappedSpaces);
           
@@ -113,12 +107,9 @@ export const SiteSidebar: React.FC<SiteSidebarProps> = ({
               );
                 
               if (cmsTypeIds.length > 0) {
-                console.log('Fetching CMS type details for IDs:', cmsTypeIds);
-                
                 // First try to get official CMS types
                 try {
                   const officialCmsTypes = await cmsTypesApi.getCmsTypesByCategory('official');
-                  console.log('Fetched official CMS types:', officialCmsTypes);
                   
                   // Create a mapping of ID to CMS type details
                   const cmsTypeMap = new Map();
@@ -169,16 +160,15 @@ export const SiteSidebar: React.FC<SiteSidebarProps> = ({
                     };
                   }));
                 } catch (err) {
-                  console.error("Error fetching official CMS types:", err);
+                  // Silently handle error
                 }
               }
             } catch (err) {
-              console.error("Error processing CMS types:", err);
+              // Silently handle error
             }
           }
         }
       } catch (error) {
-        console.error('Failed to fetch spaces:', error);
         setError(error instanceof Error ? error.message : 'Failed to fetch spaces');
       } finally {
         setIsLoading(false);
@@ -250,43 +240,30 @@ export const SiteSidebar: React.FC<SiteSidebarProps> = ({
           Branding
         </SideNavItem>
         
-        {/* Spaces heading */}
+        {/* Spaces section */}
         {spaces.length > 0 && (
-          <div className="pt-4 pb-1">
-            <h3 className="px-2 text-[0.7rem] text-gray-500 dark:text-gray-400 tracking-wider">
-              Spaces:
-            </h3>
-          </div>
+          <>
+            <div className="pt-4 pb-1">
+              <h3 className="px-2 text-[0.7rem] text-gray-500 dark:text-gray-400 tracking-wider">
+                Spaces:
+              </h3>
+            </div>
+            
+            {/* Space navigation items - removed isLoading check */}
+            {spaces.map(space => (
+              !space.hidden && (
+                <SideNavItem
+                  key={space.id}
+                  href={`${basePath}/content/${space.slug}`}
+                  isActive={isActiveUrl && isActiveUrl(`${basePath}/content/${space.slug}`, currentPathname)}
+                  icon={getIconForSpace(space)}
+                >
+                  {space.name}
+                </SideNavItem>
+              )
+            ))}
+          </>
         )}
-        
-        {/* Loading indicator */}
-        {isLoading && (
-          <div className="flex items-center px-2 py-2 text-sm text-gray-500">
-            <Loader2 className="h-3 w-3 mr-2 animate-spin" />
-            <span>Loading spaces...</span>
-          </div>
-        )}
-        
-        {/* Error message */}
-        {error && (
-          <div className="px-2 py-2 text-sm text-red-500">
-            {error}
-          </div>
-        )}
-        
-        {/* Space navigation items */}
-        {!isLoading && spaces.map(space => (
-          !space.hidden && (
-            <SideNavItem
-              key={space.id}
-              href={`${basePath}/content/${space.slug}`}
-              isActive={isActiveUrl && isActiveUrl(`${basePath}/content/${space.slug}`, currentPathname)}
-              icon={getIconForSpace(space)}
-            >
-              {space.name}
-            </SideNavItem>
-          )
-        ))}
       </div>
     </div>
   );

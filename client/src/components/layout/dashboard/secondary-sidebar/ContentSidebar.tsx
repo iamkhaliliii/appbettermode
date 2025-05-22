@@ -14,6 +14,7 @@ import { SideNavItem, SideNavItemWithBadge } from "./SidebarNavigationItems";
 import { APP_ROUTES } from "@/config/routes";
 import { BaseSidebarProps } from "./types";
 import { isValidUUID } from "@/lib/with-site-context";
+import { AddContentDialog } from "@/components/ui/add-content-dialog";
 
 // Define interface for CMS Type
 interface CmsType {
@@ -64,6 +65,7 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [postCounts, setPostCounts] = useState<number>(0);
   const [siteInfo, setSiteInfo] = useState<any>(null);
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
   // If no currentSiteIdentifier is provided, show nothing
   if (!currentSiteIdentifier) {
@@ -211,12 +213,16 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
               </>
             )}
 
-            <Link href={APP_ROUTES.DASHBOARD_SITE.CONTENT_SECTION(currentSiteIdentifier, APP_ROUTES.CONTENT_TYPES.NEW_CMS)}>
-              <div className="flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150 px-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 rounded">
-                <Plus className="h-3.5 w-3.5 mr-2" />
-                <span className="font-normal">Add new CMS</span>
-              </div>
-            </Link>
+            <div 
+              onClick={() => setDialogOpen(true)}
+              className="flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150 px-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 rounded"
+            >
+              <Plus className="h-3.5 w-3.5 mr-2" />
+              <span className="font-normal">Add new post type</span>
+            </div>
+            
+            {/* Add Content Dialog */}
+            <AddContentDialog open={dialogOpen} onOpenChange={setDialogOpen} />
           </div>
 
           {/* Divider and Custom View */}

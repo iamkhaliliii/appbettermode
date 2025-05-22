@@ -35,6 +35,7 @@ export interface MinimalItemProps {
   toggleOn?: boolean;
   isPrimary?: boolean;
   isHomepage?: boolean;
+  onEdit?: () => void;
 }
 
 export interface TreeFolderProps {
