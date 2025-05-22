@@ -7,6 +7,7 @@ import {
   Loader2
 } from "lucide-react";
 import { Site } from "@/lib/api";
+import { useSiteData } from "@/lib/SiteDataContext";
 
 interface SettingsSidebarProps {
   siteSD: string;
@@ -21,9 +22,12 @@ interface SettingsSidebarProps {
 export function SettingsSidebar({ 
   siteSD, 
   spacesSlug, 
-  activeTab, 
-  siteDetails 
-}: SettingsSidebarProps) {
+  activeTab
+}: Omit<SettingsSidebarProps, 'siteDetails'>) {
+  // Get site details from context
+  const { sites } = useSiteData();
+  const siteDetails = sites[siteSD] || null;
+  
   // Get capitalized space name for display
   const getDisplaySpaceName = () => {
     // Convert from slug to display name (capitalize first letter and replace hyphens with spaces)

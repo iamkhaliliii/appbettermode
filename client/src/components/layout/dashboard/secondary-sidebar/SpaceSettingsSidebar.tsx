@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useMemo, memo } from "react";
 import { ChevronLeft } from "lucide-react";
 import { APP_ROUTES } from "@/config/routes";
 import { SideNavItem } from "./SidebarNavigationItems";
+import { motion } from "framer-motion";
 
 interface SpaceSettingsSidebarProps {
   siteSD: string;
@@ -11,50 +12,65 @@ interface SpaceSettingsSidebarProps {
   onTabChange: (tabId: string) => void;
 }
 
-export const SpaceSettingsSidebar: React.FC<SpaceSettingsSidebarProps> = ({
+// Custom TabNavItem component memoized for better performance
+const TabNavItem = memo(({ 
+  id, 
+  isActive, 
+  children, 
+  onClick 
+}: { 
+  id: string;
+  isActive: boolean;
+  children: React.ReactNode;
+  onClick: (id: string) => void;
+}) => {
+  return (
+    <motion.div
+      whileTap={{ scale: 0.98 }}
+      onClick={() => onClick(id)}
+      className={`group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
+        isActive
+          ? "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white"
+          : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
+      } cursor-pointer`}
+    >
+      {children}
+    </motion.div>
+  );
+});
+
+TabNavItem.displayName = 'TabNavItem';
+
+export const SpaceSettingsSidebar: React.FC<SpaceSettingsSidebarProps> = memo(({
   siteSD,
   spaceName,
   spaceSlug,
   activeTab,
   onTabChange,
 }) => {
-  const basePath = APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(siteSD);
-  const spacesPath = basePath + "/spaces";
+  // Memoize paths to prevent recalculation on rerenders
+  const paths = useMemo(() => {
+    const basePath = APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(siteSD);
+    return {
+      spacesPath: basePath + "/spaces"
+    };
+  }, [siteSD]);
 
-  const menuItems = [
+  // Memoize menu items to prevent recreation on each render
+  const menuItems = useMemo(() => [
     { id: "general", label: "General" },
     { id: "permissions", label: "Permissions" },
     { id: "seo", label: "SEO" },
     { id: "display", label: "Display" },
     { id: "customize", label: "Customize" },
     { id: "danger", label: "Danger Zone" },
-  ];
-
-  // Custom SideNavItem that works with tabs instead of navigation
-  const TabNavItem: React.FC<{
-    id: string;
-    isActive: boolean;
-    children: React.ReactNode;
-  }> = ({ id, isActive, children }) => {
-    return (
-      <div
-        onClick={() => onTabChange(id)}
-        className={`group flex items-center rounded-md px-3 py-2 text-sm font-medium ${
-          isActive
-            ? "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-white"
-            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
-        } cursor-pointer`}
-      >
-        {children}
-      </div>
-    );
-  };
+  ], []);
 
   return (
     <div className="p-3">
       <div className="flex items-center mb-4">
         <a 
-          href={spacesPath}
+          href={paths.spacesPath}
           className="flex items-center text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
         >
           <ChevronLeft className="h-4 w-4 mr-1" />
@@ -68,17 +84,25 @@ export const SpaceSettingsSidebar: React.FC<SpaceSettingsSidebarProps> = ({
         </h2>
       </div>
 
-      <div className="space-y-1">
+      <motion.div 
+        className="space-y-1"
+        initial={{ opacity: 0.8 }}
+        animate={{ opacity: 1 }}
+        transition={{ staggerChildren: 0.05, duration: 0.2 }}
+      >
         {menuItems.map((item) => (
           <TabNavItem 
             key={item.id}
             id={item.id}
             isActive={activeTab === item.id}
+            onClick={onTabChange}
           >
             {item.label}
           </TabNavItem>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
-}; 
+});
+
+SpaceSettingsSidebar.displayName = 'SpaceSettingsSidebar'; 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo, memo } from "react";
 import { APP_ROUTES } from "@/config/routes";
 import { BaseSidebarProps } from "./types";
 import {
@@ -33,13 +33,15 @@ import {
   Layout,
   Briefcase
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { NavigationItem as NavItemUI } from "@/components/ui/navigation-item";
 import { NavigationSection as NavSectionUI } from "@/components/ui/navigation-section";
 import { SideNavItem } from "./SidebarNavigationItems";
 import { MinimalItem, TreeFolder } from "./SidebarTreeComponents";
-import { sitesApi, cmsTypesApi } from "@/lib/api";
+import { sitesApi } from "@/lib/api";
 import { getApiBaseUrl } from "@/lib/utils";
 import { EditSpaceDialog } from "@/components/ui/edit-space-dialog";
+import { useSiteData } from "@/lib/SiteDataContext";
 
 // Define interface for spaces
 interface Space {
@@ -55,25 +57,40 @@ interface Space {
 }
 
 // Local NavigationSection and NavigationItem components
-const NavigationSection: React.FC<{
+const NavigationSection = memo(({ 
+  title, 
+  icon, 
+  defaultActive, 
+  children 
+}: {
   title: string;
   icon: React.ReactNode;
   defaultActive?: boolean;
   children: React.ReactNode;
-}> = ({ title, icon, defaultActive, children }) => {
+}) => {
   const [isOpen, setIsOpen] = useState(defaultActive);
   return (
     <NavSectionUI title={title} icon={icon} defaultActive={defaultActive}>
       {children}
     </NavSectionUI>
   );
-};
+});
 
-const NavigationItem: React.FC<{ icon: React.ReactNode; title: string }> = ({ icon, title }) => {
+NavigationSection.displayName = 'NavigationSection';
+
+const NavigationItem = memo(({ 
+  icon, 
+  title 
+}: { 
+  icon: React.ReactNode; 
+  title: string 
+}) => {
   return <NavItemUI icon={icon} title={title} />;
-};
+});
 
-export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({ 
+NavigationItem.displayName = 'NavigationItem';
+
+export const SiteConfigSidebar: React.FC<BaseSidebarProps> = memo(({ 
   currentPathname, 
   isActiveUrl,
   currentSiteIdentifier,
@@ -86,6 +103,9 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
 
   const [searchTerm, setSearchTerm] = useState("");
   
+  // Get site data and CMS types from context
+  const { sites, cmsTypes: contextCmsTypes, loadSite } = useSiteData();
+  
   // Space management states
   const [spaces, setSpaces] = useState<Space[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -97,28 +117,20 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
   const [selectedSpace, setSelectedSpace] = useState<Space | null>(null);
 
   // CMS Types for proper naming
-  const [cmsTypes, setCmsTypes] = useState<Record<string, string>>({});
+  const [localCmsTypes, setLocalCmsTypes] = useState<Record<string, string>>({});
   
-  // Fetch CMS types for better labels
+  // Create cms types mapping
   useEffect(() => {
-    const fetchCmsTypes = async () => {
-      try {
-        const types = await cmsTypesApi.getAllCmsTypes();
-        
-        // Create a mapping of CMS type IDs to names
-        const typeMap: Record<string, string> = {};
-        types.forEach((type: any) => {
-          typeMap[type.id] = type.name;
-        });
-        
-        setCmsTypes(typeMap);
-      } catch (error) {
-        console.error("Error fetching CMS types:", error);
-      }
-    };
-    
-    fetchCmsTypes();
-  }, []);
+    if (contextCmsTypes && contextCmsTypes.length > 0) {
+      // Create a mapping of CMS type IDs to names
+      const typeMap: Record<string, string> = {};
+      contextCmsTypes.forEach((type: any) => {
+        typeMap[type.id] = type.name;
+      });
+      
+      setLocalCmsTypes(typeMap);
+    }
+  }, [contextCmsTypes]);
 
   // Fetch site details to get proper ID if needed
   useEffect(() => {
@@ -126,9 +138,17 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
       if (!currentSiteIdentifier) return;
       
       try {
-        // Get the site details to ensure we have the UUID
-        const siteData = await sitesApi.getSite(currentSiteIdentifier);
-        setSiteId(siteData.id);
+        // Check if site is in context
+        if (sites[currentSiteIdentifier]) {
+          setSiteId(sites[currentSiteIdentifier].id);
+          return;
+        }
+        
+        // Otherwise load from API
+        const siteData = await loadSite(currentSiteIdentifier);
+        if (siteData) {
+          setSiteId(siteData.id);
+        }
       } catch (error) {
         console.error("Error fetching site details:", error);
         setError("Failed to load site details");
@@ -136,7 +156,7 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
     };
     
     fetchSiteDetails();
-  }, [currentSiteIdentifier]);
+  }, [currentSiteIdentifier, sites, loadSite]);
 
   // Fetch actual spaces from API once we have the siteId
   useEffect(() => {
@@ -162,7 +182,6 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
         }
         
         const spacesData = await response.json();
-        console.log('Fetched spaces:', spacesData);
         
         if (Array.isArray(spacesData)) {
           const mappedSpaces: Space[] = spacesData.map((space: any) => ({
@@ -193,13 +212,13 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
 
   // Update spaces with CMS type names
   useEffect(() => {
-    if (Object.keys(cmsTypes).length > 0 && spaces.length > 0) {
+    if (Object.keys(localCmsTypes).length > 0 && spaces.length > 0) {
       // Add CMS type names to spaces
       const updatedSpaces = spaces.map(space => {
-        if (space.cms_type && cmsTypes[space.cms_type]) {
+        if (space.cms_type && localCmsTypes[space.cms_type]) {
           return {
             ...space,
-            cms_type_name: cmsTypes[space.cms_type]
+            cms_type_name: localCmsTypes[space.cms_type]
           };
         }
         return space;
@@ -207,16 +226,16 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
       
       setSpaces(updatedSpaces);
     }
-  }, [cmsTypes, spaces]);
+  }, [localCmsTypes, spaces]);
 
   // Handle space edit request
-  const handleEditSpace = (space: Space) => {
+  const handleEditSpace = useCallback((space: Space) => {
     setSelectedSpace(space);
     setEditSpaceDialogOpen(true);
-  };
+  }, []);
 
   // Handle space update completion
-  const handleSpaceUpdated = () => {
+  const handleSpaceUpdated = useCallback(() => {
     // Refetch spaces to get the updated data
     if (siteId) {
       // Only proceed if siteId looks like a UUID (basic check)
@@ -260,10 +279,10 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
       
       fetchSpaces();
     }
-  };
+  }, [siteId]);
 
-  // Get icon based on space type
-  const getSpaceIcon = (space: Space) => {
+  // Get icon based on space type - memoized for performance
+  const getSpaceIcon = useCallback((space: Space) => {
     // Use cms_type_name if available, otherwise fall back to cms_type
     const typeForIcon = space.cms_type_name || space.cms_type || 'custom';
     
@@ -287,18 +306,39 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
       default:
         return <AppWindowMac className="h-3.5 w-3.5" />;
     }
-  };
+  }, []);
 
-  // Filter spaces based on search term
-  const filteredSpaces = spaces.filter(space => 
-    space.name.toLowerCase().includes(searchTerm.toLowerCase())
+  // Handle search input change
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  }, []);
+
+  // Filter spaces based on search term - memoized to prevent recalculation
+  const filteredSpaces = useMemo(() => 
+    spaces.filter(space => 
+      space.name.toLowerCase().includes(searchTerm.toLowerCase())
+    ),
+    [spaces, searchTerm]
   );
 
   // Determine if the accordion should be expanded by default
-  const accordionShouldBeExpanded = currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(currentSiteIdentifier));
+  const accordionShouldBeExpanded = useMemo(() => 
+    currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(currentSiteIdentifier)),
+    [currentPathname, currentSiteIdentifier]
+  );
+  
   const defaultAccordionState = accordionShouldBeExpanded ? "spaces" : "";
 
-  const basePath = APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(currentSiteIdentifier);
+  const basePath = useMemo(() => 
+    APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(currentSiteIdentifier),
+    [currentSiteIdentifier]
+  );
+
+  // Handle new content button click
+  const handleNewContent = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    if (onNewContent) onNewContent();
+  }, [onNewContent]);
 
   return (
     <div className="p-3">
@@ -311,7 +351,12 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
         onSpaceUpdated={handleSpaceUpdated}
       />
       
-      <div className="mb-3">
+      <motion.div 
+        initial={{ opacity: 0.9 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2 }}
+        className="mb-3"
+      >
         <div className="space-y-2">
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">
@@ -335,11 +380,11 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
               placeholder="Search..."
               className="w-full py-1 pl-7 pr-2 text-xs rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-1 focus:ring-gray-300 focus:outline-none"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchChange}
             />
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <Accordion
         type="single"
@@ -372,10 +417,7 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
                     <a
                       href="#"
                       className="flex items-center px-3 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (onNewContent) onNewContent();
-                      }}
+                      onClick={handleNewContent}
                     >
                       <Files className="h-3 w-3 mr-2 text-gray-500" />
                       <span>Create new Space</span>
@@ -414,34 +456,55 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
                 isExpanded={currentPathname.startsWith(basePath)}
               >
                 {isLoading ? (
-                  <div className="flex items-center justify-center py-2">
+                  <motion.div 
+                    className="flex items-center justify-center py-2"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.2 }}
+                  >
                     <Loader2 className="h-3.5 w-3.5 animate-spin text-gray-400" />
                     <span className="text-xs text-gray-500 ml-2">Loading spaces...</span>
-                  </div>
+                  </motion.div>
                 ) : error ? (
-                  <div className="text-xs text-red-500 py-2 px-2">
+                  <motion.div 
+                    className="text-xs text-red-500 py-2 px-2"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.2 }}
+                  >
                     {error}
-                  </div>
+                  </motion.div>
                 ) : filteredSpaces.length === 0 ? (
-                  <div className="text-xs text-gray-500 py-2 px-2">
+                  <motion.div 
+                    className="text-xs text-gray-500 py-2 px-2"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.2 }}
+                  >
                     {searchTerm ? "No spaces match your search" : "No spaces found"}
-                  </div>
+                  </motion.div>
                 ) : (
-                  filteredSpaces.map((space) => (
-                    <MinimalItem
-                      key={space.id}
-                      name={space.name}
-                      path={APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG_SPACE(currentSiteIdentifier, space.slug)}
-                      currentPathname={currentPathname}
-                      icon={getSpaceIcon(space)}
-                      iconColor="text-gray-500"
-                      inSpaces={true}
-                      level={1}
-                      showToggle={false}
-                      isPrimary={false}
-                      onEdit={() => handleEditSpace(space)}
-                    />
-                  ))
+                  <motion.div
+                    initial={{ opacity: 0.8 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ staggerChildren: 0.02, duration: 0.2 }}
+                  >
+                    {filteredSpaces.map((space) => (
+                      <MinimalItem
+                        key={space.id}
+                        name={space.name}
+                        path={APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG_SPACE(currentSiteIdentifier, space.slug)}
+                        currentPathname={currentPathname}
+                        icon={getSpaceIcon(space)}
+                        iconColor="text-gray-500"
+                        inSpaces={true}
+                        level={1}
+                        showToggle={false}
+                        isPrimary={false}
+                        onEdit={() => handleEditSpace(space)}
+                      />
+                    ))}
+                  </motion.div>
                 )}
               </TreeFolder>
             </div>
@@ -533,4 +596,6 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = ({
       </Accordion>
     </div>
   );
-};
+});
+
+SiteConfigSidebar.displayName = 'SiteConfigSidebar';
