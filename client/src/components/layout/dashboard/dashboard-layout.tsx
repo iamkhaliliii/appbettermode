@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { type NavItem } from "./secondary-sidebar/types"; // Updated to point to new location
+import { useLocation } from "wouter";
+import { motion } from "framer-motion";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -27,6 +29,7 @@ export function DashboardLayout({
 }: DashboardLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isMobile = useIsMobile();
+  const [location] = useLocation();
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-950"> {/* Updated background color */}
@@ -107,8 +110,16 @@ export function DashboardLayout({
           </div>
         )}
         
-        <main className="flex-1 bg-gray-50 dark:bg-gray-900 overflow-y-auto min-h-[calc(100vh-4rem)]"> {/* Changed main content background */}
-          {children}
+        <main className="flex-1 bg-gray-50 dark:bg-gray-900 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700 min-h-[calc(100vh-4rem)]"> {/* Changed main content background */}
+          <motion.div
+            key={location}
+            initial={{ opacity: 0.8 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}
+            className="h-full w-full"
+          >
+            {children}
+          </motion.div>
         </main>
       </div>
     </div>

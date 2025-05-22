@@ -30,6 +30,7 @@ import { SpaceCmsContent } from "@/components/layout/site/site-space-cms-content
 import { Skeleton } from "@/components/ui/skeleton";
 import { cmsTypesApi } from "@/lib/api";
 import { SpaceSettingsSidebar } from "@/components/layout/dashboard/secondary-sidebar/SpaceSettingsSidebar";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Interface for space data
 interface Space {
@@ -237,75 +238,109 @@ const SpaceContent = ({ siteSD, spaceSlug }: { siteSD: string, spaceSlug: string
 
   return (
     <div className="h-full pb-8 overflow-y-auto flex flex-col bg-gray-50 dark:bg-gray-900 preview-container">
-      {/* Site Header */}
-      <SiteHeader 
-        siteSD={siteSD}
-        site={site}
-        isMenuOpen={isMenuOpen}
-        setIsMenuOpen={setIsMenuOpen}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        handleSearch={handleSearch}
-      />
+      <AnimatePresence mode="wait">
+        {isLoading ? (
+          <motion.div
+            key="loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="flex items-center justify-center h-full"
+          >
+            <Loader2 className="h-8 w-8 animate-spin text-primary-500" />
+            <p className="ml-3">Loading content...</p>
+          </motion.div>
+        ) : error ? (
+          <motion.div
+            key="error"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}
+            className="p-4 text-center"
+          >
+            <p className="text-red-500">{error}</p>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="content"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="w-full h-full"
+          >
+            {/* Site Header */}
+            <SiteHeader 
+              siteSD={siteSD}
+              site={site}
+              isMenuOpen={isMenuOpen}
+              setIsMenuOpen={setIsMenuOpen}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              handleSearch={handleSearch}
+            />
 
-      {/* Main Content */}
-      <div className="flex-1">
-        <div className="container mx-auto px-4 flex-grow">
-          <div className="flex flex-col md:flex-row gap-6">
-            {/* Sidebar */}
-            <SiteSidebar siteSD={siteSD} activePage={spaceSlug} />
+            {/* Main Content */}
+            <div className="flex-1">
+              <div className="container mx-auto px-4 flex-grow">
+                <div className="flex flex-col md:flex-row gap-6">
+                  {/* Sidebar */}
+                  <SiteSidebar siteSD={siteSD} activePage={spaceSlug} />
 
-            {/* Main content area */}
-            <div className="flex-1 p-4 md:p-6">
-              {isContentLoading ? (
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                  <ContentSkeleton />
+                  {/* Main content area */}
+                  <div className="flex-1 p-4 md:p-6">
+                    {isContentLoading ? (
+                      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                        <ContentSkeleton />
+                      </div>
+                    ) : space ? (
+                      <SpaceCmsContent 
+                        siteSD={siteSD}
+                        space={space}
+                        site={site}
+                      />
+                    ) : (
+                      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center">
+                        <p className="text-gray-600 dark:text-gray-400">
+                          No content available for this space.
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              ) : space ? (
-                <SpaceCmsContent 
-                  siteSD={siteSD}
-                  space={space}
-                  site={site}
-                />
-              ) : (
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center">
-                  <p className="text-gray-600 dark:text-gray-400">
-                    No content available for this space.
-                  </p>
-                </div>
-              )}
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Footer */}
-      <footer className="bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 py-4 mt-auto">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center space-x-2 mb-4 md:mb-0">
-              {site?.logo_url ? (
-                <img src={site.logo_url} alt={site.name} className="h-6 w-6 object-contain" />
-              ) : (
-                <div 
-                  className="h-6 w-6 rounded-md flex items-center justify-center font-bold text-white"
-                  style={{ 
-                    backgroundColor: site?.brand_color || '#6366f1',
-                  }}
-                >
-                  {site?.name?.substring(0, 1) || 'S'}
+            {/* Footer */}
+            <footer className="bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 py-4 mt-auto">
+              <div className="container mx-auto px-4">
+                <div className="flex flex-col md:flex-row justify-between items-center">
+                  <div className="flex items-center space-x-2 mb-4 md:mb-0">
+                    {site?.logo_url ? (
+                      <img src={site.logo_url} alt={site.name} className="h-6 w-6 object-contain" />
+                    ) : (
+                      <div 
+                        className="h-6 w-6 rounded-md flex items-center justify-center font-bold text-white"
+                        style={{ 
+                          backgroundColor: site?.brand_color || '#6366f1',
+                        }}
+                      >
+                        {site?.name?.substring(0, 1) || 'S'}
+                      </div>
+                    )}
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                      {site?.name || 'Community'}
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    © {new Date().getFullYear()} {site?.name || 'Community'} - Powered by BetterMode
+                  </div>
                 </div>
-              )}
-              <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                {site?.name || 'Community'}
-              </span>
-            </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400">
-              © {new Date().getFullYear()} {site?.name || 'Community'} - Powered by BetterMode
-            </div>
-          </div>
-        </div>
-      </footer>
+              </div>
+            </footer>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -668,7 +703,7 @@ const SettingsSidebar = ({
   };
 
   return (
-    <div className="w-80 h-full overflow-hidden border-l border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-850 flex flex-col">
+    <div className="w-80 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 dark:scrollbar-thumb-gray-700 border-l border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-850 flex flex-col">
       <div className="border-b border-gray-200 dark:border-gray-800 p-4 flex items-center flex-shrink-0">
         <div className="w-8 h-8 bg-primary-100 dark:bg-primary-900/30 rounded-md flex items-center justify-center text-primary-600 dark:text-primary-300 mr-3">
           <FileText className="h-4 w-4" />
@@ -679,7 +714,7 @@ const SettingsSidebar = ({
         </div>
       </div>
       
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 dark:scrollbar-thumb-gray-700">
         <div className="p-4">
           {renderTabContent()}
         </div>
@@ -812,7 +847,7 @@ export default function SpaceSettingsPage() {
         onOpenChange={setAddContentDialogOpen}
       />
       <div className="flex">
-      <div className="h-[calc(100vh-54px)] overflow-y-auto">
+      <div className="h-[calc(100vh-54px)] scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700 overflow-y-auto">
         {/* Settings Sidebar - Now on the left */}
         <SettingsSidebar 
           siteSD={siteSD} 
@@ -824,7 +859,7 @@ export default function SpaceSettingsPage() {
         {/* Browser Preview - Now on the right */}
         <div className="flex-1 p-4 flex flex-col">
         
-          <div className="flex-1 overflow-auto">
+          <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700">
         <BrowserMockup
           userDropdownOpen={userDropdownOpen}
           setUserDropdownOpen={setUserDropdownOpen}
@@ -836,11 +871,16 @@ export default function SpaceSettingsPage() {
           setResponsiveDropdownOpen={setResponsiveDropdownOpen}
           siteUrl={siteUrl}
         >
-          <SpaceContent siteSD={siteSD} spaceSlug={spacesSlug} />
-        </BrowserMockup>
+          <div 
+            key={`space-content-${spacesSlug}`} 
+            className="w-full h-full transition-opacity duration-300"
+          >
+            <SpaceContent siteSD={siteSD} spaceSlug={spacesSlug} />
           </div>
-        </div>
-      </div>
-    </DashboardLayout>
-  );
+                  </BrowserMockup>
+           </div>
+         </div>
+       </div>
+     </DashboardLayout>
+   );
 } 
