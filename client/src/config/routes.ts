@@ -16,6 +16,7 @@ export const APP_ROUTES = {
     PEOPLE: (siteSD: string) => `/dashboard/site/${siteSD}/people`,
     PEOPLE_MEMBERS: (siteSD: string) => `/dashboard/site/${siteSD}/people/members`,
     PEOPLE_STAFF: (siteSD: string) => `/dashboard/site/${siteSD}/people/staff`,
+    PEOPLE_INVITATIONS: (siteSD: string) => `/dashboard/site/${siteSD}/people/invitations`,
     APPEARANCE: (siteSD: string) => `/dashboard/site/${siteSD}/appearance`,
     APPEARANCE_SECTION: (siteSD: string, section: string) => `/dashboard/site/${siteSD}/appearance/${section}`,
     SETTINGS: (siteSD: string) => `/dashboard/site/${siteSD}/settings`,

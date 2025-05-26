@@ -55,110 +55,112 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { withSiteContext, WithSiteContextProps } from "@/lib/with-site-context";
 
-// Define Person data type
-interface Person {
+// Define Invitation data type
+interface Invitation {
   id: string;
-  name: string;
   email: string;
-  role: "Member" | "Moderator" | "Admin" | "Owner";
-  status: "Active" | "Inactive" | "Pending" | "Banned";
-  avatar: string;
-  joinDate: string;
-  lastActive: string;
-  postsCount: number;
-  type: "member" | "staff";
+  name: string;
+  createdAt: string;
+  expiresAt: string;
+  invitedBy: {
+    name: string;
+    avatar: string;
+  };
+  status: "Pending" | "Accepted" | "Expired" | "Cancelled";
+  emailStatus: "Sent" | "Delivered" | "Opened" | "Failed";
+  role: "Member" | "Moderator" | "Admin";
 }
 
-// Mock data for people
-const MOCK_PEOPLE: Person[] = [
+// Mock data for invitations
+const MOCK_INVITATIONS: Invitation[] = [
   { 
     id: "1", 
-    name: "Olivia Rhye", 
-    email: "olivia@untitledui.com", 
-    role: "Admin", 
-    joinDate: "Jan 12, 2023", 
-    lastActive: "2 hours ago",
-    status: "Active",
-    avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    postsCount: 45,
-    type: "staff"
+    email: "john.doe@example.com",
+    name: "John Doe", 
+    createdAt: "Jan 15, 2025", 
+    expiresAt: "Jan 22, 2025",
+    invitedBy: {
+      name: "Sarah Johnson",
+      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    },
+    status: "Pending",
+    emailStatus: "Delivered",
+    role: "Member"
   },
   { 
     id: "2", 
-    name: "Phoenix Baker", 
-    email: "phoenix@untitledui.com", 
-    role: "Member", 
-    joinDate: "Jan 10, 2023", 
-    lastActive: "1 day ago",
-    status: "Active",
-    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    postsCount: 23,
-    type: "member"
+    email: "alice.smith@example.com",
+    name: "Alice Smith", 
+    createdAt: "Jan 14, 2025", 
+    expiresAt: "Jan 21, 2025",
+    invitedBy: {
+      name: "Michael Chen",
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    },
+    status: "Pending",
+    emailStatus: "Opened",
+    role: "Member"
   },
   { 
     id: "3", 
-    name: "Lana Steiner", 
-    email: "lana@untitledui.com", 
-    role: "Member", 
-    joinDate: "Dec 15, 2022", 
-    lastActive: "3 days ago",
-    status: "Active",
-    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    postsCount: 12,
-    type: "member"
+    email: "bob.wilson@example.com",
+    name: "Bob Wilson", 
+    createdAt: "Jan 13, 2025", 
+    expiresAt: "Jan 20, 2025",
+    invitedBy: {
+      name: "Sarah Johnson",
+      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    },
+    status: "Accepted",
+    emailStatus: "Opened",
+    role: "Moderator"
   },
   { 
     id: "4", 
-    name: "Demi Wilkinson", 
-    email: "demi@untitledui.com", 
-    role: "Moderator", 
-    joinDate: "Dec 13, 2022", 
-    lastActive: "5 hours ago",
-    status: "Active",
-    avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    postsCount: 67,
-    type: "staff"
+    email: "emma.davis@example.com",
+    name: "Emma Davis", 
+    createdAt: "Jan 10, 2025", 
+    expiresAt: "Jan 17, 2025",
+    invitedBy: {
+      name: "Admin User",
+      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    },
+    status: "Expired",
+    emailStatus: "Delivered",
+    role: "Member"
   },
   { 
     id: "5", 
-    name: "Candice Wu", 
-    email: "candice@untitledui.com", 
-    role: "Member", 
-    joinDate: "Dec 5, 2022", 
-    lastActive: "2 weeks ago",
-    status: "Inactive",
-    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    postsCount: 8,
-    type: "member"
+    email: "mark.brown@example.com",
+    name: "Mark Brown", 
+    createdAt: "Jan 12, 2025", 
+    expiresAt: "Jan 19, 2025",
+    invitedBy: {
+      name: "Sarah Johnson",
+      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    },
+    status: "Cancelled",
+    emailStatus: "Failed",
+    role: "Member"
   },
   { 
     id: "6", 
-    name: "Natali Craig", 
-    email: "natali@untitledui.com", 
-    role: "Member", 
-    joinDate: "Nov 29, 2022", 
-    lastActive: "1 week ago",
-    status: "Active",
-    avatar: "https://images.unsplash.com/photo-1502378735452-bc7d86632805?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    postsCount: 34,
-    type: "member"
-  },
-  { 
-    id: "7", 
-    name: "Drew Cano", 
-    email: "drew@untitledui.com", 
-    role: "Member", 
-    joinDate: "Nov 24, 2022", 
-    lastActive: "Yesterday",
+    email: "lisa.garcia@example.com",
+    name: "Lisa Garcia", 
+    createdAt: "Jan 16, 2025", 
+    expiresAt: "Jan 23, 2025",
+    invitedBy: {
+      name: "Michael Chen",
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    },
     status: "Pending",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    postsCount: 0,
-    type: "member"
+    emailStatus: "Sent",
+    role: "Admin"
   }
 ]; 
 
 // Column definitions for the table
-const columns: ColumnDef<Person>[] = [
+const columns: ColumnDef<Invitation>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -188,14 +190,14 @@ const columns: ColumnDef<Person>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "email",
     header: ({ column }) => {
       return (
         <button
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="flex items-center space-x-1 group text-left focus:outline-none"
         >
-          <span className="text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200 font-medium transition-colors">Name</span>
+          <span className="text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200 font-medium transition-colors">Email</span>
           {column.getIsSorted() ? (
             <div className={`transition-colors ${column.getIsSorted() === "asc" ? "text-primary-500" : "text-primary-500"}`}>
               {column.getIsSorted() === "asc" ? (
@@ -211,19 +213,105 @@ const columns: ColumnDef<Person>[] = [
       )
     },
     cell: ({ row }) => {
-      const person = row.original
+      const invitation = row.original
+      return (
+        <div>
+          <div className="font-medium text-gray-900 dark:text-white">{invitation.email}</div>
+          <div className="text-sm text-gray-500 dark:text-gray-400">{invitation.name}</div>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center space-x-1 group text-left focus:outline-none"
+        >
+          <span className="text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200 font-medium transition-colors">Created</span>
+          {column.getIsSorted() ? (
+            <div className={`transition-colors ${column.getIsSorted() === "asc" ? "text-primary-500" : "text-primary-500"}`}>
+              {column.getIsSorted() === "asc" ? (
+                <ChevronUp className="h-3.5 w-3.5" />
+              ) : (
+                <ChevronDown className="h-3.5 w-3.5" />
+              )}
+            </div>
+          ) : (
+            <ChevronDown className="h-3.5 w-3.5 opacity-0 group-hover:opacity-70 text-gray-400 transition-opacity" />
+          )}
+        </button>
+      )
+    },
+    cell: ({ row }) => {
+      return <div className="text-sm">{row.getValue("createdAt")}</div>
+    }
+  },
+  {
+    accessorKey: "expiresAt",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center space-x-1 group text-left focus:outline-none"
+        >
+          <span className="text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200 font-medium transition-colors">Expires</span>
+          {column.getIsSorted() ? (
+            <div className={`transition-colors ${column.getIsSorted() === "asc" ? "text-primary-500" : "text-primary-500"}`}>
+              {column.getIsSorted() === "asc" ? (
+                <ChevronUp className="h-3.5 w-3.5" />
+              ) : (
+                <ChevronDown className="h-3.5 w-3.5" />
+              )}
+            </div>
+          ) : (
+            <ChevronDown className="h-3.5 w-3.5 opacity-0 group-hover:opacity-70 text-gray-400 transition-opacity" />
+          )}
+        </button>
+      )
+    },
+    cell: ({ row }) => {
+      return <div className="text-sm text-gray-500 dark:text-gray-400">{row.getValue("expiresAt")}</div>
+    }
+  },
+  {
+    accessorKey: "invitedBy",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center space-x-1 group text-left focus:outline-none"
+        >
+          <span className="text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200 font-medium transition-colors">Invited By</span>
+          {column.getIsSorted() ? (
+            <div className={`transition-colors ${column.getIsSorted() === "asc" ? "text-primary-500" : "text-primary-500"}`}>
+              {column.getIsSorted() === "asc" ? (
+                <ChevronUp className="h-3.5 w-3.5" />
+              ) : (
+                <ChevronDown className="h-3.5 w-3.5" />
+              )}
+            </div>
+          ) : (
+            <ChevronDown className="h-3.5 w-3.5 opacity-0 group-hover:opacity-70 text-gray-400 transition-opacity" />
+          )}
+        </button>
+      )
+    },
+    cell: ({ row }) => {
+      const invitedBy = row.getValue("invitedBy") as { name: string; avatar: string }
       return (
         <div className="flex items-center">
-          <div className="flex-shrink-0 h-8 w-8 rounded-full overflow-hidden border border-gray-200 dark:border-gray-700">
+          <div className="flex-shrink-0 h-6 w-6 rounded-full overflow-hidden border border-gray-200 dark:border-gray-700">
             <img 
               className="h-full w-full object-cover" 
-              src={person.avatar} 
-              alt={person.name}
+              src={invitedBy.avatar} 
+              alt={invitedBy.name}
             />
           </div>
-          <div className="ml-3">
-            <div className="font-medium text-gray-900 dark:text-white">{person.name}</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">{person.email}</div>
+          <div className="ml-2">
+            <div className="text-sm font-medium text-gray-900 dark:text-white">{invitedBy.name}</div>
           </div>
         </div>
       )
@@ -255,11 +343,6 @@ const columns: ColumnDef<Person>[] = [
     cell: ({ row }) => {
       const role = row.getValue("role") as string
       const roleConfig: Record<string, { bgClass: string; textClass: string; icon: any }> = {
-        "Owner": { 
-          bgClass: "bg-purple-50 dark:bg-purple-900/30", 
-          textClass: "text-purple-700 dark:text-purple-300",
-          icon: Crown
-        },
         "Admin": { 
           bgClass: "bg-red-50 dark:bg-red-900/30", 
           textClass: "text-red-700 dark:text-red-300",
@@ -314,29 +397,29 @@ const columns: ColumnDef<Person>[] = [
     cell: ({ row }) => {
       const status = row.getValue("status") as string
       const statusConfig: Record<string, { bgClass: string; textClass: string; dotColor: string }> = {
-        "Active": { 
-          bgClass: "bg-green-50 dark:bg-green-900/30", 
-          textClass: "text-green-700 dark:text-green-300",
-          dotColor: "text-green-500 dark:text-green-400"
-        },
-        "Inactive": { 
-          bgClass: "bg-gray-100 dark:bg-gray-800/50", 
-          textClass: "text-gray-700 dark:text-gray-300",
-          dotColor: "text-gray-500 dark:text-gray-400"
-        },
         "Pending": { 
           bgClass: "bg-amber-50 dark:bg-amber-900/30", 
           textClass: "text-amber-700 dark:text-amber-300",
           dotColor: "text-amber-500 dark:text-amber-400"
         },
-        "Banned": { 
+        "Accepted": { 
+          bgClass: "bg-green-50 dark:bg-green-900/30", 
+          textClass: "text-green-700 dark:text-green-300",
+          dotColor: "text-green-500 dark:text-green-400"
+        },
+        "Expired": { 
+          bgClass: "bg-gray-100 dark:bg-gray-800/50", 
+          textClass: "text-gray-700 dark:text-gray-300",
+          dotColor: "text-gray-500 dark:text-gray-400"
+        },
+        "Cancelled": { 
           bgClass: "bg-red-50 dark:bg-red-900/30", 
           textClass: "text-red-700 dark:text-red-300",
           dotColor: "text-red-500 dark:text-red-400"
         },
       }
       
-      const config = statusConfig[status] || statusConfig["Active"]
+      const config = statusConfig[status] || statusConfig["Pending"]
       
       return (
         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${config.bgClass} ${config.textClass}`}>
@@ -349,14 +432,14 @@ const columns: ColumnDef<Person>[] = [
     },
   },
   {
-    accessorKey: "joinDate",
+    accessorKey: "emailStatus",
     header: ({ column }) => {
       return (
         <button
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="flex items-center space-x-1 group text-left focus:outline-none"
         >
-          <span className="text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200 font-medium transition-colors">Joined</span>
+          <span className="text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200 font-medium transition-colors">Email Status</span>
           {column.getIsSorted() ? (
             <div className={`transition-colors ${column.getIsSorted() === "asc" ? "text-primary-500" : "text-primary-500"}`}>
               {column.getIsSorted() === "asc" ? (
@@ -372,63 +455,43 @@ const columns: ColumnDef<Person>[] = [
       )
     },
     cell: ({ row }) => {
-      return <div className="text-sm">{row.getValue("joinDate")}</div>
-    }
-  },
-  {
-    accessorKey: "lastActive",
-    header: ({ column }) => {
+      const emailStatus = row.getValue("emailStatus") as string
+      const statusConfig: Record<string, { bgClass: string; textClass: string; dotColor: string }> = {
+        "Sent": { 
+          bgClass: "bg-blue-50 dark:bg-blue-900/30", 
+          textClass: "text-blue-700 dark:text-blue-300",
+          dotColor: "text-blue-500 dark:text-blue-400"
+        },
+        "Delivered": { 
+          bgClass: "bg-green-50 dark:bg-green-900/30", 
+          textClass: "text-green-700 dark:text-green-300",
+          dotColor: "text-green-500 dark:text-green-400"
+        },
+        "Opened": { 
+          bgClass: "bg-purple-50 dark:bg-purple-900/30", 
+          textClass: "text-purple-700 dark:text-purple-300",
+          dotColor: "text-purple-500 dark:text-purple-400"
+        },
+        "Failed": { 
+          bgClass: "bg-red-50 dark:bg-red-900/30", 
+          textClass: "text-red-700 dark:text-red-300",
+          dotColor: "text-red-500 dark:text-red-400"
+        },
+      }
+      
+      const config = statusConfig[emailStatus] || statusConfig["Sent"]
+      
       return (
-        <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex items-center space-x-1 group text-left focus:outline-none"
-        >
-          <span className="text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200 font-medium transition-colors">Last Active</span>
-          {column.getIsSorted() ? (
-            <div className={`transition-colors ${column.getIsSorted() === "asc" ? "text-primary-500" : "text-primary-500"}`}>
-              {column.getIsSorted() === "asc" ? (
-                <ChevronUp className="h-3.5 w-3.5" />
-              ) : (
-                <ChevronDown className="h-3.5 w-3.5" />
-              )}
-            </div>
-          ) : (
-            <ChevronDown className="h-3.5 w-3.5 opacity-0 group-hover:opacity-70 text-gray-400 transition-opacity" />
-          )}
-        </button>
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${config.bgClass} ${config.textClass}`}>
+          <svg className={`mr-1.5 h-2 w-2 ${config.dotColor}`} fill="currentColor" viewBox="0 0 8 8">
+            <circle cx="4" cy="4" r="3" />
+          </svg>
+          {emailStatus}
+        </span>
       )
     },
-    cell: ({ row }) => {
-      return <div className="text-sm text-gray-500 dark:text-gray-400">{row.getValue("lastActive")}</div>
-    }
   },
-  {
-    accessorKey: "postsCount",
-    header: ({ column }) => {
-      return (
-        <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex items-center space-x-1 group text-left focus:outline-none"
-        >
-          <span className="text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200 font-medium transition-colors">Posts</span>
-          {column.getIsSorted() ? (
-            <div className={`transition-colors ${column.getIsSorted() === "asc" ? "text-primary-500" : "text-primary-500"}`}>
-              {column.getIsSorted() === "asc" ? (
-                <ChevronUp className="h-3.5 w-3.5" />
-              ) : (
-                <ChevronDown className="h-3.5 w-3.5" />
-              )}
-            </div>
-          ) : (
-            <ChevronDown className="h-3.5 w-3.5 opacity-0 group-hover:opacity-70 text-gray-400 transition-opacity" />
-          )}
-        </button>
-      )
-    },
-    cell: ({ row }) => {
-      return <div className="text-sm font-medium">{row.getValue("postsCount")}</div>
-    }
-  },
+
   {
     id: "actions",
     header: () => <span className="sr-only">Actions</span>,
@@ -444,12 +507,11 @@ const columns: ColumnDef<Person>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem>View Profile</DropdownMenuItem>
+              <DropdownMenuItem>Resend Invitation</DropdownMenuItem>
               <DropdownMenuItem>Edit Role</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Send Message</DropdownMenuItem>
               <DropdownMenuItem className="text-red-600">
-                Remove
+                Cancel Invitation
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -459,14 +521,11 @@ const columns: ColumnDef<Person>[] = [
   },
 ]; 
 
-function People({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
+function Invitations({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
   const [location, setLocation] = useLocation();
-  const [, params] = useRoute(siteId ? `/dashboard/site/${siteId}/people/:section` : '/people/:section');
-  const section = params?.section;
   
   // UI state
   const [activeTab, setActiveTab] = useState<string>("all");
-  const [selectedType, setSelectedType] = useState<string | null>(null);
   
   // Table state
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -475,69 +534,49 @@ function People({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
   const [rowSelection, setRowSelection] = useState({});
 
   // Data state
-  const [allPeople, setAllPeople] = useState<Person[]>(MOCK_PEOPLE);
-  const [data, setData] = useState<Person[]>([]);
+  const [allInvitations, setAllInvitations] = useState<Invitation[]>(MOCK_INVITATIONS);
+  const [data, setData] = useState<Invitation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
   // Status counts
   const [statusCounts, setStatusCounts] = useState({
     total: 0,
-    active: 0,
-    inactive: 0,
     pending: 0,
-    banned: 0,
-    members: 0,
-    staff: 0
+    accepted: 0,
+    expired: 0,
+    cancelled: 0
   });
 
-  // Update selected type based on the section parameter
+  // Filter invitations client-side based on selected tab
   useEffect(() => {
-    if (section && section !== 'all') {
-      setSelectedType(section);
-    } else {
-      setSelectedType(null);
-    }
-  }, [section]);
-
-  // Filter people client-side based on selected tab and type
-  useEffect(() => {
-    let filteredPeople = [...allPeople];
+    let filteredInvitations = [...allInvitations];
     
     // Filter by status (activeTab)
-    if (activeTab === 'active') {
-      filteredPeople = filteredPeople.filter(person => person.status === 'Active');
-    } else if (activeTab === 'inactive') {
-      filteredPeople = filteredPeople.filter(person => person.status === 'Inactive');
-    } else if (activeTab === 'pending') {
-      filteredPeople = filteredPeople.filter(person => person.status === 'Pending');
-    } else if (activeTab === 'banned') {
-      filteredPeople = filteredPeople.filter(person => person.status === 'Banned');
+    if (activeTab === 'pending') {
+      filteredInvitations = filteredInvitations.filter(invitation => invitation.status === 'Pending');
+    } else if (activeTab === 'accepted') {
+      filteredInvitations = filteredInvitations.filter(invitation => invitation.status === 'Accepted');
+    } else if (activeTab === 'expired') {
+      filteredInvitations = filteredInvitations.filter(invitation => invitation.status === 'Expired');
+    } else if (activeTab === 'cancelled') {
+      filteredInvitations = filteredInvitations.filter(invitation => invitation.status === 'Cancelled');
     }
     
-    // Filter by type if selected
-    if (selectedType === 'members') {
-      filteredPeople = filteredPeople.filter(person => person.type === 'member');
-    } else if (selectedType === 'staff') {
-      filteredPeople = filteredPeople.filter(person => person.type === 'staff');
-    }
-    
-    // Update the data state with filtered people
-    setData(filteredPeople);
+    // Update the data state with filtered invitations
+    setData(filteredInvitations);
     
     // Calculate status counts for the filtered data
     const counts = {
-      total: allPeople.length,
-      active: allPeople.filter(person => person.status === 'Active').length,
-      inactive: allPeople.filter(person => person.status === 'Inactive').length,
-      pending: allPeople.filter(person => person.status === 'Pending').length,
-      banned: allPeople.filter(person => person.status === 'Banned').length,
-      members: allPeople.filter(person => person.type === 'member').length,
-      staff: allPeople.filter(person => person.type === 'staff').length,
+      total: allInvitations.length,
+      pending: allInvitations.filter(invitation => invitation.status === 'Pending').length,
+      accepted: allInvitations.filter(invitation => invitation.status === 'Accepted').length,
+      expired: allInvitations.filter(invitation => invitation.status === 'Expired').length,
+      cancelled: allInvitations.filter(invitation => invitation.status === 'Cancelled').length,
     };
     setStatusCounts(counts);
     
-  }, [allPeople, activeTab, selectedType]);
+  }, [allInvitations, activeTab]);
 
   // Filter data for display
   const filteredData = useMemo(() => data, [data]);
@@ -567,11 +606,9 @@ function People({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
     },
   });
 
-  // Get page title based on the section/type
+  // Get page title
   const getPageTitle = () => {
-    if (selectedType === 'members') return 'Members';
-    if (selectedType === 'staff') return 'Staff';
-    return 'All People';
+    return 'Invitations';
   };
   
   return (
@@ -600,29 +637,29 @@ function People({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
                   All <span className="ml-1 text-[10px] text-gray-500 dark:text-gray-400">{isLoading ? '...' : statusCounts.total}</span>
                 </button>
                 <button 
-                  className={`inline-flex items-center px-2 py-1.5 text-xs font-medium ${activeTab === 'active' ? 'text-gray-900 dark:text-white border-b border-gray-900 dark:border-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'} transition-colors`}
-                  onClick={() => setActiveTab('active')}
-                >
-                  Active <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">{isLoading ? '...' : statusCounts.active}</span>
-                </button>
-                <button 
                   className={`inline-flex items-center px-2 py-1.5 text-xs font-medium ${activeTab === 'pending' ? 'text-gray-900 dark:text-white border-b border-gray-900 dark:border-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'} transition-colors`}
                   onClick={() => setActiveTab('pending')}
                 >
                   Pending <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">{isLoading ? '...' : statusCounts.pending}</span>
                 </button>
                 <button 
-                  className={`inline-flex items-center px-2 py-1.5 text-xs font-medium ${activeTab === 'inactive' ? 'text-gray-900 dark:text-white border-b border-gray-900 dark:border-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'} transition-colors`}
-                  onClick={() => setActiveTab('inactive')}
+                  className={`inline-flex items-center px-2 py-1.5 text-xs font-medium ${activeTab === 'accepted' ? 'text-gray-900 dark:text-white border-b border-gray-900 dark:border-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'} transition-colors`}
+                  onClick={() => setActiveTab('accepted')}
                 >
-                  Inactive <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">{isLoading ? '...' : statusCounts.inactive}</span>
+                  Accepted <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">{isLoading ? '...' : statusCounts.accepted}</span>
                 </button>
-                {statusCounts.banned > 0 && (
+                <button 
+                  className={`inline-flex items-center px-2 py-1.5 text-xs font-medium ${activeTab === 'expired' ? 'text-gray-900 dark:text-white border-b border-gray-900 dark:border-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'} transition-colors`}
+                  onClick={() => setActiveTab('expired')}
+                >
+                  Expired <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">{isLoading ? '...' : statusCounts.expired}</span>
+                </button>
+                {statusCounts.cancelled > 0 && (
                   <button 
-                    className={`inline-flex items-center px-2 py-1.5 text-xs font-medium ${activeTab === 'banned' ? 'text-gray-900 dark:text-white border-b border-gray-900 dark:border-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'} transition-colors`}
-                    onClick={() => setActiveTab('banned')}
+                    className={`inline-flex items-center px-2 py-1.5 text-xs font-medium ${activeTab === 'cancelled' ? 'text-gray-900 dark:text-white border-b border-gray-900 dark:border-white' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'} transition-colors`}
+                    onClick={() => setActiveTab('cancelled')}
                   >
-                    Banned <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">{isLoading ? '...' : statusCounts.banned}</span>
+                    Cancelled <span className="ml-1 text-[10px] text-gray-400 dark:text-gray-500">{isLoading ? '...' : statusCounts.cancelled}</span>
                   </button>
                 )}
               </div>
@@ -632,20 +669,9 @@ function People({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
             <div className="mb-0 flex items-center justify-between gap-1.5">
               {/* Left side - Filter, Sort, Column buttons */}
               <div className="flex items-center gap-1.5">
-                {selectedType ? (
-                  <div className="flex gap-1">
-                    <button 
-                      className="inline-flex items-center justify-center h-6 px-2 rounded text-purple-500 dark:text-purple-400 border border-purple-200 dark:border-purple-800 bg-purple-50/50 dark:bg-purple-900/20 hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-colors text-xs font-medium"
-                    >
-                      <User className="h-3 w-3 mr-1" />
-                      Type: {selectedType.charAt(0).toUpperCase() + selectedType.slice(1)}
-                    </button>
-                  </div>
-                ) : (
-                  <button className="inline-flex items-center justify-center h-7 w-7 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                    <Filter className="h-3.5 w-3.5" />
-                  </button>
-                )}
+                <button className="inline-flex items-center justify-center h-7 w-7 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                  <Filter className="h-3.5 w-3.5" />
+                </button>
                 
                 <button className="inline-flex items-center justify-center h-7 w-7 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                   <ArrowUpDown className="h-3.5 w-3.5" />
@@ -761,13 +787,13 @@ function People({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
                       <TableCell colSpan={columns.length} className="h-32 text-center text-muted-foreground dark:text-muted-foreground">
                         <div className="flex flex-col items-center justify-center space-y-2">
                           <UserIcon className="h-8 w-8 text-muted dark:text-muted" />
-                          <span>No people found</span>
+                          <span>No invitations found</span>
                           {activeTab !== 'all' && (
                             <button 
                               onClick={() => setActiveTab('all')}
                               className="text-xs text-primary-600 dark:text-primary-400 hover:underline"
                             >
-                              Show all people
+                              Show all invitations
                             </button>
                           )}
                         </div>
@@ -877,4 +903,4 @@ function People({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
     );
   }
 
-export default withSiteContext(People); 
+export default withSiteContext(Invitations); 

@@ -18,6 +18,7 @@ import DashboardSiteIndex from "@/pages/dashboard/site/[siteSD]/index";
 import DashboardSitePeople from "@/pages/dashboard/site/[siteSD]/people/index";
 import DashboardSitePeopleMembers from "@/pages/dashboard/site/[siteSD]/people/members/index";
 import DashboardSitePeopleStaff from "@/pages/dashboard/site/[siteSD]/people/staff/index";
+import DashboardSitePeopleInvitations from "@/pages/dashboard/site/[siteSD]/people/invitations/index";
 import DashboardSiteAppearance from "@/pages/dashboard/site/[siteSD]/appearance/index";
 import DashboardSiteSettings from "@/pages/dashboard/site/[siteSD]/settings/index";
 import DashboardSiteSettingsSearch from "@/pages/dashboard/site/[siteSD]/settings/search/index";
@@ -76,6 +77,7 @@ export default function App() {
               <Route path="/dashboard/site/:siteSD/people" component={DashboardSitePeople} />
               <Route path="/dashboard/site/:siteSD/people/members" component={DashboardSitePeopleMembers} />
               <Route path="/dashboard/site/:siteSD/people/staff" component={DashboardSitePeopleStaff} />
+              <Route path="/dashboard/site/:siteSD/people/invitations" component={DashboardSitePeopleInvitations} />
               <Route path="/dashboard/site/:siteSD/appearance" component={DashboardSiteAppearance} />
               <Route path="/dashboard/site/:siteSD/appearance/:section" component={DashboardSiteAppearance} />
               <Route path="/dashboard/site/:siteSD/settings" component={DashboardSiteSettings} />
