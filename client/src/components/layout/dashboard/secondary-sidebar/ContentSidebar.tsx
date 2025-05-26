@@ -9,6 +9,8 @@ import {
   Star,
   MessageSquare,
   Loader2,
+  AlarmClockCheck,
+  MessageSquareDashed,
 } from "lucide-react";
 import { SideNavItem, SideNavItemWithBadge } from "./SidebarNavigationItems";
 import { APP_ROUTES } from "@/config/routes";
@@ -186,6 +188,22 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
             >
               All Posts
             </SideNavItemWithBadge>
+
+            <SideNavItem
+              href={`${basePath}?status=scheduled`}
+              isActive={currentPathname.includes('/content') && currentPathname.includes('status=scheduled')}
+              icon={<AlarmClockCheck className="h-3.5 w-3.5" />}
+            >
+              All Scheduled
+            </SideNavItem>
+
+            <SideNavItem
+              href={`${basePath}?status=draft`}
+              isActive={currentPathname.includes('/content') && currentPathname.includes('status=draft')}
+              icon={<MessageSquareDashed className="h-3.5 w-3.5" />}
+            >
+              All Draft
+            </SideNavItem>
           </div>
 
           {/* Content Types - Dynamic from API */}

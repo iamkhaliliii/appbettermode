@@ -16,7 +16,15 @@ import {
   BookOpen,
   Briefcase,
   Package,
-  Folder
+  Folder,
+  Sparkles,
+  Cog,
+      Database,
+    FilesIcon,
+    AppWindowMac,
+    ScreenShare,
+    MonitorCog,
+    ShieldPlus
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
@@ -242,11 +250,13 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
   const [spacesDropdownOpen, setSpacesDropdownOpen] = useState(false);
   const [postsDropdownOpen, setPostsDropdownOpen] = useState(false);
   const [insightsDropdownOpen, setInsightsDropdownOpen] = useState(false);
+  const [moderationDropdownOpen, setModerationDropdownOpen] = useState(false);
   
   // Add refs for dropdown containers to handle click outside
   const spacesDropdownRef = useRef<HTMLDivElement>(null);
   const postsDropdownRef = useRef<HTMLDivElement>(null);
   const insightsDropdownRef = useRef<HTMLDivElement>(null);
+  const moderationDropdownRef = useRef<HTMLDivElement>(null);
   
   // Handle click outside to close dropdowns
   useEffect(() => {
@@ -271,6 +281,13 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
           insightsDropdownOpen) {
         setInsightsDropdownOpen(false);
       }
+      
+      // Close moderation dropdown if click is outside
+      if (moderationDropdownRef.current && 
+          !moderationDropdownRef.current.contains(event.target as Node) && 
+          moderationDropdownOpen) {
+        setModerationDropdownOpen(false);
+      }
     };
     
     // Add event listener
@@ -280,7 +297,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [spacesDropdownOpen, postsDropdownOpen, insightsDropdownOpen]);
+  }, [spacesDropdownOpen, postsDropdownOpen, insightsDropdownOpen, moderationDropdownOpen]);
 
   return (
     <motion.header
@@ -325,7 +342,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
               <div className={cn("w-64 flex-shrink-0 h-full border-r", borderColor)}>
 
                   <div className="flex h-full items-center justify-center gap-2 px-2">
-                    {/* Spaces Dropdown - Simple Implementation */}
+                    {/* Spaces Dropdown - Mock Data */}
                     <div className="relative group" ref={spacesDropdownRef}>
                       <button
                         className={cn(
@@ -339,58 +356,106 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                           setSpacesDropdownOpen(!spacesDropdownOpen);
                           setPostsDropdownOpen(false);
                           setInsightsDropdownOpen(false);
-                          if (siteIdentifier) {
-                            fetchSpaces(siteIdentifier);
-                          }
+                          setModerationDropdownOpen(false);
                         }}
                       >
-                        <Files className="h-3.5 w-3.5" />
+                        <FilesIcon className="h-3.5 w-3.5" />
                         <ChevronDown className="h-2.5 w-2.5 opacity-40" />
                       </button>
                       
                       {spacesDropdownOpen && (
-                        <div className="absolute left-0 mt-1 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50">
-                          {loadingSpaces ? (
-                            <div className="px-3 py-2.5 text-sm text-gray-700 dark:text-gray-300">
-                              Loading spaces...
-                            </div>
-                          ) : spaces && spaces.length > 0 ? (
-                            <div className="py-1">
-                              {spaces.map(space => {
-                                if (siteIdentifier) {
-                                  const spaceUrl = APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG_SPACE(siteIdentifier, space.slug || '');
-                                  return (
-                                    <a 
-                                      key={space.id} 
-                                      href={spaceUrl} 
-                                      className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline"
-                                      onClick={() => setSpacesDropdownOpen(false)}
-                                    >
-                                      {space.name} ({space.slug})
-                                    </a>
-                                  );
-                                }
-                                return null;
-                              })}
-                            </div>
-                          ) : (
-                            <div className="py-1">
-                              <div className="px-4 py-2 text-sm text-gray-800 dark:text-gray-200">
-                                No spaces available
+                        <div className="absolute left-0 mt-1 w-64 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50">
+                          <div className="py-1">
+                            {/* Top section - Feed */}
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
+                              onClick={() => setSpacesDropdownOpen(false)}
+                            >
+                              <AppWindowMac className="h-3.5 w-3.5" />
+                              <span>Feed</span>
+                            </a>
+                            
+                            {/* Divider */}
+                            <div className="border-t border-gray-200 dark:border-gray-600 my-1"></div>
+                            
+                            {/* Spaces section */}
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center justify-between"
+                              onClick={() => setSpacesDropdownOpen(false)}
+                            >
+                              <div className="flex items-center gap-2">
+                                <Folder className="h-3.5 w-3.5" />
+                                <span>General Discussion</span>
                               </div>
-                              <a 
-                                href={siteIdentifier ? `/dashboard/site/${siteIdentifier}/site-config` : "#"}
-                                className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400 no-underline"
-                              >
-                                Create a space
-                              </a>
-                            </div>
-                          )}
+                              <div className="flex items-center gap-1">
+                                <ExternalLink className="h-3.5 w-3.5 opacity-60 hover:opacity-100" />
+                                <Cog className="h-3.5 w-3.5 opacity-60 hover:opacity-100" />
+                              </div>
+                            </a>
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center justify-between"
+                              onClick={() => setSpacesDropdownOpen(false)}
+                            >
+                              <div className="flex items-center gap-2">
+                                <HelpCircle className="h-3.5 w-3.5" />
+                                <span>Q&A</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <ExternalLink className="h-3.5 w-3.5 opacity-60 hover:opacity-100" />
+                                <Cog className="h-3.5 w-3.5 opacity-60 hover:opacity-100" />
+                              </div>
+                            </a>
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center justify-between"
+                              onClick={() => setSpacesDropdownOpen(false)}
+                            >
+                              <div className="flex items-center gap-2">
+                                <Calendar className="h-3.5 w-3.5" />
+                                <span>Events</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <ExternalLink className="h-3.5 w-3.5 opacity-60 hover:opacity-100" />
+                                <Cog className="h-3.5 w-3.5 opacity-60 hover:opacity-100" />
+                              </div>
+                            </a>
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center justify-between"
+                              onClick={() => setSpacesDropdownOpen(false)}
+                            >
+                              <div className="flex items-center gap-2">
+                                <Star className="h-3.5 w-3.5" />
+                                <span>Feature Requests</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <ExternalLink className="h-3.5 w-3.5 opacity-60 hover:opacity-100" />
+                                <Cog className="h-3.5 w-3.5 opacity-60 hover:opacity-100" />
+                              </div>
+                            </a>
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center justify-between"
+                              onClick={() => setSpacesDropdownOpen(false)}
+                            >
+                              <div className="flex items-center gap-2">
+                                <BookOpen className="h-3.5 w-3.5" />
+                                <span>Knowledge Base</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <ExternalLink className="h-3.5 w-3.5 opacity-60 hover:opacity-100" />
+                                <Cog className="h-3.5 w-3.5 opacity-60 hover:opacity-100" />
+                              </div>
+                            </a>
+                          </div>
                         </div>
                       )}
                     </div>
                     
-                    {/* Posts Dropdown - Simple Implementation */}
+                    {/* Posts Dropdown - Mock Data */}
                     <div className="relative group" ref={postsDropdownRef}>
                       <button
                         className={cn(
@@ -404,58 +469,100 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                           setPostsDropdownOpen(!postsDropdownOpen);
                           setSpacesDropdownOpen(false);
                           setInsightsDropdownOpen(false);
-                          fetchCmsTypes('official');
+                          setModerationDropdownOpen(false);
                         }}
                       >
-                        <Files className="h-3.5 w-3.5" />
+                        <Database className="h-3.5 w-3.5" />
                         <ChevronDown className="h-2.5 w-2.5 opacity-40" />
                       </button>
                       
                       {postsDropdownOpen && (
-                        <div className="absolute left-0 mt-1 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50">
-                          {loadingCmsTypes ? (
-                            <div className="px-3 py-2.5 text-sm text-gray-700 dark:text-gray-300">
-                              Loading post types...
-                            </div>
-                          ) : cmsTypes && cmsTypes.length > 0 ? (
-                            <div className="py-1">
-                              {cmsTypes.map(type => {
-                                if (siteIdentifier) {
-                                  const typeSlug = type.name.toLowerCase().replace(/[\s&]+/g, '-');
-                                  const contentUrl = APP_ROUTES.DASHBOARD_SITE.CONTENT_SECTION(siteIdentifier, typeSlug);
-                                  return (
-                                    <a 
-                                      key={type.id} 
-                                      href={contentUrl}
-                                      className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
-                                      onClick={() => setPostsDropdownOpen(false)}
-                                    >
-                                      {getIconComponent(type.icon_name)}
-                                      <span>{type.name}</span>
-                                    </a>
-                                  );
-                                }
-                                return null;
-                              })}
-                            </div>
-                          ) : (
-                            <div className="py-1">
-                              <div className="px-4 py-2 text-sm text-gray-800 dark:text-gray-200">
-                                No post types available
-                              </div>
-                              <a 
-                                href={siteIdentifier ? `/dashboard/site/${siteIdentifier}/content` : "#"}
-                                className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400 no-underline"
-                              >
-                                Go to content
-                              </a>
-                            </div>
-                          )}
+                        <div className="absolute left-0 mt-1 w-64 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50">
+                          <div className="py-1">
+                            {/* Top section - All Posts, Scheduled, Draft */}
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
+                              onClick={() => setPostsDropdownOpen(false)}
+                            >
+                              <Files className="h-3.5 w-3.5" />
+                              <span>All Posts</span>
+                            </a>
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
+                              onClick={() => setPostsDropdownOpen(false)}
+                            >
+                              <Calendar className="h-3.5 w-3.5" />
+                              <span>All Scheduled</span>
+                            </a>
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
+                              onClick={() => setPostsDropdownOpen(false)}
+                            >
+                              <Package className="h-3.5 w-3.5" />
+                              <span>All Draft</span>
+                            </a>
+                            
+                            {/* Divider */}
+                            <div className="border-t border-gray-200 dark:border-gray-600 my-1"></div>
+                            
+                            {/* Content types section */}
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
+                              onClick={() => setPostsDropdownOpen(false)}
+                            >
+                              <MessageSquare className="h-3.5 w-3.5" />
+                              <span>Discussions</span>
+                            </a>
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
+                              onClick={() => setPostsDropdownOpen(false)}
+                            >
+                              <HelpCircle className="h-3.5 w-3.5" />
+                              <span>Q&A</span>
+                            </a>
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
+                              onClick={() => setPostsDropdownOpen(false)}
+                            >
+                              <Calendar className="h-3.5 w-3.5" />
+                              <span>Events</span>
+                            </a>
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
+                              onClick={() => setPostsDropdownOpen(false)}
+                            >
+                              <BookOpen className="h-3.5 w-3.5" />
+                              <span>Blog Posts</span>
+                            </a>
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
+                              onClick={() => setPostsDropdownOpen(false)}
+                            >
+                              <Star className="h-3.5 w-3.5" />
+                              <span>Ideas & Wishlist</span>
+                            </a>
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
+                              onClick={() => setPostsDropdownOpen(false)}
+                            >
+                              <Bell className="h-3.5 w-3.5" />
+                              <span>Announcements</span>
+                            </a>
+                          </div>
                         </div>
                       )}
                     </div>
                     
-                    {/* Insights Dropdown - Simple Implementation */}
+                    {/* Insights Dropdown - Mock Data */}
                     <div className="relative group" ref={insightsDropdownRef}>
                       <button
                         className={cn(
@@ -469,6 +576,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                           setInsightsDropdownOpen(!insightsDropdownOpen);
                           setSpacesDropdownOpen(false);
                           setPostsDropdownOpen(false);
+                          setModerationDropdownOpen(false);
                         }}
                       >
                         <BarChart2 className="h-3.5 w-3.5" />
@@ -476,16 +584,104 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                       </button>
                       
                       {insightsDropdownOpen && (
-                        <div className="absolute left-0 mt-1 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50">
+                        <div className="absolute left-0 mt-1 w-64 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50">
                           <div className="py-1">
-                            <a href="#" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline" onClick={() => setInsightsDropdownOpen(false)}>
-                              Analytics
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2" 
+                              onClick={() => setInsightsDropdownOpen(false)}
+                            >
+                              <BarChart2 className="h-3.5 w-3.5" />
+                              <span>Analytics</span>
                             </a>
-                            <a href="#" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline" onClick={() => setInsightsDropdownOpen(false)}>
-                              Conversions
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2" 
+                              onClick={() => setInsightsDropdownOpen(false)}
+                            >
+                              <Package className="h-3.5 w-3.5" />
+                              <span>Conversions</span>
                             </a>
-                            <a href="#" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline" onClick={() => setInsightsDropdownOpen(false)}>
-                              Traffic
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2" 
+                              onClick={() => setInsightsDropdownOpen(false)}
+                            >
+                              <Briefcase className="h-3.5 w-3.5" />
+                              <span>Traffic</span>
+                            </a>
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2" 
+                              onClick={() => setInsightsDropdownOpen(false)}
+                            >
+                              <Star className="h-3.5 w-3.5" />
+                              <span>Engagement</span>
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Moderation Dropdown - Mock Data */}
+                    <div className="relative group" ref={moderationDropdownRef}>
+                      <button
+                        className={cn(
+                          "flex items-center gap-1 justify-center p-1.5 rounded-md border",
+                          borderColor, 
+                          buttonBg, 
+                          iconColor,
+                          buttonBgHover
+                        )}
+                        onClick={() => {
+                          setModerationDropdownOpen(!moderationDropdownOpen);
+                          setSpacesDropdownOpen(false);
+                          setPostsDropdownOpen(false);
+                          setInsightsDropdownOpen(false);
+                        }}
+                      >
+                        <ShieldPlus className="h-3.5 w-3.5" />
+                        <ChevronDown className="h-2.5 w-2.5 opacity-40" />
+                      </button>
+                      
+                      {moderationDropdownOpen && (
+                        <div className="absolute left-0 mt-1 w-64 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50">
+                          <div className="py-1">
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2" 
+                              onClick={() => setModerationDropdownOpen(false)}
+                            >
+                              <Package className="h-3.5 w-3.5" />
+                              <span>Pending Posts</span>
+                            </a>
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2" 
+                              onClick={() => setModerationDropdownOpen(false)}
+                            >
+                              <Files className="h-3.5 w-3.5" />
+                              <span>Reported Posts</span>
+                            </a>
+                            
+                            {/* Divider */}
+                            <div className="border-t border-gray-200 dark:border-gray-600 my-1"></div>
+                            
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2" 
+                              onClick={() => setModerationDropdownOpen(false)}
+                            >
+                              <Briefcase className="h-3.5 w-3.5" />
+                              <span>Pending Members</span>
+                            </a>
+                            <a 
+                              href="#" 
+                              className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2" 
+                              onClick={() => setModerationDropdownOpen(false)}
+                            >
+                              <Star className="h-3.5 w-3.5" />
+                              <span>Reported Members</span>
                             </a>
                           </div>
                         </div>
@@ -496,7 +692,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
               </div>
 
               {/* Right Section - Breadcrumbs and Actions */}
-              <div className="flex-1 flex items-center justify-between px-3">
+              <div className="flex-1 flex items-center justify-between pl-3">
                 {/* Breadcrumbs */}
                 <div className={cn("flex items-center text-xs", secondaryTextColor)}>
                   <span>Dashboard</span>
@@ -576,50 +772,220 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
 
                 {/* Action Buttons */}
                 <div className="flex items-center space-x-2">
-                  {/* Conditional Button: View Site / Go to Dashboard */} 
-                  {variant === 'dashboard' ? (
-                    <Button 
-                      variant="secondary" 
-                      size="sm" 
-                      className={cn(borderColor, buttonBg, primaryTextColor, buttonBgHover)}
-                      onClick={() => {
-                        // Use the current location to ensure it works in all scenarios
-                        const currentSiteIdentifier = siteIdentifier || getSiteIdentifierFromRoute(location);
-                        if (currentSiteIdentifier) {
-                          const targetUrl = `${window.location.origin}/site/${currentSiteIdentifier}`;
-                          console.log("Opening site URL:", targetUrl);
-                          window.location.href = targetUrl;
-                        } else {
-                          console.error("No site identifier found");
-                        }
-                      }}
-                    >
-                      <ExternalLink className="h-4 w-4 mr-1" />
-                      View Site
-                    </Button>
-                  ) : (
-                    <Button 
-                      variant="secondary" 
-                      size="sm" 
-                      className={cn(
-                        borderColor, 
-                        buttonBg, 
-                        variant === 'site' ? "text-gray-300 dark:text-gray-700" : "text-gray-700 dark:text-gray-300",
-                        buttonBgHover
-                      )}
-                      onClick={() => {
-                        if (siteIdentifier) {
-                          // Use APP_ROUTES with window.location.origin for proper linking
-                          const dashboardPath = APP_ROUTES.DASHBOARD_SITE.INDEX(siteIdentifier);
-                          const dashboardUrl = `${window.location.origin}${dashboardPath}`;
-                          console.log("Opening dashboard URL:", dashboardUrl);
-                          window.location.href = dashboardUrl;
-                        }
-                      }}
-                    >
-                      <ExternalLink className="h-4 w-4 mr-1" />
-                      Go to Dashboard
-                    </Button>
+                  {/* Site Mode Action Buttons with Tooltips */}
+                  {variant === 'site' && (
+                    <Tooltip.Provider>
+                      <div className="flex items-center">
+                        {/* Add Post Button */}
+                        <div className={cn("h-12 flex items-center justify-center border-r border-l", borderColor)}>
+                          <Tooltip.Root>
+                            <Tooltip.Trigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className={cn(
+                                  "w-12 h-12 transition-all duration-200",
+                                  variant === 'site' 
+                                    ? "bg-gray-900 dark:bg-white hover:bg-gray-700 dark:hover:bg-gray-200 text-gray-300 dark:text-gray-600" 
+                                    : "bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
+                                )}
+                                onClick={() => {
+                                  // Navigate to add post page
+                                  if (siteIdentifier) {
+                                    const addPostUrl = `${window.location.origin}/dashboard/site/${siteIdentifier}/content`;
+                                    window.location.href = addPostUrl;
+                                  }
+                                }}
+                              >
+                                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                  <path d="M12 5v14M5 12h14" />
+                                </svg>
+                              </Button>
+                            </Tooltip.Trigger>
+                            <Tooltip.Portal>
+                              <Tooltip.Content 
+                                className="bg-gray-900 dark:bg-gray-700 text-white px-2 py-1 rounded-md text-xs font-medium shadow-lg"
+                                sideOffset={8}
+                              >
+                                Add Post
+                                <Tooltip.Arrow className="fill-gray-900 dark:fill-gray-700" />
+                              </Tooltip.Content>
+                            </Tooltip.Portal>
+                          </Tooltip.Root>
+                        </div>
+
+                        {/* View Dashboard Button */}
+                        <div className={cn("h-12 flex items-center justify-center border-r", borderColor)}>
+                          <Tooltip.Root>
+                            <Tooltip.Trigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className={cn(
+                                  "w-12 h-12 transition-all duration-200",
+                                  variant === 'site' 
+                                    ? "bg-gray-900 dark:bg-white hover:bg-gray-700 dark:hover:bg-gray-200 text-gray-300 dark:text-gray-600" 
+                                    : "bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
+                                )}
+                                onClick={() => {
+                                  if (siteIdentifier) {
+                                    // Use APP_ROUTES with window.location.origin for proper linking
+                                    const dashboardPath = APP_ROUTES.DASHBOARD_SITE.INDEX(siteIdentifier);
+                                    const dashboardUrl = `${window.location.origin}${dashboardPath}`;
+                                    console.log("Opening dashboard URL:", dashboardUrl);
+                                    window.location.href = dashboardUrl;
+                                  }
+                                }}
+                              >
+                                <Cog className="h-4 w-4" />
+                              </Button>
+                            </Tooltip.Trigger>
+                            <Tooltip.Portal>
+                              <Tooltip.Content 
+                                className="bg-gray-900 dark:bg-gray-700 text-white px-2 py-1 rounded-md text-xs font-medium shadow-lg"
+                                sideOffset={8}
+                              >
+                                View Dashboard
+                                <Tooltip.Arrow className="fill-gray-900 dark:fill-gray-700" />
+                              </Tooltip.Content>
+                            </Tooltip.Portal>
+                          </Tooltip.Root>
+                        </div>
+
+                        {/* Better Copilot Button */}
+                        <div className="h-12 flex items-center justify-center">
+                          <Tooltip.Root>
+                            <Tooltip.Trigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className={cn(
+                                  "w-12 h-12 transition-all duration-200",
+                                  variant === 'site' 
+                                    ? "bg-gray-900 dark:bg-white hover:bg-gray-700 dark:hover:bg-gray-200 text-gray-300 dark:text-gray-600" 
+                                    : "bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
+                                )}
+                                onClick={() => {
+                                  // Add Better Copilot functionality here
+                                  console.log("Better Copilot clicked");
+                                }}
+                              >
+                                <Sparkles className="h-4 w-4" />
+                              </Button>
+                            </Tooltip.Trigger>
+                            <Tooltip.Portal>
+                              <Tooltip.Content 
+                                className="bg-gray-900 dark:bg-gray-700 text-white px-2 py-1 rounded-md text-xs font-medium shadow-lg"
+                                sideOffset={8}
+                              >
+                                Better Copilot
+                                <Tooltip.Arrow className="fill-gray-900 dark:fill-gray-700" />
+                              </Tooltip.Content>
+                            </Tooltip.Portal>
+                          </Tooltip.Root>
+                        </div>
+                      </div>
+                    </Tooltip.Provider>
+                  )}
+
+                  {/* Dashboard Action Buttons with Tooltips */}
+                  {variant === 'dashboard' && (
+                    <Tooltip.Provider>
+                      <div className="flex items-center">
+                        {/* Add Post Button */}
+                        <div className={cn("h-12 flex items-center justify-center border-r border-l", borderColor)}>
+                          <Tooltip.Root>
+                            <Tooltip.Trigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className="w-12 h-12 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-all duration-200"
+                                onClick={() => {
+                                  // Navigate to add post page
+                                  if (siteIdentifier) {
+                                    const addPostUrl = `${window.location.origin}/dashboard/site/${siteIdentifier}/content`;
+                                    window.location.href = addPostUrl;
+                                  }
+                                }}
+                              >
+                                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                  <path d="M12 5v14M5 12h14" />
+                                </svg>
+                              </Button>
+                            </Tooltip.Trigger>
+                            <Tooltip.Portal>
+                              <Tooltip.Content 
+                                className="bg-gray-900 dark:bg-gray-700 text-white px-2 py-1 rounded-md text-xs font-medium shadow-lg"
+                                sideOffset={8}
+                              >
+                                Add Post
+                                <Tooltip.Arrow className="fill-gray-900 dark:fill-gray-700" />
+                              </Tooltip.Content>
+                            </Tooltip.Portal>
+                          </Tooltip.Root>
+                        </div>
+
+                        {/* View Site Button */}
+                        <div className={cn("h-12 flex items-center justify-center border-r", borderColor)}>
+                          <Tooltip.Root>
+                            <Tooltip.Trigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className="w-12 h-12 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-all duration-200"
+                                onClick={() => {
+                                  const currentSiteIdentifier = siteIdentifier || getSiteIdentifierFromRoute(location);
+                                  if (currentSiteIdentifier) {
+                                    const targetUrl = `${window.location.origin}/site/${currentSiteIdentifier}`;
+                                    window.location.href = targetUrl;
+                                  }
+                                }}
+                              >
+                                <ExternalLink className="h-4 w-4" />
+                              </Button>
+                            </Tooltip.Trigger>
+                            <Tooltip.Portal>
+                              <Tooltip.Content 
+                                className="w-12 h-12 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-all duration-200"
+                                sideOffset={8}
+                              >
+                                View Site
+                                <Tooltip.Arrow className="fill-gray-900 dark:fill-gray-700" />
+                              </Tooltip.Content>
+                            </Tooltip.Portal>
+                          </Tooltip.Root>
+                        </div>
+
+                        {/* Better Copilot Button */}
+                        <div className="h-12 flex items-center justify-center">
+                          <Tooltip.Root>
+                            <Tooltip.Trigger asChild>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className="w-12 h-12 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-all duration-200"
+                                onClick={() => {
+                                  // Add Better Copilot functionality here
+                                  console.log("Better Copilot clicked");
+                                }}
+                              >
+                                <Sparkles className="h-4 w-4" />
+
+                              </Button>
+                            </Tooltip.Trigger>
+                            <Tooltip.Portal>
+                              <Tooltip.Content 
+                                className="bg-gray-900 dark:bg-gray-700 text-white px-2 py-1 rounded-md text-xs font-medium shadow-lg"
+                                sideOffset={8}
+                              >
+                                Better Copilot
+                                <Tooltip.Arrow className="fill-gray-900 dark:fill-gray-700" />
+                              </Tooltip.Content>
+                            </Tooltip.Portal>
+                          </Tooltip.Root>
+                        </div>
+                      </div>
+                    </Tooltip.Provider>
                   )}
 
                   {/* Conditional Close Button for Site Variant */} 
@@ -633,39 +999,6 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                     >
                       <ChevronUp className="h-4 w-4" />
                     </Button>
-                  )}
-
-                  {/* Publish Button (Only show in dashboard?) */} 
-                  {variant === 'dashboard' && (
-                    <DropdownMenu.Root>
-                      <DropdownMenu.Trigger asChild>
-                        <Button 
-                          variant="default" 
-                          size="sm" 
-                        >
-                          Publish
-                          <ChevronDown />
-                        </Button>
-                      </DropdownMenu.Trigger>
-                      <DropdownMenu.Portal>
-                        <DropdownMenu.Content 
-                          className="bg-white dark:bg-gray-800 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 py-1 w-48 mt-1"
-                          sideOffset={5}
-                          align="end"
-                        >
-                          <DropdownMenu.Item className="px-3 py-1 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer flex items-center text-gray-700 dark:text-gray-300">
-                            Publish Now
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Item className="px-3 py-1 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer flex items-center text-gray-700 dark:text-gray-300">
-                            Schedule Publish
-                          </DropdownMenu.Item>
-                          <DropdownMenu.Separator className="h-px bg-gray-200 dark:bg-gray-700 my-1" />
-                          <DropdownMenu.Item className="px-3 py-1 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer flex items-center text-red-600 dark:text-red-400">
-                            Unpublish
-                          </DropdownMenu.Item>
-                        </DropdownMenu.Content>
-                      </DropdownMenu.Portal>
-                    </DropdownMenu.Root>
                   )}
 
                   {/* Mobile Menu Button */}

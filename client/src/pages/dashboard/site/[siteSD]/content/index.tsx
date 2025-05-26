@@ -794,6 +794,10 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
   const [, params] = useRoute(siteId ? `/dashboard/site/${siteId}/content/:section` : '/content/:section');
   const section = params?.section;
   
+  // Get query parameters from URL
+  const urlParams = new URLSearchParams(location.split('?')[1] || '');
+  const statusParam = urlParams.get('status');
+  
   // UI state
   const [activeTab, setActiveTab] = useState<string>("all");
   const [showPublishedOnly, setShowPublishedOnly] = useState<boolean>(false);
@@ -829,6 +833,17 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
       setSelectedCmsType(null);
     }
   }, [section]);
+
+  // Update active tab based on status parameter
+  useEffect(() => {
+    if (statusParam === 'scheduled') {
+      setActiveTab('scheduled');
+    } else if (statusParam === 'draft') {
+      setActiveTab('drafts');
+    } else if (!statusParam && !section) {
+      setActiveTab('all');
+    }
+  }, [statusParam, section]);
 
   // Utility function to check if a string is a valid UUID
   function isValidUUID(uuid: string) {
@@ -1029,6 +1044,8 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
   const getPageTitle = () => {
     if (section === 'activity') return 'Activity Hub';
     if (section === 'inbox') return 'Inbox';
+    if (statusParam === 'scheduled') return 'All Scheduled Posts';
+    if (statusParam === 'draft') return 'All Draft Posts';
     if (selectedCmsType) {
       // Capitalize the first letter of the CMS type
       return selectedCmsType.charAt(0).toUpperCase() + selectedCmsType.slice(1);
