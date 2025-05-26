@@ -24,7 +24,8 @@ import {
     AppWindowMac,
     ScreenShare,
     MonitorCog,
-    ShieldPlus
+    ShieldPlus,
+    UserPlus
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
@@ -36,6 +37,9 @@ import { sitesApi, Site } from "@/lib/api";
 import { APP_ROUTES, getSiteIdentifierFromRoute } from "@/config/routes";
 import { getApiBaseUrl } from "@/lib/utils";
 import { useSiteContent } from "@/lib/SiteContentContext";
+import { NewPostDialog } from "@/components/ui/new-post-dialog";
+import { NewPeopleDialog } from "@/components/ui/new-people-dialog";
+import { AddContentDialog } from "@/components/ui/add-content-dialog";
 
 // Define interface for Space
 interface Space {
@@ -251,12 +255,19 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
   const [postsDropdownOpen, setPostsDropdownOpen] = useState(false);
   const [insightsDropdownOpen, setInsightsDropdownOpen] = useState(false);
   const [moderationDropdownOpen, setModerationDropdownOpen] = useState(false);
+  const [addDropdownOpen, setAddDropdownOpen] = useState(false);
+  
+  // Dialog states
+  const [newPostDialogOpen, setNewPostDialogOpen] = useState(false);
+  const [newPeopleDialogOpen, setNewPeopleDialogOpen] = useState(false);
+  const [addContentDialogOpen, setAddContentDialogOpen] = useState(false);
   
   // Add refs for dropdown containers to handle click outside
   const spacesDropdownRef = useRef<HTMLDivElement>(null);
   const postsDropdownRef = useRef<HTMLDivElement>(null);
   const insightsDropdownRef = useRef<HTMLDivElement>(null);
   const moderationDropdownRef = useRef<HTMLDivElement>(null);
+  const addDropdownRef = useRef<HTMLDivElement>(null);
   
   // Handle click outside to close dropdowns
   useEffect(() => {
@@ -288,6 +299,13 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
           moderationDropdownOpen) {
         setModerationDropdownOpen(false);
       }
+      
+      // Close add dropdown if click is outside
+      if (addDropdownRef.current && 
+          !addDropdownRef.current.contains(event.target as Node) && 
+          addDropdownOpen) {
+        setAddDropdownOpen(false);
+      }
     };
     
     // Add event listener
@@ -297,7 +315,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [spacesDropdownOpen, postsDropdownOpen, insightsDropdownOpen, moderationDropdownOpen]);
+  }, [spacesDropdownOpen, postsDropdownOpen, insightsDropdownOpen, moderationDropdownOpen, addDropdownOpen]);
 
   return (
     <motion.header
@@ -892,37 +910,72 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                   {variant === 'dashboard' && (
                     <Tooltip.Provider>
                       <div className="flex items-center">
-                        {/* Add Post Button */}
-                        <div className={cn("h-12 flex items-center justify-center border-r border-l", borderColor)}>
-                          <Tooltip.Root>
-                            <Tooltip.Trigger asChild>
-                              <Button 
-                                variant="ghost" 
-                                size="icon" 
-                                className="w-12 h-12 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-all duration-200"
-                                onClick={() => {
-                                  // Navigate to add post page
-                                  if (siteIdentifier) {
-                                    const addPostUrl = `${window.location.origin}/dashboard/site/${siteIdentifier}/content`;
-                                    window.location.href = addPostUrl;
-                                  }
-                                }}
-                              >
-                                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                  <path d="M12 5v14M5 12h14" />
-                                </svg>
-                              </Button>
-                            </Tooltip.Trigger>
-                            <Tooltip.Portal>
-                              <Tooltip.Content 
-                                className="bg-gray-900 dark:bg-gray-700 text-white px-2 py-1 rounded-md text-xs font-medium shadow-lg"
-                                sideOffset={8}
-                              >
-                                Add Post
-                                <Tooltip.Arrow className="fill-gray-900 dark:fill-gray-700" />
-                              </Tooltip.Content>
-                            </Tooltip.Portal>
-                          </Tooltip.Root>
+                        {/* Add Dropdown */}
+                        <div className={cn("h-12 flex items-center justify-center border-r border-l", borderColor)} ref={addDropdownRef}>
+                          <div className="relative">
+                            <Tooltip.Root>
+                              <Tooltip.Trigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  className="w-12 h-12 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-all duration-200"
+                                  onClick={() => setAddDropdownOpen(!addDropdownOpen)}
+                                >
+                                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M12 5v14M5 12h14" />
+                                  </svg>
+                                </Button>
+                              </Tooltip.Trigger>
+                              <Tooltip.Portal>
+                                <Tooltip.Content 
+                                  className="bg-gray-900 dark:bg-gray-700 text-white px-2 py-1 rounded-md text-xs font-medium shadow-lg"
+                                  sideOffset={8}
+                                >
+                                  Add
+                                  <Tooltip.Arrow className="fill-gray-900 dark:fill-gray-700" />
+                                </Tooltip.Content>
+                              </Tooltip.Portal>
+                            </Tooltip.Root>
+                            
+                            {addDropdownOpen && (
+                              <div className="absolute right-0 mt-1 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50">
+                                <div className="py-1">
+                                  <button 
+                                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center gap-2"
+                                    onClick={() => {
+                                      setAddDropdownOpen(false);
+                                      setNewPostDialogOpen(true);
+                                    }}
+                                  >
+                                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                      <path d="M12 5v14M5 12h14" />
+                                    </svg>
+                                    <span>New Post</span>
+                                  </button>
+                                  <button 
+                                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center gap-2"
+                                    onClick={() => {
+                                      setAddDropdownOpen(false);
+                                      setNewPeopleDialogOpen(true);
+                                    }}
+                                  >
+                                    <UserPlus className="h-4 w-4" />
+                                    <span>New People</span>
+                                  </button>
+                                  <button 
+                                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center gap-2"
+                                    onClick={() => {
+                                      setAddDropdownOpen(false);
+                                      setAddContentDialogOpen(true);
+                                    }}
+                                  >
+                                    <Package className="h-4 w-4" />
+                                    <span>New Content Type</span>
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
 
                         {/* View Site Button */}
@@ -1017,6 +1070,20 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
             </div>
         )}
       </div>
+      
+      {/* Dialogs */}
+      <NewPostDialog 
+        open={newPostDialogOpen} 
+        onOpenChange={setNewPostDialogOpen} 
+      />
+      <NewPeopleDialog 
+        open={newPeopleDialogOpen} 
+        onOpenChange={setNewPeopleDialogOpen} 
+      />
+      <AddContentDialog 
+        open={addContentDialogOpen} 
+        onOpenChange={setAddContentDialogOpen} 
+      />
     </motion.header>
   );
 }
