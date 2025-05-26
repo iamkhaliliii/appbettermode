@@ -77,6 +77,9 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
   const [siteData, setSiteData] = useState<Site | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   
+  // Extract siteIdentifier from URL if not provided as prop
+  const currentSiteIdentifier = siteIdentifier || getSiteIdentifierFromRoute(location);
+  
   // Use our context instead of local state for spaces and CMS types
   const { 
     spaces: contextSpaces, 
@@ -94,21 +97,21 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
   const [loadingSpaces, setLoadingSpaces] = useState(false);
   const [loadingCmsTypes, setLoadingCmsTypes] = useState(false);
   
-  // Update local spaces from context when siteIdentifier changes
+  // Update local spaces from context when currentSiteIdentifier changes
   useEffect(() => {
-    if (siteIdentifier && contextSpaces[siteIdentifier]) {
-      setSpaces(contextSpaces[siteIdentifier]);
+    if (currentSiteIdentifier && contextSpaces[currentSiteIdentifier]) {
+      setSpaces(contextSpaces[currentSiteIdentifier]);
     } else {
       // Use fallback data when nothing is available in context
       setSpaces([
-        { id: 'fallback-1', name: 'Events', slug: 'events', site_id: siteIdentifier || '' },
-        { id: 'fallback-2', name: 'Q&A', slug: 'qa', site_id: siteIdentifier || '' },
-        { id: 'fallback-3', name: 'Discussions', slug: 'discussions', site_id: siteIdentifier || '' },
-        { id: 'fallback-4', name: 'Wishlist', slug: 'wishlist', site_id: siteIdentifier || '' },
-        { id: 'fallback-5', name: 'Knowledge Base', slug: 'knowledge', site_id: siteIdentifier || '' }
+        { id: 'fallback-1', name: 'Events', slug: 'events', site_id: currentSiteIdentifier || '' },
+        { id: 'fallback-2', name: 'Q&A', slug: 'qa', site_id: currentSiteIdentifier || '' },
+        { id: 'fallback-3', name: 'Discussions', slug: 'discussions', site_id: currentSiteIdentifier || '' },
+        { id: 'fallback-4', name: 'Wishlist', slug: 'wishlist', site_id: currentSiteIdentifier || '' },
+        { id: 'fallback-5', name: 'Knowledge Base', slug: 'knowledge', site_id: currentSiteIdentifier || '' }
       ]);
     }
-  }, [siteIdentifier, contextSpaces]);
+  }, [currentSiteIdentifier, contextSpaces]);
   
   // Update local CMS types from context when it changes
   useEffect(() => {
@@ -130,10 +133,10 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
   
   // Update loading states from context
   useEffect(() => {
-    if (siteIdentifier) {
-      setLoadingSpaces(spacesLoading[siteIdentifier] || false);
+    if (currentSiteIdentifier) {
+      setLoadingSpaces(spacesLoading[currentSiteIdentifier] || false);
     }
-  }, [siteIdentifier, spacesLoading]);
+  }, [currentSiteIdentifier, spacesLoading]);
   
   useEffect(() => {
     setLoadingCmsTypes(cmsTypesLoading);
@@ -147,10 +150,10 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
   useEffect(() => {
   }, [cmsTypes]);
   
-  // Fetch site data when siteIdentifier changes
+  // Fetch site data when currentSiteIdentifier changes
   useEffect(() => {
     const fetchSiteData = async () => {
-      if (!siteIdentifier) {
+      if (!currentSiteIdentifier) {
         setSiteData(null);
         return;
       }
@@ -158,12 +161,12 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
       setIsLoading(true);
       try {
         // Fetch site data using the identifier (works with both UUID and subdomain)
-        const data = await sitesApi.getSite(siteIdentifier);
+        const data = await sitesApi.getSite(currentSiteIdentifier);
         setSiteData(data);
         
         // Trigger context fetch for spaces
-        if (siteIdentifier) {
-          fetchSpaces(siteIdentifier);
+        if (currentSiteIdentifier) {
+          fetchSpaces(currentSiteIdentifier);
         }
         
         // Trigger context fetch for CMS types
@@ -176,7 +179,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
     };
     
     fetchSiteData();
-  }, [siteIdentifier, fetchSpaces, fetchCmsTypes]);
+  }, [currentSiteIdentifier, fetchSpaces, fetchCmsTypes]);
   
   // Get icon component based on icon name
   const getIconComponent = (iconName: string | undefined) => {
@@ -223,12 +226,23 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
   const logoContainerBase = "w-12 h-12 flex items-center justify-center transition-all duration-300 ease-in-out";
   const logoFixedClasses = "fixed mt-8 top-3 right-5 z-50 rounded-md shadow-lg cursor-pointer bg-gray-900 dark:bg-white";
 
-  const handleLogoClick = () => {
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (variant === 'site' && !isSiteHeaderVisible) {
       setIsSiteHeaderVisible(true);
-    } else if (siteIdentifier) {
-      // Navigate to the site dashboard
-      window.location.href = APP_ROUTES.DASHBOARD_SITE.INDEX(siteIdentifier);
+    } else {
+      // Toggle the logo dropdown instead of navigating
+      console.log('Logo clicked, toggling dropdown. Current state:', logoDropdownOpen);
+      console.log('Site identifier:', currentSiteIdentifier);
+      setLogoDropdownOpen(!logoDropdownOpen);
+      // Close other dropdowns
+      setSpacesDropdownOpen(false);
+      setPostsDropdownOpen(false);
+      setInsightsDropdownOpen(false);
+      setModerationDropdownOpen(false);
+      setAddDropdownOpen(false);
     }
   };
 
@@ -256,6 +270,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
   const [insightsDropdownOpen, setInsightsDropdownOpen] = useState(false);
   const [moderationDropdownOpen, setModerationDropdownOpen] = useState(false);
   const [addDropdownOpen, setAddDropdownOpen] = useState(false);
+  const [logoDropdownOpen, setLogoDropdownOpen] = useState(false);
   
   // Dialog states
   const [newPostDialogOpen, setNewPostDialogOpen] = useState(false);
@@ -268,6 +283,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
   const insightsDropdownRef = useRef<HTMLDivElement>(null);
   const moderationDropdownRef = useRef<HTMLDivElement>(null);
   const addDropdownRef = useRef<HTMLDivElement>(null);
+  const logoDropdownRef = useRef<HTMLDivElement>(null);
   
   // Handle click outside to close dropdowns
   useEffect(() => {
@@ -306,6 +322,13 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
           addDropdownOpen) {
         setAddDropdownOpen(false);
       }
+      
+      // Close logo dropdown if click is outside
+      if (logoDropdownRef.current && 
+          !logoDropdownRef.current.contains(event.target as Node) && 
+          logoDropdownOpen) {
+        setLogoDropdownOpen(false);
+      }
     };
     
     // Add event listener
@@ -315,7 +338,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [spacesDropdownOpen, postsDropdownOpen, insightsDropdownOpen, moderationDropdownOpen, addDropdownOpen]);
+  }, [spacesDropdownOpen, postsDropdownOpen, insightsDropdownOpen, moderationDropdownOpen, addDropdownOpen, logoDropdownOpen]);
 
   return (
     <motion.header
@@ -334,11 +357,14 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
         {/* Logo Section - Conditionally apply fixed positioning */}
         <div 
           className={cn(
+            "relative", // Add relative positioning for dropdown
             logoContainerBase,
             variant === 'site' && !isSiteHeaderVisible 
               ? logoFixedClasses 
-              : ["border-r", borderColor, variant === 'site' ? "cursor-pointer" : ""]
+              : ["border-r", borderColor, "cursor-pointer"],
+            logoDropdownOpen && variant === 'dashboard' ? "bg-gray-50 dark:bg-gray-700" : ""
           )}
+          ref={logoDropdownRef}
           onClick={handleLogoClick}
         >
           <svg width="24" height="24" viewBox="0 0 58 58" fill="none" xmlns="http://www.w3.org/2000/svg" 
@@ -351,6 +377,52 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
             <path d="M28.9912 0C12.9792 0 0 12.9792 0 28.9912C0 45.0032 12.9792 57.9824 28.9912 57.9824C45.0032 57.9824 57.9824 45.0032 57.9824 28.9912C57.9824 12.9792 45.0032 0 28.9912 0ZM34.4282 38.051H23.5554C18.551 38.051 14.4967 33.9956 14.4967 28.9912C14.4967 23.9868 18.5521 19.9315 23.5554 19.9315H34.4282C39.4326 19.9315 43.4868 23.9868 43.4868 28.9912C43.4868 33.9956 39.4315 38.051 34.4282 38.051Z" fill="currentColor"/>
             <path d="M34.427 36.2389C38.4299 36.2389 41.6748 32.9939 41.6748 28.9911C41.6748 24.9882 38.4299 21.7433 34.427 21.7433C30.4242 21.7433 27.1792 24.9882 27.1792 28.9911C27.1792 32.9939 30.4242 36.2389 34.427 36.2389Z" fill="currentColor"/>
           </svg>
+          
+          {/* Logo Dropdown */}
+          {logoDropdownOpen && variant === 'dashboard' && (
+            <div className="absolute left-0 top-full mt-1 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50">
+              <div className="py-1">
+                <a 
+                  href="/sites" 
+                  className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
+                  onClick={() => {
+                    console.log('All Sites clicked');
+                    setLogoDropdownOpen(false);
+                  }}
+                >
+                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9,22 9,12 15,12 15,22"/>
+                  </svg>
+                  <span>All Sites</span>
+                </a>
+                
+                <a 
+                  href={currentSiteIdentifier ? APP_ROUTES.DASHBOARD_MODERATOR.INDEX(currentSiteIdentifier) : '#'} 
+                  className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
+                  onClick={() => {
+                    console.log('Moderator clicked, URL:', currentSiteIdentifier ? APP_ROUTES.DASHBOARD_MODERATOR.INDEX(currentSiteIdentifier) : 'No site identifier');
+                    setLogoDropdownOpen(false);
+                  }}
+                >
+                  <ShieldPlus className="h-4 w-4" />
+                  <span>Moderator</span>
+                </a>
+                
+                <a 
+                  href={currentSiteIdentifier ? APP_ROUTES.DASHBOARD_SITE.INDEX(currentSiteIdentifier) : '#'} 
+                  className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
+                  onClick={() => {
+                    console.log('Admin Dashboard clicked, URL:', currentSiteIdentifier ? APP_ROUTES.DASHBOARD_SITE.INDEX(currentSiteIdentifier) : 'No site identifier');
+                    setLogoDropdownOpen(false);
+                  }}
+                >
+                  <MonitorCog className="h-4 w-4" />
+                  <span>Admin Dashboard</span>
+                </a>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Conditionally Render Rest of Header Content (NO INNER ANIMATION) */}
@@ -809,8 +881,8 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                                 )}
                                 onClick={() => {
                                   // Navigate to add post page
-                                  if (siteIdentifier) {
-                                    const addPostUrl = `${window.location.origin}/dashboard/site/${siteIdentifier}/content`;
+                                  if (currentSiteIdentifier) {
+                                    const addPostUrl = `${window.location.origin}/dashboard/site/${currentSiteIdentifier}/content`;
                                     window.location.href = addPostUrl;
                                   }
                                 }}
@@ -846,9 +918,9 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                                     : "bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
                                 )}
                                 onClick={() => {
-                                  if (siteIdentifier) {
+                                  if (currentSiteIdentifier) {
                                     // Use APP_ROUTES with window.location.origin for proper linking
-                                    const dashboardPath = APP_ROUTES.DASHBOARD_SITE.INDEX(siteIdentifier);
+                                    const dashboardPath = APP_ROUTES.DASHBOARD_SITE.INDEX(currentSiteIdentifier);
                                     const dashboardUrl = `${window.location.origin}${dashboardPath}`;
                                     console.log("Opening dashboard URL:", dashboardUrl);
                                     window.location.href = dashboardUrl;
@@ -987,9 +1059,9 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                                 size="icon" 
                                 className="w-12 h-12 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-all duration-200"
                                 onClick={() => {
-                                  const currentSiteIdentifier = siteIdentifier || getSiteIdentifierFromRoute(location);
-                                  if (currentSiteIdentifier) {
-                                    const targetUrl = `${window.location.origin}/site/${currentSiteIdentifier}`;
+                                  const siteId = currentSiteIdentifier || getSiteIdentifierFromRoute(location);
+                                  if (siteId) {
+                                    const targetUrl = `${window.location.origin}/site/${siteId}`;
                                     window.location.href = targetUrl;
                                   }
                                 }}

@@ -85,7 +85,18 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
     return null;
   }
 
-  const basePath = APP_ROUTES.DASHBOARD_SITE.CONTENT(currentSiteIdentifier);
+  // Determine if we're in moderator context
+  const isModerator = currentPathname.startsWith('/dashboard/moderator/');
+  const basePath = isModerator 
+    ? APP_ROUTES.DASHBOARD_MODERATOR.CONTENT(currentSiteIdentifier)
+    : APP_ROUTES.DASHBOARD_SITE.CONTENT(currentSiteIdentifier);
+  
+  // Helper function to get content section URL
+  const getContentSectionUrl = (section: string) => {
+    return isModerator 
+      ? `${APP_ROUTES.DASHBOARD_MODERATOR.CONTENT(currentSiteIdentifier)}/${section}`
+      : APP_ROUTES.DASHBOARD_SITE.CONTENT_SECTION(currentSiteIdentifier, section);
+  };
 
   // Use CMS types from context when available
   useEffect(() => {
@@ -177,9 +188,9 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
           {/* Primary Actions */}
           <div className="space-y-0.5">
             <SideNavItemWithBadge
-              href={APP_ROUTES.DASHBOARD_SITE.CONTENT_SECTION(currentSiteIdentifier, APP_ROUTES.CONTENT_TYPES.ALL)}
+              href={getContentSectionUrl(APP_ROUTES.CONTENT_TYPES.ALL)}
               isActive={isActiveUrl && (
-                isActiveUrl(APP_ROUTES.DASHBOARD_SITE.CONTENT_SECTION(currentSiteIdentifier, APP_ROUTES.CONTENT_TYPES.ALL), currentPathname) || 
+                isActiveUrl(getContentSectionUrl(APP_ROUTES.CONTENT_TYPES.ALL), currentPathname) || 
                 currentPathname === basePath
               )}
               icon={<Folder className="h-3.5 w-3.5" />}
@@ -222,8 +233,8 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
                 {cmsTypes.map((cmsType) => (
                   <SideNavItem
                     key={cmsType.id}
-                    href={APP_ROUTES.DASHBOARD_SITE.CONTENT_SECTION(currentSiteIdentifier, cmsType.name.toLowerCase())}
-                    isActive={isActiveUrl && isActiveUrl(APP_ROUTES.DASHBOARD_SITE.CONTENT_SECTION(currentSiteIdentifier, cmsType.name.toLowerCase()), currentPathname)}
+                    href={getContentSectionUrl(cmsType.name.toLowerCase())}
+                    isActive={isActiveUrl && isActiveUrl(getContentSectionUrl(cmsType.name.toLowerCase()), currentPathname)}
                     icon={getIconComponent(cmsType.name)}
                   >
                     {cmsType.name}
@@ -246,7 +257,7 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
 
           {/* Divider and Custom View */}
           <div className="border-t border-gray-100 dark:border-gray-700 mt-2 pt-2">
-            <Link href={APP_ROUTES.DASHBOARD_SITE.CONTENT_SECTION(currentSiteIdentifier, APP_ROUTES.CONTENT_TYPES.CUSTOM_VIEW)}>
+            <Link href={getContentSectionUrl(APP_ROUTES.CONTENT_TYPES.CUSTOM_VIEW)}>
               <div className="flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150 px-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 rounded">
                 <Plus className="h-3.5 w-3.5 mr-2" />
                 <span className="font-normal">Add custom view</span>

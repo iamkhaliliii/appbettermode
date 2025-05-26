@@ -1,4 +1,4 @@
-import { DashboardLayout } from "@/components/layout/dashboard/dashboard-layout";
+import { AdaptiveDashboardLayout } from "@/components/layout/dashboard/adaptive-dashboard-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -1056,7 +1056,7 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
   // For the Inbox section
   if (section === 'inbox') {
     return (
-      <DashboardLayout currentSiteIdentifier={siteId} siteName={siteDetails?.name}>
+      <AdaptiveDashboardLayout currentSiteIdentifier={siteId} siteName={siteDetails?.name}>
         <div className="px-4 md:px-6 py-4 md:py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -1080,14 +1080,14 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
             </Card>
           </div>
         </div>
-      </DashboardLayout>
+      </AdaptiveDashboardLayout>
     );
   }
   
   // For the Activity Hub section
   if (section === 'activity') {
     return (
-      <DashboardLayout
+      <AdaptiveDashboardLayout
         siteName={siteDetails?.name}
         currentSiteIdentifier={siteId}
       >
@@ -1129,13 +1129,13 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
             </Card>
           </div>
         </div>
-      </DashboardLayout>
+      </AdaptiveDashboardLayout>
     );
   }
   
   // For the default CMS view (now at root /content path)
   return (
-    <DashboardLayout
+    <AdaptiveDashboardLayout
       siteName={siteDetails?.name}
       currentSiteIdentifier={siteId}
     >
@@ -1529,7 +1529,7 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
 
 
         </div>
-      </DashboardLayout>
+      </AdaptiveDashboardLayout>
     );
   }
 export default withSiteContext(Content);

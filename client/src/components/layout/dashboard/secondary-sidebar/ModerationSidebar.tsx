@@ -19,7 +19,18 @@ export const ModerationSidebar: React.FC<BaseSidebarProps> = ({
     return null;
   }
 
-  const basePath = APP_ROUTES.DASHBOARD_SITE.MODERATION(currentSiteIdentifier);
+  // Determine if we're in moderator context
+  const isModerator = currentPathname.startsWith('/dashboard/moderator/');
+  const basePath = isModerator 
+    ? APP_ROUTES.DASHBOARD_MODERATOR.MODERATION(currentSiteIdentifier)
+    : APP_ROUTES.DASHBOARD_SITE.MODERATION(currentSiteIdentifier);
+
+  // Helper function to get moderation section URL
+  const getModerationSectionUrl = (section: string) => {
+    return isModerator 
+      ? `${APP_ROUTES.DASHBOARD_MODERATOR.MODERATION(currentSiteIdentifier)}/${section}`
+      : APP_ROUTES.DASHBOARD_SITE.MODERATION_SECTION(currentSiteIdentifier, section);
+  };
 
   // Helper function to check if the current path matches the given path
   const checkActive = (path: string): boolean => {
@@ -41,16 +52,16 @@ export const ModerationSidebar: React.FC<BaseSidebarProps> = ({
             
 
             <SideNavItem
-              href={APP_ROUTES.DASHBOARD_SITE.MODERATION_SECTION(currentSiteIdentifier, APP_ROUTES.MODERATION_TYPES.PENDING_POSTS)}
-              isActive={checkActive(APP_ROUTES.DASHBOARD_SITE.MODERATION_SECTION(currentSiteIdentifier, APP_ROUTES.MODERATION_TYPES.PENDING_POSTS))}
+              href={getModerationSectionUrl(APP_ROUTES.MODERATION_TYPES.PENDING_POSTS)}
+              isActive={checkActive(getModerationSectionUrl(APP_ROUTES.MODERATION_TYPES.PENDING_POSTS))}
               icon={<FileCheck className="h-3.5 w-3.5" />}
             >
               Pending Posts
             </SideNavItem>
             
             <SideNavItem
-              href={APP_ROUTES.DASHBOARD_SITE.MODERATION_SECTION(currentSiteIdentifier, APP_ROUTES.MODERATION_TYPES.REPORTED_POSTS)}
-              isActive={checkActive(APP_ROUTES.DASHBOARD_SITE.MODERATION_SECTION(currentSiteIdentifier, APP_ROUTES.MODERATION_TYPES.REPORTED_POSTS))}
+              href={getModerationSectionUrl(APP_ROUTES.MODERATION_TYPES.REPORTED_POSTS)}
+              isActive={checkActive(getModerationSectionUrl(APP_ROUTES.MODERATION_TYPES.REPORTED_POSTS))}
               icon={<AlertTriangle className="h-3.5 w-3.5" />}
             >
               Reported Posts
@@ -64,16 +75,16 @@ export const ModerationSidebar: React.FC<BaseSidebarProps> = ({
             </h2>
             
             <SideNavItem
-              href={APP_ROUTES.DASHBOARD_SITE.MODERATION_SECTION(currentSiteIdentifier, APP_ROUTES.MODERATION_TYPES.PENDING_MEMBERS)}
-              isActive={checkActive(APP_ROUTES.DASHBOARD_SITE.MODERATION_SECTION(currentSiteIdentifier, APP_ROUTES.MODERATION_TYPES.PENDING_MEMBERS))}
+              href={getModerationSectionUrl(APP_ROUTES.MODERATION_TYPES.PENDING_MEMBERS)}
+              isActive={checkActive(getModerationSectionUrl(APP_ROUTES.MODERATION_TYPES.PENDING_MEMBERS))}
               icon={<UserCheck className="h-3.5 w-3.5" />}
             >
               Pending Members
             </SideNavItem>
             
             <SideNavItem
-              href={APP_ROUTES.DASHBOARD_SITE.MODERATION_SECTION(currentSiteIdentifier, APP_ROUTES.MODERATION_TYPES.REPORTED_MEMBERS)}
-              isActive={checkActive(APP_ROUTES.DASHBOARD_SITE.MODERATION_SECTION(currentSiteIdentifier, APP_ROUTES.MODERATION_TYPES.REPORTED_MEMBERS))}
+              href={getModerationSectionUrl(APP_ROUTES.MODERATION_TYPES.REPORTED_MEMBERS)}
+              isActive={checkActive(getModerationSectionUrl(APP_ROUTES.MODERATION_TYPES.REPORTED_MEMBERS))}
               icon={<UserX className="h-3.5 w-3.5" />}
             >
               Reported Members

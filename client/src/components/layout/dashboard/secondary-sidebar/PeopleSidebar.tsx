@@ -11,11 +11,34 @@ export const PeopleSidebar: React.FC<BaseSidebarProps> = ({
   // Determine if we're in site-specific context
   const inSiteContext = !!currentSiteIdentifier;
   
+  // Determine if we're in moderator context
+  const isModerator = currentPathname.startsWith('/dashboard/moderator/');
+  
   // Helper function to get the appropriate route based on context
   const getContextualRoute = (generalRoute: string, siteSpecificPath: string) => {
     return inSiteContext 
       ? getSiteAdminRoute(currentSiteIdentifier, siteSpecificPath) 
       : generalRoute;
+  };
+  
+  // Helper function to get people section URLs
+  const getPeopleUrl = (section: string) => {
+    if (isModerator && currentSiteIdentifier) {
+      return `${APP_ROUTES.DASHBOARD_MODERATOR.PEOPLE(currentSiteIdentifier)}/${section}`;
+    }
+    if (inSiteContext && currentSiteIdentifier) {
+      switch (section) {
+        case 'members':
+          return APP_ROUTES.DASHBOARD_SITE.PEOPLE_MEMBERS(currentSiteIdentifier);
+        case 'staff':
+          return APP_ROUTES.DASHBOARD_SITE.PEOPLE_STAFF(currentSiteIdentifier);
+        case 'invitations':
+          return APP_ROUTES.DASHBOARD_SITE.PEOPLE_INVITATIONS(currentSiteIdentifier);
+        default:
+          return APP_ROUTES.DASHBOARD_SITE.PEOPLE(currentSiteIdentifier);
+      }
+    }
+    return `/dashboard/people/${section}`;
   };
   
   return (
@@ -28,35 +51,27 @@ export const PeopleSidebar: React.FC<BaseSidebarProps> = ({
 
       <div className="space-y-1">
         <SideNavItem
-          href={inSiteContext ? APP_ROUTES.DASHBOARD_SITE.PEOPLE_MEMBERS(currentSiteIdentifier) : '/dashboard/people/members'}
+          href={getPeopleUrl('members')}
           isActive={
-            inSiteContext 
-              ? currentPathname === APP_ROUTES.DASHBOARD_SITE.PEOPLE_MEMBERS(currentSiteIdentifier) || 
-                (currentPathname === APP_ROUTES.DASHBOARD_SITE.PEOPLE(currentSiteIdentifier))
-              : currentPathname === '/dashboard/people/members' || currentPathname === '/dashboard/people'
+            currentPathname === getPeopleUrl('members') || 
+            (isModerator && currentPathname === APP_ROUTES.DASHBOARD_MODERATOR.PEOPLE(currentSiteIdentifier || '')) ||
+            (!isModerator && inSiteContext && currentPathname === APP_ROUTES.DASHBOARD_SITE.PEOPLE(currentSiteIdentifier || '')) ||
+            (!isModerator && !inSiteContext && currentPathname === '/dashboard/people')
           }
         >
           Members
         </SideNavItem>
 
         <SideNavItem
-          href={inSiteContext ? APP_ROUTES.DASHBOARD_SITE.PEOPLE_STAFF(currentSiteIdentifier) : '/dashboard/people/staff'}
-          isActive={
-            inSiteContext 
-              ? currentPathname === APP_ROUTES.DASHBOARD_SITE.PEOPLE_STAFF(currentSiteIdentifier)
-              : currentPathname === '/dashboard/people/staff'
-          }
+          href={getPeopleUrl('staff')}
+          isActive={currentPathname === getPeopleUrl('staff')}
         >
           Staff
         </SideNavItem>
 
         <SideNavItem
-          href={inSiteContext ? APP_ROUTES.DASHBOARD_SITE.PEOPLE_INVITATIONS(currentSiteIdentifier) : '/dashboard/people/invitations'}
-          isActive={
-            inSiteContext 
-              ? currentPathname === APP_ROUTES.DASHBOARD_SITE.PEOPLE_INVITATIONS(currentSiteIdentifier)
-              : currentPathname === '/dashboard/people/invitations'
-          }
+          href={getPeopleUrl('invitations')}
+          isActive={currentPathname === getPeopleUrl('invitations')}
         >
           Invitations
         </SideNavItem>

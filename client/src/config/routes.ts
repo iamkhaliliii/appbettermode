@@ -36,6 +36,14 @@ export const APP_ROUTES = {
     MODERATION_SECTION: (siteSD: string, section: string) => `/dashboard/site/${siteSD}/moderation/${section}`,
   },
   
+  // Moderator Dashboard Routes
+  DASHBOARD_MODERATOR: {
+    INDEX: (siteSD: string) => `/dashboard/moderator/${siteSD}`,
+    CONTENT: (siteSD: string) => `/dashboard/moderator/${siteSD}/content`,
+    PEOPLE: (siteSD: string) => `/dashboard/moderator/${siteSD}/people`,
+    MODERATION: (siteSD: string) => `/dashboard/moderator/${siteSD}/moderation`,
+  },
+  
   // Content Types (for use in content sections)
   CONTENT_TYPES: {
     ALL: 'all',

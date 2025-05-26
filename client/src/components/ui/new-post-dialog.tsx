@@ -119,7 +119,7 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
         <div className="flex-1 flex flex-col overflow-hidden">
           <div className="flex-1 overflow-y-auto">
             {/* Title Input */}
-            <div className="p-6 pb-4">
+            <div className="p-6 pt-2 pb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Title
               </label>

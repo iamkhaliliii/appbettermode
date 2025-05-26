@@ -42,6 +42,22 @@ export function SecondarySidebar({
   // The canonical ID (currentSiteIdentifier) can be passed if needed for data, etc.
 
   const getSidebarForLocation = () => {
+    // Check for moderator dashboard routes first
+    if (currentPathname.startsWith('/dashboard/moderator/') && siteIdentifierFromUrl) {
+      if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_MODERATOR.CONTENT(siteIdentifierFromUrl))) {
+        return <ContentSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} onNewContent={onNewContent} />;
+      }
+      if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_MODERATOR.PEOPLE(siteIdentifierFromUrl))) {
+        return <PeopleSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+      }
+      if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_MODERATOR.MODERATION(siteIdentifierFromUrl))) {
+        return <ModerationSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
+      }
+      if (currentPathname === APP_ROUTES.DASHBOARD_MODERATOR.INDEX(siteIdentifierFromUrl)) {
+        return <DashboardSidebar currentSiteIdentifier={siteIdentifierFromUrl} canonicalSiteId={currentSiteIdentifier} currentPathname={currentPathname} siteName={siteName} navItems={navItems} />;
+      }
+    }
+
     if (isAdminSite && siteIdentifierFromUrl) {
       if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.CONTENT(siteIdentifierFromUrl))) {
         return <ContentSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} onNewContent={onNewContent} />;

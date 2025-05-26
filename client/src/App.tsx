@@ -14,21 +14,22 @@ import SitesDashboardPage from "@/pages/sites/index";
 import SearchResults from "@/pages/site/[siteSD]/search/index";
 
 // Import dashboard site-specific pages
-import DashboardSiteIndex from "@/pages/dashboard/site/[siteSD]/index";
-import DashboardSitePeople from "@/pages/dashboard/site/[siteSD]/people/index";
-import DashboardSitePeopleMembers from "@/pages/dashboard/site/[siteSD]/people/members/index";
-import DashboardSitePeopleStaff from "@/pages/dashboard/site/[siteSD]/people/staff/index";
-import DashboardSitePeopleInvitations from "@/pages/dashboard/site/[siteSD]/people/invitations/index";
-import DashboardSiteAppearance from "@/pages/dashboard/site/[siteSD]/appearance/index";
-import DashboardSiteSettings from "@/pages/dashboard/site/[siteSD]/settings/index";
-import DashboardSiteSettingsSearch from "@/pages/dashboard/site/[siteSD]/settings/search/index";
-import DashboardSiteBilling from "@/pages/dashboard/site/[siteSD]/billing/index";
-import DashboardSiteReports from "@/pages/dashboard/site/[siteSD]/reports/index";
-import DashboardSiteAppStore from "@/pages/dashboard/site/[siteSD]/app-store/index";
-import DashboardSiteDesignStudio from "@/pages/dashboard/site/[siteSD]/design-studio/index";
-import DashboardSiteSiteConfig from "@/pages/dashboard/site/[siteSD]/site-config/index";
-import DashboardSiteSiteConfigSpace from "@/pages/dashboard/site/[siteSD]/site-config/spaces/[spacesSlug]/index";
-import DashboardSiteModeration from "@/pages/dashboard/site/[siteSD]/moderation/index";
+import DashboardSiteIndex from "@/pages/dashboard/site/[siteSD]";
+import DashboardSitePeople from "@/pages/dashboard/site/[siteSD]/people";
+import DashboardSitePeopleMembers from "@/pages/dashboard/site/[siteSD]/people/members";
+import DashboardSitePeopleStaff from "@/pages/dashboard/site/[siteSD]/people/staff";
+import DashboardSitePeopleInvitations from "@/pages/dashboard/site/[siteSD]/people/invitations";
+import DashboardSiteAppearance from "@/pages/dashboard/site/[siteSD]/appearance";
+import DashboardSiteSettings from "@/pages/dashboard/site/[siteSD]/settings";
+import DashboardSiteSettingsSearch from "@/pages/dashboard/site/[siteSD]/settings/search";
+import DashboardSiteBilling from "@/pages/dashboard/site/[siteSD]/billing";
+import DashboardSiteReports from "@/pages/dashboard/site/[siteSD]/reports";
+import DashboardSiteAppStore from "@/pages/dashboard/site/[siteSD]/app-store";
+import DashboardSiteDesignStudio from "@/pages/dashboard/site/[siteSD]/design-studio";
+import DashboardSiteSiteConfig from "@/pages/dashboard/site/[siteSD]/site-config";
+import DashboardSiteSiteConfigSpace from "@/pages/dashboard/site/[siteSD]/site-config/spaces/[spacesSlug]";
+import DashboardSiteModeration from "@/pages/dashboard/site/[siteSD]/moderation";
+import ModeratorDashboardPage from "@/pages/dashboard/moderator/[SiteSD]";
 import NotFound from "@/pages/404";
 import Content from "@/pages/dashboard/site/[siteSD]/content";
 
@@ -95,6 +96,17 @@ export default function App() {
               <Route path="/dashboard/site/:siteSD/moderation" component={DashboardSiteModeration} />
               <Route path="/dashboard/site/:siteSD/moderation/:section" component={DashboardSiteModeration} />
               <Route path="/dashboard/site/:siteSD/content" component={Content} />
+              
+              {/* Moderator Dashboard Routes */}
+              <Route path="/dashboard/moderator/:SiteSD" component={ModeratorDashboardPage} />
+              <Route path="/dashboard/moderator/:SiteSD/content" component={Content} />
+              <Route path="/dashboard/moderator/:SiteSD/content/:section" component={Content} />
+              <Route path="/dashboard/moderator/:SiteSD/people" component={DashboardSitePeople} />
+              <Route path="/dashboard/moderator/:SiteSD/people/members" component={DashboardSitePeopleMembers} />
+              <Route path="/dashboard/moderator/:SiteSD/people/staff" component={DashboardSitePeopleStaff} />
+              <Route path="/dashboard/moderator/:SiteSD/people/invitations" component={DashboardSitePeopleInvitations} />
+              <Route path="/dashboard/moderator/:SiteSD/moderation" component={DashboardSiteModeration} />
+              <Route path="/dashboard/moderator/:SiteSD/moderation/:section" component={DashboardSiteModeration} />
               <Route path="/dashboard/site/:siteSD/content/:section" component={Content} />
               
               {/* Frontend site routes */}
