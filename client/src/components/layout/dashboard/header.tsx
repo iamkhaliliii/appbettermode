@@ -382,12 +382,12 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
           {logoDropdownOpen && variant === 'dashboard' && (
             <div className="absolute left-0 top-full mt-1 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50">
               <div className="py-1">
-                <a 
-                  href="/sites" 
-                  className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
+                <button 
+                  className="w-full text-left block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
                   onClick={() => {
                     console.log('All Sites clicked');
                     setLogoDropdownOpen(false);
+                    window.location.href = '/sites';
                   }}
                 >
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -395,31 +395,35 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                     <polyline points="9,22 9,12 15,12 15,22"/>
                   </svg>
                   <span>All Sites</span>
-                </a>
+                </button>
                 
-                <a 
-                  href={currentSiteIdentifier ? APP_ROUTES.DASHBOARD_MODERATOR.INDEX(currentSiteIdentifier) : '#'} 
-                  className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
+                <button 
+                  className="w-full text-left block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
                   onClick={() => {
                     console.log('Moderator clicked, URL:', currentSiteIdentifier ? APP_ROUTES.DASHBOARD_MODERATOR.INDEX(currentSiteIdentifier) : 'No site identifier');
                     setLogoDropdownOpen(false);
+                    if (currentSiteIdentifier) {
+                      window.location.href = APP_ROUTES.DASHBOARD_MODERATOR.INDEX(currentSiteIdentifier);
+                    }
                   }}
                 >
                   <ShieldPlus className="h-4 w-4" />
                   <span>Moderator</span>
-                </a>
+                </button>
                 
-                <a 
-                  href={currentSiteIdentifier ? APP_ROUTES.DASHBOARD_SITE.INDEX(currentSiteIdentifier) : '#'} 
-                  className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
+                <button 
+                  className="w-full text-left block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
                   onClick={() => {
                     console.log('Admin Dashboard clicked, URL:', currentSiteIdentifier ? APP_ROUTES.DASHBOARD_SITE.INDEX(currentSiteIdentifier) : 'No site identifier');
                     setLogoDropdownOpen(false);
+                    if (currentSiteIdentifier) {
+                      window.location.href = APP_ROUTES.DASHBOARD_SITE.INDEX(currentSiteIdentifier);
+                    }
                   }}
                 >
                   <MonitorCog className="h-4 w-4" />
                   <span>Admin Dashboard</span>
-                </a>
+                </button>
               </div>
             </div>
           )}
