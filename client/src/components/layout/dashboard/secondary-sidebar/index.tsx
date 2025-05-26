@@ -14,6 +14,7 @@ import { ReportsSidebar } from "./ReportsSidebar";
 import { AppStoreSidebar } from "./AppStoreSidebar";
 import { DesignStudioSidebar } from "./DesignStudioSidebar";
 import { SiteConfigSidebar } from "./SiteConfigSidebar";
+import { ModerationSidebar } from "./ModerationSidebar";
 
 import { GlobalAdminSidebar } from "./global-admin-sidebar";
 import { SitePublicSidebar } from "./site-public-sidebar";
@@ -68,6 +69,9 @@ export function SecondarySidebar({
       }
       if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(siteIdentifierFromUrl))) {
         return <SiteConfigSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} onNewContent={onNewContent} />;
+      }
+      if (currentPathname.startsWith(APP_ROUTES.DASHBOARD_SITE.MODERATION(siteIdentifierFromUrl))) {
+        return <ModerationSidebar currentSiteIdentifier={siteIdentifierFromUrl} currentPathname={currentPathname} />;
       }
       if (currentPathname === APP_ROUTES.DASHBOARD_SITE.INDEX(siteIdentifierFromUrl)) {
         // Pass siteIdentifierFromUrl for link building, but DashboardSidebar might also want the canonicalId via currentSiteIdentifier

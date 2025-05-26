@@ -31,6 +31,8 @@ export const APP_ROUTES = {
     SITE_CONFIG: (siteSD: string) => `/dashboard/site/${siteSD}/site-config`,
     SITE_CONFIG_SPACES: (siteSD: string) => `/dashboard/site/${siteSD}/site-config/spaces`,
     SITE_CONFIG_SPACE: (siteSD: string, spaceSlug: string) => `/dashboard/site/${siteSD}/site-config/spaces/${spaceSlug}`,
+    MODERATION: (siteSD: string) => `/dashboard/site/${siteSD}/moderation`,
+    MODERATION_SECTION: (siteSD: string, section: string) => `/dashboard/site/${siteSD}/moderation/${section}`,
   },
   
   // Content Types (for use in content sections)
@@ -43,6 +45,14 @@ export const APP_ROUTES = {
     WISHLIST: 'wishlist',
     NEW_CMS: 'new-cms',
     CUSTOM_VIEW: 'custom-view',
+  },
+
+  // Moderation Types (for use in moderation sections)
+  MODERATION_TYPES: {
+    PENDING_POSTS: 'pending-posts',
+    REPORTED_POSTS: 'reported-posts',
+    PENDING_MEMBERS: 'pending-members',
+    REPORTED_MEMBERS: 'reported-members',
   },
 
   // Settings Routes

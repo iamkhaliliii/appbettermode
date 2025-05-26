@@ -27,6 +27,7 @@ import DashboardSiteAppStore from "@/pages/dashboard/site/[siteSD]/app-store/ind
 import DashboardSiteDesignStudio from "@/pages/dashboard/site/[siteSD]/design-studio/index";
 import DashboardSiteSiteConfig from "@/pages/dashboard/site/[siteSD]/site-config/index";
 import DashboardSiteSiteConfigSpace from "@/pages/dashboard/site/[siteSD]/site-config/spaces/[spacesSlug]/index";
+import DashboardSiteModeration from "@/pages/dashboard/site/[siteSD]/moderation/index";
 import NotFound from "@/pages/404";
 import Content from "@/pages/dashboard/site/[siteSD]/content";
 
@@ -89,6 +90,8 @@ export default function App() {
               <Route path="/dashboard/site/:siteSD/design-studio/:section" component={DashboardSiteDesignStudio} />
               <Route path="/dashboard/site/:siteSD/site-config" component={DashboardSiteSiteConfig} />
               <Route path="/dashboard/site/:siteSD/site-config/spaces/:spacesSlug" component={DashboardSiteSiteConfigSpace} />
+              <Route path="/dashboard/site/:siteSD/moderation" component={DashboardSiteModeration} />
+              <Route path="/dashboard/site/:siteSD/moderation/:section" component={DashboardSiteModeration} />
               <Route path="/dashboard/site/:siteSD/content" component={Content} />
               <Route path="/dashboard/site/:siteSD/content/:section" component={Content} />
               

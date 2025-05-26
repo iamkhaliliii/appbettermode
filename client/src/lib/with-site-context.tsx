@@ -27,7 +27,9 @@ export const fetchSiteDetails = async (siteId: string): Promise<SiteDetails | nu
     }
 
     try {
-      const response = await fetch(`/api/v1/sites/${siteId}`);
+      // Get the API base URL
+      const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+      const response = await fetch(`${API_BASE}/api/v1/sites/${siteId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch site details from API');
       }

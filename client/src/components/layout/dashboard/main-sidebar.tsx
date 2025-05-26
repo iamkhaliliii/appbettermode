@@ -13,7 +13,9 @@ import {
   LogOut,
   SunMedium,
   Moon,
-  MonitorCog
+  MonitorCog,
+  AlertTriangle,
+  ShieldPlus
 } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { useState, useEffect, ReactNode } from "react";
@@ -46,6 +48,11 @@ const MAIN_NAV_ITEMS: NavConfig[] = [
     routeGetter: APP_ROUTES.DASHBOARD_SITE.PEOPLE
   },
   {
+    icon: <ShieldPlus className="h-4 w-4" />,
+    label: "Moderation",
+    routeGetter: APP_ROUTES.DASHBOARD_SITE.MODERATION
+  },
+  {
     icon: <Shapes className="h-4 w-4" />,
     label: "Appearance",
     routeGetter: APP_ROUTES.DASHBOARD_SITE.APPEARANCE
@@ -55,6 +62,7 @@ const MAIN_NAV_ITEMS: NavConfig[] = [
     label: "Settings",
     routeGetter: APP_ROUTES.DASHBOARD_SITE.SETTINGS
   },
+
   {
     icon: <CreditCard className="h-4 w-4" />,
     label: "Billing",

@@ -1,40 +1,191 @@
 import { DashboardLayout } from "@/components/layout/dashboard/dashboard-layout";
-import { useRoute } from "wouter";
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { sitesApi, Site } from "@/lib/api";
 import { 
-  UserIcon, 
-  PlusIcon, 
-  SearchIcon,
-  MoreHorizontalIcon,
-  FilterIcon,
-  ArrowUpDown
+  Plus, 
+  Search, 
+  ChevronDown, 
+  ChevronUp,
+  Filter, 
+  MoreHorizontal, 
+  ListFilter,
+  CircleX,
+  Trash,
+  Trash2,
+  MoreVertical,
+  MessageSquare,
+  Star,
+  FileText,
+  File,
+  Hash,
+  X,
+  Eye,
+  Lock,
+  User,
+  Clock,
+  Tag,
+  FileOutput,
+  ArrowUpDown,
+  Columns,
+  UserIcon,
+  Shield,
+  Crown,
+  Settings
 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { useLocation, useRoute, useParams, Redirect } from "wouter";
+import { useEffect, useState, useMemo } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-// Define Member interface
-interface Member {
-  id: number;
+// Define Person data type
+interface Person {
+  id: string;
   name: string;
   email: string;
-  role: string;
+  role: "Member" | "Moderator" | "Admin" | "Owner";
+  status: "Active" | "Inactive" | "Pending" | "Banned";
+  avatar: string;
   joinDate: string;
-  status: "Active" | "Inactive";
+  lastActive: string;
+  postsCount: number;
+  type: "member" | "staff";
 }
 
-// Mock data for members
-// TODO: Replace with API call to fetch members for a site
-// Future endpoint could be: /api/v1/sites/:siteId/members
-const MOCK_MEMBERS: Member[] = [
-  { id: 1, name: "Olivia Rhye", email: "olivia@untitledui.com", role: "Admin", joinDate: "Jan 12, 2023", status: "Active" },
-  { id: 2, name: "Phoenix Baker", email: "phoenix@untitledui.com", role: "Member", joinDate: "Jan 10, 2023", status: "Active" },
-  { id: 3, name: "Lana Steiner", email: "lana@untitledui.com", role: "Member", joinDate: "Dec 15, 2022", status: "Active" },
-  { id: 4, name: "Demi Wilkinson", email: "demi@untitledui.com", role: "Moderator", joinDate: "Dec 13, 2022", status: "Active" },
-  { id: 5, name: "Candice Wu", email: "candice@untitledui.com", role: "Member", joinDate: "Dec 5, 2022", status: "Inactive" },
-  { id: 6, name: "Natali Craig", email: "natali@untitledui.com", role: "Member", joinDate: "Nov 29, 2022", status: "Active" },
-  { id: 7, name: "Drew Cano", email: "drew@untitledui.com", role: "Member", joinDate: "Nov 24, 2022", status: "Active" }
+// Add a type for site data from API
+interface SiteData {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  site_id: string;
+  visibility?: string;
+  cms_type?: string;
+  hidden?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// Add a utility function to get API base URL
+function getApiBaseUrl() {
+  // Use environment variable if available, otherwise default to localhost
+  return import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+}
+
+// Mock data for people
+const MOCK_PEOPLE: Person[] = [
+  { 
+    id: "1", 
+    name: "Olivia Rhye", 
+    email: "olivia@untitledui.com", 
+    role: "Admin", 
+    joinDate: "Jan 12, 2023", 
+    lastActive: "2 hours ago",
+    status: "Active",
+    avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    postsCount: 45,
+    type: "staff"
+  },
+  { 
+    id: "2", 
+    name: "Phoenix Baker", 
+    email: "phoenix@untitledui.com", 
+    role: "Member", 
+    joinDate: "Jan 10, 2023", 
+    lastActive: "1 day ago",
+    status: "Active",
+    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    postsCount: 23,
+    type: "member"
+  },
+  { 
+    id: "3", 
+    name: "Lana Steiner", 
+    email: "lana@untitledui.com", 
+    role: "Member", 
+    joinDate: "Dec 15, 2022", 
+    lastActive: "3 days ago",
+    status: "Active",
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    postsCount: 12,
+    type: "member"
+  },
+  { 
+    id: "4", 
+    name: "Demi Wilkinson", 
+    email: "demi@untitledui.com", 
+    role: "Moderator", 
+    joinDate: "Dec 13, 2022", 
+    lastActive: "5 hours ago",
+    status: "Active",
+    avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    postsCount: 67,
+    type: "staff"
+  },
+  { 
+    id: "5", 
+    name: "Candice Wu", 
+    email: "candice@untitledui.com", 
+    role: "Member", 
+    joinDate: "Dec 5, 2022", 
+    lastActive: "2 weeks ago",
+    status: "Inactive",
+    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    postsCount: 8,
+    type: "member"
+  },
+  { 
+    id: "6", 
+    name: "Natali Craig", 
+    email: "natali@untitledui.com", 
+    role: "Member", 
+    joinDate: "Nov 29, 2022", 
+    lastActive: "1 week ago",
+    status: "Active",
+    avatar: "https://images.unsplash.com/photo-1502378735452-bc7d86632805?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    postsCount: 34,
+    type: "member"
+  },
+  { 
+    id: "7", 
+    name: "Drew Cano", 
+    email: "drew@untitledui.com", 
+    role: "Member", 
+    joinDate: "Nov 24, 2022", 
+    lastActive: "Yesterday",
+    status: "Pending",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    postsCount: 0,
+    type: "member"
+  }
 ];
 
 /**
