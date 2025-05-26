@@ -636,31 +636,45 @@ router.post('/:siteId/spaces', async (req, res) => {
 router.get('/:siteId/spaces', async (req, res) => {
   try {
     const { siteId } = req.params;
-    console.log(`Spaces API: Fetching spaces for site ID: ${siteId}`);
+    console.log(`Spaces API: Fetching spaces for site ID/subdomain: ${siteId}`);
     
-    // Get site to verify it exists
-    const site = await db.query.sites.findFirst({
-      where: eq(sites.id, siteId)
-    });
+    // Check if siteId is a subdomain or UUID
+    const isUUID = siteId.includes('-') && siteId.length > 30;
+    
+    // Get site to verify it exists - try by subdomain first if not UUID
+    let site;
+    if (!isUUID) {
+      // First try to find by subdomain
+      site = await db.query.sites.findFirst({
+        where: eq(sites.subdomain, siteId)
+      });
+    }
+    
+    // If not found or was a UUID, try by ID
+    if (!site) {
+      site = await db.query.sites.findFirst({
+        where: eq(sites.id, siteId)
+      });
+    }
     
     if (!site) {
-      console.error(`Spaces API: Site not found with ID: ${siteId}`);
+      console.error(`Spaces API: Site not found with identifier: ${siteId}`);
       return res.status(404).json({ message: 'Site not found' });
     }
     
     console.log(`Spaces API: Found site: ${site.name} (${site.id})`);
     
-    // Fetch all spaces for this site
+    // Fetch all spaces for this site using the UUID
     const spacesList = await db.query.spaces.findMany({
-      where: eq(spaces.site_id, siteId)
+      where: eq(spaces.site_id, site.id)
     });
     
-    console.log(`Spaces API: Found ${spacesList.length} spaces for site ${siteId}`);
+    console.log(`Spaces API: Found ${spacesList.length} spaces for site ${site.id}`);
     
     if (spacesList.length > 0) {
       console.log(`Spaces API: First space: ${spacesList[0].name} (${spacesList[0].id})`);
     } else {
-      console.log(`Spaces API: No spaces found for site ${siteId}`);
+      console.log(`Spaces API: No spaces found for site ${site.id}`);
     }
     
     return res.status(200).json(spacesList);

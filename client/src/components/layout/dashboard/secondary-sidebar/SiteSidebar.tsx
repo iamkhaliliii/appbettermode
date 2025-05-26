@@ -16,7 +16,8 @@ import {
   Hash
 } from "lucide-react";
 import { getApiBaseUrl } from "@/lib/utils";
-import { sitesApi, cmsTypesApi } from "@/lib/api";
+import { sitesApi } from "@/lib/api";
+import { useSiteContent } from "@/lib/SiteContentContext";
 
 // Define interface for spaces
 interface Space {
@@ -35,7 +36,15 @@ export const SiteSidebar: React.FC<SiteSidebarProps> = ({
   isActiveUrl,
   currentSiteId
 }) => {
-  // State for spaces
+  // Get spaces data from context
+  const { 
+    spaces: contextSpaces,
+    spacesLoading,
+    spacesError,
+    fetchSpaces
+  } = useSiteContent();
+  
+  // Local state
   const [spaces, setSpaces] = useState<Space[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -55,128 +64,60 @@ export const SiteSidebar: React.FC<SiteSidebarProps> = ({
     ? `/dashboard/site/${currentSiteId}` 
     : '/site';
 
-  // Fetch site spaces when component mounts
+  // Use spaces from context when available
   useEffect(() => {
-    const fetchSpaces = async () => {
+    if (currentSiteId && contextSpaces[currentSiteId]) {
+      console.log('SiteSidebar: Using spaces from context:', contextSpaces[currentSiteId]);
+      setSpaces(contextSpaces[currentSiteId]);
+      setIsLoading(false);
+      setError(null);
+    } else if (currentSiteId) {
+      // If not in context yet, trigger a fetch
+      setIsLoading(true);
+      fetchSpaces(currentSiteId)
+        .then(fetchedSpaces => {
+          if (fetchedSpaces.length > 0) {
+            console.log('SiteSidebar: Fetched spaces from context:', fetchedSpaces);
+            setSpaces(fetchedSpaces);
+          }
+        })
+        .catch(err => {
+          console.error('SiteSidebar: Error fetching spaces:', err);
+          setError('Failed to fetch spaces');
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [currentSiteId, contextSpaces, fetchSpaces]);
+  
+  // Update loading and error states from context
+  useEffect(() => {
+    if (currentSiteId) {
+      setIsLoading(spacesLoading[currentSiteId] || false);
+      setError(spacesError[currentSiteId] || null);
+    }
+  }, [currentSiteId, spacesLoading, spacesError]);
+
+  // Fetch site ID if needed
+  useEffect(() => {
+    const fetchSiteId = async () => {
       if (!currentSiteId) return;
       
-      setIsLoading(true);
-      setError(null);
-      
-      try {
-        // First get the site details to ensure we have the UUID if needed
-        const siteData = await sitesApi.getSite(currentSiteId);
-        setSiteId(siteData.id);
-        
-        // Fetch spaces using the site UUID
-        const API_BASE = getApiBaseUrl();
-        const spaceApiUrl = `${API_BASE}/api/v1/sites/${siteData.id}/spaces`;
-        
-        const response = await fetch(spaceApiUrl);
-        
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Failed to fetch spaces');
+      // Only fetch the site data if we don't have the UUID yet 
+      // (currentSiteId might be a subdomain)
+      if (!siteId || !siteId.includes('-')) {
+        try {
+          const siteData = await sitesApi.getSite(currentSiteId);
+          setSiteId(siteData.id);
+        } catch (error) {
+          console.error('Error fetching site ID:', error);
         }
-        
-        const spacesData = await response.json();
-        
-        if (Array.isArray(spacesData)) {
-          const mappedSpaces: Space[] = spacesData.map((space: any) => ({
-            id: space.id,
-            name: space.name,
-            slug: space.slug,
-            description: space.description,
-            cms_type: space.cms_type || 'custom',
-            hidden: space.hidden || false,
-            visibility: space.visibility || 'public'
-          }));
-          
-          setSpaces(mappedSpaces);
-          
-          // If we have CMS type IDs, fetch CMS type details to get names
-          if (mappedSpaces.some(space => space.cms_type)) {
-            try {
-              // Get unique CMS type IDs
-              const cmsTypeIds = Array.from(
-                new Set(
-                  mappedSpaces
-                    .map(space => space.cms_type)
-                    .filter((id): id is string => !!id)
-                )
-              );
-                
-              if (cmsTypeIds.length > 0) {
-                // First try to get official CMS types
-                try {
-                  const officialCmsTypes = await cmsTypesApi.getCmsTypesByCategory('official');
-                  
-                  // Create a mapping of ID to CMS type details
-                  const cmsTypeMap = new Map();
-                  
-                  // Add official types to the map
-                  if (Array.isArray(officialCmsTypes)) {
-                    officialCmsTypes.forEach(cmsType => {
-                      if (cmsType && cmsType.id) {
-                        cmsTypeMap.set(cmsType.id, cmsType);
-                        
-                        // Also map by name (lowercase) for fallback matching
-                        if (cmsType.name) {
-                          cmsTypeMap.set(cmsType.name.toLowerCase(), cmsType);
-                        }
-                      }
-                    });
-                  }
-                  
-                  // Update spaces with appropriate CMS type information
-                  setSpaces(prevSpaces => prevSpaces.map(space => {
-                    const cmsTypeId = space.cms_type;
-                    if (!cmsTypeId) return space;
-                    
-                    // Try to match by ID first
-                    if (cmsTypeMap.has(cmsTypeId)) {
-                      const cmsType = cmsTypeMap.get(cmsTypeId);
-                      return {
-                        ...space,
-                        cms_type_name: cmsType.name
-                      };
-                    }
-                    
-                    // Try to match by normalized name as fallback (for legacy data)
-                    const normalizedId = cmsTypeId.toLowerCase();
-                    if (cmsTypeMap.has(normalizedId)) {
-                      const cmsType = cmsTypeMap.get(normalizedId);
-                      return {
-                        ...space,
-                        cms_type_name: cmsType.name
-                      };
-                    }
-                    
-                    // If we still don't have a match, use a normalized version of the ID
-                    // This handles cases where cms_type might be a UUID/slug instead of a proper CMS type
-                    return {
-                      ...space,
-                      cms_type_name: cmsTypeId.split('-')[0].replace(/[0-9]/g, '')
-                    };
-                  }));
-                } catch (err) {
-                  // Silently handle error
-                }
-              }
-            } catch (err) {
-              // Silently handle error
-            }
-          }
-        }
-      } catch (error) {
-        setError(error instanceof Error ? error.message : 'Failed to fetch spaces');
-      } finally {
-        setIsLoading(false);
       }
     };
 
-    fetchSpaces();
-  }, [currentSiteId]);
+    fetchSiteId();
+  }, [currentSiteId, siteId]);
 
   // Get icon for space based on CMS type
   const getIconForSpace = (space: Space) => {
@@ -241,28 +182,35 @@ export const SiteSidebar: React.FC<SiteSidebarProps> = ({
         </SideNavItem>
         
         {/* Spaces section */}
-        {spaces.length > 0 && (
-          <>
-            <div className="pt-4 pb-1">
-              <h3 className="px-2 text-[0.7rem] text-gray-500 dark:text-gray-400 tracking-wider">
-                Spaces:
-              </h3>
-            </div>
-            
-            {/* Space navigation items - removed isLoading check */}
-            {spaces.map(space => (
-              !space.hidden && (
-                <SideNavItem
-                  key={space.id}
-                  href={`${basePath}/content/${space.slug}`}
-                  isActive={isActiveUrl && isActiveUrl(`${basePath}/content/${space.slug}`, currentPathname)}
-                  icon={getIconForSpace(space)}
-                >
-                  {space.name}
-                </SideNavItem>
-              )
-            ))}
-          </>
+        <div className="pt-4 pb-1">
+          <h3 className="px-2 text-[0.7rem] text-gray-500 dark:text-gray-400 tracking-wider">
+            Spaces:
+          </h3>
+        </div>
+        
+        {isLoading ? (
+          <div className="flex items-center justify-center p-4">
+            <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
+            <span className="ml-2 text-xs text-gray-500">Loading spaces...</span>
+          </div>
+        ) : error ? (
+          <div className="p-2 text-xs text-red-500">{error}</div>
+        ) : spaces.length === 0 ? (
+          <div className="p-2 text-xs text-gray-500">No spaces found</div>
+        ) : (
+          // Display spaces
+          spaces.map(space => (
+            !space.hidden && (
+              <SideNavItem
+                key={space.id}
+                href={`${basePath}/content/${space.slug}`}
+                isActive={isActiveUrl && isActiveUrl(`${basePath}/content/${space.slug}`, currentPathname)}
+                icon={getIconForSpace(space)}
+              >
+                {space.name}
+              </SideNavItem>
+            )
+          ))
         )}
       </div>
     </div>

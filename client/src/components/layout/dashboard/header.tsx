@@ -1,7 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Bell, Menu, ChevronDown, ExternalLink, Database, BarChart2, Files, ChevronUp, XIcon } from "lucide-react";
-import { useState, useEffect } from "react";
+import { 
+  Bell, 
+  Menu, 
+  ChevronDown, 
+  ExternalLink, 
+  BarChart2, 
+  Files, 
+  ChevronUp, 
+  XIcon, 
+  MessageSquare, 
+  HelpCircle, 
+  Star, 
+  Calendar, 
+  BookOpen,
+  Briefcase,
+  Package,
+  Folder
+} from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { cn } from "@/lib/utils";
@@ -9,6 +26,31 @@ import { useLocation, Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { sitesApi, Site } from "@/lib/api";
 import { APP_ROUTES, getSiteIdentifierFromRoute } from "@/config/routes";
+import { getApiBaseUrl } from "@/lib/utils";
+import { useSiteContent } from "@/lib/SiteContentContext";
+
+// Define interface for Space
+interface Space {
+  id: string;
+  name: string;
+  slug: string;
+  cms_type?: string;
+  description?: string;
+  hidden?: boolean;
+  visibility?: string;
+  site_id?: string;
+}
+
+// Define interface for CMS Type
+interface CmsType {
+  id: string;
+  name: string;
+  description?: string;
+  icon_name?: string;
+  color?: string;
+  favorite?: boolean;
+  type?: string;
+}
 
 interface HeaderProps {
   onToggleMobileMenu: () => void;
@@ -23,6 +65,76 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
   const [siteData, setSiteData] = useState<Site | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   
+  // Use our context instead of local state for spaces and CMS types
+  const { 
+    spaces: contextSpaces, 
+    cmsTypes: contextCmsTypes,
+    cmsTypesByCategory,
+    spacesLoading,
+    cmsTypesLoading,
+    fetchSpaces,
+    fetchCmsTypes
+  } = useSiteContent();
+  
+  // Derive local spaces and CMS types from context
+  const [spaces, setSpaces] = useState<Space[]>([]);
+  const [cmsTypes, setCmsTypes] = useState<CmsType[]>([]);
+  const [loadingSpaces, setLoadingSpaces] = useState(false);
+  const [loadingCmsTypes, setLoadingCmsTypes] = useState(false);
+  
+  // Update local spaces from context when siteIdentifier changes
+  useEffect(() => {
+    if (siteIdentifier && contextSpaces[siteIdentifier]) {
+      setSpaces(contextSpaces[siteIdentifier]);
+    } else {
+      // Use fallback data when nothing is available in context
+      setSpaces([
+        { id: 'fallback-1', name: 'Events', slug: 'events', site_id: siteIdentifier || '' },
+        { id: 'fallback-2', name: 'Q&A', slug: 'qa', site_id: siteIdentifier || '' },
+        { id: 'fallback-3', name: 'Discussions', slug: 'discussions', site_id: siteIdentifier || '' },
+        { id: 'fallback-4', name: 'Wishlist', slug: 'wishlist', site_id: siteIdentifier || '' },
+        { id: 'fallback-5', name: 'Knowledge Base', slug: 'knowledge', site_id: siteIdentifier || '' }
+      ]);
+    }
+  }, [siteIdentifier, contextSpaces]);
+  
+  // Update local CMS types from context when it changes
+  useEffect(() => {
+    if (contextCmsTypes.length > 0) {
+      setCmsTypes(contextCmsTypes);
+    } else if (cmsTypesByCategory['official'] && cmsTypesByCategory['official'].length > 0) {
+      setCmsTypes(cmsTypesByCategory['official']);
+    } else {
+      // Use fallback data when nothing is available in context
+      setCmsTypes([
+        { id: 'fallback-1', name: 'Discussions', icon_name: 'MessageSquare' },
+        { id: 'fallback-2', name: 'Q&A', icon_name: 'HelpCircle' },
+        { id: 'fallback-3', name: 'Events', icon_name: 'Calendar' },
+        { id: 'fallback-4', name: 'Blog Posts', icon_name: 'BookOpen' },
+        { id: 'fallback-5', name: 'Ideas & Wishlist', icon_name: 'Star' }
+      ]);
+    }
+  }, [contextCmsTypes, cmsTypesByCategory]);
+  
+  // Update loading states from context
+  useEffect(() => {
+    if (siteIdentifier) {
+      setLoadingSpaces(spacesLoading[siteIdentifier] || false);
+    }
+  }, [siteIdentifier, spacesLoading]);
+  
+  useEffect(() => {
+    setLoadingCmsTypes(cmsTypesLoading);
+  }, [cmsTypesLoading]);
+  
+  // Track spaces changes
+  useEffect(() => {
+  }, [spaces]);
+  
+  // Track cmsTypes changes
+  useEffect(() => {
+  }, [cmsTypes]);
+  
   // Fetch site data when siteIdentifier changes
   useEffect(() => {
     const fetchSiteData = async () => {
@@ -33,8 +145,17 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
       
       setIsLoading(true);
       try {
+        // Fetch site data using the identifier (works with both UUID and subdomain)
         const data = await sitesApi.getSite(siteIdentifier);
         setSiteData(data);
+        
+        // Trigger context fetch for spaces
+        if (siteIdentifier) {
+          fetchSpaces(siteIdentifier);
+        }
+        
+        // Trigger context fetch for CMS types
+        fetchCmsTypes('official');
       } catch (error) {
         console.error("Error fetching site data:", error);
       } finally {
@@ -43,7 +164,33 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
     };
     
     fetchSiteData();
-  }, [siteIdentifier]);
+  }, [siteIdentifier, fetchSpaces, fetchCmsTypes]);
+  
+  // Get icon component based on icon name
+  const getIconComponent = (iconName: string | undefined) => {
+    switch (iconName) {
+      case 'MessageSquare':
+        return <MessageSquare className="h-3.5 w-3.5" />;
+      case 'HelpCircle':
+        return <HelpCircle className="h-3.5 w-3.5" />;
+      case 'Star':
+        return <Star className="h-3.5 w-3.5" />;
+      case 'Calendar':
+        return <Calendar className="h-3.5 w-3.5" />;
+      case 'BookOpen':
+        return <BookOpen className="h-3.5 w-3.5" />;
+      case 'Briefcase':
+        return <Briefcase className="h-3.5 w-3.5" />;
+      case 'Package':
+        return <Package className="h-3.5 w-3.5" />;
+      case 'Folder':
+        return <Folder className="h-3.5 w-3.5" />;
+      case 'Bell':
+        return <Bell className="h-3.5 w-3.5" />;
+      default:
+        return <Files className="h-3.5 w-3.5" />;
+    }
+  };
   
   // Use site name from props or from fetched data
   const displaySiteName = siteName || siteData?.name || "Loading...";
@@ -92,6 +239,49 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
     }
   }, [siteData, variant]);
 
+  const [spacesDropdownOpen, setSpacesDropdownOpen] = useState(false);
+  const [postsDropdownOpen, setPostsDropdownOpen] = useState(false);
+  const [insightsDropdownOpen, setInsightsDropdownOpen] = useState(false);
+  
+  // Add refs for dropdown containers to handle click outside
+  const spacesDropdownRef = useRef<HTMLDivElement>(null);
+  const postsDropdownRef = useRef<HTMLDivElement>(null);
+  const insightsDropdownRef = useRef<HTMLDivElement>(null);
+  
+  // Handle click outside to close dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Close spaces dropdown if click is outside
+      if (spacesDropdownRef.current && 
+          !spacesDropdownRef.current.contains(event.target as Node) && 
+          spacesDropdownOpen) {
+        setSpacesDropdownOpen(false);
+      }
+      
+      // Close posts dropdown if click is outside
+      if (postsDropdownRef.current && 
+          !postsDropdownRef.current.contains(event.target as Node) && 
+          postsDropdownOpen) {
+        setPostsDropdownOpen(false);
+      }
+      
+      // Close insights dropdown if click is outside
+      if (insightsDropdownRef.current && 
+          !insightsDropdownRef.current.contains(event.target as Node) && 
+          insightsDropdownOpen) {
+        setInsightsDropdownOpen(false);
+      }
+    };
+    
+    // Add event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    
+    // Clean up
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [spacesDropdownOpen, postsDropdownOpen, insightsDropdownOpen]);
+
   return (
     <motion.header
       className={cn(
@@ -135,146 +325,172 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
               <div className={cn("w-64 flex-shrink-0 h-full border-r", borderColor)}>
 
                   <div className="flex h-full items-center justify-center gap-2 px-2">
-                    <Tooltip.Provider delayDuration={200}>
-                      <Tooltip.Root>
-                        <DropdownMenu.Root>
-                          <Tooltip.Trigger asChild>
-                            <DropdownMenu.Trigger asChild>
-                              <button
-                                className={cn(
-                                  "flex items-center gap-1 justify-center p-1.5 rounded-md border",
-                                  borderColor, 
-                                  buttonBg, 
-                                  iconColor,
-                                  buttonBgHover
-                                )}
+                    {/* Spaces Dropdown - Simple Implementation */}
+                    <div className="relative group" ref={spacesDropdownRef}>
+                      <button
+                        className={cn(
+                          "flex items-center gap-1 justify-center p-1.5 rounded-md border",
+                          borderColor, 
+                          buttonBg, 
+                          iconColor,
+                          buttonBgHover
+                        )}
+                        onClick={() => {
+                          setSpacesDropdownOpen(!spacesDropdownOpen);
+                          setPostsDropdownOpen(false);
+                          setInsightsDropdownOpen(false);
+                          if (siteIdentifier) {
+                            fetchSpaces(siteIdentifier);
+                          }
+                        }}
+                      >
+                        <Files className="h-3.5 w-3.5" />
+                        <ChevronDown className="h-2.5 w-2.5 opacity-40" />
+                      </button>
+                      
+                      {spacesDropdownOpen && (
+                        <div className="absolute left-0 mt-1 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50">
+                          {loadingSpaces ? (
+                            <div className="px-3 py-2.5 text-sm text-gray-700 dark:text-gray-300">
+                              Loading spaces...
+                            </div>
+                          ) : spaces && spaces.length > 0 ? (
+                            <div className="py-1">
+                              {spaces.map(space => {
+                                if (siteIdentifier) {
+                                  const spaceUrl = APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG_SPACE(siteIdentifier, space.slug || '');
+                                  return (
+                                    <a 
+                                      key={space.id} 
+                                      href={spaceUrl} 
+                                      className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline"
+                                      onClick={() => setSpacesDropdownOpen(false)}
+                                    >
+                                      {space.name} ({space.slug})
+                                    </a>
+                                  );
+                                }
+                                return null;
+                              })}
+                            </div>
+                          ) : (
+                            <div className="py-1">
+                              <div className="px-4 py-2 text-sm text-gray-800 dark:text-gray-200">
+                                No spaces available
+                              </div>
+                              <a 
+                                href={siteIdentifier ? `/dashboard/site/${siteIdentifier}/site-config` : "#"}
+                                className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400 no-underline"
                               >
-                                <Files className="h-3.5 w-3.5" />
-                                <ChevronDown className="h-2.5 w-2.5 opacity-40" />
-                              </button>
-                            </DropdownMenu.Trigger>
-                          </Tooltip.Trigger>
-                          <Tooltip.Portal>
-                            <Tooltip.Content
-                              className="bg-gray-900 text-white px-2 py-1 rounded text-xs"
-                              side="bottom"
-                              sideOffset={5}
-                            >
-                              Pages
-                              <Tooltip.Arrow className="fill-gray-900" />
-                            </Tooltip.Content>
-                          </Tooltip.Portal>
-                          <DropdownMenu.Content 
-                            className="bg-white dark:bg-gray-800 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 py-1 w-48 mt-1"
-                            sideOffset={5}
-                          >
-                            <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
-                              Home Page
-                            </DropdownMenu.Item>
-                            <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
-                              About Us
-                            </DropdownMenu.Item>
-                            <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
-                              Services
-                            </DropdownMenu.Item>
-                          </DropdownMenu.Content>
-                        </DropdownMenu.Root>
-                      </Tooltip.Root>
-                    </Tooltip.Provider>
+                                Create a space
+                              </a>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                     
-                    <Tooltip.Provider delayDuration={200}>
-                      <Tooltip.Root>
-                        <DropdownMenu.Root>
-                          <Tooltip.Trigger asChild>
-                            <DropdownMenu.Trigger asChild>
-                              <button
-                                className={cn(
-                                  "flex items-center gap-1 justify-center p-1.5 rounded-md border",
-                                  borderColor, 
-                                  buttonBg, 
-                                  iconColor,
-                                  buttonBgHover
-                                )}
+                    {/* Posts Dropdown - Simple Implementation */}
+                    <div className="relative group" ref={postsDropdownRef}>
+                      <button
+                        className={cn(
+                          "flex items-center gap-1 justify-center p-1.5 rounded-md border",
+                          borderColor, 
+                          buttonBg, 
+                          iconColor,
+                          buttonBgHover
+                        )}
+                        onClick={() => {
+                          setPostsDropdownOpen(!postsDropdownOpen);
+                          setSpacesDropdownOpen(false);
+                          setInsightsDropdownOpen(false);
+                          fetchCmsTypes('official');
+                        }}
+                      >
+                        <Files className="h-3.5 w-3.5" />
+                        <ChevronDown className="h-2.5 w-2.5 opacity-40" />
+                      </button>
+                      
+                      {postsDropdownOpen && (
+                        <div className="absolute left-0 mt-1 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50">
+                          {loadingCmsTypes ? (
+                            <div className="px-3 py-2.5 text-sm text-gray-700 dark:text-gray-300">
+                              Loading post types...
+                            </div>
+                          ) : cmsTypes && cmsTypes.length > 0 ? (
+                            <div className="py-1">
+                              {cmsTypes.map(type => {
+                                if (siteIdentifier) {
+                                  const typeSlug = type.name.toLowerCase().replace(/[\s&]+/g, '-');
+                                  const contentUrl = APP_ROUTES.DASHBOARD_SITE.CONTENT_SECTION(siteIdentifier, typeSlug);
+                                  return (
+                                    <a 
+                                      key={type.id} 
+                                      href={contentUrl}
+                                      className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
+                                      onClick={() => setPostsDropdownOpen(false)}
+                                    >
+                                      {getIconComponent(type.icon_name)}
+                                      <span>{type.name}</span>
+                                    </a>
+                                  );
+                                }
+                                return null;
+                              })}
+                            </div>
+                          ) : (
+                            <div className="py-1">
+                              <div className="px-4 py-2 text-sm text-gray-800 dark:text-gray-200">
+                                No post types available
+                              </div>
+                              <a 
+                                href={siteIdentifier ? `/dashboard/site/${siteIdentifier}/content` : "#"}
+                                className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-blue-600 dark:text-blue-400 no-underline"
                               >
-                                <Database className="h-3.5 w-3.5" />
-                                <ChevronDown className="h-2.5 w-2.5 opacity-40" />
-                              </button>
-                            </DropdownMenu.Trigger>
-                          </Tooltip.Trigger>
-                          <Tooltip.Portal>
-                            <Tooltip.Content
-                              className="bg-gray-900 text-white px-2 py-1 rounded text-xs"
-                              side="bottom"
-                              sideOffset={5}
-                            >
-                              Database
-                              <Tooltip.Arrow className="fill-gray-900" />
-                            </Tooltip.Content>
-                          </Tooltip.Portal>
-                          <DropdownMenu.Content 
-                            className="bg-white dark:bg-gray-800 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 py-1 w-48 mt-1"
-                            sideOffset={5}
-                          >
-                            <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
-                              Users
-                            </DropdownMenu.Item>
-                            <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
-                              Products
-                            </DropdownMenu.Item>
-                            <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
-                              Categories
-                            </DropdownMenu.Item>
-                          </DropdownMenu.Content>
-                        </DropdownMenu.Root>
-                      </Tooltip.Root>
-                    </Tooltip.Provider>
+                                Go to content
+                              </a>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                     
-                    <Tooltip.Provider delayDuration={200}>
-                      <Tooltip.Root>
-                        <DropdownMenu.Root>
-                          <Tooltip.Trigger asChild>
-                            <DropdownMenu.Trigger asChild>
-                              <button
-                                className={cn(
-                                  "flex items-center gap-1 justify-center p-1.5 rounded-md border",
-                                  borderColor, 
-                                  buttonBg, 
-                                  iconColor,
-                                  buttonBgHover
-                                )}
-                              >
-                                <BarChart2 className="h-3.5 w-3.5" />
-                                <ChevronDown className="h-2.5 w-2.5 opacity-40" />
-                              </button>
-                            </DropdownMenu.Trigger>
-                          </Tooltip.Trigger>
-                          <Tooltip.Portal>
-                            <Tooltip.Content
-                              className="bg-gray-900 text-white px-2 py-1 rounded text-xs"
-                              side="bottom"
-                              sideOffset={5}
-                            >
-                              Insights
-                              <Tooltip.Arrow className="fill-gray-900" />
-                            </Tooltip.Content>
-                          </Tooltip.Portal>
-                          <DropdownMenu.Content 
-                            className="bg-white dark:bg-gray-800 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 py-1 w-48 mt-1"
-                            sideOffset={5}
-                          >
-                            <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                    {/* Insights Dropdown - Simple Implementation */}
+                    <div className="relative group" ref={insightsDropdownRef}>
+                      <button
+                        className={cn(
+                          "flex items-center gap-1 justify-center p-1.5 rounded-md border",
+                          borderColor, 
+                          buttonBg, 
+                          iconColor,
+                          buttonBgHover
+                        )}
+                        onClick={() => {
+                          setInsightsDropdownOpen(!insightsDropdownOpen);
+                          setSpacesDropdownOpen(false);
+                          setPostsDropdownOpen(false);
+                        }}
+                      >
+                        <BarChart2 className="h-3.5 w-3.5" />
+                        <ChevronDown className="h-2.5 w-2.5 opacity-40" />
+                      </button>
+                      
+                      {insightsDropdownOpen && (
+                        <div className="absolute left-0 mt-1 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50">
+                          <div className="py-1">
+                            <a href="#" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline" onClick={() => setInsightsDropdownOpen(false)}>
                               Analytics
-                            </DropdownMenu.Item>
-                            <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                            </a>
+                            <a href="#" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline" onClick={() => setInsightsDropdownOpen(false)}>
                               Conversions
-                            </DropdownMenu.Item>
-                            <DropdownMenu.Item className="px-3 py-1.5 text-xs hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300">
+                            </a>
+                            <a href="#" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline" onClick={() => setInsightsDropdownOpen(false)}>
                               Traffic
-                            </DropdownMenu.Item>
-                          </DropdownMenu.Content>
-                        </DropdownMenu.Root>
-                      </Tooltip.Root>
-                    </Tooltip.Provider>
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 
               </div>

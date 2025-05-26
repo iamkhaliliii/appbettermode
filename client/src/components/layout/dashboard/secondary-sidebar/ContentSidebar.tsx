@@ -15,6 +15,7 @@ import { APP_ROUTES } from "@/config/routes";
 import { BaseSidebarProps } from "./types";
 import { isValidUUID } from "@/lib/with-site-context";
 import { AddContentDialog } from "@/components/ui/add-content-dialog";
+import { useSiteContent } from "@/lib/SiteContentContext";
 
 // Define interface for CMS Type
 interface CmsType {
@@ -60,6 +61,16 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
   currentSiteIdentifier,
   onNewContent
 }) => {
+  // Get CMS types from context
+  const { 
+    cmsTypes: contextCmsTypes,
+    cmsTypesByCategory,
+    cmsTypesLoading,
+    cmsTypesError,
+    fetchCmsTypes
+  } = useSiteContent();
+  
+  // Local state
   const [cmsTypes, setCmsTypes] = useState<CmsType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -74,52 +85,55 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
 
   const basePath = APP_ROUTES.DASHBOARD_SITE.CONTENT(currentSiteIdentifier);
 
-  // Fetch CMS types when component mounts
+  // Use CMS types from context when available
   useEffect(() => {
-    const fetchCmsTypes = async () => {
+    if (cmsTypesByCategory['official'] && cmsTypesByCategory['official'].length > 0) {
+      console.log('ContentSidebar: Using official CMS types from context:', cmsTypesByCategory['official']);
+      setCmsTypes(cmsTypesByCategory['official']);
+      setIsLoading(false);
+      setError(null);
+    } else if (contextCmsTypes.length > 0) {
+      console.log('ContentSidebar: Using CMS types from context:', contextCmsTypes);
+      setCmsTypes(contextCmsTypes);
+      setIsLoading(false);
+      setError(null);
+    } else {
+      // Request CMS types via context
+      setIsLoading(true);
+      fetchCmsTypes('official')
+        .then(types => {
+          console.log('ContentSidebar: Fetched CMS types from context:', types);
+          setCmsTypes(types);
+        })
+        .catch(err => {
+          console.error('ContentSidebar: Error fetching CMS types:', err);
+          setError('Failed to load CMS types');
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [contextCmsTypes, cmsTypesByCategory, fetchCmsTypes]);
+  
+  // Update loading and error states from context
+  useEffect(() => {
+    setIsLoading(cmsTypesLoading);
+    setError(cmsTypesError);
+  }, [cmsTypesLoading, cmsTypesError]);
+  
+  // Fetch post counts
+  useEffect(() => {
+    const fetchPostCounts = async () => {
+      if (!currentSiteIdentifier) return;
+      
       try {
-        setIsLoading(true);
-        setError(null);
-        
         const API_BASE = getApiBaseUrl();
         
-        // Fetch official CMS types
-        const officialResponse = await fetch(`${API_BASE}/api/v1/cms-types/category/official`);
+        // Fetch site details first if needed
+        let siteId = currentSiteIdentifier;
         
-        if (!officialResponse.ok) {
-          throw new Error('Failed to fetch CMS types');
-        }
-        
-        const officialTypes = await officialResponse.json();
-        
-        // Fetch favorites (optional, might not be needed)
-        try {
-          const favoritesResponse = await fetch(`${API_BASE}/api/v1/cms-types/favorites`);
-          if (favoritesResponse.ok) {
-            const favoriteTypes = await favoritesResponse.json();
-            // Merge and mark favorites
-            const allTypes = [...officialTypes];
-            
-            // Mark types that are in favorites
-            for (let i = 0; i < allTypes.length; i++) {
-              const isFavorite = favoriteTypes.some((fav: CmsType) => fav.id === allTypes[i].id);
-              if (isFavorite) {
-                allTypes[i].favorite = true;
-              }
-            }
-            
-            setCmsTypes(allTypes);
-          } else {
-            setCmsTypes(officialTypes);
-          }
-        } catch (err) {
-          // If favorites fetch fails, just use official types
-          setCmsTypes(officialTypes);
-        }
-        
-        // First, we need to get the site data to obtain the UUID if we're using a subdomain
-        try {
-          // Fetch site details first
+        // If currentSiteIdentifier is not a UUID, fetch the site details
+        if (!isValidUUID(currentSiteIdentifier)) {
           const siteResponse = await fetch(`${API_BASE}/api/v1/sites/${currentSiteIdentifier}`);
           
           if (!siteResponse.ok) {
@@ -128,42 +142,29 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
           
           const siteData = await siteResponse.json();
           setSiteInfo(siteData);
-          
-          // Now fetch posts using the UUID from the site data
-          try {
-            console.log(`Fetching post counts for site: ${siteData.id}`);
-            const postsResponse = await fetch(`${API_BASE}/api/v1/posts/site/${siteData.id}`);
-            
-            if (postsResponse.ok) {
-              const postsData = await postsResponse.json();
-              const count = Array.isArray(postsData) ? postsData.length : 0;
-              console.log(`Found ${count} posts total`);
-              setPostCounts(count);
-            } else {
-              console.error('Failed to fetch posts count:', postsResponse.statusText);
-              setPostCounts(0);
-            }
-          } catch (err) {
-            console.error('Error fetching post counts:', err);
-            setPostCounts(0);
-          }
-        } catch (err) {
-          console.error('Error fetching site details:', err);
-          setPostCounts(0);
+          siteId = siteData.id;
         }
         
-      } catch (err) {
-        console.error('Error fetching CMS types:', err);
-        setError('Failed to load CMS types');
+        // Now fetch posts using the UUID
+        console.log(`Fetching post counts for site: ${siteId}`);
+        const postsResponse = await fetch(`${API_BASE}/api/v1/posts/site/${siteId}`);
         
-        // Fallback to empty array
-        setCmsTypes([]);
-      } finally {
-        setIsLoading(false);
+        if (postsResponse.ok) {
+          const postsData = await postsResponse.json();
+          const count = Array.isArray(postsData) ? postsData.length : 0;
+          console.log(`Found ${count} posts total`);
+          setPostCounts(count);
+        } else {
+          console.error('Failed to fetch posts count:', postsResponse.statusText);
+          setPostCounts(0);
+        }
+      } catch (err) {
+        console.error('Error fetching post counts:', err);
+        setPostCounts(0);
       }
     };
-
-    fetchCmsTypes();
+    
+    fetchPostCounts();
   }, [currentSiteIdentifier]);
   
   // Default content sidebar - showing CMS Collections directly

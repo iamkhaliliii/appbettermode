@@ -1,0 +1,1 @@
+INSERT INTO sites (id, name, subdomain, owner_id, status) VALUES ("69a5ca45-b477-415f-ab35-5acb769931ef", "Google Developer Community", "google", "49a44198-e6e5-4b1e-b8fb-b1c50ee0639d", "active") ON CONFLICT (id) DO UPDATE SET name = "Google Developer Community", subdomain = "google";
