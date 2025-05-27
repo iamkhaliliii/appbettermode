@@ -149,7 +149,7 @@ const columns: ColumnDef<Post>[] = [
   {
     id: "select",
     header: ({ table }) => (
-      <div className="pl-1.5">
+      <div className="px-2">
         <Checkbox
           checked={
             table.getIsAllPageRowsSelected() ||
@@ -162,7 +162,7 @@ const columns: ColumnDef<Post>[] = [
       </div>
     ),
     cell: ({ row }) => (
-      <div className="pl-1.5">
+      <div className="px-2">
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -173,6 +173,9 @@ const columns: ColumnDef<Post>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
+    meta: {
+      sticky: "left"
+    }
   },
   {
     accessorKey: "title",
@@ -610,6 +613,9 @@ const columns: ColumnDef<Post>[] = [
         </div>
       )
     },
+    meta: {
+      sticky: "right"
+    }
   },
 ]
 
@@ -1370,8 +1376,19 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
                   {table.getHeaderGroups().map((headerGroup) => (
                     <TableRow key={headerGroup.id} className="bg-transparent border-b border-border/20 dark:border-border/20 h-8">
                       {headerGroup.headers.map((header) => {
+                        const isActionsColumn = header.column.id === "actions";
+                        const isSelectColumn = header.column.id === "select";
                         return (
-                          <TableHead key={header.id} className="px-4 py-2.5 h-9 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground tracking-wide sticky top-0 bg-background dark:bg-background">
+                          <TableHead 
+                            key={header.id} 
+                            className={`px-4 py-2.5 h-9 text-left text-xs font-medium text-muted-foreground dark:text-muted-foreground tracking-wide sticky top-0 ${
+                              isActionsColumn 
+                                ? "sticky right-0 z-20 bg-white dark:bg-gray-900 border-l border-border/30 dark:border-border/30 shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.1)] dark:shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.3)]" 
+                                : isSelectColumn
+                                ? "sticky left-0 z-20 bg-white dark:bg-gray-900 border-r border-border/30 dark:border-border/30 shadow-[4px_0_8px_-2px_rgba(0,0,0,0.1)] dark:shadow-[4px_0_8px_-2px_rgba(0,0,0,0.3)]"
+                                : "bg-white dark:bg-gray-900"
+                            }`}
+                          >
                             {header.isPlaceholder
                               ? null
                               : flexRender(
@@ -1391,17 +1408,41 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
                         key={row.id}
                         data-state={row.getIsSelected() && "selected"}
                         className={`
-                          hover:bg-secondary/40 dark:hover:bg-secondary/40
-                          ${row.getIsSelected() ? 'bg-primary/5 dark:bg-primary/5' : ''}
-                          ${i % 2 === 0 ? 'bg-background dark:bg-background' : 'bg-secondary/30 dark:bg-secondary/30'}
-                          transition-colors
+                          hover:bg-gray-100 dark:hover:bg-gray-700
+                          ${row.getIsSelected() ? 'bg-blue-50 dark:bg-blue-900' : i % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'}
+                          transition-colors group
                         `}
                       >
-                        {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id} className="px-4 py-1 whitespace-nowrap text-xs border-b border-border/15 dark:border-border/15">
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                          </TableCell>
-                        ))}
+                        {row.getVisibleCells().map((cell) => {
+                          const isActionsColumn = cell.column.id === "actions";
+                          const isSelectColumn = cell.column.id === "select";
+                          const rowIndex = i; // Use the same index as the row
+                          
+                          // Determine background color based on row state and index
+                          let bgColor = "";
+                          if (row.getIsSelected()) {
+                            bgColor = "bg-blue-50 dark:bg-blue-900";
+                          } else if (rowIndex % 2 === 0) {
+                            bgColor = "bg-white dark:bg-gray-900";
+                          } else {
+                            bgColor = "bg-gray-50 dark:bg-gray-800";
+                          }
+                          
+                          return (
+                            <TableCell 
+                              key={cell.id} 
+                              className={`px-4 py-1 whitespace-nowrap text-xs border-b border-border/15 dark:border-border/15 ${
+                                isActionsColumn 
+                                  ? `sticky right-0 z-10 ${bgColor} border-l border-border/30 dark:border-border/30 shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.1)] dark:shadow-[-4px_0_8px_-2px_rgba(0,0,0,0.3)] group-hover:bg-gray-100 dark:group-hover:bg-gray-700` 
+                                  : isSelectColumn
+                                  ? `sticky left-0 z-10 ${bgColor} border-r border-border/30 dark:border-border/30 shadow-[4px_0_8px_-2px_rgba(0,0,0,0.1)] dark:shadow-[4px_0_8px_-2px_rgba(0,0,0,0.3)] group-hover:bg-gray-100 dark:group-hover:bg-gray-700`
+                                  : ""
+                              }`}
+                            >
+                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </TableCell>
+                          )
+                        })}
                       </TableRow>
                     ))
                   ) : (
