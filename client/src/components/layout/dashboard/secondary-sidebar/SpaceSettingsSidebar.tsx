@@ -52,7 +52,7 @@ export const SpaceSettingsSidebar: React.FC<SpaceSettingsSidebarProps> = memo(({
   const paths = useMemo(() => {
     const basePath = APP_ROUTES.DASHBOARD_SITE.SITE_CONFIG(siteSD);
     return {
-      spacesPath: basePath + "/spaces"
+      siteConfigPath: basePath
     };
   }, [siteSD]);
 
@@ -61,7 +61,7 @@ export const SpaceSettingsSidebar: React.FC<SpaceSettingsSidebarProps> = memo(({
     { id: "general", label: "General" },
     { id: "permissions", label: "Permissions" },
     { id: "seo", label: "SEO" },
-    { id: "display", label: "Display" },
+    { id: "display", label: "Layout" },
     { id: "customize", label: "Customize" },
     { id: "danger", label: "Danger Zone" },
   ], []);
@@ -70,11 +70,11 @@ export const SpaceSettingsSidebar: React.FC<SpaceSettingsSidebarProps> = memo(({
     <div className="p-3">
       <div className="flex items-center mb-4">
         <a 
-          href={paths.spacesPath}
+          href={paths.siteConfigPath}
           className="flex items-center text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
         >
           <ChevronLeft className="h-4 w-4 mr-1" />
-          Back to Spaces
+          Back
         </a>
       </div>
 

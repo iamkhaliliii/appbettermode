@@ -271,6 +271,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
   const [moderationDropdownOpen, setModerationDropdownOpen] = useState(false);
   const [addDropdownOpen, setAddDropdownOpen] = useState(false);
   const [logoDropdownOpen, setLogoDropdownOpen] = useState(false);
+  const [moreSubmenuOpen, setMoreSubmenuOpen] = useState(false);
   
   // Dialog states
   const [newPostDialogOpen, setNewPostDialogOpen] = useState(false);
@@ -284,6 +285,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
   const moderationDropdownRef = useRef<HTMLDivElement>(null);
   const addDropdownRef = useRef<HTMLDivElement>(null);
   const logoDropdownRef = useRef<HTMLDivElement>(null);
+  const moreSubmenuRef = useRef<HTMLDivElement>(null);
   
   // Handle click outside to close dropdowns
   useEffect(() => {
@@ -321,6 +323,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
           !addDropdownRef.current.contains(event.target as Node) && 
           addDropdownOpen) {
         setAddDropdownOpen(false);
+        setMoreSubmenuOpen(false);
       }
       
       // Close logo dropdown if click is outside
@@ -328,6 +331,13 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
           !logoDropdownRef.current.contains(event.target as Node) && 
           logoDropdownOpen) {
         setLogoDropdownOpen(false);
+      }
+      
+      // Close more submenu if click is outside
+      if (moreSubmenuRef.current && 
+          !moreSubmenuRef.current.contains(event.target as Node) && 
+          moreSubmenuOpen) {
+        setMoreSubmenuOpen(false);
       }
     };
     
@@ -338,7 +348,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [spacesDropdownOpen, postsDropdownOpen, insightsDropdownOpen, moderationDropdownOpen, addDropdownOpen, logoDropdownOpen]);
+  }, [spacesDropdownOpen, postsDropdownOpen, insightsDropdownOpen, moderationDropdownOpen, addDropdownOpen, logoDropdownOpen, moreSubmenuOpen]);
 
   return (
     <motion.header
@@ -1026,7 +1036,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                                     <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                       <path d="M12 5v14M5 12h14" />
                                     </svg>
-                                    <span>New Post</span>
+                                    <span>New Content</span>
                                   </button>
                                   <button 
                                     className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center gap-2"
@@ -1038,16 +1048,74 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                                     <UserPlus className="h-4 w-4" />
                                     <span>New People</span>
                                   </button>
-                                  <button 
-                                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center gap-2"
-                                    onClick={() => {
-                                      setAddDropdownOpen(false);
-                                      setAddContentDialogOpen(true);
-                                    }}
+                                  
+                                  {/* More submenu */}
+                                  <div 
+                                    className="relative" 
+                                    ref={moreSubmenuRef}
+                                    onMouseEnter={() => setMoreSubmenuOpen(true)}
+                                    onMouseLeave={() => setMoreSubmenuOpen(false)}
                                   >
-                                    <Package className="h-4 w-4" />
-                                    <span>New Content Type</span>
-                                  </button>
+                                    <button 
+                                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center justify-between gap-2"
+                                    >
+                                      <div className="flex items-center gap-2">
+                                        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                          <circle cx="12" cy="12" r="1"/>
+                                          <circle cx="19" cy="12" r="1"/>
+                                          <circle cx="5" cy="12" r="1"/>
+                                        </svg>
+                                        <span>More</span>
+                                      </div>
+                                      <svg className="h-3 w-3" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
+                                        <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                      </svg>
+                                    </button>
+                                    
+                                    {moreSubmenuOpen && (
+                                      <div 
+                                        className="absolute right-full top-0 mr-1 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50"
+                                      >
+                                        <div className="py-1">
+                                          <button 
+                                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center gap-2"
+                                            onClick={() => {
+                                              setAddDropdownOpen(false);
+                                              setMoreSubmenuOpen(false);
+                                              setAddContentDialogOpen(true);
+                                            }}
+                                          >
+                                            <Package className="h-4 w-4" />
+                                            <span>New Content Type</span>
+                                          </button>
+                                          <button 
+                                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center gap-2"
+                                            onClick={() => {
+                                              setAddDropdownOpen(false);
+                                              setMoreSubmenuOpen(false);
+                                              // Add New Moderator functionality here
+                                              console.log("New Moderator clicked");
+                                            }}
+                                          >
+                                            <ShieldPlus className="h-4 w-4" />
+                                            <span>New Moderator</span>
+                                          </button>
+                                          <button 
+                                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center gap-2"
+                                            onClick={() => {
+                                              setAddDropdownOpen(false);
+                                              setMoreSubmenuOpen(false);
+                                              // Add New App functionality here
+                                              console.log("New App clicked");
+                                            }}
+                                          >
+                                            <AppWindowMac className="h-4 w-4" />
+                                            <span>New App</span>
+                                          </button>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                             )}

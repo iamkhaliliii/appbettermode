@@ -25,6 +25,7 @@ export default function SpaceSettingsPage() {
   
   const [addContentDialogOpen, setAddContentDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('general');
+  const [sidebarVisible, setSidebarVisible] = useState(false);
   
   // Browser mockup state
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -43,6 +44,18 @@ export default function SpaceSettingsPage() {
   // Construct the URL for display in browser mockup - memoize to avoid recalculation
   const siteUrl = useMemo(() => `/site/${siteSD}/${spacesSlug}`, [siteSD, spacesSlug]);
 
+  // Handle tab change and show sidebar
+  const handleTabChange = (tabId: string) => {
+    if (activeTab === tabId && sidebarVisible) {
+      // If clicking the same tab and sidebar is visible, close it
+      setSidebarVisible(false);
+    } else {
+      // Otherwise, set the new tab and show sidebar
+      setActiveTab(tabId);
+      setSidebarVisible(true);
+    }
+  };
+
   return (
     <DashboardPageWrapper 
       siteSD={siteSD}
@@ -53,7 +66,7 @@ export default function SpaceSettingsPage() {
           spaceName={displaySpaceName} 
           spaceSlug={spacesSlug}
           activeTab={activeTab}
-          onTabChange={setActiveTab}
+          onTabChange={handleTabChange}
         />
       }
     >
@@ -67,17 +80,25 @@ export default function SpaceSettingsPage() {
         open={addContentDialogOpen}
         onOpenChange={setAddContentDialogOpen}
       />
-      <div className="flex">
-        <div className="h-[calc(100vh-54px)] scrollbar-thin scrollbar-thumb-gray-100 dark:scrollbar-thumb-gray-700 overflow-y-auto">
-          {/* Settings Sidebar - Now on the left */}
+      <div className="flex relative">
+        {/* Settings Sidebar - Sliding from left */}
+        <div 
+          className={`absolute left-0 top-0 h-[calc(100vh-54px)] z-10 transform transition-transform duration-300 ease-in-out ${
+            sidebarVisible ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
           <SettingsSidebar 
             siteSD={siteSD} 
             spacesSlug={spacesSlug} 
-            activeTab={activeTab} 
+            activeTab={activeTab}
+            onClose={() => setSidebarVisible(false)}
           />
         </div>
-        {/* Browser Preview - Now on the right */}
-        <div className="flex-1 p-4 flex flex-col">
+        
+        {/* Browser Preview - Full width when sidebar is hidden */}
+        <div className={`flex-1 p-4 flex flex-col transition-all duration-300 ease-in-out ${
+          sidebarVisible ? 'ml-80' : 'ml-0'
+        }`}>
           <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 dark:scrollbar-thumb-gray-700">
             <BrowserMockup
               userDropdownOpen={userDropdownOpen}
