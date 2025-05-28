@@ -197,20 +197,20 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
               badgeText={isLoading ? "..." : postCounts.toString()}
               primary={true}
             >
-              All Posts
+              All Content
             </SideNavItemWithBadge>
 
             <SideNavItem
-              href={`${basePath}?status=scheduled`}
-              isActive={currentPathname.includes('/content') && currentPathname.includes('status=scheduled')}
+              href={getContentSectionUrl('scheduled')}
+              isActive={isActiveUrl && isActiveUrl(getContentSectionUrl('scheduled'), currentPathname)}
               icon={<AlarmClockCheck className="h-3.5 w-3.5" />}
             >
               All Scheduled
             </SideNavItem>
 
             <SideNavItem
-              href={`${basePath}?status=draft`}
-              isActive={currentPathname.includes('/content') && currentPathname.includes('status=draft')}
+              href={getContentSectionUrl('draft')}
+              isActive={isActiveUrl && isActiveUrl(getContentSectionUrl('draft'), currentPathname)}
               icon={<MessageSquareDashed className="h-3.5 w-3.5" />}
             >
               All Draft
@@ -248,21 +248,21 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
               className="flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150 px-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 rounded"
             >
               <Plus className="h-3.5 w-3.5 mr-2" />
-              <span className="font-normal">Add new post type</span>
+              <span className="font-normal">Add new content type</span>
             </div>
             
             {/* Add Content Dialog */}
             <AddContentDialog open={dialogOpen} onOpenChange={setDialogOpen} />
           </div>
 
-          {/* Divider and Custom View */}
+          {/* Custom Views Section */}
           <div className="border-t border-gray-100 dark:border-gray-700 mt-2 pt-2">
-            <Link href={getContentSectionUrl(APP_ROUTES.CONTENT_TYPES.CUSTOM_VIEW)}>
-              <div className="flex items-center py-1.5 text-sm cursor-pointer my-0.5 transition-colors duration-150 px-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 rounded">
-                <Plus className="h-3.5 w-3.5 mr-2" />
-                <span className="font-normal">Add custom view</span>
-              </div>
-            </Link>
+            <div className="px-2.5 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              Custom Views
+            </div>
+            <div id="custom-views-container">
+              {/* Custom views will be rendered here by the main content component */}
+            </div>
           </div>
         </div>
       </div>

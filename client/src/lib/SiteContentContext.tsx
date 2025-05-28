@@ -203,7 +203,7 @@ export const SiteContentProvider: React.FC<SiteContentProviderProps> = ({ childr
         fetchedTypes = await cmsTypesApi.getCmsTypesByCategory(category);
       } else {
         // Fetch all CMS types
-        fetchedTypes = await cmsTypesApi.getCmsTypes();
+        fetchedTypes = await cmsTypesApi.getAllCmsTypes();
       }
       
       if (Array.isArray(fetchedTypes)) {
