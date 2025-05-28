@@ -167,6 +167,7 @@ export function PermissionsSettingsTab() {
         onFieldClick={handleFieldClick}
         onFieldBlur={handleFieldBlur}
         onKeyDown={handleKeyDown}
+        description="Require manual approval for all posts before they become visible"
       />
 
       <PropertyRow
@@ -180,6 +181,7 @@ export function PermissionsSettingsTab() {
         onFieldClick={handleFieldClick}
         onFieldBlur={handleFieldBlur}
         onKeyDown={handleKeyDown}
+        description="Automatically approve posts from trusted members"
       />
     </div>
   );

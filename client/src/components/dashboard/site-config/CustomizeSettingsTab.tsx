@@ -4,7 +4,8 @@ import {
   MessageSquare,
   Heart,
   Smile,
-  ArrowUpDown
+  ArrowUpDown,
+  FileImage
 } from "lucide-react";
 import { PropertyRow } from "./PropertyRow";
 
@@ -14,6 +15,8 @@ export function CustomizeSettingsTab() {
   const [enableComments, setEnableComments] = useState(true);
   const [enableReactions, setEnableReactions] = useState(true);
   const [reactionType, setReactionType] = useState('emoji');
+  const [spaceCover, setSpaceCover] = useState(false);
+  const [spaceBannerUrl, setSpaceBannerUrl] = useState('');
 
   const handleFieldClick = (fieldName: string) => {
     setEditingField(fieldName);
@@ -34,6 +37,36 @@ export function CustomizeSettingsTab() {
 
   return (
     <div className="space-y-0">
+      <PropertyRow
+        label="Space Cover"
+        value={spaceCover}
+        fieldName="spaceCover"
+        type="checkbox"
+        onValueChange={setSpaceCover}
+        icon={FileImage}
+        editingField={editingField}
+        onFieldClick={handleFieldClick}
+        onFieldBlur={handleFieldBlur}
+        onKeyDown={handleKeyDown}
+        description="Enable banner image display at the top of the space"
+      />
+
+      {spaceCover && (
+        <PropertyRow
+          label="Banner"
+          value={spaceBannerUrl}
+          fieldName="banner"
+          type="upload"
+          onValueChange={setSpaceBannerUrl}
+          placeholder="Upload banner"
+          icon={FileImage}
+          editingField={editingField}
+          onFieldClick={handleFieldClick}
+          onFieldBlur={handleFieldBlur}
+          onKeyDown={handleKeyDown}
+        />
+      )}
+
       <PropertyRow
         label="Pin post"
         value={pinPost}

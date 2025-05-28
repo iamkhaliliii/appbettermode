@@ -3,12 +3,15 @@ import {
   Image,
   Heading,
   AlignLeft,
-  FileImage,
   Link,
   Globe,
   Lock,
   UserPlus,
-  Users
+  Users,
+  FileText,
+  UserCheck,
+  Crown,
+  Ban
 } from "lucide-react";
 import { PropertyRow } from "./PropertyRow";
 
@@ -52,6 +55,7 @@ export function GeneralSettingsTab({
   isLoading
 }: GeneralSettingsTabProps) {
   const [editingField, setEditingField] = useState<string | null>(null);
+  const [newContentPermission, setNewContentPermission] = useState('all');
 
   const handleFieldClick = (fieldName: string) => {
     setEditingField(fieldName);
@@ -115,20 +119,6 @@ export function GeneralSettingsTab({
       />
 
       <PropertyRow
-        label="Banner"
-        value={spaceBannerUrl}
-        fieldName="banner"
-        type="upload"
-        onValueChange={setSpaceBannerUrl}
-        placeholder="Upload banner"
-        icon={FileImage}
-        editingField={editingField}
-        onFieldClick={handleFieldClick}
-        onFieldBlur={handleFieldBlur}
-        onKeyDown={handleKeyDown}
-      />
-
-      <PropertyRow
         label="URL Slug"
         value={slug}
         fieldName="slug"
@@ -167,6 +157,46 @@ export function GeneralSettingsTab({
         onFieldClick={handleFieldClick}
         onFieldBlur={handleFieldBlur}
         onKeyDown={handleKeyDown}
+        description="Controls who can discover and access this space"
+      />
+
+      <PropertyRow
+        label="New content permission"
+        value={newContentPermission}
+        fieldName="newContentPermission"
+        type="select"
+        options={[
+          { 
+            value: 'all', 
+            label: 'All members',
+            description: 'Any member of the community can create posts',
+            icon: Users
+          },
+          { 
+            value: 'space_members', 
+            label: 'Space members, space admins, and staff',
+            description: 'Only space members and above can create posts',
+            icon: UserCheck
+          },
+          { 
+            value: 'space_admins', 
+            label: 'Space admins and staff',
+            description: 'Only space administrators and staff can create posts',
+            icon: Crown
+          },
+          { 
+            value: 'nobody', 
+            label: 'Nobody',
+            description: 'No one can create new posts in this space',
+            icon: Ban
+          }
+        ]}
+        onValueChange={setNewContentPermission}
+        icon={FileText}
+        editingField={editingField}
+        onFieldClick={handleFieldClick}
+        onFieldBlur={handleFieldBlur}
+        onKeyDown={handleKeyDown}
       />
 
       <PropertyRow
@@ -180,6 +210,7 @@ export function GeneralSettingsTab({
         onFieldClick={handleFieldClick}
         onFieldBlur={handleFieldBlur}
         onKeyDown={handleKeyDown}
+        description="When enabled, only invited users can join this space"
       />
 
       <PropertyRow
@@ -193,6 +224,7 @@ export function GeneralSettingsTab({
         onFieldClick={handleFieldClick}
         onFieldBlur={handleFieldBlur}
         onKeyDown={handleKeyDown}
+        description="Allow any member to invite others to this space"
       />
     </div>
   );
