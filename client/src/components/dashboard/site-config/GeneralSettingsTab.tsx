@@ -75,7 +75,7 @@ export function GeneralSettingsTab({
   };
 
   return (
-    <div className="space-y-0">
+    <div className="space-y-0 [&>*:last-child>div:first-child]:border-b-0">
       <PropertyRow
         label="Icon"
         value={spaceIconUrl}
@@ -161,7 +161,7 @@ export function GeneralSettingsTab({
       />
 
       <PropertyRow
-        label="New content permission"
+        label="Who can post"
         value={newContentPermission}
         fieldName="newContentPermission"
         type="select"
@@ -197,6 +197,7 @@ export function GeneralSettingsTab({
         onFieldClick={handleFieldClick}
         onFieldBlur={handleFieldBlur}
         onKeyDown={handleKeyDown}
+        description="Control who has permission to create new content in this space"
       />
 
       <PropertyRow

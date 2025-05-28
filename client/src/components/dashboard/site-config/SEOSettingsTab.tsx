@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   Heading,
   AlignLeft,
-  Hash,
   Image,
   Search
 } from "lucide-react";
@@ -12,7 +11,6 @@ export function SEOSettingsTab() {
   const [editingField, setEditingField] = useState<string | null>(null);
   const [metaTitle, setMetaTitle] = useState('');
   const [metaDescription, setMetaDescription] = useState('');
-  const [keywords, setKeywords] = useState('');
   const [ogImage, setOgImage] = useState('');
   const [indexable, setIndexable] = useState(true);
 
@@ -34,7 +32,7 @@ export function SEOSettingsTab() {
   };
 
   return (
-    <div className="space-y-0">
+    <div className="space-y-0 [&>*:last-child>div:first-child]:border-b-0">
       <PropertyRow
         label="Meta Title"
         value={metaTitle}
@@ -47,6 +45,7 @@ export function SEOSettingsTab() {
         onFieldClick={handleFieldClick}
         onFieldBlur={handleFieldBlur}
         onKeyDown={handleKeyDown}
+        description="Keep under 60 characters for better search visibility"
       />
 
       <PropertyRow
@@ -61,20 +60,7 @@ export function SEOSettingsTab() {
         onFieldClick={handleFieldClick}
         onFieldBlur={handleFieldBlur}
         onKeyDown={handleKeyDown}
-      />
-
-      <PropertyRow
-        label="Keywords"
-        value={keywords}
-        fieldName="keywords"
-        type="text"
-        onValueChange={setKeywords}
-        placeholder="Enter keywords"
-        icon={Hash}
-        editingField={editingField}
-        onFieldClick={handleFieldClick}
-        onFieldBlur={handleFieldBlur}
-        onKeyDown={handleKeyDown}
+        description="155-160 characters summary for search results"
       />
 
       <PropertyRow
@@ -89,10 +75,11 @@ export function SEOSettingsTab() {
         onFieldClick={handleFieldClick}
         onFieldBlur={handleFieldBlur}
         onKeyDown={handleKeyDown}
+        description="Social media preview image (1200x630px recommended)"
       />
 
       <PropertyRow
-        label="Search Indexable"
+        label="No index"
         value={indexable}
         fieldName="indexable"
         type="checkbox"
@@ -102,6 +89,7 @@ export function SEOSettingsTab() {
         onFieldClick={handleFieldClick}
         onFieldBlur={handleFieldBlur}
         onKeyDown={handleKeyDown}
+        description="Hide this space from search engines and sitemaps"
       />
     </div>
   );

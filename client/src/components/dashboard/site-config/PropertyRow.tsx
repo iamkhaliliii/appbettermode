@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import {
   Globe,
-  Lock
+  Lock,
+  Info
 } from "lucide-react";
 
 interface PropertyRowProps {
@@ -62,13 +63,13 @@ function CustomDropdown({ value, options, onChange, placeholder = "Select option
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full h-6 text-sm bg-transparent border-none outline-none text-gray-900 dark:text-gray-100 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded px-2 text-right flex items-center justify-end gap-1.5"
+        className="w-full h-6 text-sm bg-transparent border-none outline-none text-gray-900 dark:text-gray-100 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded text-right flex items-center justify-end gap-1.5"
       >
         <div className="flex items-center gap-1.5 truncate">
           {selectedOption?.icon && (
             <selectedOption.icon className="w-3 h-3 text-gray-400 dark:text-gray-500 flex-shrink-0" />
           )}
-          <span className="truncate text-xs">
+          <span className="truncate text-sm">
             {selectedOption ? selectedOption.label : placeholder}
           </span>
         </div>
@@ -139,6 +140,7 @@ export function PropertyRow({
   onKeyDown,
   description
 }: PropertyRowProps) {
+  const [showDescription, setShowDescription] = useState(false);
   const isEditing = editingField === fieldName;
   const displayValue = value || "Empty";
   const isEmpty = !value;
@@ -146,18 +148,31 @@ export function PropertyRow({
   const isSlug = fieldName === 'slug';
 
   return (
-    <div className="space-y-0">
-      <div className={`flex px-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-md group transition-colors border-b border-gray-100 dark:border-gray-800 last:border-b-0 ${
+    <div className="">
+      <div className={`flex px-2 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-md group transition-colors ${
+        description && showDescription ? '' : 'border-b border-gray-100 dark:border-gray-800'
+      } ${
         (isDescription || isSlug) && isEditing ? 'flex-col items-start py-2 space-y-2' : 'items-center justify-between h-9'
       }`}>
         <div className={`text-xs text-gray-400 dark:text-gray-500 flex items-center gap-2 ${
-          (isDescription || isSlug) && isEditing ? 'w-full' : 'w-2/5 pr-2'
+          (isDescription || isSlug) && isEditing ? 'w-full' : 'w-1/2 pr-2'
         }`}>
           {Icon && <Icon className="h-3 w-3 flex-shrink-0" />}
-          <span className="truncate text-left">{label}</span>
+          <div className="flex items-center">
+            <span className="truncate text-left">{label}</span>
+            {description && (
+              <button
+                onClick={() => setShowDescription(!showDescription)}
+                className="ml-0.5 p-1 rounded-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                type="button"
+              >
+                <Info className="h-2.5 w-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" />
+              </button>
+            )}
+          </div>
         </div>
         <div className={`flex justify-end items-center pl-2 ${
-          (isDescription || isSlug) && isEditing ? 'w-full' : 'w-3/5 h-full'
+          (isDescription || isSlug) && isEditing ? 'w-full' : 'w-1/2 h-full'
         }`}>
           {type === 'text' && (
             <>
@@ -173,7 +188,7 @@ export function PropertyRow({
                       onChange={(e) => onValueChange(e.target.value)}
                       onBlur={onFieldBlur}
                       onKeyDown={(e) => onKeyDown(e, fieldName)}
-                      className="flex-1 h-full text-sm bg-transparent border-none outline-none text-gray-900 dark:text-gray-100 text-left px-2"
+                      className="flex-1 h-full bg-transparent border-none outline-none text-gray-900 dark:text-gray-100 text-left px-2"
                       autoFocus
                       placeholder="url-slug"
                     />
@@ -193,7 +208,7 @@ export function PropertyRow({
               ) : (
                 <div
                   onClick={() => onFieldClick(fieldName)}
-                  className={`text-sm cursor-pointer h-6 flex items-center justify-end px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors truncate text-right w-full ${
+                  className={`text-sm cursor-pointer h-6 flex items-center justify-end rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors truncate text-right w-full ${
                     isEmpty ? 'text-gray-300 dark:text-gray-600' : 'text-gray-900 dark:text-gray-100'
                   }`}
                   title={fieldName === 'slug' ? `yourdomain/${displayValue}` : displayValue}
@@ -201,7 +216,7 @@ export function PropertyRow({
                   {fieldName === 'slug' && !isEmpty ? (
                     <div className="flex items-center gap-1 truncate">
                       <span className="text-xs text-gray-400 dark:text-gray-500">yourdomain/</span>
-                      <span className="text-sm text-gray-900 dark:text-gray-100 font-medium">{value}</span>
+                      <span className="text-gray-900 dark:text-gray-100 font-medium">{value}</span>
                     </div>
                   ) : (
                     displayValue
@@ -230,7 +245,7 @@ export function PropertyRow({
               ) : (
                 <div
                   onClick={() => onFieldClick(fieldName)}
-                  className={`text-sm cursor-pointer h-6 flex items-center justify-end px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors truncate text-right w-full ${
+                  className={`text-sm cursor-pointer h-6 flex items-center justify-end rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors truncate text-right w-full ${
                     isEmpty ? 'text-gray-300 dark:text-gray-600' : 'text-gray-900 dark:text-gray-100'
                   }`}
                   title={displayValue}
@@ -277,7 +292,7 @@ export function PropertyRow({
                     };
                     input.click();
                   }}
-                  className="text-sm text-gray-300 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer h-6 flex items-center justify-end px-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors truncate w-full text-right"
+                  className="text-sm text-gray-300 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer h-6 flex items-center justify-end rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors truncate w-full text-right"
                 >
                   Empty
                 </button>
@@ -305,9 +320,9 @@ export function PropertyRow({
           )}
         </div>
       </div>
-      {description && (
-        <div className="px-3 pb-2">
-          <div className="text-xs text-gray-500 dark:text-gray-400 leading-4">
+      {description && showDescription && (
+        <div className="px-3 pb-3 pr-20 border-b border-gray-100 dark:border-gray-800">
+          <div className="text-[0.75rem] text-gray-400 dark:text-gray-500 leading-4">
             {description}
           </div>
         </div>

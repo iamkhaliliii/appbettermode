@@ -73,7 +73,7 @@ export function DisplaySettingsTab() {
       </button>
       
       {propertiesExpanded && (
-        <div className="space-y-0">
+        <div className="space-y-0 [&>*:last-child>div:first-child]:border-b-0">
           <PropertyRow
             label="Title"
             value={showTitle}
@@ -202,7 +202,7 @@ export function DisplaySettingsTab() {
       </div>
       
       {/* Conditional Settings */}
-      <div className="space-y-0">
+      <div className="space-y-0 [&>*:last-child>div:first-child]:border-b-0">
         {/* Grid specific settings */}
         {layout === 'grid' && (
           <>

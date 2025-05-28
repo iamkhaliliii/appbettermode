@@ -36,7 +36,7 @@ export function CustomizeSettingsTab() {
   };
 
   return (
-    <div className="space-y-0">
+    <div className="space-y-0 [&>*:last-child>div:first-child]:border-b-0">
       <PropertyRow
         label="Space Cover"
         value={spaceCover}
