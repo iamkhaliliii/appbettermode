@@ -4,6 +4,9 @@ import { Site } from "@/lib/api";
 import { useSiteData } from "@/lib/SiteDataContext";
 import { GeneralSettingsTab } from "./GeneralSettingsTab";
 import { PermissionsSettingsTab } from "./PermissionsSettingsTab";
+import { SEOSettingsTab } from "./SEOSettingsTab";
+import { DisplaySettingsTab } from "./DisplaySettingsTab";
+import { CustomizeSettingsTab } from "./CustomizeSettingsTab";
 
 interface SettingsSidebarProps {
   siteSD: string;
@@ -152,11 +155,11 @@ export function SettingsSidebar({
       case 'permissions':
         return <PermissionsSettingsTab />;
       case 'seo':
-        return <div className="py-6 px-2 text-center text-gray-500 dark:text-gray-400">SEO Settings - Coming Soon</div>;
+        return <SEOSettingsTab />;
       case 'display':
-        return <div className="py-6 px-2 text-center text-gray-500 dark:text-gray-400">Display Settings - Coming Soon</div>;
+        return <DisplaySettingsTab />;
       case 'customize':
-        return <div className="py-6 px-2 text-center text-gray-500 dark:text-gray-400">Customize Settings - Coming Soon</div>;
+        return <CustomizeSettingsTab />;
       default:
         return (
           <div className="py-6 px-2 text-center text-gray-500 dark:text-gray-400">
