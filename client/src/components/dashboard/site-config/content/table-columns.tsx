@@ -280,7 +280,7 @@ export const columns: ColumnDef<Post>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="flex items-center space-x-1 group text-left focus:outline-none"
         >
-          <span className="text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200 font-medium transition-colors">CMS</span>
+          <span className="text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200 font-medium transition-colors">Type</span>
           {column.getIsSorted() ? (
             <div className={`transition-colors ${column.getIsSorted() === "asc" ? "text-primary-500" : "text-primary-500"}`}>
               {column.getIsSorted() === "asc" ? (
@@ -457,6 +457,7 @@ export const columns: ColumnDef<Post>[] = [
   {
     id: "actions",
     header: () => <span className="sr-only">Actions</span>,
+    enableHiding: false,
     cell: ({ row }) => {
       return (
         <div className="text-right">

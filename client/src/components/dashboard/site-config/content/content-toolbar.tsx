@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,13 +15,15 @@ import {
   Plus,
   ChevronDown,
   FileText,
-  X
+  X,
+  Settings
 } from "lucide-react";
 import { Table, SortingState } from "@tanstack/react-table";
 import { Post } from './types';
 import { ContentFilter, FilterRule } from './content-filter';
 import { ContentSort } from './content-sort';
 import { ContentViewManager, CustomView } from './content-view-manager.tsx';
+import { NewPostDialog } from '@/components/ui/new-post-dialog';
 
 interface ContentToolbarProps {
   table: Table<Post>;
@@ -56,6 +58,55 @@ export const ContentToolbar: React.FC<ContentToolbarProps> = ({
   onDiscardChanges,
   activeTab
 }) => {
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+  const [isNewPostDialogOpen, setIsNewPostDialogOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+
+  // Focus input when search opens
+  useEffect(() => {
+    if (isSearchOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isSearchOpen]);
+
+  // Handle click outside to close search
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        if (isSearchOpen && !searchValue) {
+          handleSearchClose();
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isSearchOpen, searchValue]);
+
+  // Handle search functionality
+  const handleSearchChange = (value: string) => {
+    setSearchValue(value);
+    // Apply search filter to table
+    table.getColumn('title')?.setFilterValue(value);
+  };
+
+  const handleSearchClose = () => {
+    setIsSearchOpen(false);
+    setSearchValue('');
+    // Clear search filter
+    table.getColumn('title')?.setFilterValue('');
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      handleSearchClose();
+    }
+  };
+
   return (
     <div className="mb-0 flex items-center justify-between gap-1.5">
       {/* Left side - Filter, Sort, Column buttons */}
@@ -168,19 +219,100 @@ export const ContentToolbar: React.FC<ContentToolbarProps> = ({
           </DropdownMenu>
         )}
         
-        <button className="inline-flex items-center justify-center h-7 w-7 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-          <Search className="h-3.5 w-3.5" />
-        </button>
+        {/* Search - Expandable */}
+        {isSearchOpen ? (
+          <div 
+            ref={searchContainerRef}
+            className="flex items-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded h-7 px-2 min-w-[200px] transition-all duration-200"
+          >
+            <Search className="h-3.5 w-3.5 text-gray-400 dark:text-gray-500 mr-2 shrink-0" />
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={searchValue}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              onKeyDown={handleSearchKeyDown}
+              placeholder="Search content..."
+              className="flex-1 text-xs bg-transparent border-none outline-none text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500"
+            />
+            <button
+              onClick={handleSearchClose}
+              className="ml-1 p-0.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            >
+              <X className="h-3 w-3 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" />
+            </button>
+          </div>
+        ) : (
+          <button 
+            onClick={() => setIsSearchOpen(true)}
+            className="inline-flex items-center justify-center h-7 w-7 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            <Search className="h-3.5 w-3.5" />
+          </button>
+        )}
         
         <button className="inline-flex items-center justify-center h-7 w-7 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
           <FileOutput className="h-3.5 w-3.5" />
         </button>
         
-        <button className="inline-flex items-center justify-center h-7 px-3.5 rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 shadow-sm text-xs font-medium gap-1 whitespace-nowrap hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+        {/* Columns visibility dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="inline-flex items-center justify-center h-7 w-7 rounded text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+              <Settings className="h-3.5 w-3.5" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-[180px] rounded-md p-1 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-lg">
+            <DropdownMenuLabel className="pt-1.5 pb-2 px-2 text-[11px] font-medium text-gray-700 dark:text-gray-300 tracking-tight">
+              Show/Hide Columns
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator className="my-0.5 h-px bg-gray-200 dark:bg-gray-700" />
+            
+            {table.getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => {
+                return (
+                  <DropdownMenuItem
+                    key={column.id}
+                    className="flex cursor-pointer items-center justify-between px-2 py-1.5 text-xs text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750"
+                    onClick={() => column.toggleVisibility(!column.getIsVisible())}
+                  >
+                    <span className="capitalize">
+                      {column.id === 'publishedAt' ? 'Published Date' : 
+                       column.id === 'cmsModel' ? 'Content Type' : 
+                       column.id}
+                    </span>
+                    <div className="ml-2">
+                      {column.getIsVisible() ? (
+                        <div className="w-3 h-3 rounded-sm bg-blue-500 flex items-center justify-center">
+                          <svg className="w-2 h-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
+                          </svg>
+                        </div>
+                      ) : (
+                        <div className="w-3 h-3 rounded-sm border border-gray-300 dark:border-gray-600"></div>
+                      )}
+                    </div>
+                  </DropdownMenuItem>
+                )
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        
+        <button 
+          onClick={() => setIsNewPostDialogOpen(true)}
+          className="inline-flex items-center justify-center h-7 px-3.5 rounded bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 shadow-sm text-xs font-medium gap-1 whitespace-nowrap hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        >
           <Plus className="h-3.5 w-3.5 mr-1" />
           <span>New Content</span>
         </button>
       </div>
+      
+      {/* New Post Dialog */}
+      <NewPostDialog 
+        open={isNewPostDialogOpen} 
+        onOpenChange={setIsNewPostDialogOpen} 
+      />
     </div>
   );
 }; 

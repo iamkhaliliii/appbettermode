@@ -11,6 +11,8 @@ import {
   Loader2,
   AlarmClockCheck,
   MessageSquareDashed,
+  Save,
+  Clock,
 } from "lucide-react";
 import { SideNavItem, SideNavItemWithBadge } from "./SidebarNavigationItems";
 import { APP_ROUTES } from "@/config/routes";
@@ -203,7 +205,7 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
             <SideNavItem
               href={getContentSectionUrl('scheduled')}
               isActive={isActiveUrl && isActiveUrl(getContentSectionUrl('scheduled'), currentPathname)}
-              icon={<AlarmClockCheck className="h-3.5 w-3.5" />}
+              icon={<Clock className="h-3.5 w-3.5" />}
             >
               All Scheduled
             </SideNavItem>
@@ -211,7 +213,7 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
             <SideNavItem
               href={getContentSectionUrl('draft')}
               isActive={isActiveUrl && isActiveUrl(getContentSectionUrl('draft'), currentPathname)}
-              icon={<MessageSquareDashed className="h-3.5 w-3.5" />}
+              icon={<Save className="h-3.5 w-3.5" />}
             >
               All Draft
             </SideNavItem>
@@ -219,6 +221,11 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
 
           {/* Content Types - Dynamic from API */}
           <div className="space-y-0.5 border-t border-gray-100 dark:border-gray-700 pt-2">
+            <div className="mb-2">
+              <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">
+                Content Type
+              </h2>
+            </div>
             {isLoading ? (
               <div className="flex items-center justify-center py-2">
                 <Loader2 className="h-4 w-4 text-gray-400 animate-spin" />
@@ -257,8 +264,10 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
 
           {/* Custom Views Section */}
           <div className="border-t border-gray-100 dark:border-gray-700 mt-2 pt-2">
-            <div className="px-2.5 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-              Custom Views
+            <div className="mb-2">
+              <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">
+                Custom Views
+              </h2>
             </div>
             <div id="custom-views-container">
               {/* Custom views will be rendered here by the main content component */}
