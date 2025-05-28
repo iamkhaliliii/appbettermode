@@ -28,7 +28,7 @@ export function NumberPropertyRow({
   };
 
   return (
-    <div className="flex items-center justify-between h-9 px-3 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-md group transition-colors border-b border-gray-100 dark:border-gray-800">
+    <div className="flex items-center justify-between h-9 px-2 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-md group transition-colors border-b border-gray-100 dark:border-gray-800">
       <div className="w-2/5 text-xs text-gray-400 dark:text-gray-500 flex items-center gap-2 pr-2">
         {Icon && <Icon className="h-3 w-3 flex-shrink-0" />}
         <span className="truncate text-left">{label}</span>

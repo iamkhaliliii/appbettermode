@@ -16,7 +16,9 @@ import {
   User,
   Calendar,
   Heart,
-  MessageSquare
+  MessageSquare,
+  RefreshCw,
+  Grid2x2Plus
 } from "lucide-react";
 import { PropertyRow } from "./PropertyRow";
 import { NumberPropertyRow } from "./NumberPropertyRow";
@@ -63,13 +65,13 @@ export function DisplaySettingsTab() {
   ];
 
   const renderPropertiesSection = () => (
-    <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+    <div className="pt-1 border-t border-gray-50 dark:border-gray-800">
       <button
         onClick={() => setPropertiesExpanded(!propertiesExpanded)}
         className="w-full flex items-center justify-between px-3 py-2 text-xs text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
       >
         <span>Properties</span>
-        <ChevronDown className={`w-3 h-3 transition-transform ${propertiesExpanded ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-3.5 h-3.5 transition-transform ${propertiesExpanded ? 'rotate-180' : ''}`} />
       </button>
       
       {propertiesExpanded && (
@@ -173,7 +175,7 @@ export function DisplaySettingsTab() {
     <div className="space-y-4">
       {/* Visual Layout Selector */}
       <div>
-        <div className="grid grid-cols-3 gap-2 px-3">
+        <div className="grid grid-cols-3 gap-2 px-2">
           {layoutOptions.map((option) => (
             <button
               key={option.value}
@@ -273,12 +275,12 @@ export function DisplaySettingsTab() {
             />
 
             <NumberPropertyRow
-              label="Number of posts per page"
+              label="Content per page"
               value={postsPerPage}
               onValueChange={setPostsPerPage}
               min={1}
               max={100}
-              icon={Hash}
+              icon={Grid2x2Plus}
             />
 
             <PropertyRow
@@ -287,7 +289,7 @@ export function DisplaySettingsTab() {
               fieldName="showMore"
               type="checkbox"
               onValueChange={setShowMore}
-              icon={MoreHorizontal}
+              icon={RefreshCw}
               editingField={editingField}
               onFieldClick={handleFieldClick}
               onFieldBlur={handleFieldBlur}

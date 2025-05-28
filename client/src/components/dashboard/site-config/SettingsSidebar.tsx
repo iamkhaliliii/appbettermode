@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { X, Loader2 } from "lucide-react";
+import { ArrowLeftToLine, Loader2, PanelLeftClose } from "lucide-react";
 import { Site } from "@/lib/api";
 import { useSiteData } from "@/lib/SiteDataContext";
 import { GeneralSettingsTab } from "./GeneralSettingsTab";
-import { PermissionsSettingsTab } from "./PermissionsSettingsTab";
 import { SEOSettingsTab } from "./SEOSettingsTab";
 import { DisplaySettingsTab } from "./DisplaySettingsTab";
 import { CustomizeSettingsTab } from "./CustomizeSettingsTab";
+import { DangerZoneSettingsTab } from "./DangerZoneSettingsTab";
 
 interface SettingsSidebarProps {
   siteSD: string;
@@ -116,16 +116,39 @@ export function SettingsSidebar({
     setAnyoneCanInvite(value);
   };
 
+  // Reset all changes to initial values
+  const handleDiscardChanges = () => {
+    setName(initialValues.name);
+    setDescription(initialValues.description);
+    setSlug(initialValues.slug);
+    setSpaceIconUrl(initialValues.spaceIconUrl);
+    setSpaceBannerUrl(initialValues.spaceBannerUrl);
+    setVisibility(initialValues.visibility);
+    setInviteOnly(initialValues.inviteOnly);
+    setAnyoneCanInvite(initialValues.anyoneCanInvite);
+  };
+
   // Get the title for the current tab
   const getTabTitle = () => {
     switch(activeTab) {
       case 'general': return 'General settings';
-      case 'permissions': return 'Permissions Settings';
       case 'seo': return 'SEO Settings';
       case 'display': return 'Display Settings';
       case 'customize': return 'Customize Settings';
       case 'danger': return 'Danger Zone';
       default: return 'Settings';
+    }
+  };
+
+  // Get the description for the current tab
+  const getTabDescription = () => {
+    switch(activeTab) {
+      case 'general': return 'Configure basic space information, visibility and permissions';
+      case 'seo': return 'Optimize your space for search engines and social media';
+      case 'display': return 'Customize how content is displayed and organized';
+      case 'customize': return 'Configure interactive features and space appearance';
+      case 'danger': return 'Irreversible actions that affect your entire space';
+      default: return 'Select a category to configure space settings';
     }
   };
 
@@ -152,14 +175,14 @@ export function SettingsSidebar({
           setAnyoneCanInvite={handleAnyoneCanInviteChange}
           isLoading={isLoading}
         />;
-      case 'permissions':
-        return <PermissionsSettingsTab />;
       case 'seo':
         return <SEOSettingsTab />;
       case 'display':
         return <DisplaySettingsTab />;
       case 'customize':
         return <CustomizeSettingsTab />;
+      case 'danger':
+        return <DangerZoneSettingsTab />;
       default:
         return (
           <div className="py-6 px-2 text-center text-gray-500 dark:text-gray-400">
@@ -171,41 +194,61 @@ export function SettingsSidebar({
 
   return (
     <div className="w-80 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 dark:scrollbar-thumb-gray-700 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-850 flex flex-col">
-      <div className="p-4 flex items-center justify-between flex-shrink-0">
-        <div>
-          <h2 className="text-sm font-medium text-gray-900 dark:text-white">{getTabTitle()}</h2>
-        </div>
-        <div className="flex items-center">
-          <button
-            type="button"
-            className={`px-3 py-1.5 text-xs rounded-md transition-colors ${
-              !hasChanges || isLoading 
-                ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed' 
-                : 'text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20'
-            }`}
-            disabled={!hasChanges || isLoading}
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-1 h-3 w-3 animate-spin inline" />
-                Saving...
-              </>
-            ) : (
-              "Save Changes"
-            )}
-          </button>
+      <div className="p-2 flex flex-col flex-shrink-0">
+        <div className="flex items-center justify-between mb-2">
           <button
             type="button"
             onClick={onClose}
             className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
           >
-            <X className="h-3 w-3" />
-          </button> 
+            <ArrowLeftToLine className="h-3.5 w-3.5" />
+          </button>
+          
+          <div className="flex items-center">
+            {hasChanges && activeTab !== 'danger' && (
+              <button
+                type="button"
+                onClick={handleDiscardChanges}
+                className="px-1 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
+                Discard
+              </button>
+            )}
+            {activeTab !== 'danger' && (
+              <button
+                type="button"
+                className={`px-1 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                  !hasChanges || isLoading 
+                    ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed' 
+                    : 'text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20'
+                } ${hasChanges ? 'ml-2' : ''}`}
+                disabled={!hasChanges || isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-1 h-3 w-3 animate-spin inline" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
+              </button>
+            )}
+          </div>
         </div>
+        
+        <div className="border-t border-gray-100 dark:border-gray-700 mb-3  "></div>
+        
+        <div>
+          <h2 className="px-2  text-lg font-medium text-gray-900 dark:text-white">{getTabTitle()}</h2>
+          <p className="px-2 text-xs text-gray-500 dark:text-gray-400 mt-1">{getTabDescription()}</p>
+        </div>
+
       </div>
+
       
-      <div className="flex-1 overflow-y-auto scrollbar-thin ">
-        <div className="p-2">
+      <div className="flex-1 mt-4 overflow-y-auto scrollbar-thin ">
+        <div className="px-2">
           {renderTabContent()}
         </div>
       </div>
