@@ -1,3 +1,4 @@
+import React from "react";
 import { DashboardLayout } from "@/components/layout/dashboard/dashboard-layout";
 import { useRoute } from "wouter";
 import { useEffect, useState } from "react";
@@ -5,9 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { SparklesIcon, SearchIcon, XIcon, PlusIcon, BookOpenIcon, AlertTriangle, Loader2 } from "lucide-react";
+import { SparklesIcon, SearchIcon, XIcon, PlusIcon, BookOpenIcon, AlertTriangle, Loader2, CommandIcon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { sitesApi, Site } from "@/lib/api";
+import { SearchModal } from "@/components/ui/search-modal";
 
 export default function SiteSearchSettingsPage() {
   // Extract siteSD from the route
@@ -35,7 +37,37 @@ export default function SiteSearchSettingsPage() {
     "Apps & Integrations",
     "API & Webhooks"
   ]);
+
+  // Search modal state
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Handle remove space from knowledge base
+  const removeSpace = (space: string) => {
+    setKnowledgeBaseSpaces(knowledgeBaseSpaces.filter(s => s !== space));
+  };
   
+  // Handle adding a new space (placeholder)
+  const addSpace = () => {
+    // This would typically open a modal or dropdown to select spaces
+    alert("This would open a space selection interface");
+  };
+
+  // Handle keyboard shortcut to open search modal
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setIsSearchModalOpen(!isSearchModalOpen);
+      }
+    }
+    
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isSearchModalOpen]);
+
   // Fetch site data
   useEffect(() => {
     const fetchSiteData = async () => {
@@ -64,17 +96,6 @@ export default function SiteSearchSettingsPage() {
 
     fetchSiteData();
   }, [siteSD]);
-  
-  // Handle remove space from knowledge base
-  const removeSpace = (space: string) => {
-    setKnowledgeBaseSpaces(knowledgeBaseSpaces.filter(s => s !== space));
-  };
-  
-  // Handle adding a new space (placeholder)
-  const addSpace = () => {
-    // This would typically open a modal or dropdown to select spaces
-    alert("This would open a space selection interface");
-  };
   
   if (isLoading) {
     return (
@@ -123,7 +144,32 @@ export default function SiteSearchSettingsPage() {
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Configure how search works for this community
           </p>
+          
+          {/* Search Button */}
+          <div className="mt-4 flex justify-end">
+            <button 
+              onClick={() => setIsSearchModalOpen(true)}
+              className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white p-2 rounded-md bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              aria-label="Search settings"
+            >
+              <CommandIcon className="w-4 h-4" />
+              <SearchIcon className="w-4 h-4" />
+              <div className="hidden sm:flex items-center space-x-1">
+                <span>Search</span>
+                <kbd className="px-1.5 py-0.5 text-xs font-mono rounded bg-gray-200 dark:bg-gray-700">⌘K</kbd>
+              </div>
+            </button>
+          </div>
         </div>
+
+        {/* Search Modal */}
+        <SearchModal 
+          isOpen={isSearchModalOpen} 
+          onClose={() => setIsSearchModalOpen(false)}
+          searchQuery={searchQuery}
+          onSearchQueryChange={setSearchQuery}
+          siteSD={siteSD}
+        />
 
         <div className="space-y-5">
           {/* Search Sources Card - Refined */}

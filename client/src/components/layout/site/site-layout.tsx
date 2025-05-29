@@ -3,18 +3,24 @@ import { useLocation } from 'wouter';
 import { Header } from '@/components/layout/dashboard/header';
 import { SiteHeader } from '@/components/layout/site/site-header';
 import { SiteContext } from '@/pages/site/[siteSD]';
+import { SearchModal } from '@/components/ui/search-modal';
 
 interface SiteLayoutProps {
   children: React.ReactNode;
   siteSD: string;
+  site?: any;
 }
 
-export function SiteLayout({ children, siteSD }: SiteLayoutProps) {
-  const [_, setLocation] = useLocation();
+export function SiteLayout({ children, siteSD, site: propSite }: SiteLayoutProps) {
+  const [location, setLocation] = useLocation();
   const siteContext = React.useContext(SiteContext);
-  const site = siteContext?.site;
+  const site = propSite || siteContext?.site;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  
+  // Check if we're on search page
+  const isSearchPage = location.includes('/search');
 
   // Memoize handlers to prevent unnecessary re-renders
   const handleToggleMobileMenu = useCallback(() => {
@@ -33,6 +39,26 @@ export function SiteLayout({ children, siteSD }: SiteLayoutProps) {
     setSearchQuery(value);
   }, []);
 
+  // Handle search input click to open modal
+  const handleSearchInputClick = useCallback(() => {
+    setIsSearchModalOpen(true);
+  }, []);
+
+  // Handle keyboard shortcut to open search modal
+  React.useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setIsSearchModalOpen(true);
+      }
+    }
+    
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <>
       <Header
@@ -43,13 +69,26 @@ export function SiteLayout({ children, siteSD }: SiteLayoutProps) {
       />
       <SiteHeader 
         siteSD={siteSD}
-
         site={site} 
         isMenuOpen={isMenuOpen} 
         setIsMenuOpen={setIsMenuOpen}
         searchQuery={searchQuery}
         setSearchQuery={handleSearchChange}
         handleSearch={handleSearch}
+        onSearchInputClick={handleSearchInputClick}
+        isSearchPage={isSearchPage}
+      />
+      
+      {/* Search Modal */}
+      <SearchModal 
+        isOpen={isSearchModalOpen} 
+        onClose={() => {
+          setIsSearchModalOpen(false);
+          setSearchQuery('');
+        }}
+        searchQuery={searchQuery}
+        onSearchQueryChange={setSearchQuery}
+        siteSD={siteSD}
       />
       
       {/* Page content */}

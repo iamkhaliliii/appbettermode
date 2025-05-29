@@ -67,6 +67,8 @@ interface SiteHeaderProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   handleSearch: (e: React.FormEvent) => void;
+  onSearchInputClick?: () => void;
+  isSearchPage?: boolean;
 }
 
 export function SiteHeader({ 
@@ -76,7 +78,9 @@ export function SiteHeader({
   setIsMenuOpen, 
   searchQuery, 
   setSearchQuery,
-  handleSearch 
+  handleSearch,
+  onSearchInputClick,
+  isSearchPage 
 }: SiteHeaderProps) {
   const [location] = useLocation();
 
@@ -120,20 +124,24 @@ export function SiteHeader({
             </div>
             
             {/* Search Bar - Hidden on Mobile */}
-            <div className="hidden md:flex items-center flex-1 max-w-md mx-4">
-              <form onSubmit={handleSearch} className="w-full">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input
-                    type="search"
-                    placeholder="Search..."
-                    className="pl-9 w-full h-9 bg-gray-50 dark:bg-gray-800/50"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
+            {!isSearchPage && (
+              <div className="hidden md:flex items-center flex-1 max-w-md mx-4">
+                <div className="w-full">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input
+                      type="search"
+                      placeholder="Search... (⌘K)"
+                      className="pl-9 w-full h-9 bg-gray-50 dark:bg-gray-800/50 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onClick={onSearchInputClick}
+                      readOnly
+                    />
+                  </div>
                 </div>
-              </form>
-            </div>
+              </div>
+            )}
             
             {/* Right Side Actions */}
             <div className="flex items-center space-x-1">
@@ -178,20 +186,24 @@ export function SiteHeader({
           </div>
           
           {/* Mobile Search - Visible only on Mobile */}
-          <div className="md:hidden pb-3 px-2">
-            <form onSubmit={handleSearch} className="w-full">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  type="search"
-                  placeholder="Search..."
-                  className="pl-9 w-full h-9 bg-gray-50 dark:bg-gray-800/50"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+          {!isSearchPage && (
+            <div className="md:hidden pb-3 px-2">
+              <div className="w-full">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    type="search"
+                    placeholder="Search... (⌘K)"
+                    className="pl-9 w-full h-9 bg-gray-50 dark:bg-gray-800/50 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onClick={onSearchInputClick}
+                    readOnly
+                  />
+                </div>
               </div>
-            </form>
-          </div>
+            </div>
+          )}
         </div>
       </header>
       
