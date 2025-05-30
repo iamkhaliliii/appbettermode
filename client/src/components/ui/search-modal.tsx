@@ -16,7 +16,9 @@ import {
   Earth, 
   GlobeIcon, 
   LayoutIcon,
-  BookOpenIcon 
+  BookOpenIcon,
+  ExternalLinkIcon,
+  ShieldCheck 
 } from "lucide-react";
 import Lottie from "react-lottie";
 import askAiAnimation from "@/public/askai.json";
@@ -72,6 +74,34 @@ export function SearchModal({ isOpen, onClose, searchQuery: externalSearchQuery,
       category: "Wishlist",
       time: "6 months ago",
       icon: "bell"
+    }
+  ];
+  
+  // Sample official resources
+  const officialResourcesResults = [
+    {
+      title: "Getting Started Guide",
+      description: "Learn the basics of setting up your community and configuring essential features",
+      category: "Documentation",
+      time: "1 month ago",
+      icon: "docs",
+      type: "internal"
+    },
+    {
+      title: "Community Best Practices",
+      description: "Proven strategies and tips for growing and managing successful online communities",
+      category: "Guides",
+      time: "3 weeks ago",
+      icon: "docs",
+      type: "internal"
+    },
+    {
+      title: "API Documentation",
+      description: "Complete reference for integrating with our API endpoints and webhooks",
+      category: "Developer Docs",
+      time: "2 weeks ago",
+      icon: "code",
+      type: "external"
     }
   ];
   
@@ -262,11 +292,13 @@ Happy posting!`;
         const askAI = 1;
         const numPosts = postResults.length;
         const morePostsButton = 1;
+        const numOfficialResources = officialResourcesResults.length;
+        const moreOfficialResourcesButton = 1;
         const numSpaces = 3;
         const moreSpacesButton = 1;
         const numMembers = memberResults.length;
         const moreMembersButton = 1;
-        totalItems = askAI + numPosts + morePostsButton + numSpaces + moreSpacesButton + numMembers + moreMembersButton;
+        totalItems = askAI + numPosts + morePostsButton + numOfficialResources + moreOfficialResourcesButton + numSpaces + moreSpacesButton + numMembers + moreMembersButton;
       } else if (commandMenuMode === 'initial') {
         totalItems = 1 + trendingPosts.length; 
       }
@@ -302,7 +334,7 @@ Happy posting!`;
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isOpen, selectedItemIndex, commandMenuMode, searchQuery, postResults.length, memberResults.length, trendingPosts.length]);
+  }, [isOpen, selectedItemIndex, commandMenuMode, searchQuery, postResults.length, officialResourcesResults.length, memberResults.length, trendingPosts.length]);
 
   // Scroll selected item into view
   useEffect(() => {
@@ -546,7 +578,7 @@ Happy posting!`;
                 
                 {/* Sources section */}
                 {!isTyping && displayedResponse && ( 
-                   <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-800/30"> 
+                   <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-800"> 
                       <button 
                         onClick={() => setSourcesExpanded(prev => !prev)}
                         className="flex items-center justify-between w-full text-left py-1 px-1 -mx-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-colors"
@@ -717,15 +749,90 @@ Happy posting!`;
                     </kbd>
                   </button>
                 </div>
+                  
+                {/* Official Resources Section */}
+                <div className="px-3 pt-3 pb-[0.4rem] border-b border-gray-100 dark:border-gray-800">
+                  <h3 className="text-[0.75rem] font-medium text-gray-500 dark:text-gray-300 mb-1">Official Resources</h3>
+                  <div className="space-y-1">
+                    {officialResourcesResults.map((resource, index) => (
+                      <div 
+                        key={index}
+                        data-selectable-index={index + postResults.length + 2}
+                        className={`flex space-x-3 p-2 rounded-md cursor-pointer ${
+                          selectedItemIndex === index + postResults.length + 2 
+                          ? 'bg-gray-100 dark:bg-gray-800'
+                          : 'hover:bg-gray-50 dark:hover:bg-gray-800/40'
+                        }`}
+                      >
+                        <div className="w-8 h-8 flex-shrink-0 rounded-md overflow-hidden">
+                          <div className="w-full h-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+                            {renderPostIcon(resource.icon)}
+                          </div>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1 mr-2 min-w-0">
+                              <div className="flex items-center gap-1.5">
+                                <h5 className="text-[0.7rem] font-medium text-gray-900 dark:text-white leading-tight truncate">{resource.title}</h5>
+                                {resource.type === 'internal' ? (
+                                  <ShieldCheck className="w-3 h-3 flex-shrink-0 text-gray-500" />
+                                ) : (
+                                  <>
+                                    <ShieldCheck className="w-3 h-3 flex-shrink-0 text-gray-500" />
+                                    <ExternalLinkIcon className="w-3 h-3 flex-shrink-0 text-gray-500" />
+                                  </>
+                                )}
+                              </div>
+                              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{resource.description}</p>
+                            </div>
+                            <div className="flex items-center flex-shrink-0">
+                              <div className="text-right mr-2">
+                                <span className="block text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">{resource.category}</span>
+                                <span className="block text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap">{resource.time}</span>
+                              </div>
+                             <kbd className={`px-1 h-5 w-5 flex items-center justify-center py-0.5 rounded border bg-gray-100/80 border-gray-200 dark:bg-gray-800/80 dark:border-gray-700/80 text-gray-600 dark:text-gray-400 items-center gap-1 ${selectedItemIndex === index + postResults.length + 2 ? 'inline-flex' : 'hidden'}`}> 
+                               <CornerDownLeftIcon className="w-3 h-3" />
+                             </kbd>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <button 
+                    data-selectable-index={postResults.length + officialResourcesResults.length + 2}
+                    className={`w-full mt-0 mb-0 text-left text-[0.75rem] text-green-600 dark:text-green-400 px-2 py-2 hover:bg-gray-50 dark:hover:bg-gray-800/40 rounded flex items-center justify-between ${
+                      selectedItemIndex === postResults.length + officialResourcesResults.length + 2
+                      ? 'bg-gray-100 dark:bg-gray-800'
+                      : ''
+                    }`}
+                    onClick={() => {
+                      onClose();
+                      setLocation(siteSD ? `/site/${siteSD}/search?q=${encodeURIComponent(searchQuery)}&type=officialResources` : `/search/${encodeURIComponent(searchQuery)}?type=officialResources`);
+                    }}
+                  >
+                    <div className="flex items-center">
+                      <div className="w-8 h-8 mr-1.5 rounded-md flex items-center justify-center flex-shrink-0">
+                        <MoreHorizontalIcon className="w-4 h-4 text-green-500 dark:text-green-400" /> 
+                      </div>
+                      <span>More official resources about "{searchQuery}"</span>
+                      <ChevronRightIcon className="w-3 h-3 ml-1" />
+                    </div>
+                    <kbd className={`ml-auto flex-shrink-0 px-1 h-5 w-5 flex items-center justify-center py-0.5 rounded border bg-gray-100/80 border-gray-200 dark:bg-gray-800/80 dark:border-gray-700/80 text-gray-600 dark:text-gray-400 items-center gap-1 ${selectedItemIndex === postResults.length + officialResourcesResults.length + 2 ? 'inline-flex' : 'hidden'}`}> 
+                      <CornerDownLeftIcon className="w-3 h-3" />
+                    </kbd>
+                  </button>
+                </div>
 
                 {/* Spaces Section */}
                 <div className="px-3 pt-3 pb-[0.4rem] border-b border-gray-100 dark:border-gray-800">
                   <h3 className="text-[0.75rem] font-medium text-gray-500 dark:text-gray-300 mb-1">Spaces</h3>
                   <div className="space-y-0">
                     <div 
-                      data-selectable-index={postResults.length + 2}
+                      data-selectable-index={postResults.length + officialResourcesResults.length + 3}
                       className={`flex items-center justify-between space-x-3 p-2 rounded-md cursor-pointer ${
-                        selectedItemIndex === postResults.length + 2
+                        selectedItemIndex === postResults.length + officialResourcesResults.length + 3
                         ? 'bg-gray-100 dark:bg-gray-800'
                         : 'hover:bg-gray-50 dark:hover:bg-gray-800/40'
                       }`}>
@@ -737,14 +844,14 @@ Happy posting!`;
                         </div>
                         <span className="text-[0.8rem] text-gray-900 dark:text-white">Community Spaces</span>
                       </div>
-                      <kbd className={`ml-auto flex-shrink-0 px-1 h-5 w-5 flex items-center justify-center py-0.5 rounded border bg-gray-100/80 border-gray-200 dark:bg-gray-800/80 dark:border-gray-700/80 text-gray-600 dark:text-gray-400 items-center gap-1 ${selectedItemIndex === postResults.length + 2 ? 'inline-flex' : 'hidden'}`}> 
+                      <kbd className={`ml-auto flex-shrink-0 px-1 h-5 w-5 flex items-center justify-center py-0.5 rounded border bg-gray-100/80 border-gray-200 dark:bg-gray-800/80 dark:border-gray-700/80 text-gray-600 dark:text-gray-400 items-center gap-1 ${selectedItemIndex === postResults.length + officialResourcesResults.length + 3 ? 'inline-flex' : 'hidden'}`}> 
                         <CornerDownLeftIcon className="w-3 h-3" />
                       </kbd>
                     </div>
                     <div 
-                      data-selectable-index={postResults.length + 3}
+                      data-selectable-index={postResults.length + officialResourcesResults.length + 4}
                       className={`flex items-center justify-between space-x-3 p-2 rounded-md cursor-pointer ${
-                        selectedItemIndex === postResults.length + 3
+                        selectedItemIndex === postResults.length + officialResourcesResults.length + 4
                         ? 'bg-gray-100 dark:bg-gray-800'
                         : 'hover:bg-gray-50 dark:hover:bg-gray-800/40'
                       }`}>
@@ -756,14 +863,14 @@ Happy posting!`;
                         </div>
                         <span className="text-[0.8rem] text-gray-900 dark:text-white">Product Updates</span>
                       </div>
-                      <kbd className={`ml-auto flex-shrink-0 px-1 h-5 w-5 flex items-center justify-center py-0.5 rounded border bg-gray-100/80 border-gray-200 dark:bg-gray-800/80 dark:border-gray-700/80 text-gray-600 dark:text-gray-400 items-center gap-1 ${selectedItemIndex === postResults.length + 3 ? 'inline-flex' : 'hidden'}`}> 
+                      <kbd className={`ml-auto flex-shrink-0 px-1 h-5 w-5 flex items-center justify-center py-0.5 rounded border bg-gray-100/80 border-gray-200 dark:bg-gray-800/80 dark:border-gray-700/80 text-gray-600 dark:text-gray-400 items-center gap-1 ${selectedItemIndex === postResults.length + officialResourcesResults.length + 4 ? 'inline-flex' : 'hidden'}`}> 
                         <CornerDownLeftIcon className="w-3 h-3" />
                       </kbd>
                     </div>
                     <div 
-                      data-selectable-index={postResults.length + 4}
+                      data-selectable-index={postResults.length + officialResourcesResults.length + 5}
                       className={`flex items-center justify-between space-x-3 p-2 rounded-md cursor-pointer ${
-                        selectedItemIndex === postResults.length + 4
+                        selectedItemIndex === postResults.length + officialResourcesResults.length + 5
                         ? 'bg-gray-100 dark:bg-gray-800'
                         : 'hover:bg-gray-50 dark:hover:bg-gray-800/40'
                       }`}>
@@ -775,16 +882,16 @@ Happy posting!`;
                         </div>
                         <span className="text-[0.8rem] text-gray-900 dark:text-white">General Discussion</span>
                       </div>
-                      <kbd className={`ml-auto flex-shrink-0 px-1 h-5 w-5 flex items-center justify-center py-0.5 rounded border bg-gray-100/80 border-gray-200 dark:bg-gray-800/80 dark:border-gray-700/80 text-gray-600 dark:text-gray-400 items-center gap-1 ${selectedItemIndex === postResults.length + 4 ? 'inline-flex' : 'hidden'}`}> 
+                      <kbd className={`ml-auto flex-shrink-0 px-1 h-5 w-5 flex items-center justify-center py-0.5 rounded border bg-gray-100/80 border-gray-200 dark:bg-gray-800/80 dark:border-gray-700/80 text-gray-600 dark:text-gray-400 items-center gap-1 ${selectedItemIndex === postResults.length + officialResourcesResults.length + 5 ? 'inline-flex' : 'hidden'}`}> 
                         <CornerDownLeftIcon className="w-3 h-3" />
                       </kbd>
                     </div>
                   </div>
                   
                   <button 
-                    data-selectable-index={postResults.length + 5}
+                    data-selectable-index={postResults.length + officialResourcesResults.length + 6}
                     className={`w-full mt-0 mb-0 text-left text-[0.75rem] text-green-600 dark:text-green-400 px-2 py-2 hover:bg-gray-50 dark:hover:bg-gray-800/40 rounded flex items-center justify-between ${
-                      selectedItemIndex === postResults.length + 5
+                      selectedItemIndex === postResults.length + officialResourcesResults.length + 6
                       ? 'bg-gray-100 dark:bg-gray-800'
                       : ''
                     }`}
@@ -800,7 +907,7 @@ Happy posting!`;
                       <span>More space results about "{searchQuery}"</span>
                       <ChevronRightIcon className="w-3 h-3 ml-1" />
                     </div>
-                    <kbd className={`ml-auto flex-shrink-0 px-1 h-5 w-5 flex items-center justify-center py-0.5 rounded border bg-gray-100/80 border-gray-200 dark:bg-gray-800/80 dark:border-gray-700/80 text-gray-600 dark:text-gray-400 items-center gap-1 ${selectedItemIndex === postResults.length + 5 ? 'inline-flex' : 'hidden'}`}> 
+                    <kbd className={`ml-auto flex-shrink-0 px-1 h-5 w-5 flex items-center justify-center py-0.5 rounded border bg-gray-100/80 border-gray-200 dark:bg-gray-800/80 dark:border-gray-700/80 text-gray-600 dark:text-gray-400 items-center gap-1 ${selectedItemIndex === postResults.length + officialResourcesResults.length + 6 ? 'inline-flex' : 'hidden'}`}> 
                       <CornerDownLeftIcon className="w-3 h-3" />
                     </kbd>
                   </button>
@@ -813,9 +920,9 @@ Happy posting!`;
                     {memberResults.map((member, index) => (
                       <div 
                         key={index}
-                        data-selectable-index={index + postResults.length + 6}
+                        data-selectable-index={index + postResults.length + officialResourcesResults.length + 7}
                         className={`flex items-center justify-between space-x-3 p-2 rounded-md cursor-pointer ${
-                          selectedItemIndex === index + postResults.length + 6
+                          selectedItemIndex === index + postResults.length + officialResourcesResults.length + 7
                           ? 'bg-gray-100 dark:bg-gray-800'
                           : 'hover:bg-gray-50 dark:hover:bg-gray-800/40'
                         }`}>
@@ -825,7 +932,7 @@ Happy posting!`;
                             </div>
                             <span className="text-[0.8rem] text-gray-900 dark:text-white">{member.name}</span>
                           </div>
-                          <kbd className={`ml-auto flex-shrink-0 px-1 h-5 w-5 flex items-center justify-center py-0.5 rounded border bg-gray-100/80 border-gray-200 dark:bg-gray-800/80 dark:border-gray-700/80 text-gray-600 dark:text-gray-400 items-center gap-1 ${selectedItemIndex === index + postResults.length + 6 ? 'inline-flex' : 'hidden'}`}> 
+                          <kbd className={`ml-auto flex-shrink-0 px-1 h-5 w-5 flex items-center justify-center py-0.5 rounded border bg-gray-100/80 border-gray-200 dark:bg-gray-800/80 dark:border-gray-700/80 text-gray-600 dark:text-gray-400 items-center gap-1 ${selectedItemIndex === index + postResults.length + officialResourcesResults.length + 7 ? 'inline-flex' : 'hidden'}`}> 
                             <CornerDownLeftIcon className="w-3 h-3" />
                           </kbd>
                         </div>
@@ -833,9 +940,9 @@ Happy posting!`;
                   </div>
                   
                   <button 
-                    data-selectable-index={postResults.length + memberResults.length + 6}
+                    data-selectable-index={postResults.length + officialResourcesResults.length + memberResults.length + 7}
                     className={`w-full mt-0 mb-0 text-left text-[0.75rem] text-green-600 dark:text-green-400 px-2 py-2 hover:bg-gray-50 dark:hover:bg-gray-800/40 rounded flex items-center justify-between ${
-                      selectedItemIndex === postResults.length + memberResults.length + 6
+                      selectedItemIndex === postResults.length + officialResourcesResults.length + memberResults.length + 7
                       ? 'bg-gray-100 dark:bg-gray-800'
                       : ''
                     }`}
@@ -851,7 +958,7 @@ Happy posting!`;
                       <span>More member results about "{searchQuery}"</span>
                       <ChevronRightIcon className="w-3 h-3 ml-1" />
                     </div>
-                    <kbd className={`ml-auto flex-shrink-0 px-1 h-5 w-5 flex items-center justify-center py-0.5 rounded border bg-gray-100/80 border-gray-200 dark:bg-gray-800/80 dark:border-gray-700/80 text-gray-600 dark:text-gray-400 items-center gap-1 ${selectedItemIndex === postResults.length + memberResults.length + 6 ? 'inline-flex' : 'hidden'}`}> 
+                    <kbd className={`ml-auto flex-shrink-0 px-1 h-5 w-5 flex items-center justify-center py-0.5 rounded border bg-gray-100/80 border-gray-200 dark:bg-gray-800/80 dark:border-gray-700/80 text-gray-600 dark:text-gray-400 items-center gap-1 ${selectedItemIndex === postResults.length + officialResourcesResults.length + memberResults.length + 7 ? 'inline-flex' : 'hidden'}`}> 
                       <CornerDownLeftIcon className="w-3 h-3" />
                     </kbd>
                   </button>
@@ -997,9 +1104,9 @@ Happy posting!`;
                                 <span className="block text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">{post.category}</span>
                                 <span className="block text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap">{post.time}</span>
                               </div>
-                              <kbd className={`px-1 h-5 w-5 flex items-center justify-center py-0.5 rounded border bg-gray-100/80 border-gray-200 dark:bg-gray-800/80 dark:border-gray-700/80 text-gray-600 dark:text-gray-400 items-center gap-1 ${selectedItemIndex === index + 1 ? 'inline-flex' : 'hidden'}`}> 
-                                <CornerDownLeftIcon className="w-3 h-3" />
-                              </kbd>
+                             <kbd className={`px-1 h-5 w-5 flex items-center justify-center py-0.5 rounded border bg-gray-100/80 border-gray-200 dark:bg-gray-800/80 dark:border-gray-700/80 text-gray-600 dark:text-gray-400 items-center gap-1 ${selectedItemIndex === index + 1 ? 'inline-flex' : 'hidden'}`}> 
+                               <CornerDownLeftIcon className="w-3 h-3" />
+                             </kbd>
                             </div>
                           </div>
                         </div>

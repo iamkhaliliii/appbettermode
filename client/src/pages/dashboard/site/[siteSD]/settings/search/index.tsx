@@ -27,7 +27,7 @@ export default function SiteSearchSettingsPage() {
     members: false
   });
   
-  // State for knowledge base spaces
+  // State for official resource spaces
   const [knowledgeBaseSpaces, setKnowledgeBaseSpaces] = useState([
     "Getting Started",
     "Content Management",
@@ -246,10 +246,10 @@ export default function SiteSearchSettingsPage() {
             </CardContent>
           </Card>
         
-          {/* Knowledge Base Spaces Card - Refined */}
+          {/* Official Resource spaces Card - Refined */}
           <Card className="w-full max-w-2xl bg-white dark:bg-gray-950 border-0 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_3px_12px_rgba(0,0,0,0.06)] transition-shadow duration-200">
             <CardHeader className="px-6 pt-5 pb-0">
-              <CardTitle className="text-[15px] font-medium text-gray-900 dark:text-gray-100 tracking-tight mb-1">Knowledge Base Spaces</CardTitle>
+              <CardTitle className="text-[15px] font-medium text-gray-900 dark:text-gray-100 tracking-tight mb-1">Official Resource spaces</CardTitle>
               <CardDescription className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
                 Select the spaces that contain official knowledge or verified content in your community.
               </CardDescription>

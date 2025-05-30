@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  Pin,
   MessageSquare,
   Heart,
   Smile,
@@ -15,7 +14,6 @@ import { PropertyRow } from "./PropertyRow";
 
 export function CustomizeSettingsTab() {
   const [editingField, setEditingField] = useState<string | null>(null);
-  const [pinPost, setPinPost] = useState(false);
   const [enableComments, setEnableComments] = useState(true);
   const [enableReactions, setEnableReactions] = useState(true);
   const [reactionType, setReactionType] = useState('emoji');
@@ -72,19 +70,6 @@ export function CustomizeSettingsTab() {
           onKeyDown={handleKeyDown}
         />
       )}
-
-      <PropertyRow
-        label="Pin post"
-        value={pinPost}
-        fieldName="pinPost"
-        type="checkbox"
-        onValueChange={setPinPost}
-        icon={Pin}
-        editingField={editingField}
-        onFieldClick={handleFieldClick}
-        onFieldBlur={handleFieldBlur}
-        onKeyDown={handleKeyDown}
-      />
 
       <PropertyRow
         label="Comment"

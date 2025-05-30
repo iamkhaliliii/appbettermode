@@ -24,6 +24,7 @@ interface PropertyRowProps {
   onFieldBlur: () => void;
   onKeyDown: (e: React.KeyboardEvent, fieldName: string) => void;
   description?: string;
+  disabled?: boolean;
 }
 
 interface CustomDropdownProps {
@@ -138,7 +139,8 @@ export function PropertyRow({
   onFieldClick,
   onFieldBlur,
   onKeyDown,
-  description
+  description,
+  disabled = false
 }: PropertyRowProps) {
   const [showDescription, setShowDescription] = useState(false);
   const isEditing = editingField === fieldName;
@@ -152,7 +154,7 @@ export function PropertyRow({
       <div className={`flex px-2 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-md group transition-colors ${
         description && showDescription ? '' : 'border-b border-gray-100 dark:border-gray-800'
       } ${
-        (isDescription || isSlug) && isEditing ? 'flex-col items-start py-2 space-y-2' : 'items-center justify-between h-9'
+        (isDescription || isSlug) && isEditing ? 'flex-col items-start py-2 space-y-2' : 'items-start justify-between min-h-[2.25rem] py-2'
       }`}>
         <div className={`text-xs text-gray-400 dark:text-gray-500 flex items-center gap-2 ${
           (isDescription || isSlug) && isEditing ? 'w-full' : 'w-1/2 pr-2'
@@ -171,8 +173,8 @@ export function PropertyRow({
             )}
           </div>
         </div>
-        <div className={`flex justify-end items-center pl-2 ${
-          (isDescription || isSlug) && isEditing ? 'w-full' : 'w-1/2 h-full'
+        <div className={`flex justify-end items-start pl-2 ${
+          (isDescription || isSlug) && isEditing ? 'w-full' : 'w-1/2'
         }`}>
           {type === 'text' && (
             <>
@@ -208,7 +210,7 @@ export function PropertyRow({
               ) : (
                 <div
                   onClick={() => onFieldClick(fieldName)}
-                  className={`text-sm cursor-pointer h-6 flex items-center justify-end rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors truncate text-right w-full ${
+                  className={`text-sm cursor-pointer h-6 flex items-center justify-end rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors truncate text-right w-full mt-0.5 ${
                     isEmpty ? 'text-gray-300 dark:text-gray-600' : 'text-gray-900 dark:text-gray-100'
                   }`}
                   title={fieldName === 'slug' ? `yourdomain/${displayValue}` : displayValue}
@@ -245,10 +247,12 @@ export function PropertyRow({
               ) : (
                 <div
                   onClick={() => onFieldClick(fieldName)}
-                  className={`text-sm cursor-pointer h-6 flex items-center justify-end rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors truncate text-right w-full ${
+                  className={`text-sm cursor-pointer flex items-start justify-end rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors w-full ${
                     isEmpty ? 'text-gray-300 dark:text-gray-600' : 'text-gray-900 dark:text-gray-100'
+                  } ${
+                    isDescription ? 'py-1 text-right whitespace-pre-wrap break-words' : 'h-6 items-center truncate text-right'
                   }`}
-                  title={displayValue}
+                  title={!isDescription ? displayValue : undefined}
                 >
                   {displayValue}
                 </div>
@@ -257,16 +261,18 @@ export function PropertyRow({
           )}
 
           {type === 'select' && (
-            <CustomDropdown
-              value={value}
-              options={options}
-              onChange={onValueChange}
-              placeholder="Select option"
-            />
+            <div className="w-full mt-0.5">
+              <CustomDropdown
+                value={value}
+                options={options}
+                onChange={onValueChange}
+                placeholder="Select option"
+              />
+            </div>
           )}
 
           {type === 'upload' && (
-            <div className="flex items-center gap-2 justify-end h-6 w-full">
+            <div className="flex items-center gap-2 justify-end h-6 w-full mt-0.5">
               {value ? (
                 <div className="flex items-center gap-2 h-6">
                   <span className="text-sm text-gray-900 dark:text-gray-100 truncate">Uploaded</span>
@@ -301,10 +307,12 @@ export function PropertyRow({
           )}
 
           {type === 'checkbox' && (
-            <div className="flex items-center justify-end h-6 w-full">
+            <div className="flex items-center justify-end h-6 w-full mt-0.5">
               <div 
-                onClick={() => onValueChange(!value)}
-                className={`relative inline-flex h-3.5 w-6 items-center rounded-full transition-colors cursor-pointer ${
+                onClick={() => !disabled && onValueChange(!value)}
+                className={`relative inline-flex h-3.5 w-6 items-center rounded-full transition-colors ${
+                  disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                } ${
                   value 
                     ? 'bg-primary-600' 
                     : 'bg-gray-200 dark:bg-gray-700'

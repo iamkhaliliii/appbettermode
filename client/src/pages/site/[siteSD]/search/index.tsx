@@ -33,7 +33,9 @@ import {
   ArrowDownIcon,
   LayoutIcon,
   ChevronDown,
-  AlertCircleIcon
+  AlertCircleIcon,
+  ExternalLinkIcon,
+  ShieldCheck
 } from "lucide-react";
 import Lottie from "react-lottie";
 import askAiAnimation from "@/public/askai.json";
@@ -153,6 +155,7 @@ export default function SearchPage() {
       posts: true,     // Enable posts search
       spaces: true,    // Enable spaces search
       members: true,   // Enable members search
+      officialResources: true, // Enable official resources search
     },
     // AI features available
     aiAssistanceEnabled: true,
@@ -553,6 +556,69 @@ export default function SearchPage() {
     </div>
   );
 
+  // Mock official resources data
+  const officialResourcesResults = [
+    {
+      id: 1,
+      title: "Getting Started Guide",
+      description: "Learn the basics of setting up your community and configuring essential features",
+      category: "Documentation",
+      time: "1 month ago",
+      icon: "docs",
+      type: "internal"
+    },
+    {
+      id: 3,
+      title: "Community Best Practices",
+      description: "Proven strategies and tips for growing and managing successful online communities",
+      category: "Guides",
+      time: "3 weeks ago",
+      icon: "docs",
+      type: "internal"
+    },
+    {
+      id: 5,
+      title: "Template Library",
+      description: "Ready-to-use templates for different types of communities and use cases",
+      category: "Resources",
+      time: "1 month ago",
+      icon: "layout",
+      type: "internal"
+    },
+    {
+      id: 2,
+      title: "API Documentation",
+      description: "Complete reference for integrating with our API endpoints and webhooks",
+      category: "Developer Docs",
+      time: "2 weeks ago",
+      icon: "code",
+      type: "external"
+    },
+    {
+      id: 4,
+      title: "Bettermode Academy",
+      description: "Free courses and tutorials to help you become a community expert",
+      category: "Learning",
+      time: "1 week ago",
+      icon: "bell",
+      type: "external"
+    },
+    {
+      id: 6,
+      title: "Integration Marketplace",
+      description: "Browse and install integrations to connect your community with other tools",
+      category: "Integrations",
+      time: "2 months ago",
+      icon: "globe",
+      type: "external"
+    }
+  ];
+  
+  // Filter official resources for display
+  const displayedOfficialResources = selectedFilter === 'officialResources'
+    ? officialResourcesResults
+    : officialResourcesResults.slice(0, 4); // Show only 4 in the 'all' tab
+  
   // If no siteSD is provided, show an error
   if (!siteSD) {
     return <div>Site identifier is missing</div>;
@@ -632,7 +698,7 @@ export default function SearchPage() {
             {!initialVisit && (
               <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
                 <div className="max-w-5xl mx-auto px-4 pt-1 pb-3">
-                  {/* Tabs - Only show tabs for enabled sea rch types */}
+                  {/* Tabs - Only show tabs for enabled search types */}
                   <div className="flex space-x-0.5">
                     {/* Only show 'All' tab if multiple search types are enabled */}
                     {(Object.values(siteConfig.enabledSearchTypes).filter(Boolean).length > 1) && (
@@ -655,6 +721,18 @@ export default function SearchPage() {
                         onClick={() => setSelectedFilter('posts')}
                       >
                         Posts
+                      </button>
+                    )}
+                    
+                    {/* Only show Official Resources tab if enabled */}
+                    {siteConfig.enabledSearchTypes.officialResources && (
+                      <button 
+                        className={`px-3 py-1 text-sm rounded-md transition-colors ${selectedFilter === 'officialResources' 
+                          ? 'bg-gray-100 dark:bg-gray-800/80 text-gray-900 dark:text-white' 
+                          : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'}`}
+                        onClick={() => setSelectedFilter('officialResources')}
+                      >
+                        Official Resources
                       </button>
                     )}
                     
@@ -865,6 +943,73 @@ export default function SearchPage() {
                             </div>
                           )}
                         </>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Official Resources Section - Only show if official resources search is enabled */}
+                {siteConfig.enabledSearchTypes.officialResources && (selectedFilter === 'all' || selectedFilter === 'officialResources') && (
+                  <div className="bg-white dark:bg-gray-900 rounded-lg overflow-hidden flex flex-col border border-gray-200 dark:border-gray-800">
+                    <div className="px-3 pt-3 pb-[0.4rem]">
+                      <h3 className="text-[0.75rem] font-medium text-gray-500 dark:text-gray-300 mb-1">Official Resources</h3>
+                      <div className="space-y-1">
+                        {displayedOfficialResources.map((resource, index) => (
+                          <div 
+                            key={index}
+                            className={`flex space-x-3 p-2 rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/40 ${
+                              selectedItemIndex === index + postResults.length 
+                              ? 'bg-gray-100 dark:bg-gray-800'
+                              : ''
+                            }`}
+                            onClick={() => setSelectedItemIndex(index + postResults.length)}
+                          >
+                            {renderPostIcon(resource.icon)}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex justify-between items-start">
+                                <div className="flex-1 mr-2 min-w-0">
+                                  <div className="flex items-center gap-1.5">
+                                    <h5 className="text-[0.7rem] font-medium text-gray-900 dark:text-white leading-tight truncate">{resource.title}</h5>
+                                    {resource.type === 'internal' ? (
+                                      <ShieldCheck className="w-3 h-3 flex-shrink-0 text-gray-500" />
+                                    ) : (
+                                      <>
+                                        <ShieldCheck className="w-3 h-3 flex-shrink-0 text-gray-500" />
+                                        <ExternalLinkIcon className="w-3 h-3 flex-shrink-0 text-gray-500" />
+                                      </>
+                                    )}
+                                  </div>
+                                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{resource.description}</p>
+                                </div>
+                                <div className="flex items-center flex-shrink-0">
+                                  <div className="text-right mr-2">
+                                    <span className="block text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">{resource.category}</span>
+                                    <span className="block text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap">{resource.time}</span>
+                                  </div>
+                                  <kbd className={`px-1 h-5 w-5 flex items-center justify-center py-0.5 rounded border bg-gray-100/80 border-gray-200 dark:bg-gray-800/80 dark:border-gray-700/80 text-gray-600 dark:text-gray-400 items-center gap-1 ${selectedItemIndex === index + postResults.length ? 'inline-flex' : 'hidden'}`}> 
+                                    <CornerDownLeftIcon className="w-3 h-3" />
+                                  </kbd>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      
+                      {/* Only show "More" button in the All tab */}
+                      {selectedFilter === 'all' && (
+                        <button 
+                          className="w-full mt-2 text-left text-[0.75rem] text-green-600 dark:text-green-400 px-2 py-2 hover:bg-gray-50 dark:hover:bg-gray-800/40 rounded flex items-center"
+                          onClick={() => setSelectedFilter('officialResources')}
+                        >
+                          <div className="flex items-center">
+                            <div className="w-6 h-6 mr-1.5 rounded-md flex items-center justify-center flex-shrink-0">
+                              <MoreHorizontalIcon className="w-4 h-4 text-green-500 dark:text-green-400" /> 
+                            </div>
+                            <span>More official resources about "{searchQuery}"</span>
+                            <ChevronRightIcon className="w-3 h-3 ml-1" />
+                          </div>
+                        </button>
                       )}
                     </div>
                   </div>

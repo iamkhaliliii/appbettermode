@@ -87,6 +87,7 @@ export function DisplaySettingsTab() {
             onFieldClick={handleFieldClick}
             onFieldBlur={handleFieldBlur}
             onKeyDown={handleKeyDown}
+            disabled={true}
           />
 
           <PropertyRow
@@ -100,6 +101,7 @@ export function DisplaySettingsTab() {
             onFieldClick={handleFieldClick}
             onFieldBlur={handleFieldBlur}
             onKeyDown={handleKeyDown}
+            disabled={true}
           />
 
           <PropertyRow
@@ -113,6 +115,7 @@ export function DisplaySettingsTab() {
             onFieldClick={handleFieldClick}
             onFieldBlur={handleFieldBlur}
             onKeyDown={handleKeyDown}
+            disabled={true}
           />
 
           <PropertyRow
