@@ -73,23 +73,38 @@ function copyCompiledFiles(srcDir, destDir, relativePath = '') {
 console.log('Copying compiled files...');
 copyCompiledFiles(serverDir, apiDir);
 
-// Ensure the main server file exists
-const mainServerFile = join(apiDir, 'index.js');
-if (!existsSync(mainServerFile)) {
-  // Try to find it in different locations
-  const possibleLocations = [
-    join(serverDir, 'index.js'),
-    join(apiDir, 'server.js'),
-    join(apiDir, 'app.js')
+// Specifically check for and copy the main index.js file
+const serverIndexJs = join(serverDir, 'index.js');
+const apiIndexJs = join(apiDir, 'index.js');
+
+if (existsSync(serverIndexJs)) {
+  console.log('Found server/index.js, copying to api/index.js...');
+  copyFileSync(serverIndexJs, apiIndexJs);
+} else {
+  console.log('WARNING: server/index.js not found!');
+  
+  // Check if TypeScript compiled it to a different location
+  const compiledIndexLocations = [
+    join(apiDir, 'index.js'), // Maybe already in api
+    join(apiDir, 'server', 'index.js'), // Maybe nested
+    join(serverDir, 'dist', 'index.js'), // Maybe in dist
   ];
   
-  for (const location of possibleLocations) {
-    if (existsSync(location)) {
-      copyFileSync(location, mainServerFile);
-      console.log(`Copied main server file from ${location} to ${mainServerFile}`);
+  for (const location of compiledIndexLocations) {
+    if (existsSync(location) && location !== apiIndexJs) {
+      console.log(`Found index.js at ${location}, copying to api/index.js...`);
+      copyFileSync(location, apiIndexJs);
       break;
     }
   }
+}
+
+// Final check
+if (!existsSync(apiIndexJs)) {
+  console.error('ERROR: api/index.js was not created!');
+  console.log('Checking api directory contents:');
+  const apiContents = readdirSync(apiDir);
+  console.log(apiContents);
 }
 
 // Function to check for conflict before copying

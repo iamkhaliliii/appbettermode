@@ -18,12 +18,8 @@ if [ -d "./api/api" ]; then
   rm -rf ./api/api
 fi
 
-if [ -d "./api/routes" ]; then
-  echo "Backing up api/routes/ directory..."
-  cp -r ./api/routes $BACKUP_DIR/
-  echo "Removing redundant api/routes/ directory..."
-  rm -rf ./api/routes
-fi
+# NOTE: We do NOT remove api/routes anymore - it's needed!
+# The routes directory contains our API endpoints
 
 # Backup then remove redundant files
 if [ -f "./api/api.js" ]; then

@@ -2,6 +2,9 @@
 
 echo "Preparing project for Vercel deployment..."
 
+# Note: We don't run cleanup-api.sh here anymore because
+# it might delete files we need during the build process
+
 # 1. Install dependencies
 echo "Installing dependencies..."
 npm install

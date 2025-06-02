@@ -2,11 +2,23 @@
 
 echo "Fixing Vercel build issues..."
 
+# Debug: Check what files exist
+echo "Checking for index.js files..."
+find . -name "index.js" -type f | grep -v node_modules | grep -v backup | head -10
+
 # First ensure api/index.js exists
 if [ ! -f "./api/index.js" ]; then
-  # Look for the main server file in various locations
-  if [ -f "./api/routes/index.js" ] && grep -q "app.use('/api/v1'" "./api/routes/index.js"; then
-    echo "Moving main server file to api root..."
+  echo "api/index.js is missing. Looking for it..."
+  
+  # Check if it was compiled but not in the right place
+  if [ -f "./server/index.js" ]; then
+    echo "Found server/index.js, copying to api/index.js..."
+    cp "./server/index.js" "./api/index.js"
+  elif [ -f "./api/server/index.js" ]; then
+    echo "Found api/server/index.js, moving to api/index.js..."
+    mv "./api/server/index.js" "./api/index.js"
+  elif [ -f "./api/routes/index.js" ] && grep -q "app.use('/api/v1'" "./api/routes/index.js"; then
+    echo "Found main server file at api/routes/index.js, moving to api/index.js..."
     mv "./api/routes/index.js" "./api/index.js"
   elif [ -f "./api/v1/index.js" ] && grep -q "app.use('/api/v1'" "./api/v1/index.js"; then
     echo "Found main server file in v1 directory..."
@@ -71,6 +83,8 @@ if (env.NODE_ENV !== 'production') {
 export default app;
 EOF
   fi
+else
+  echo "api/index.js already exists"
 fi
 
 # Ensure routes directory exists
