@@ -1,12 +1,18 @@
 import './env.js'; // Ensures .env is loaded
 import express from 'express';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import http from 'http';
 import cors from 'cors';
 import apiRoutes from './routes/index.js';
 import { db } from './db/index.js';
 import { logger } from './utils/logger.js';
 import { IS_DEV, IS_VERCEL, SERVER_PORT } from './utils/environment.js';
+
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 const PORT = SERVER_PORT;
 // CORS middleware - apply to all routes
