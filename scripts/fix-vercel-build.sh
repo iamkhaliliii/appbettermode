@@ -190,4 +190,16 @@ for file in "${route_files[@]}"; do
   fi
 done
 
+# Ensure vercel-handler.js exists
+if [ ! -f "./api/vercel-handler.js" ]; then
+  echo "Creating api/vercel-handler.js..."
+  cat > "./api/vercel-handler.js" << 'EOF'
+// Vercel serverless function handler
+import app from './index.js';
+
+// Export the Express app as a serverless function
+export default app;
+EOF
+fi
+
 echo -e "\nBuild fix complete!" 

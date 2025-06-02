@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "bash scripts/cleanup-api.sh && npm run build:client && npm run build:server && node scripts/build.mjs",
+  "buildCommand": "npm run vercel-build",
   "outputDirectory": "dist/public",
   "framework": "vite",
   "devCommand": "npm run dev",
@@ -28,22 +28,15 @@
     }
   ],
   "rewrites": [
-    { "source": "/api/v1/sites/:id", "destination": "/api/v1/sites/[id]" },
-    { "source": "/api/v1/sites", "destination": "/api/v1/sites" },
-    { "source": "/api/v1/:path*", "destination": "/api/v1" },
-    { "source": "/api", "destination": "/api/api.js" },
-    { "source": "/test-vercel", "destination": "/api/api.js" },
+    { "source": "/api/v1/:path*", "destination": "/api/vercel-handler.js" },
+    { "source": "/api/:path*", "destination": "/api/vercel-handler.js" },
     { "source": "/:file(.*\\.(?:js|css|png|jpg|jpeg|svg|ico|json))", "destination": "/:file" },
-    { "source": "/(sites|dashboard)(.*)", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "functions": {
-    "api/**/*.js": {
+    "api/vercel-handler.js": {
       "memory": 1024,
-      "maxDuration": 10
-    },
-    "api/index.js": {
-      "maxDuration": 300
+      "maxDuration": 30
     }
   },
   "env": {

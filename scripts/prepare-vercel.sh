@@ -32,6 +32,7 @@ echo "========================"
 # Check main files
 files_to_check=(
   "api/index.js"
+  "api/vercel-handler.js"
   "api/env.js"
   "api/routes/index.js"
   "api/routes/sites.js"
