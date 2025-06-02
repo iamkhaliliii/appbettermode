@@ -188,6 +188,19 @@ apiRouter.get('/test-brandfetch', async (_req, res) => {
 });
 logger.info('[API] Test Brandfetch API endpoint registered');
 
+// Test endpoint to verify API is working
+apiRouter.get('/test', (req, res) => {
+  res.json({ 
+    message: 'API is working correctly!',
+    timestamp: new Date().toISOString(),
+    headers: {
+      host: req.headers.host,
+      origin: req.headers.origin,
+      referer: req.headers.referer
+    }
+  });
+});
+
 // Handle 404 for API routes
 apiRouter.use((req, res) => {
   logger.warn(`[API] 404 for route: ${req.originalUrl}`);
