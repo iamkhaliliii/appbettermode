@@ -16,7 +16,7 @@ vite.config.ts.*
 .idea/
 
 # Build outputs
-api/
+# api/  # Temporarily removed - Vercel needs these files
 build/
 .vercel/
 
