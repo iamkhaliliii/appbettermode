@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm run vercel-build",
+  "buildCommand": "npm run build && bash scripts/fix-vercel-build.sh && mkdir -p public && cp -r dist/public/* public/",
   "redirects": [
     {
       "source": "/",
