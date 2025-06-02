@@ -1,4 +1,4 @@
-import './env.js'; // Ensures .env is loaded
+import { envSetupCompleted } from './env.js'; // Ensures .env is loaded and module is bundled
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';

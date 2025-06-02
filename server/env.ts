@@ -7,7 +7,9 @@
     const result = dotenv.config({ path: envPath });
 
     if (result.error) {
-      console.error('[env.ts] Error loading .env file:', result.error);
-      // throw result.error; // Optionally re-throw, or handle as needed
+      // It's often okay for .env to be missing in production, Vercel injects env vars
+      console.warn('[env.ts] Warning: .env file not found or error loading it. This might be normal in production. Error:', result.error.message);
     }
     // console.log('[env.ts] .env file loaded. DATABASE_URL:', process.env.DATABASE_URL); // Optional: for deep debugging
+
+    export const envSetupCompleted = true; // Dummy export
