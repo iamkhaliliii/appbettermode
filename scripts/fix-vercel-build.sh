@@ -4,12 +4,72 @@ echo "Fixing Vercel build issues..."
 
 # First ensure api/index.js exists
 if [ ! -f "./api/index.js" ]; then
-  if [ -f "./api/routes/index.js" ]; then
-    # Check if this is the main server file
-    if grep -q "app.use('/api/v1'" "./api/routes/index.js"; then
-      echo "Moving main server file to api root..."
-      mv "./api/routes/index.js" "./api/index.js"
-    fi
+  # Look for the main server file in various locations
+  if [ -f "./api/routes/index.js" ] && grep -q "app.use('/api/v1'" "./api/routes/index.js"; then
+    echo "Moving main server file to api root..."
+    mv "./api/routes/index.js" "./api/index.js"
+  elif [ -f "./api/v1/index.js" ] && grep -q "app.use('/api/v1'" "./api/v1/index.js"; then
+    echo "Found main server file in v1 directory..."
+    cp "./api/v1/index.js" "./api/index.js"
+  elif [ -f "./api/server.js" ]; then
+    echo "Found server.js, renaming to index.js..."
+    mv "./api/server.js" "./api/index.js"
+  else
+    # Create the main server file if it doesn't exist anywhere
+    echo "Main server file not found. Creating api/index.js..."
+    cat > "./api/index.js" << 'EOF'
+import express from 'express';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import routes from './routes/index.js';
+import { logger } from './utils/logger.js';
+import { env } from './env.js';
+
+const app = express();
+
+// Middleware
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// API routes
+app.use('/api/v1', routes);
+
+// Error handling
+app.use((err, req, res, next) => {
+  logger.error('Unhandled error:', err);
+  res.status(err.status || 500).json({
+    error: {
+      message: err.message || 'Internal server error',
+      ...(env.NODE_ENV === 'development' && { stack: err.stack })
+    }
+  });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ error: { message: 'Not found' } });
+});
+
+const PORT = process.env.PORT || 3000;
+
+if (env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    logger.info(`Server running on port ${PORT}`);
+  });
+}
+
+export default app;
+EOF
   fi
 fi
 
