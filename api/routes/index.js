@@ -1,89 +1,172 @@
-import './env'; // Ensures .env is loaded
 import express from 'express';
-import path from 'path';
-import http from 'http';
-import cors from 'cors';
-import apiRoutes from './routes/index.js';
-import { db } from './db/index.js';
-import { logger } from './utils/logger.js';
-import { IS_DEV, IS_VERCEL, SERVER_PORT } from './utils/environment.js';
-const app = express();
-const PORT = SERVER_PORT;
-// CORS middleware - apply to all routes
-app.use(cors({
-    origin: '*', // Allow all origins in development
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'Cache-Control', 'Pragma'],
-    // Cannot use credentials:true with origin:'*'
-    credentials: false,
-    maxAge: 86400 // 24 hours
-}));
-app.use(express.json({
-    // Increase size limit for file uploads if needed
-    limit: '10mb',
-    // Handle JSON parse errors gracefully
-    verify: (req, res, buf) => {
-        try {
-            JSON.parse(buf.toString());
+import sitesRouter from './sites.js';
+import postsRouter from './posts.js';
+import cmsTypesRouter from './cms-types.js';
+import spacesRouter from './spaces.js';
+import { usersRouter } from './users.js';
+import { fetchBrandData, testBrandfetchAPI } from '../utils/brandfetch.js';
+import { logger } from '../utils/logger.js';
+console.log('[API] Router initialized - routes are being registered');
+const apiRouter = express.Router();
+// Brandfetch API key
+const BRANDFETCH_API_KEY = 'rPJ4fYfXffPHxhNAIo8lU7mDRQXHsrYqKXQ678ySJsc=';
+// List all registered routes for debugging
+const listRoutes = () => {
+    logger.info('[API] Registered routes:');
+    // Direct routes on the apiRouter
+    apiRouter.stack.forEach((r) => {
+        if (r.route && r.route.path) {
+            logger.info(`[API] Route: ${r.route.path}`);
         }
-        catch (e) {
-            res.status(400).json({ message: 'Invalid JSON in request body' });
-            throw new Error('Invalid JSON');
+    });
+    // Log nested routes
+    const stackToLog = apiRouter.stack.filter(layer => layer.name === 'router' && layer.handle);
+    stackToLog.forEach((layer) => {
+        if (!layer.regexp)
+            return;
+        const path = layer.regexp.toString().replace('\\/?(?=\\/|$)', '').replace(/^\/\^/, '').replace(/\\/g, '');
+        const mountPath = path.replace(/\(\?:\(\[\^\\\/]\+\?\)\)/g, ':params').replace(/\(\?=\\\/\|\$\)/g, '').replace(/\(\?:\(\.\*\)\)/g, ':params');
+        logger.info(`[API] Router mounted at: ${mountPath}`);
+        if (layer.handle && layer.handle.stack) {
+            layer.handle.stack.forEach((nestedLayer) => {
+                if (nestedLayer.route && nestedLayer.route.path) {
+                    logger.info(`[API] ---> ${mountPath}${nestedLayer.route.path}`);
+                }
+            });
         }
+    });
+};
+// Logging middleware
+apiRouter.use((req, res, next) => {
+    logger.info(`[API] Request received: ${req.method} ${req.originalUrl} (matched: ${req.path})`);
+    next();
+});
+// Register all API routes
+apiRouter.use('/sites', sitesRouter);
+logger.info('[API] Sites routes registered');
+// Register posts router for the new unified posts handling
+apiRouter.use('/posts', postsRouter);
+logger.info('[API] Posts routes registered');
+// Register cms-types router for content type management
+apiRouter.use('/cms-types', cmsTypesRouter);
+logger.info('[API] CMS Types routes registered');
+// Register users router for user data
+apiRouter.use('/users', usersRouter);
+logger.info('[API] Users routes registered');
+// Register dedicated spaces router for space management
+apiRouter.use('/spaces', spacesRouter);
+logger.info('[API] Spaces routes registered');
+// Brand fetch endpoint
+apiRouter.get('/brand-fetch', async (req, res) => {
+    logger.info(`[API] Brand fetch endpoint called with domain: ${req.query.domain}`);
+    const domain = req.query.domain;
+    if (!domain) {
+        return res.status(400).json({ error: 'Missing required query parameter: domain' });
     }
-}));
-app.use(express.urlencoded({ extended: true }));
-// API routes
-app.use('/api/v1', apiRoutes);
-// Create an HTTP server instance
-const server = http.createServer(app);
-if (IS_DEV) {
-    // Development mode: Set up Vite middleware
-    import('./vite.js').then((viteModule) => {
-        if (viteModule.setupVite && typeof viteModule.setupVite === 'function') {
-            viteModule.setupVite(app, server);
-            logger.info('Vite Dev Middleware configured.');
+    try {
+        logger.info(`[API] Fetching brand data for domain: ${domain}`);
+        // Fetch brand data from Brandfetch API
+        const { logoUrl, brandColor } = await fetchBrandData(domain, BRANDFETCH_API_KEY);
+        // Format the response to match the Brandfetch API structure
+        // but include only the fields we need
+        const response = {
+            name: domain.split('.')[0], // Extract name from domain as a fallback
+            logos: [],
+            colors: []
+        };
+        // Add logos
+        if (logoUrl) {
+            const logoFormat = logoUrl.endsWith('.svg') ? 'svg' : 'png';
+            response.logos = [
+                {
+                    type: 'logo',
+                    theme: 'light',
+                    formats: [
+                        {
+                            src: logoUrl,
+                            format: logoFormat
+                        }
+                    ]
+                }
+            ];
+        }
+        // Add colors
+        if (brandColor) {
+            response.colors = [
+                {
+                    hex: brandColor,
+                    type: 'primary'
+                }
+            ];
+        }
+        logger.info(`[API] Successfully fetched brand data for ${domain}`);
+        return res.status(200).json(response);
+    }
+    catch (error) {
+        logger.error(`[API] Error fetching brand data:`, error);
+        return res.status(500).json({
+            error: 'Failed to fetch brand data',
+            details: error instanceof Error ? error.message : 'Unknown error'
+        });
+    }
+});
+logger.info('[API] Brand fetch endpoint registered');
+// API health check endpoint
+apiRouter.get('/health', (_req, res) => {
+    logger.info('[API] Health check endpoint called');
+    res.status(200).json({ status: 'ok', message: 'API is healthy' });
+});
+logger.info('[API] Health check endpoint registered');
+// Test Brandfetch API connection
+apiRouter.get('/test-brandfetch', async (_req, res) => {
+    logger.info('[API] Test Brandfetch API connection endpoint called');
+    try {
+        const result = await testBrandfetchAPI(BRANDFETCH_API_KEY);
+        if (result.success) {
+            return res.status(200).json({
+                status: 'success',
+                message: 'Brandfetch API connection successful',
+                data: {
+                    logoUrl: result.data?.logoUrl,
+                    primaryColor: result.data?.brandColor
+                }
+            });
         }
         else {
-            logger.error('setupVite function not found or failed to load correctly.');
+            return res.status(500).json({
+                status: 'error',
+                message: 'Brandfetch API connection failed',
+                error: result.error
+            });
         }
-    }).catch(error => {
-        logger.error('Failed to load or setup Vite Dev Middleware:', error);
-    });
-}
-else {
-    // Production mode: Serve static files
-    const clientBuildPath = path.join(__dirname, '../dist/public');
-    app.use(express.static(clientBuildPath, {
-        maxAge: '1y',
-        setHeaders: (res, path) => {
-            // Set proper cache headers
-            if (path.endsWith('.html')) {
-                res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
-            }
-            else if (path.match(/\.(js|css|png|jpg|jpeg|gif|ico|svg)$/)) {
-                res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-            }
-        }
-    }));
-    // SPA fallback for client-side routing
-    app.get('*', (req, res) => {
-        if (req.method === 'GET' && !req.path.startsWith('/api') && req.accepts('html') && !req.path.includes('.')) {
-            res.sendFile(path.join(clientBuildPath, 'index.html'));
-        }
-        else if (!req.path.startsWith('/api')) {
-            res.status(404).sendFile(path.join(clientBuildPath, 'index.html'));
+    }
+    catch (error) {
+        logger.error('[API] Error testing Brandfetch API:', error);
+        return res.status(500).json({
+            status: 'error',
+            message: 'Error testing Brandfetch API',
+            error: error instanceof Error ? error.message : 'Unknown error'
+        });
+    }
+});
+logger.info('[API] Test Brandfetch API endpoint registered');
+// Test endpoint to verify API is working
+apiRouter.get('/test', (req, res) => {
+    res.json({
+        message: 'API is working correctly!',
+        timestamp: new Date().toISOString(),
+        headers: {
+            host: req.headers.host,
+            origin: req.headers.origin,
+            referer: req.headers.referer
         }
     });
-}
-// Don't start the server when running in Vercel environment
-if (!IS_VERCEL) {
-    server.listen(PORT, () => {
-        logger.info(`Server listening on port ${PORT}`);
-        logger.info(`Database initialized: ${db ? true : false}`);
-        if (IS_DEV) {
-            logger.info(`Development server running at http://localhost:${PORT}`);
-        }
-    });
-}
-export default app;
+});
+// Handle 404 for API routes
+apiRouter.use((req, res) => {
+    logger.warn(`[API] 404 for route: ${req.originalUrl}`);
+    res.status(404).json({ message: 'API endpoint not found' });
+});
+// Log all registered routes
+listRoutes();
+export default apiRouter;

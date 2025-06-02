@@ -25,7 +25,17 @@ node scripts/build.mjs
 echo "Fixing build issues..."
 bash scripts/fix-vercel-build.sh
 
-# 6. Verify build
+# 6. Copy client build to public directory for Vercel
+if [ -d "./dist/public" ]; then
+  echo "Copying client build to public directory..."
+  mkdir -p ./public
+  cp -r ./dist/public/* ./public/
+  echo "✓ Client files copied to public directory"
+else
+  echo "❌ dist/public directory not found!"
+fi
+
+# 7. Verify build
 echo -e "\nVerifying build structure:"
 echo "========================"
 
@@ -44,6 +54,7 @@ files_to_check=(
   "api/db/schema.js"
   "api/utils/logger.js"
   "api/utils/environment.js"
+  "public/index.html"
 )
 
 all_good=true
@@ -55,6 +66,17 @@ for file in "${files_to_check[@]}"; do
     all_good=false
   fi
 done
+
+# Create public directory at root if it doesn't exist
+if [ ! -d "./public" ] && [ -d "./dist/public" ]; then
+  echo -e "\nCreating symlink from dist/public to public..."
+  ln -s dist/public public
+elif [ -d "./dist/public" ]; then
+  echo -e "\nPublic directory already exists"
+else
+  echo -e "\n❌ dist/public directory not found!"
+  all_good=false
+fi
 
 if $all_good; then
   echo -e "\n✅ Build successful! Ready for Vercel deployment."

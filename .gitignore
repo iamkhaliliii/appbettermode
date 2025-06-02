@@ -19,6 +19,7 @@ vite.config.ts.*
 # api/  # Temporarily removed - Vercel needs these files
 build/
 .vercel/
+public/
 
 # Logs
 *.log

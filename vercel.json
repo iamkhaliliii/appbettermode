@@ -1,9 +1,13 @@
 {
   "version": 2,
   "buildCommand": "npm run vercel-build",
-  "outputDirectory": "dist/public",
-  "framework": "vite",
-  "devCommand": "npm run dev",
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/sites",
+      "permanent": false
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

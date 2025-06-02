@@ -37,4 +37,7 @@ export function getApiUrl(): string {
   return 'http://localhost:4000';
 }
 
+// Alias for backward compatibility
+export const getApiBaseUrl = getApiUrl;
+
 export type ObjectValues<T> = T[keyof T];

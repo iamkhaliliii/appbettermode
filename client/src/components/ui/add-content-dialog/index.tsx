@@ -9,7 +9,7 @@ import {
 import { Loader2, AlertCircle, ChevronDown, Plus, Calendar, MessageSquare, HelpCircle, Star, Layout, BookOpen, Briefcase, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { getApiBaseUrl } from "@/lib/utils";
+import { getApiUrl } from "@/lib/utils";
 
 import { SelectContentStep } from "./select-content-step";
 import { ConfigureSpaceStep } from "./configure-space-step";
@@ -154,7 +154,7 @@ export function AddContentDialog({
   const fetchContentTypes = async () => {
     setIsLoading(true);
     try {
-      const API_BASE = getApiBaseUrl();
+      const API_BASE = getApiUrl();
       let favorites: ContentType[] = [];
       let others: ContentType[] = [];
       
@@ -339,7 +339,7 @@ export function AddContentDialog({
     setError(null);
     
     try {
-      const API_BASE = getApiBaseUrl();
+      const API_BASE = getApiUrl();
       
       // Get the site ID from the URL path
       const pathname = window.location.pathname;

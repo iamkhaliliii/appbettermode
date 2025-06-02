@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 import { sitesApi, cmsTypesApi } from '@/lib/api';
-import { getApiBaseUrl } from '@/lib/utils';
+import { getApiUrl } from '@/lib/utils';
 
 // Define interfaces for the context data
 interface Space {
@@ -88,7 +88,7 @@ export const SiteContentProvider: React.FC<SiteContentProviderProps> = ({ childr
     
     try {
       // Get API base URL
-      const API_BASE = getApiBaseUrl();
+      const API_BASE = getApiUrl();
       const response = await fetch(`${API_BASE}/api/v1/sites/${siteId}/spaces`);
       
       if (!response.ok) {
