@@ -1,4 +1,4 @@
-import './env'; // Ensures .env is loaded
+import './env.js'; // Ensures .env is loaded
 import express from 'express';
 import path from 'path';
 import http from 'http';
