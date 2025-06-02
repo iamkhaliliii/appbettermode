@@ -5,12 +5,25 @@ import { z } from 'zod';
  * Get the base URL for API requests based on environment
  */
 function getApiBaseUrl(): string {
-  // In production (Vercel), use relative URLs to avoid CORS issues
+  // Check if we're in a browser environment
+  if (typeof window !== 'undefined') {
+    // In production (Vercel), use relative URLs to avoid CORS issues
+    // Check for Vercel-specific environment or production build
+    if (window.location.hostname !== 'localhost' && 
+        window.location.hostname !== '127.0.0.1') {
+      console.log('[API] Using relative URLs for production');
+      return '';
+    }
+  }
+  
+  // Check NODE_ENV
   if (process.env.NODE_ENV === 'production') {
+    console.log('[API] Production mode detected, using relative URLs');
     return '';
   }
   
   // In development, use the dev server
+  console.log('[API] Development mode, using localhost:4000');
   return 'http://localhost:4000';
 }
 

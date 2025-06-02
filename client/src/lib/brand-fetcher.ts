@@ -1,14 +1,15 @@
 import { BrandLogo, BrandColor, CompanyInfo } from '../pages/sites/types';
+import { getApiUrl } from '@/lib/utils';
 
-// Function to get API base URL based on environment
+interface BrandInfo {
+  logo?: string;
+  name?: string;
+  domain?: string;
+  colors?: string[];
+}
+
 function getApiBaseUrl(): string {
-  // In production, use relative URLs to avoid CORS issues
-  if (process.env.NODE_ENV === 'production') {
-    return '';
-  }
-  
-  // In development, use the local dev server
-  return 'http://localhost:4000';
+  return getApiUrl();
 }
 
 // Use environment-aware URLs

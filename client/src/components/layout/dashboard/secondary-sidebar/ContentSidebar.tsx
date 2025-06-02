@@ -13,6 +13,24 @@ import {
   MessageSquareDashed,
   Save,
   Clock,
+  ChevronDown,
+  ChevronRight,
+  Columns,
+  Heart,
+  Search,
+  Lightbulb,
+  Megaphone,
+  Briefcase,
+  BookOpen,
+  Package,
+  Music,
+  Utensils,
+  ShoppingBag,
+  HelpingHand,
+  Code,
+  Palette,
+  Camera,
+  Zap,
 } from "lucide-react";
 import { SideNavItem, SideNavItemWithBadge } from "./SidebarNavigationItems";
 import { APP_ROUTES } from "@/config/routes";
@@ -20,6 +38,7 @@ import { BaseSidebarProps } from "./types";
 import { isValidUUID } from "@/lib/with-site-context";
 import { AddContentDialog } from "@/components/ui/add-content-dialog";
 import { useSiteContent } from "@/lib/SiteContentContext";
+import { getApiUrl } from '@/lib/utils';
 
 // Define interface for CMS Type
 interface CmsType {
@@ -33,8 +52,8 @@ interface CmsType {
 }
 
 // Utility function to get API base URL
-function getApiBaseUrl() {
-  return import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+function getApiBaseUrl(): string {
+  return getApiUrl();
 }
 
 // Utility function to get icon component based on CMS type

@@ -1,9 +1,9 @@
 import { Post } from './types';
+import { getApiUrl } from '@/lib/utils';
 
 // Add a utility function to get API base URL
-export function getApiBaseUrl() {
-  // Use environment variable if available, otherwise default to localhost
-  return import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+export function getApiBaseUrl(): string {
+  return getApiUrl();
 }
 
 // Map database post data to UI post data structure

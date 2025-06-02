@@ -43,6 +43,7 @@ import { BrandLogo, BrandColor, CompanyInfo } from '@/pages/sites/types';
 import { cn } from '@/lib/utils';
 import { SitePreview } from './SitePreview';
 import { getPreviewComponent } from '@/components/ui/add-content-dialog/content-types';
+import { getApiUrl } from '@/lib/utils';
 
 // CMS Type from database
 interface CmsType {
@@ -192,8 +193,15 @@ interface ContentType {
   name: string;
 }
 
+// نام شرکت‌های معروف برای ایجاد لیست Dropdown
+const companies = [
+  "Apple", "Google", "Microsoft", "Amazon", "Facebook", "Tesla", "Netflix", 
+  "Twitter", "LinkedIn", "Adobe", "Salesforce", "Oracle", "IBM", "Intel",
+  "Samsung", "Sony", "Nintendo", "Spotify", "Uber", "Airbnb", "PayPal"
+];
+
 // API base URL
-const API_BASE = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:4000';
+const API_BASE = getApiUrl();
 
 // Loading states for the creation process
 const siteCreationSteps = [
