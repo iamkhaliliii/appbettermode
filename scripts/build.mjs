@@ -4,7 +4,7 @@ import { join, dirname, basename, extname } from 'path';
 console.log('Starting build process...');
 
 // Source and destination paths
-const serverDir = 'server';
+const serverDir = 'server/dist';
 const apiDir = 'api';
 
 // Ensure the API directory exists
@@ -37,12 +37,18 @@ function cleanTsFilesInApi(dir) {
 cleanTsFilesInApi(apiDir);
 console.log('Cleaned TypeScript files from API directory');
 
-// Function to copy compiled files from server to api
+// Function to copy compiled files from server/dist to api
 function copyCompiledFiles(srcDir, destDir, relativePath = '') {
   const currentSrcDir = join(srcDir, relativePath);
   const currentDestDir = join(destDir, relativePath);
   
-  if (!existsSync(currentSrcDir)) return;
+  if (!existsSync(currentSrcDir)) {
+    // If the source is server/dist and it doesn't exist, it's a problem from tsc
+    if (srcDir.endsWith('server/dist') && relativePath === '') {
+        console.warn(`Warning: Source directory ${currentSrcDir} does not exist. TypeScript compilation might have failed or produced no output.`);
+    }
+    return;
+  }
   
   // Create destination directory if it doesn't exist
   if (!existsSync(currentDestDir)) {
@@ -61,55 +67,45 @@ function copyCompiledFiles(srcDir, destDir, relativePath = '') {
         copyCompiledFiles(srcDir, destDir, join(relativePath, item));
       }
     } else if (extname(item) === '.js') {
-      // Skip copying env.js from server/ as tsc should place it directly in api/
-      if (item === 'env.js' && relativePath === '') {
-        console.log(`Skipping copy of server/env.js from scripts/build.mjs; tsc is expected to handle this.`);
-        continue;
-      }
       // Copy JavaScript files
       const destPath = join(currentDestDir, item);
       copyFileSync(srcPath, destPath);
-      console.log(`Copied: ${join(relativePath, item)}`);
+      console.log(`Copied: ${join(relativePath, item)} from ${srcDir} to ${destDir}`);
     }
   }
 }
 
-// Copy all compiled JavaScript files from server to api
-console.log('Copying compiled files...');
+// Copy all compiled JavaScript files from server/dist to api
+console.log('Copying compiled files from server/dist to api...');
 copyCompiledFiles(serverDir, apiDir);
 
-// Specifically check for and copy the main index.js file
-const serverIndexJs = join(serverDir, 'index.js');
+// Specifically check for and copy the main index.js file if it was handled by tsc
+// This logic might need adjustment if index.ts is not directly in the root of serverDir (now server/dist)
+const serverIndexJs = join(serverDir, 'index.js'); 
 const apiIndexJs = join(apiDir, 'index.js');
 
-if (existsSync(serverIndexJs)) {
-  console.log('Found server/index.js, copying to api/index.js...');
+// If api/index.js was already created by the above general copy, this is fine.
+// If server/dist/index.js exists and api/index.js wasn't created (e.g. if apiDir root wasn't processed by copyCompiledFiles correctly)
+// then copy it.
+if (existsSync(serverIndexJs) && !existsSync(apiIndexJs)) {
+  console.log(`Found ${serverIndexJs}, copying to ${apiIndexJs} as it wasn't copied by the general process.`);
   copyFileSync(serverIndexJs, apiIndexJs);
-} else {
-  console.log('WARNING: server/index.js not found!');
-  
-  // Check if TypeScript compiled it to a different location
-  const compiledIndexLocations = [
-    join(apiDir, 'index.js'), // Maybe already in api
-    join(apiDir, 'server', 'index.js'), // Maybe nested
-    join(serverDir, 'dist', 'index.js'), // Maybe in dist
-  ];
-  
-  for (const location of compiledIndexLocations) {
-    if (existsSync(location) && location !== apiIndexJs) {
-      console.log(`Found index.js at ${location}, copying to api/index.js...`);
-      copyFileSync(location, apiIndexJs);
-      break;
-    }
-  }
+} else if (existsSync(serverIndexJs) && existsSync(apiIndexJs)){
+  console.log(`${apiIndexJs} already exists (presumably copied correctly from ${serverIndexJs}).`);
+} else if (!existsSync(serverIndexJs)) {
+  console.warn(`WARNING: Main server entry point ${serverIndexJs} not found in tsc output directory.`);
 }
 
 // Final check
 if (!existsSync(apiIndexJs)) {
-  console.error('ERROR: api/index.js was not created!');
+  console.error('ERROR: api/index.js was not created! The API will not start.');
   console.log('Checking api directory contents:');
-  const apiContents = readdirSync(apiDir);
-  console.log(apiContents);
+  if(existsSync(apiDir)) {
+    const apiContents = readdirSync(apiDir);
+    console.log(apiContents);
+  } else {
+    console.log('api directory does not exist.');
+  }
 }
 
 // Function to check for conflict before copying
