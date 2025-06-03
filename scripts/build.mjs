@@ -1,4 +1,4 @@
-import { existsSync, copyFileSync, mkdirSync, readdirSync, lstatSync, unlinkSync } from 'fs';
+import { existsSync, copyFileSync, mkdirSync, readdirSync, lstatSync, unlinkSync, writeFileSync } from 'fs';
 import { join, dirname, basename, extname } from 'path';
 
 console.log('Starting build process...');
@@ -122,6 +122,17 @@ function hasDuplicateExtension(targetDir, filename) {
   }
   
   return false;
+}
+
+// Explicitly create api/env.js for Vercel deployment
+const apiEnvJsPath = join(apiDir, 'env.js');
+// Using \n for newline character in the string literal
+const envJsContent = "export const envSetupCompleted = true;\nconsole.log('[env.js] Dummy env module loaded for Vercel.');";
+try {
+  writeFileSync(apiEnvJsPath, envJsContent);
+  console.log(`Successfully created/overwrote ${apiEnvJsPath} with dummy export.`);
+} catch (err) {
+  console.error(`Error writing ${apiEnvJsPath}:`, err);
 }
 
 console.log('Build script completed successfully.'); 
