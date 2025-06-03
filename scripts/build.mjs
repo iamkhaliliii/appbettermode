@@ -61,6 +61,11 @@ function copyCompiledFiles(srcDir, destDir, relativePath = '') {
         copyCompiledFiles(srcDir, destDir, join(relativePath, item));
       }
     } else if (extname(item) === '.js') {
+      // Skip copying env.js from server/ as tsc should place it directly in api/
+      if (item === 'env.js' && relativePath === '') {
+        console.log(`Skipping copy of server/env.js from scripts/build.mjs; tsc is expected to handle this.`);
+        continue;
+      }
       // Copy JavaScript files
       const destPath = join(currentDestDir, item);
       copyFileSync(srcPath, destPath);
