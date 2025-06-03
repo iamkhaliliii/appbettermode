@@ -3,6 +3,7 @@ import express from 'express';
 import { db } from "../db/index.js";
 import { sites } from "../db/schema.js";
 import { eq, or } from "drizzle-orm";
+import { spaces } from "../db/schema.js";
 
 const router = express.Router();
 
@@ -25,13 +26,23 @@ router.get('/:identifier', async (req, res) => {
   const { identifier } = req.params;
   console.log(`[API_SITES] Attempting to fetch site with identifier: ${identifier}`);
   try {
-    const site = await db.query.sites.findFirst({
-      where: or(eq(sites.id, identifier), eq(sites.subdomain, identifier)),
-      // Example: include owner data if you have relations setup
-      // with: {
-      //   owner: true 
-      // }
-    });
+    let site;
+
+    // Basic UUID check 
+    const isUUID = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(identifier);
+
+    if (isUUID) {
+      site = await db.query.sites.findFirst({
+        where: or(eq(sites.id, identifier), eq(sites.subdomain, identifier))
+        // Add columns or relations if needed, e.g., with: { owner: true }
+      });
+    } else {
+      // If not a UUID, assume it's a subdomain
+      site = await db.query.sites.findFirst({
+        where: eq(sites.subdomain, identifier)
+        // Add columns or relations if needed
+      });
+    }
 
     if (!site) {
       console.log(`[API_SITES] Site not found for identifier: ${identifier}`);
@@ -60,6 +71,42 @@ router.get('/:identifier', async (req, res) => {
   } catch (error) {
     console.error(`[API_SITES] Error fetching site by identifier ${identifier}:`, error);
     return res.status(500).json({ message: 'Error fetching site from database', details: error.message });
+  }
+});
+
+// GET spaces for a specific site
+router.get('/:siteId/spaces', async (req, res) => {
+  const { siteId } = req.params;
+  console.log(`[API_SITES] Attempting to fetch spaces for site ID: ${siteId}`);
+  try {
+    // Optional: Validate siteId is a UUID
+    const isUUID = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(siteId);
+    if (!isUUID) {
+      return res.status(400).json({ message: 'Invalid site ID format' });
+    }
+
+    // Check if the site exists
+    const siteExists = await db.query.sites.findFirst({
+      where: eq(sites.id, siteId),
+      columns: { id: true } // Only need to check existence
+    });
+
+    if (!siteExists) {
+      console.log(`[API_SITES] Site not found for ID: ${siteId} when fetching spaces`);
+      return res.status(404).json({ message: 'Site not found' });
+    }
+
+    const siteSpaces = await db.query.spaces.findMany({
+      where: eq(spaces.site_id, siteId),
+      // You might want to include CMS type details here as well, similar to your /api/v1/spaces/:siteId route
+    });
+
+    console.log(`[API_SITES] Found ${siteSpaces.length} spaces for site ID: ${siteId}`);
+    return res.status(200).json(siteSpaces);
+
+  } catch (error) {
+    console.error(`[API_SITES] Error fetching spaces for site ID ${siteId}:`, error);
+    return res.status(500).json({ message: 'Error fetching spaces for site', details: error.message });
   }
 });
 
