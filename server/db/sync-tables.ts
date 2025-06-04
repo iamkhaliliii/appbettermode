@@ -148,7 +148,7 @@ async function migrateData() {
 }
 
 // Run the migration
-migrateData().catch(err => {
-  console.error('Fatal error:', err);
-  process.exit(1);
-}); 
+// migrateData().catch(err => { // Commented out to prevent auto-execution
+//   console.error('Fatal error:', err);
+//   process.exit(1);
+// }); 

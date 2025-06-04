@@ -67,14 +67,14 @@ async function updateSitesTable() {
 }
 
 // Run the update
-(function() {
-  updateSitesTable()
-    .then(() => {
-      console.log('Sites space_ids field added successfully.');
-      process.exit(0);
-    })
-    .catch(error => {
-      console.error('Migration failed:', error);
-      process.exit(1);
-    });
-})(); 
+// (function() { // Commented out to prevent auto-execution
+//   updateSitesTable()
+//     .then(() => {
+//       console.log('Sites space_ids field added successfully.');
+//       process.exit(0);
+//     })
+//     .catch(error => {
+//       console.error('Migration failed:', error);
+//       process.exit(1);
+//     });
+// })(); 

@@ -186,7 +186,7 @@ async function removeTables() {
 }
 
 // Run the migration
-removeTables().catch(err => {
-  console.error('Fatal error:', err);
-  process.exit(1);
-}); 
+// removeTables().catch(err => { // Commented out to prevent auto-execution
+//   console.error('Fatal error:', err);
+//   process.exit(1);
+// }); 

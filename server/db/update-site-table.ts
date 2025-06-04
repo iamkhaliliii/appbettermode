@@ -113,7 +113,7 @@ async function updateSiteTable() {
 }
 
 // Run the migration
-updateSiteTable().catch(err => {
-  console.error('Fatal error:', err);
-  process.exit(1);
-}); 
+// updateSiteTable().catch(err => { // Commented out to prevent auto-execution
+//   console.error('Fatal error:', err);
+//   process.exit(1);
+// }); 

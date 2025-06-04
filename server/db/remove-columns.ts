@@ -170,14 +170,14 @@ async function updateTables() {
 }
 
 // Run the update
-(function() {
-  updateTables()
-    .then(() => {
-      console.log('Migration Step 3 completed successfully.');
-      process.exit(0);
-    })
-    .catch(error => {
-      console.error('Migration Step 3 failed:', error);
-      process.exit(1);
-    });
-})(); 
+// (function() { // Commented out to prevent auto-execution
+//   updateTables()
+//     .then(() => {
+//       console.log('Migration Step 3 completed successfully.');
+//       process.exit(0);
+//     })
+//     .catch(error => {
+//       console.error('Migration Step 3 failed:', error);
+//       process.exit(1);
+//     });
+// })(); 
