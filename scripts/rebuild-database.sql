@@ -135,40 +135,40 @@ CREATE INDEX idx_spaces_site_id ON spaces(site_id);
 CREATE INDEX idx_posts_site_id ON posts(site_id);
 
 -- ==========================================
--- STEP 5: Insert CMS Types
+-- STEP 5: Insert CMS Types with complete specifications
 -- ==========================================
 INSERT INTO cms_types (id, name, label, description, color, icon_name, favorite, type, fields) VALUES
 -- Job Board
-('a7f3e4b2-8c9d-4e5f-a1b2-3c4d5e6f7a8b'::uuid, 'job-board', 'Job Board', 'Post and manage job listings', '#4F46E5', 'briefcase', false, 'official', 
-'[{"id":"title","name":"title","label":"Job Title","type":"text","required":true}]'::jsonb),
+('1a863971-a9ac-4d40-bfda-5e60da82fa1c'::uuid, 'job-board', 'Job Board', 'Post and find job opportunities within the community.', 'teal', 'briefcase', true, 'official', 
+'[{"key": "job_title", "type": "text", "label": "Job Title"}, {"key": "job_description", "type": "richtext", "label": "Description"}, {"key": "job_location", "type": "text", "label": "Location"}, {"key": "apply_url", "type": "url", "label": "Apply URL"}]'::jsonb),
 
--- Event
-('b8f4e5c3-9d0e-5f6a-b2c3-4d5e6f7a8b9c'::uuid, 'event', 'Event', 'Create and manage events', '#10B981', 'calendar', false, 'official',
-'[{"id":"title","name":"title","label":"Event Title","type":"text","required":true}]'::jsonb),
+-- Events
+('2e0115ef-79e3-44b5-b453-a88d498286b3'::uuid, 'event', 'Events', 'Discover and RSVP to upcoming community events.', 'emerald', 'calendar', true, 'official',
+'[{"key": "event_title", "type": "text", "label": "Event Title"}, {"key": "event_date", "type": "datetime", "label": "Date & Time"}, {"key": "event_location", "type": "text", "label": "Location"}, {"key": "event_description", "type": "richtext", "label": "Description"}]'::jsonb),
 
 -- Q&A
-('c9f5e6d4-ae1f-6f7b-c3d4-5e6f7a8b9c0d'::uuid, 'qa', 'Q&A', 'Question and answer discussions', '#F59E0B', 'help-circle', false, 'official',
-'[{"id":"title","name":"title","label":"Question Title","type":"text","required":true}]'::jsonb),
+('611c1ccd-1ec6-499a-8872-0590645439aa'::uuid, 'qa', 'Q&A', 'Ask questions and get answers from the community.', 'violet', 'help-circle', true, 'official',
+'[{"key": "question_title", "type": "text", "label": "Question Title", "placeholder": "What is your question?"}, {"key": "question_details", "type": "richtext", "label": "Details", "placeholder": "Provide more details..."}]'::jsonb),
 
 -- Ideas & Wishlist
-('d0f6e7e5-bf2a-7f8c-d4e5-6f7a8b9c0d1e'::uuid, 'ideas-wishlist', 'Ideas & Wishlist', 'Collect feature requests', '#8B5CF6', 'lightbulb', false, 'official',
-'[{"id":"title","name":"title","label":"Idea Title","type":"text","required":true}]'::jsonb),
+('8302af6f-ef4e-4a68-812a-a772ba0389b8'::uuid, 'ideas-wishlist', 'Ideas & Wishlist', 'Share ideas and vote on features for the community or product.', 'amber', 'star', true, 'official',
+'[{"key": "idea_title", "type": "text", "label": "Idea/Wish"}, {"key": "idea_description", "type": "richtext", "label": "Description"}]'::jsonb),
 
 -- Knowledge Base
-('e1f7e8f6-ca3h-8f9d-e5f6-7a8b9c0d1e2f'::uuid, 'knowledge-base', 'Knowledge Base', 'Documentation and articles', '#059669', 'book-open', false, 'official',
-'[{"id":"title","name":"title","label":"Article Title","type":"text","required":true}]'::jsonb),
+('a74c6cc2-ad92-4e0b-ac55-8db5bb11b9a6'::uuid, 'knowledge-base', 'Knowledge Base', 'Find helpful articles and documentation.', 'sky', 'book-open', true, 'official',
+'[{"key": "kb_title", "type": "text", "label": "Article Title"}, {"key": "kb_content", "type": "richtext", "label": "Content"}]'::jsonb),
 
 -- Blog
-('f2f8e9g7-db4i-9f0e-f6g7-8b9c0d1e2f3g'::uuid, 'blog', 'Blog', 'Share news and stories', '#DC2626', 'edit', false, 'official',
-'[{"id":"title","name":"title","label":"Post Title","type":"text","required":true}]'::jsonb),
+('c966cb14-ab62-4cda-9879-cda8ba91d879'::uuid, 'blog', 'Blog', 'Read and publish articles and blog posts.', 'purple', 'file-text', true, 'official',
+'[{"key": "article_title", "type": "text", "label": "Title"}, {"key": "article_body", "type": "richtext", "label": "Content"}, {"key": "cover_image_url", "type": "url", "label": "Cover Image URL"}]'::jsonb),
 
--- Discussion
-('g3g9f0h8-ec5j-0f1f-g7h8-9c0d1e2f3g4h'::uuid, 'discussion', 'Discussion', 'General discussions', '#6366F1', 'message-circle', false, 'official',
-'[{"id":"title","name":"title","label":"Discussion Title","type":"text","required":true}]'::jsonb),
+-- Discussions
+('d634f9bc-5632-4297-ac37-2d46af70730e'::uuid, 'discussion', 'Discussions', 'Start or join conversations on various topics.', 'blue', 'message-square', true, 'official',
+'[{"key": "discussion_title", "type": "text", "label": "Title", "placeholder": "Discussion Title"}, {"key": "discussion_body", "type": "richtext", "label": "Body", "placeholder": "Start the discussion..."}]'::jsonb),
 
 -- Changelog
-('h4h0g1i9-fd6k-1g2g-h8i9-0d1e2f3g4h5i'::uuid, 'changelog', 'Changelog', 'Track product updates', '#EC4899', 'git-branch', false, 'official',
-'[{"id":"title","name":"title","label":"Release Title","type":"text","required":true}]'::jsonb);
+('eaba91bf-0921-4582-9e36-7131c6bb713c'::uuid, 'changelog', 'Changelog', 'Track updates and changes to the product or community.', 'indigo', 'layout', true, 'official',
+'[{"key": "update_title", "type": "text", "label": "Update Title"}, {"key": "update_description", "type": "richtext", "label": "Description"}, {"key": "update_date", "type": "date", "label": "Date"}]'::jsonb);
 
 -- ==========================================
 -- VERIFICATION
