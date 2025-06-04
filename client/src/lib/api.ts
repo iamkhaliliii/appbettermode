@@ -1,6 +1,8 @@
 import { SiteDetails } from '@/types/site';
 import { z } from 'zod';
 
+const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/i; // Define uuidRegex
+
 /**
  * Get the base URL for API requests based on environment
  */
@@ -46,34 +48,90 @@ const LEGACY_ENDPOINTS = {
   SITE_BY_SUBDOMAIN: '/api/site-by-subdomain',
 };
 
-// Schema for site data
-const siteSchema = z.object({
+// Define a schema for the (populated) CMS Type object when it's part of a Site object
+const PopulatedCmsTypeSchema = z.object({
+  id: z.string().uuid("CMS Type ID must be a valid UUID"),
+  name: z.string(),
+  label: z.string(),
+  icon_name: z.string().nullable().optional(),
+  color: z.string().nullable().optional(),
+  type: z.string().nullable().optional(),
+  fields: z.array(z.any()).nullable().optional(),
+});
+
+// Schema for the raw site data (input to Zod, pre-transform)
+const siteInputSchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(2, { message: 'Site name must be at least 2 characters.' }),
-  subdomain: z.string().optional(),
-  ownerId: z.string().uuid(),
+  subdomain: z.string().nullable().optional(),
+  ownerId: z.string().uuid().nullable().optional(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime().nullable(),
-  state: z.string().nullable().optional(),
+  state: z.string().nullable().optional(), // Input can be string, null, or undefined
+  status: z.string(), // Make status required on input
+  role: z.string().optional(),
+  logo_url: z.string().url().nullable().optional(),
+  brand_color: z.string().regex(/^#(?:[0-9a-fA-F]{3}){1,2}$/, { message: "Invalid hex color format" }).nullable().optional(),
+  brand_colors: z.any().nullable().optional(),
+  content_types: z.union([
+    z.array(PopulatedCmsTypeSchema),
+    z.array(z.string().uuid()), // Handle case where API returns array of IDs
+    z.null(),
+    z.undefined()
+  ]).default([]),
+  plan: z.string().nullable().optional(),
+  space_ids: z.array(z.string().uuid()).default([]),
+  owner: z.object({
+    id: z.string().uuid(),
+    username: z.string(),
+    full_name: z.string().nullable().optional(),
+    avatar_url: z.string().url().nullable().optional(),
+  }).nullable().optional(),
+});
+
+// Define the output schema explicitly
+const siteOutputSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(2),
+  subdomain: z.string().nullable().optional(),
+  ownerId: z.string().uuid().nullable().optional(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime().nullable(),
+  state: z.string(), // Always a string after transform
   status: z.string(),
   role: z.string().optional(),
-  logo_url: z.string().nullable().optional(),
-  brand_color: z.string().nullable().optional(),
+  logo_url: z.string().url().nullable().optional(),
+  brand_color: z.string().regex(/^#(?:[0-9a-fA-F]{3}){1,2}$/).nullable().optional(),
   brand_colors: z.any().nullable().optional(),
-  content_types: z.array(z.string()).nullable().optional(),
-  plan: z.string().optional(),
-})
-.transform(data => {
-  const result = { ...data };
-  result.state = (data.state === undefined || data.state === null) 
-    ? data.status 
-    : data.state;
-  return result;
+  content_types: z.array(PopulatedCmsTypeSchema), // Always an array after transform
+  plan: z.string().nullable().optional(),
+  space_ids: z.array(z.string().uuid()), // Always an array after transform
+  owner: z.object({
+    id: z.string().uuid(),
+    username: z.string(),
+    full_name: z.string().nullable().optional(),
+    avatar_url: z.string().url().nullable().optional(),
+  }).nullable().optional(),
+});
+
+// Schema with transform for the final Site shape
+const siteSchema = siteInputSchema.transform(data => {
+  // Handle content_types - convert string arrays to empty array for now
+  let contentTypes = data.content_types ?? [];
+  if (Array.isArray(contentTypes) && contentTypes.length > 0 && typeof contentTypes[0] === 'string') {
+    contentTypes = []; // Convert array of IDs to empty array for now
+  }
+
+  return siteOutputSchema.parse({
+    ...data,
+    state: data.state ?? data.status ?? 'unknown',
+    content_types: contentTypes,
+    space_ids: data.space_ids ?? [],
+  });
 });
 
 const sitesResponseSchema = z.array(siteSchema);
-
-export type Site = z.infer<typeof siteSchema>;
+export type Site = z.infer<typeof siteOutputSchema>;
 
 // Schema for a member, likely a user associated with a site through a membership
 export const memberSchema = z.object({
@@ -209,13 +267,14 @@ async function apiFetch<T>(
 // Safely parse data with Zod schema, with improved error handling
 async function safelyParseData<T>(schema: z.ZodType<T>, data: unknown): Promise<T> {
   try {
-    return schema.parse(data);
+    return schema.parse(data) as T;
   } catch (error) {
     if (error instanceof z.ZodError) {
       console.error('Zod validation error:', error.errors);
       // Log the actual data that failed validation
       console.error('Data that failed validation:', data);
-      throw new Error(`Data validation error: ${JSON.stringify(error.errors)}`);
+      const errorMessages = error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join('; ');
+      throw new Error(`Data validation error: [${errorMessages}]`);
     }
     throw error;
   }
@@ -225,108 +284,33 @@ async function safelyParseData<T>(schema: z.ZodType<T>, data: unknown): Promise<
 export const sitesApi = {
   // Get all sites for current user
   getAllSites: async (): Promise<Site[]> => {
-    const data = await apiFetch<unknown>(ENDPOINTS.SITES);
-    // Manually add state field to each site if it's missing
-    const sitesWithState = Array.isArray(data) 
-      ? data.map((site: any) => ({
-          ...site,
-          state: site.state || site.status // Set state to status if it doesn't exist
-        }))
-      : data;
-    return safelyParseData(sitesResponseSchema, sitesWithState);
+    const rawDataArray = await apiFetch<any[]>(ENDPOINTS.SITES);
+    return safelyParseData(sitesResponseSchema, rawDataArray || []) as unknown as Site[];
   },
 
   // Get site by ID or subdomain
   getSite: async (identifier: string): Promise<Site> => {
-    const data = await apiFetch<unknown>(ENDPOINTS.SITE(identifier));
-    // Manually add state field if it's missing
-    const siteWithState = data && typeof data === 'object'
-      ? {
-          ...data as any,
-          state: (data as any).state || (data as any).status // Set state to status if it doesn't exist
-        }
-      : data;
-    return safelyParseData(siteSchema, siteWithState);
+    const rawData = await apiFetch<any>(ENDPOINTS.SITE(identifier));
+    return safelyParseData(siteSchema, rawData || {}) as unknown as Site;
   },
 
   // Create a new site
-  createSite: async (newSite: { 
-    name: string; 
-    subdomain?: string; 
-    domain?: string;
-    selectedLogo?: string;
-    selectedColor?: string;
-    selectedContentTypes?: string[];
-  }): Promise<Site> => {
-    const data = await apiFetch<unknown>(ENDPOINTS.SITES, {
+  createSite: async (newSiteInput: any): Promise<Site> => {
+    const rawData = await apiFetch<any>(ENDPOINTS.SITES, {
       method: 'POST',
-      body: JSON.stringify(newSite),
+      body: JSON.stringify(newSiteInput),
     });
-    // Manually add state field if it's missing
-    const siteWithState = data && typeof data === 'object'
-      ? {
-          ...data as any,
-          state: (data as any).state || (data as any).status // Set state to status if it doesn't exist
-        }
-      : data;
-    return safelyParseData(siteSchema, siteWithState);
+    return safelyParseData(siteSchema, rawData || {}) as unknown as Site;
   },
   
   // Get members for a site
   getMembers: async (siteId: string, options?: { role?: string }): Promise<Member[]> => {
-    // TODO: Implement the actual API call when backend endpoint is ready
-    // For now, use mock data
-    console.log(`Getting members for site ${siteId}${options?.role ? ` with role ${options.role}` : ''} (mock data)`);
-    
     const mockMembers: Member[] = [
-      {
-        userId: "49a44198-e6e5-4b1e-b8fb-b1c50ee0639d",
-        siteId: siteId,
-        role: "admin",
-        fullName: "Olivia Rhye",
-        email: "olivia@untitledui.com",
-        joinedAt: new Date().toISOString(),
-        avatarUrl: undefined,
-        status: "Active",
-      },
-      {
-        userId: "59b55209-f7f6-5c2f-c9fc-c2d61ff1740e",
-        siteId: siteId,
-        role: "member",
-        fullName: "Phoenix Baker",
-        email: "phoenix@untitledui.com",
-        joinedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-        avatarUrl: undefined,
-        status: "Active",
-      },
-      {
-        userId: "71d77321-h9h8-7e4h-e1he-e4f83hh3962g",
-        siteId: siteId,
-        role: "member",
-        fullName: "Candice Wu",
-        email: "candice@untitledui.com",
-        joinedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
-        avatarUrl: undefined,
-        status: "Inactive",
-      },
-      {
-        userId: "82e88432-i0i9-8f5i-f2if-f5g94ii4073h",
-        siteId: siteId,
-        role: "editor",
-        fullName: "Drew Cano",
-        email: "drew@untitledui.com",
-        joinedAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
-        avatarUrl: undefined,
-        status: "Active",
-      }
+        { userId: "49a44198-e6e5-4b1e-b8fb-b1c50ee0639d", siteId, role: "admin", fullName: "Olivia Rhye", email: "olivia@untitledui.com", joinedAt: new Date().toISOString(), avatarUrl: null, status: "Active"},
+        { userId: "59b55209-f7f6-5c2f-c9fc-c2d61ff1740e", siteId, role: "member", fullName: "Phoenix Baker", email: "phoenix@untitledui.com", joinedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(), avatarUrl: null, status: "Active"},
     ];
-    
-    // Return mock data directly, filtered if needed
-    // This bypasses the schema validation which was causing type issues
     return options?.role 
-      ? mockMembers.filter(member => 
-          member.role.toLowerCase() === options.role?.toLowerCase()
-        )
+      ? mockMembers.filter(member => member.role.toLowerCase() === options.role?.toLowerCase())
       : mockMembers;
   },
 };

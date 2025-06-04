@@ -1,18 +1,16 @@
 import express from 'express';
 import { db } from '../db/index.js';
 import { sites, memberships, spaces, cms_types } from '../db/schema.js';
-import { eq, and } from 'drizzle-orm';
+import { eq, or, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { setApiResponseHeaders, handleCorsPreflightRequest } from '../utils/environment.js';
-import { fetchBrandData } from '../utils/brandfetch.js';
 import { logger } from '../utils/logger.js';
-// Import with type any to avoid TypeScript errors
 import slugifyPkg from 'slugify';
 const slugify = slugifyPkg.default || slugifyPkg;
-import { sql } from 'drizzle-orm';
 const router = express.Router();
 // Brandfetch API key
 const BRANDFETCH_API_KEY = 'rPJ4fYfXffPHxhNAIo8lU7mDRQXHsrYqKXQ678ySJsc=';
+const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 // Zod schema for site creation
 const createSiteSchema = z.object({
     name: z.string().min(2, { message: 'Site name must be at least 2 characters.' }),
@@ -21,21 +19,20 @@ const createSiteSchema = z.object({
         .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
         message: 'Subdomain can only contain lowercase letters, numbers, and hyphens, and cannot start or end with a hyphen.',
     })
-        .optional(),
-    domain: z.string().optional(), // Optional domain for brand fetching
-    selectedLogo: z.string().optional(), // User selected logo URL
-    selectedColor: z.string().optional(), // User selected brand color
-    selectedContentTypes: z.array(z.string()).optional(), // Selected content type IDs
+        .optional().or(z.literal('')), // Allow empty string for optional subdomain
+    domain: z.string().optional().or(z.literal('')),
+    selectedLogo: z.string().url({ message: "Invalid URL for logo" }).optional().or(z.literal('')),
+    selectedColor: z.string().regex(/^#(?:[0-9a-fA-F]{3}){1,2}$/, { message: "Invalid hex color format" }).optional().or(z.literal('')),
+    selectedContentTypes: z.array(z.string().uuid("Each content type ID must be a valid UUID")).optional().default([]), // Default to empty array
 });
 // Get all sites for the current user
 router.get('/', async (req, res) => {
     try {
-        // TODO: Replace with actual authenticated user ID from req.user
         const currentUserId = "49a44198-e6e5-4b1e-b8fb-b1c50ee0639d"; // Placeholder
         if (!currentUserId) {
             return res.status(401).json({ message: 'User not authenticated.' });
         }
-        const userSites = await db
+        const userSitesData = await db
             .select({
             id: sites.id,
             name: sites.name,
@@ -49,19 +46,21 @@ router.get('/', async (req, res) => {
             brand_color: sites.brand_color,
             content_types: sites.content_types,
             plan: sites.plan,
+            space_ids: sites.space_ids
         })
             .from(sites)
             .innerJoin(memberships, eq(memberships.siteId, sites.id))
             .where(eq(memberships.userId, currentUserId));
-        // Create a deep copy and add state with proper typing
-        const sitesWithState = JSON.parse(JSON.stringify(userSites));
-        sitesWithState.forEach((site) => {
-            site.state = site.status;
-        });
-        return res.status(200).json(sitesWithState);
+        const formattedSites = userSitesData.map(site => ({
+            ...site,
+            state: site.status,
+            createdAt: site.createdAt?.toISOString(),
+            updatedAt: site.updatedAt?.toISOString(),
+        }));
+        return res.status(200).json(formattedSites);
     }
     catch (error) {
-        console.error('Error fetching sites:', error);
+        logger.error('[API_SITES] Error fetching sites:', error);
         return res.status(500).json({ message: 'Error fetching sites from database' });
     }
 });
@@ -72,61 +71,62 @@ router.get('/:identifier', async (req, res) => {
         if (!identifier) {
             return res.status(400).json({ message: 'Site identifier is required.' });
         }
-        console.log(`Looking for site with identifier: ${identifier}`);
-        // Try to find site by subdomain first
-        let site = await db
-            .select({
-            id: sites.id,
-            name: sites.name,
-            subdomain: sites.subdomain,
-            ownerId: sites.owner_id,
-            createdAt: sites.createdAt,
-            updatedAt: sites.updatedAt,
-            status: sites.status,
-            logo_url: sites.logo_url,
-            brand_color: sites.brand_color,
-            content_types: sites.content_types,
-            plan: sites.plan,
-        })
-            .from(sites)
-            .where(eq(sites.subdomain, identifier))
-            .limit(1)
-            .then((results) => results[0] || null);
-        // If not found by subdomain, try UUID (if it looks like a UUID)
-        if (!site && identifier.includes('-') && identifier.length > 30) {
-            console.log(`Not found by subdomain, trying UUID: ${identifier}`);
-            site = await db
-                .select({
-                id: sites.id,
-                name: sites.name,
-                subdomain: sites.subdomain,
-                ownerId: sites.owner_id,
-                createdAt: sites.createdAt,
-                updatedAt: sites.updatedAt,
-                status: sites.status,
-                logo_url: sites.logo_url,
-                brand_color: sites.brand_color,
-                content_types: sites.content_types,
-                plan: sites.plan,
-            })
-                .from(sites)
-                .where(eq(sites.id, identifier))
-                .limit(1)
-                .then((results) => results[0] || null);
-        }
-        if (!site) {
-            console.log(`Site not found with identifier: ${identifier}`);
+        logger.info(`[API_SITES] Looking for site with identifier: ${identifier}`);
+        const isSiteUUID = uuidRegex.test(identifier);
+        let queryCondition = isSiteUUID ? or(eq(sites.id, identifier), eq(sites.subdomain, identifier)) : eq(sites.subdomain, identifier);
+        const siteData = await db.query.sites.findFirst({
+            where: queryCondition,
+            with: {
+                owner: {
+                    columns: {
+                        id: true,
+                        username: true,
+                        full_name: true,
+                        avatar_url: true
+                    }
+                }
+            }
+        });
+        if (!siteData) {
+            logger.warn(`[API_SITES] Site not found with identifier: ${identifier}`);
             return res.status(404).json({ message: 'Site not found.' });
         }
-        // Add state field for backward compatibility
-        const siteWithState = JSON.parse(JSON.stringify(site));
-        siteWithState.state = siteWithState.status;
-        console.log(`Found site:`, siteWithState);
-        return res.status(200).json(siteWithState);
+        let populatedContentTypes = [];
+        const siteContentTypes = siteData.content_types; // Explicitly type
+        if (siteContentTypes && Array.isArray(siteContentTypes) && siteContentTypes.length > 0) {
+            const cmsTypeIds = siteContentTypes.filter(id => typeof id === 'string' && uuidRegex.test(id));
+            if (cmsTypeIds.length > 0) {
+                try {
+                    populatedContentTypes = await db.select({
+                        id: cms_types.id,
+                        name: cms_types.name,
+                        label: cms_types.label,
+                        icon_name: cms_types.icon_name,
+                        color: cms_types.color,
+                        type: cms_types.type,
+                        fields: cms_types.fields
+                    }).from(cms_types).where(sql `${cms_types.id} IN ${cmsTypeIds}`);
+                }
+                catch (cmsError) {
+                    logger.error(`[API_SITES] Error fetching details for CMS types: ${cmsTypeIds.join(', ')}`, cmsError);
+                    populatedContentTypes = siteContentTypes.map(id => ({ id, name: 'Error', label: 'Error - CMS Type lookup failed' }));
+                }
+            }
+        }
+        const response = {
+            ...siteData,
+            ownerId: siteData.owner_id,
+            createdAt: siteData.createdAt?.toISOString(),
+            updatedAt: siteData.updatedAt?.toISOString(),
+            state: siteData.status,
+            content_types: populatedContentTypes,
+        };
+        logger.info(`[API_SITES] Found site: ${response.name}`);
+        return res.status(200).json(response);
     }
     catch (error) {
-        console.error(`Error fetching site:`, error);
-        return res.status(500).json({ message: 'Error fetching site from database' });
+        logger.error(`[API_SITES] Error fetching site:`, error);
+        return res.status(500).json({ message: 'Error fetching site from database', details: error.message });
     }
 });
 // Apply CORS headers and handle OPTIONS requests for all routes
@@ -139,267 +139,131 @@ router.use((req, res, next) => {
 // Create a new site
 router.post('/', async (req, res) => {
     try {
-        console.log("=== Site Creation Request ===");
-        console.log("Raw request body:", typeof req.body === 'string' ? req.body : JSON.stringify(req.body, null, 2));
-        // Handle both string and object body formats (for Vercel compatibility)
+        logger.info("=== Site Creation Request ===");
         const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-        console.log("Parsed body:", JSON.stringify(body, null, 2));
+        logger.info("[API_SITES] Parsed body for site creation:", body);
         const validationResult = createSiteSchema.safeParse(body);
         if (!validationResult.success) {
-            console.error("Validation failed:", validationResult.error.flatten());
+            logger.error("[API_SITES] Validation failed:", validationResult.error.flatten().fieldErrors);
             return res.status(400).json({
                 message: 'Invalid site data.',
                 errors: { fieldErrors: validationResult.error.flatten().fieldErrors },
             });
         }
         const payload = validationResult.data;
-        console.log("Validated payload:", JSON.stringify(payload, null, 2));
-        console.log("Content types from payload:", payload.selectedContentTypes);
-        console.log(`Content types type: ${typeof payload.selectedContentTypes}, isArray: ${Array.isArray(payload.selectedContentTypes)}, length: ${payload.selectedContentTypes?.length || 0}`);
-        // TODO: Replace with actual authenticated user ID from req.user
+        logger.info("[API_SITES] Validated payload:", payload);
         const currentUserId = "49a44198-e6e5-4b1e-b8fb-b1c50ee0639d"; // Placeholder
-        if (!currentUserId) {
-            return res.status(401).json({ message: 'User not authenticated for creating a site.' });
-        }
-        // Check for subdomain uniqueness
+        // Ensure this user exists in your 'users' table locally and in Supabase
+        // const userExists = await db.query.users.findFirst({ where: eq(users.id, currentUserId) });
+        // if (!userExists) {
+        //   logger.error(`[API_SITES] Critical: Owner/Creator user with ID ${currentUserId} does not exist.`);
+        //   return res.status(500).json({ message: 'Site owner record not found.' });
+        // }
         if (payload.subdomain) {
             const existingSiteWithSubdomain = await db.query.sites.findFirst({
                 where: eq(sites.subdomain, payload.subdomain),
             });
             if (existingSiteWithSubdomain) {
-                return res.status(409).json({ message: 'Subdomain is already taken.' });
+                logger.warn(`[API_SITES] Conflict: Subdomain '${payload.subdomain}' already exists.`);
+                return res.status(409).json({ message: 'This subdomain is already taken.', errors: { fieldErrors: { subdomain: ['This subdomain is already taken.'] } } });
             }
         }
-        // Determine which brand data to use
-        let logoUrl = null;
-        let brandColor = null;
-        // Ensure content types is always an array
-        let contentTypeIds = [];
-        if (payload.selectedContentTypes) {
-            if (Array.isArray(payload.selectedContentTypes)) {
-                contentTypeIds = payload.selectedContentTypes;
-            }
-            else if (typeof payload.selectedContentTypes === 'string') {
-                try {
-                    // Try to parse if it's a JSON string array
-                    const parsed = JSON.parse(payload.selectedContentTypes);
-                    if (Array.isArray(parsed)) {
-                        contentTypeIds = parsed;
-                    }
-                }
-                catch (e) {
-                    // If not JSON, treat as a comma-separated string
-                    contentTypeIds = payload.selectedContentTypes.split(',').map((item) => item.trim());
-                }
-            }
-        }
-        console.log("Processed content type IDs:", contentTypeIds);
-        // If user provided selected brand assets, use those
-        if (payload.selectedLogo || payload.selectedColor) {
-            console.log('Using user-selected brand assets');
-            logoUrl = payload.selectedLogo || null;
-            brandColor = payload.selectedColor || null;
-        }
-        // Otherwise fetch from Brandfetch if domain is provided
-        else if (payload.domain) {
-            console.log(`Fetching brand data for domain: ${payload.domain}`);
-            const brandData = await fetchBrandData(payload.domain, BRANDFETCH_API_KEY);
-            logoUrl = brandData.logoUrl;
-            brandColor = brandData.brandColor;
-        }
-        // Fetch CMS type details for the selected IDs
-        let cmsTypes = [];
-        if (contentTypeIds && contentTypeIds.length > 0) {
-            try {
-                cmsTypes = await db.select({
-                    id: cms_types.id,
-                    name: cms_types.name,
-                    description: cms_types.description,
-                    color: cms_types.color,
-                    icon_name: cms_types.icon_name,
-                })
-                    .from(cms_types)
-                    .where(sql `${cms_types.id} IN (${sql.join(contentTypeIds, sql `, `)})`);
-                console.log(`Found ${cmsTypes.length} CMS types for the selected IDs`);
-            }
-            catch (error) {
-                console.error('Error fetching CMS types:', error);
-                // Continue with site creation even if CMS types fetch fails
-            }
-        }
-        // Skip transaction, create only the site without membership
-        console.log('Creating site with data:', {
-            name: payload.name,
-            subdomain: payload.subdomain,
-            ownerId: currentUserId,
-            status: 'active',
-            logoUrl,
-            brandColor,
-            contentTypeIds
-        });
-        const siteInsertResult = await db
-            .insert(sites)
-            .values({
+        const logoUrl = payload.selectedLogo || null;
+        const brandColor = payload.selectedColor || null;
+        const contentTypeIds = payload.selectedContentTypes || []; // Default to empty array if undefined
+        logger.info("[API_SITES] Processed content type IDs for site storage:", contentTypeIds);
+        const siteValues = {
             name: payload.name,
             subdomain: payload.subdomain,
             owner_id: currentUserId,
-            status: 'active', // Default status for new sites
+            status: 'active',
             logo_url: logoUrl,
             brand_color: brandColor,
-            content_types: contentTypeIds.length > 0 ? contentTypeIds : undefined, // Store CMS type IDs
-            plan: 'lite', // Default plan is lite
-        })
-            .returning({
-            id: sites.id,
-            name: sites.name,
-            subdomain: sites.subdomain,
-            ownerId: sites.owner_id,
-            createdAt: sites.createdAt,
-            updatedAt: sites.updatedAt,
-            status: sites.status,
-            logo_url: sites.logo_url,
-            brand_color: sites.brand_color,
-            content_types: sites.content_types,
-            plan: sites.plan,
-        });
+            content_types: contentTypeIds,
+            plan: 'lite',
+            // space_ids will be updated later
+        };
+        const siteInsertResult = await db
+            .insert(sites)
+            .values(siteValues)
+            .returning();
         if (!siteInsertResult || siteInsertResult.length === 0) {
             throw new Error('Failed to create the site record in the database.');
         }
-        // Add state field to the response
-        const newSiteRaw = siteInsertResult[0];
-        const newSite = JSON.parse(JSON.stringify(newSiteRaw));
-        newSite.state = newSite.status;
-        console.log('Site created successfully:', newSite);
-        // Automatically add the creator as an admin member of the new site
+        const newDbSite = siteInsertResult[0];
+        const createdSiteId = newDbSite.id;
+        logger.info('[API_SITES] Site record created successfully:', { id: newDbSite.id, name: newDbSite.name, subdomain: newDbSite.subdomain });
         await db.insert(memberships).values({
             userId: currentUserId,
-            siteId: newSite.id,
-            role: 'admin', // Assigning 'admin' role to the creator
+            siteId: createdSiteId,
+            role: 'admin',
         });
-        console.log(`User ${currentUserId} added as admin to site ${newSite.id}`);
-        // Create spaces for selected content types
-        if (contentTypeIds.length > 0 && cmsTypes.length > 0) {
-            console.log(`Creating spaces for selected CMS types: ${cmsTypes.map(ct => ct.name).join(', ')}`);
-            // Array to store created space IDs
-            const createdSpaceIds = [];
-            // Create a space for each selected content type
-            for (const cmsType of cmsTypes) {
-                console.log(`Processing CMS type: ${cmsType.name} (${cmsType.id})`);
-                // Generate readable name for the space based on CMS type name
-                let spaceName = '';
-                // Use the CMS type name directly if it's available
-                if (cmsType.name) {
-                    spaceName = cmsType.name;
+        logger.info(`[API_SITES] User ${currentUserId} added as admin to site ${createdSiteId}`);
+        let createdSpaceIds = [];
+        if (contentTypeIds.length > 0) {
+            const cmsTypeDetails = await db.select({
+                id: cms_types.id,
+                name: cms_types.name, // This is the slug (e.g., "ideas-wishlist")
+                label: cms_types.label, // This is the display name (e.g., "Ideas & Wishlist")
+                description: cms_types.description
+            }).from(cms_types).where(sql `${cms_types.id} IN ${contentTypeIds}`);
+            logger.info(`[API_SITES] Found ${cmsTypeDetails.length} CMS types for creating default spaces.`);
+            for (const cmsType of cmsTypeDetails) {
+                logger.info(`[API_SITES] Processing CMS Type for default space - ID: ${cmsType.id}, Name (for slug): ${cmsType.name}, Label (for space name): ${cmsType.label}`);
+                const spaceName = cmsType.label;
+                const spaceSlug = cmsType.name;
+                if (!spaceName || typeof spaceName !== 'string' || spaceName.trim() === '') {
+                    logger.error(`[API_SITES] Critical error: CMS Type ${cmsType.id} (${cmsType.name}) has an invalid or missing label: '${cmsType.label}'. Skipping space creation.`);
+                    continue;
                 }
-                else {
-                    // Otherwise, try to generate a good name from any available information
-                    if (cmsType.id.toLowerCase().includes('discussion')) {
-                        spaceName = 'Discussions';
-                    }
-                    else if (cmsType.id.toLowerCase().includes('qa')) {
-                        spaceName = 'Q&A';
-                    }
-                    else if (cmsType.id.toLowerCase().includes('wishlist')) {
-                        spaceName = 'Wishlist';
-                    }
-                    else if (cmsType.id.toLowerCase().includes('blog')) {
-                        spaceName = 'Blog';
-                    }
-                    else if (cmsType.id.toLowerCase().includes('knowledge')) {
-                        spaceName = 'Knowledge Base';
-                    }
-                    else if (cmsType.id.toLowerCase().includes('event')) {
-                        spaceName = 'Events';
-                    }
-                    else if (cmsType.id.toLowerCase().includes('landing')) {
-                        spaceName = 'Landing Pages';
-                    }
-                    else if (cmsType.id.toLowerCase().includes('job')) {
-                        spaceName = 'Job Board';
+                if (!spaceSlug || typeof spaceSlug !== 'string' || spaceSlug.trim() === '') {
+                    logger.error(`[API_SITES] Critical error: CMS Type ${cmsType.id} (${cmsType.label}) has an invalid or missing name (slug): '${cmsType.name}'. Skipping space creation.`);
+                    continue;
+                }
+                const spaceData = {
+                    name: spaceName,
+                    slug: spaceSlug,
+                    description: cmsType.description || `${spaceName} space`,
+                    site_id: createdSiteId,
+                    creator_id: currentUserId,
+                    visibility: 'public',
+                    cms_type: cmsType.id,
+                    hidden: false,
+                };
+                logger.info(`[API_SITES] Attempting to create space in database with data:`, spaceData);
+                try {
+                    const spaceInsertResult = await db.insert(spaces).values(spaceData).returning({ id: spaces.id });
+                    if (spaceInsertResult && spaceInsertResult.length > 0 && spaceInsertResult[0].id) {
+                        createdSpaceIds.push(spaceInsertResult[0].id);
+                        logger.info(`[API_SITES] Space '${spaceData.name}' created successfully with ID: ${spaceInsertResult[0].id}`);
                     }
                     else {
-                        // Fall back to a generic name
-                        spaceName = `Space for ${cmsType.id.substring(0, 8)}`;
+                        logger.error(`[API_SITES] Space creation for CMS Type ${cmsType.name} returned empty or invalid result:`, spaceInsertResult);
                     }
                 }
-                console.log(`Using name "${spaceName}" for space`);
-                // Generate slug from name
-                const spaceSlug = slugify(spaceName, {
-                    lower: true,
-                    strict: true
-                });
-                console.log(`Generated slug for ${spaceName}: ${spaceSlug}`);
-                try {
-                    console.log(`Attempting to create space in database for ${cmsType.name}...`);
-                    // Insert the space using the spaces table object instead of raw SQL
-                    const spaceInsertResult = await db.insert(spaces)
-                        .values({
-                        name: spaceName,
-                        slug: spaceSlug,
-                        description: cmsType.description || `${spaceName} space`,
-                        creator_id: currentUserId,
-                        site_id: newSite.id,
-                        visibility: 'public',
-                        cms_type: cmsType.id, // This is now a UUID foreign key
-                        hidden: false
-                    })
-                        .returning({
-                        id: spaces.id,
-                        name: spaces.name,
-                        slug: spaces.slug,
-                        description: spaces.description,
-                        site_id: spaces.site_id,
-                        visibility: spaces.visibility,
-                        cms_type: spaces.cms_type,
-                        hidden: spaces.hidden
-                    });
-                    console.log(`Space created successfully for ${cmsType.name}, result:`, JSON.stringify(spaceInsertResult));
-                    console.log(`Created ${cmsType.name} space: ${spaceName}`);
-                    // Extract the space ID from the result and add it to our array
-                    if (spaceInsertResult && spaceInsertResult.length > 0) {
-                        createdSpaceIds.push(spaceInsertResult[0].id);
-                        console.log(`Added space ID ${spaceInsertResult[0].id} to created spaces list`);
-                    }
-                }
-                catch (spaceError) {
-                    console.error(`Error creating space for ${cmsType.name}:`, spaceError);
-                    console.error(`Error details: ${spaceError.message}, code: ${spaceError.code}`);
-                    // Continue with other spaces even if one fails
+                catch (spaceCreationError) {
+                    logger.error(`[API_SITES] Error creating default space for CMS Type ${cmsType.name} (ID: ${cmsType.id}):`, spaceCreationError);
                 }
             }
-            // Verify spaces were created
-            try {
-                const createdSpaces = await db.select({
-                    id: spaces.id,
-                    name: spaces.name,
-                    cms_type: spaces.cms_type
-                })
-                    .from(spaces)
-                    .where(eq(spaces.site_id, newSite.id));
-                console.log(`Verification - Spaces created for site ${newSite.id}:`, createdSpaces);
-                // Update the site record with created space IDs
-                if (createdSpaceIds.length > 0) {
-                    console.log(`Updating site with space IDs: ${createdSpaceIds.join(', ')}`);
-                    // Update the site record to include the space IDs
-                    await db.update(sites)
-                        .set({
-                        space_ids: createdSpaceIds
-                    })
-                        .where(eq(sites.id, newSite.id));
-                    console.log(`Site updated with space IDs successfully`);
-                }
-            }
-            catch (verifyError) {
-                console.error('Error verifying created spaces:', verifyError);
+            if (createdSpaceIds.length > 0) {
+                logger.info(`[API_SITES] Updating site ${createdSiteId} with space IDs: ${createdSpaceIds.join(', ')}`);
+                await db.update(sites).set({ space_ids: createdSpaceIds }).where(eq(sites.id, createdSiteId));
+                newDbSite.space_ids = createdSpaceIds;
+                logger.info(`[API_SITES] Site ${createdSiteId} updated with space_ids.`);
             }
         }
-        else {
-            console.log('No CMS types found or selected, skipping space creation');
-        }
-        return res.status(201).json(newSite);
+        const responseSite = {
+            ...newDbSite,
+            ownerId: newDbSite.owner_id,
+            createdAt: newDbSite.createdAt?.toISOString(),
+            updatedAt: newDbSite.updatedAt?.toISOString(),
+            state: newDbSite.status,
+            space_ids: newDbSite.space_ids || []
+        };
+        return res.status(201).json(responseSite);
     }
     catch (error) {
-        console.error('Error creating site:', error);
+        logger.error('[API_SITES] Error during site creation process:', error);
         return res.status(500).json({
             message: 'Error creating site in database',
             details: error.message || 'Unknown error',
@@ -431,169 +295,80 @@ router.get('/debug/schema', async (req, res) => {
         return res.status(500).json({ message: 'Error fetching schema information' });
     }
 });
-// Create a space for a site
-router.post('/:siteId/spaces', async (req, res) => {
-    try {
-        const { siteId } = req.params;
-        // Get site to verify it exists
-        const site = await db.query.sites.findFirst({
-            where: eq(sites.id, siteId)
-        });
-        if (!site) {
-            return res.status(404).json({ message: 'Site not found' });
-        }
-        // TODO: Replace with actual authenticated user ID from req.user
-        const currentUserId = "49a44198-e6e5-4b1e-b8fb-b1c50ee0639d"; // Placeholder
-        // Validate request body
-        const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-        logger.info(`Creating space for site ${siteId}:`, body);
-        const { name, slug, cms_type, visibility = 'public', description, hidden = false } = body;
-        if (!name || !slug) {
-            return res.status(400).json({ message: 'Name and slug are required fields' });
-        }
-        // Validate slug format and uniqueness
-        if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
-            return res.status(400).json({
-                message: 'Invalid slug format. Use lowercase letters, numbers, and hyphens only.'
-            });
-        }
-        // Check if a space with this slug already exists for this site
-        const existingSpace = await db.query.spaces.findFirst({
-            where: and(eq(spaces.site_id, siteId), eq(spaces.slug, slug))
-        });
-        if (existingSpace) {
-            return res.status(409).json({ message: 'A space with this slug already exists for this site' });
-        }
-        // Insert the new space
-        const spaceResult = await db.insert(spaces)
-            .values({
-            name,
-            slug,
-            description: description || `${name} space`,
-            creator_id: currentUserId,
-            site_id: siteId,
-            visibility,
-            cms_type,
-            hidden
-        })
-            .returning({
-            id: spaces.id,
-            name: spaces.name,
-            slug: spaces.slug,
-            description: spaces.description,
-            site_id: spaces.site_id,
-            visibility: spaces.visibility,
-            cms_type: spaces.cms_type,
-            hidden: spaces.hidden
-        });
-        logger.info(`Space creation result:`, spaceResult);
-        // Extract the space ID from the result
-        let spaceId = null;
-        if (spaceResult && spaceResult.length > 0) {
-            spaceId = spaceResult[0].id;
-            logger.info(`Space created with ID ${spaceId}`);
-        }
-        if (!spaceId) {
-            logger.error("Failed to extract space ID from result:", spaceResult);
-            return res.status(500).json({ message: 'Space was created but ID could not be retrieved' });
-        }
-        // Fetch the newly created space
-        let spaceData = await db.query.spaces.findFirst({
-            where: eq(spaces.id, spaceId)
-        });
-        logger.info(`Space created successfully:`, spaceData);
-        if (!spaceData) {
-            // Try again with slug if ID query fails
-            const spaceBySlug = await db.query.spaces.findFirst({
-                where: and(eq(spaces.site_id, siteId), eq(spaces.slug, slug))
-            });
-            if (!spaceBySlug) {
-                return res.status(500).json({ message: 'Space was created but could not be retrieved' });
-            }
-            logger.info(`Space found by slug:`, spaceBySlug);
-            // Use this space for the rest of the processing
-            spaceData = spaceBySlug;
-        }
-        // Update the site's space_ids array and content_types array
-        // First get the current values
-        const siteData = await db.query.sites.findFirst({
-            where: eq(sites.id, siteId),
-            columns: { space_ids: true, content_types: true }
-        });
-        // Update space_ids
-        const currentSpaceIds = siteData?.space_ids || [];
-        const updatedSpaceIds = [...currentSpaceIds];
-        if (!updatedSpaceIds.includes(spaceData.id)) {
-            updatedSpaceIds.push(spaceData.id);
-            logger.info(`Adding space ID ${spaceData.id} to site's space_ids array`);
-        }
-        // Update content_types if cms_type is provided and not already in the list
-        const currentContentTypes = siteData?.content_types || [];
-        const updatedContentTypes = [...currentContentTypes];
-        if (cms_type && !updatedContentTypes.includes(cms_type)) {
-            updatedContentTypes.push(cms_type);
-            logger.info(`Adding cms_type ${cms_type} to site's content_types array`);
-        }
-        // Update the site with both fields
-        await db.update(sites)
-            .set({
-            space_ids: updatedSpaceIds,
-            content_types: updatedContentTypes
-        })
-            .where(eq(sites.id, siteId));
-        logger.info(`Updated site ${siteId} with new space ID ${spaceData.id} and content type ${cms_type}`);
-        return res.status(201).json(spaceData);
-    }
-    catch (error) {
-        logger.error('Error creating space:', error);
-        return res.status(500).json({
-            message: 'Error creating space',
-            details: error instanceof Error ? error.message : 'Unknown error'
-        });
-    }
-});
-// Get all spaces for a site
+// Get spaces for a site (Updated to handle siteId or subdomain and populate cmsType details)
 router.get('/:siteId/spaces', async (req, res) => {
     try {
         const { siteId } = req.params;
-        console.log(`Spaces API: Fetching spaces for site ID/subdomain: ${siteId}`);
-        // Check if siteId is a subdomain or UUID
-        const isUUID = siteId.includes('-') && siteId.length > 30;
-        // Get site to verify it exists - try by subdomain first if not UUID
-        let site;
-        if (!isUUID) {
-            // First try to find by subdomain
-            site = await db.query.sites.findFirst({
-                where: eq(sites.subdomain, siteId)
+        logger.info(`[API_SITES_SPACES] Fetching spaces for site identifier: ${siteId}`);
+        const isSiteUUID = uuidRegex.test(siteId);
+        let actualSiteId = siteId;
+        if (!isSiteUUID) {
+            const siteBySubdomain = await db.query.sites.findFirst({
+                where: eq(sites.subdomain, siteId),
+                columns: { id: true }
             });
-        }
-        // If not found or was a UUID, try by ID
-        if (!site) {
-            site = await db.query.sites.findFirst({
-                where: eq(sites.id, siteId)
-            });
-        }
-        if (!site) {
-            console.error(`Spaces API: Site not found with identifier: ${siteId}`);
-            return res.status(404).json({ message: 'Site not found' });
-        }
-        console.log(`Spaces API: Found site: ${site.name} (${site.id})`);
-        // Fetch all spaces for this site using the UUID
-        const spacesList = await db.query.spaces.findMany({
-            where: eq(spaces.site_id, site.id)
-        });
-        console.log(`Spaces API: Found ${spacesList.length} spaces for site ${site.id}`);
-        if (spacesList.length > 0) {
-            console.log(`Spaces API: First space: ${spacesList[0].name} (${spacesList[0].id})`);
+            if (!siteBySubdomain) {
+                logger.warn(`[API_SITES_SPACES] Site not found with subdomain: ${siteId}`);
+                return res.status(404).json({ message: 'Site not found by subdomain' });
+            }
+            actualSiteId = siteBySubdomain.id;
+            logger.info(`[API_SITES_SPACES] Found site ID ${actualSiteId} for subdomain ${siteId}`);
         }
         else {
-            console.log(`Spaces API: No spaces found for site ${site.id}`);
+            // If it is a UUID, verify the site exists
+            const siteExists = await db.query.sites.findFirst({
+                where: eq(sites.id, actualSiteId),
+                columns: { id: true }
+            });
+            if (!siteExists) {
+                logger.warn(`[API_SITES_SPACES] Site not found with UUID: ${actualSiteId}`);
+                return res.status(404).json({ message: 'Site not found by UUID' });
+            }
         }
-        return res.status(200).json(spacesList);
+        const siteSpacesWithDetails = await db
+            .select({
+            space_id: spaces.id,
+            space_name: spaces.name,
+            space_slug: spaces.slug,
+            space_description: spaces.description,
+            space_visibility: spaces.visibility,
+            space_hidden: spaces.hidden,
+            space_site_id: spaces.site_id,
+            space_creator_id: spaces.creator_id,
+            space_created_at: spaces.created_at,
+            space_updated_at: spaces.updated_at,
+            cms_type_id: cms_types.id,
+            cms_type_name_slug: cms_types.name, // Renamed to avoid conflict with space.name
+            cms_type_label_text: cms_types.label, // Renamed to avoid conflict
+            cms_type_icon: cms_types.icon_name,
+            cms_type_color: cms_types.color,
+        })
+            .from(spaces)
+            .leftJoin(cms_types, eq(spaces.cms_type, cms_types.id))
+            .where(eq(spaces.site_id, actualSiteId));
+        logger.info(`[API_SITES_SPACES] Found ${siteSpacesWithDetails.length} spaces for site ${actualSiteId}`);
+        const formattedSpaces = siteSpacesWithDetails.map(s => ({
+            id: s.space_id,
+            name: s.space_name,
+            slug: s.space_slug,
+            description: s.space_description,
+            visibility: s.space_visibility,
+            hidden: s.space_hidden,
+            site_id: s.space_site_id,
+            creator_id: s.space_creator_id,
+            created_at: s.space_created_at,
+            updated_at: s.space_updated_at,
+            cms_type: s.cms_type_id,
+            cms_type_name: s.cms_type_name_slug, // Use the aliased name
+            cms_type_label: s.cms_type_label_text, // Use the aliased label
+            cms_type_icon: s.cms_type_icon,
+            cms_type_color: s.cms_type_color,
+        }));
+        return res.status(200).json(formattedSpaces);
     }
     catch (error) {
-        console.error('Error fetching spaces:', error);
-        return res.status(500).json({ message: 'Failed to fetch spaces', details: error instanceof Error ? error.message : 'Unknown error' });
+        logger.error('[API_SITES_SPACES] Error fetching spaces:', error);
+        return res.status(500).json({ message: 'Failed to fetch spaces', details: error.message });
     }
 });
 export default router;
