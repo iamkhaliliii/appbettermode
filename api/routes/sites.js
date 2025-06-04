@@ -4,6 +4,8 @@ import { db } from "../db/index.js";
 import { sites } from "../db/schema.js";
 import { eq, or } from "drizzle-orm";
 import { spaces } from "../db/schema.js";
+import { cms_types } from "../db/schema.js";
+import { sql } from "drizzle-orm";
 
 const router = express.Router();
 
@@ -49,21 +51,37 @@ router.get('/:identifier', async (req, res) => {
       return res.status(404).json({ message: 'Site not found' });
     }
     
+    let populatedContentTypes = [];
+    if (site.content_types && Array.isArray(site.content_types) && site.content_types.length > 0) {
+      // Assuming site.content_types is an array of cms_type IDs (UUIDs)
+      const cmsTypeIds = site.content_types.filter(id => typeof id === 'string'); // Ensure they are strings
+      if (cmsTypeIds.length > 0) {
+        populatedContentTypes = await db.select({
+          id: cms_types.id,
+          name: cms_types.name,
+          label: cms_types.label,
+          icon_name: cms_types.icon_name,
+          color: cms_types.color,
+          type: cms_types.type,
+          // Add other fields from cms_types if needed by the sidebar
+        }).from(cms_types).where(sql`${cms_types.id} IN ${cmsTypeIds}`);
+      }
+    }
+
     // Ensure the response structure matches frontend expectations
     const formattedSite = {
       id: site.id,
       name: site.name,
       subdomain: site.subdomain,
-      ownerId: site.owner_id, // Map owner_id to ownerId
-      createdAt: site.createdAt?.toISOString(), // Ensure dates are ISO strings
+      ownerId: site.owner_id, 
+      createdAt: site.createdAt?.toISOString(),
       updatedAt: site.updatedAt?.toISOString(),
       status: site.status,
       plan: site.plan,
       logo_url: site.logo_url,
       brand_color: site.brand_color,
-      content_types: site.content_types,
+      content_types: populatedContentTypes, // Now populated with details
       space_ids: site.space_ids
-      // Map other fields as necessary
     };
 
     console.log(`[API_SITES] Site found:`, formattedSite);
@@ -175,8 +193,11 @@ router.post('/', async (req, res) => {
       .values({
         name: name,
         subdomain: subdomain || null,
-        owner_id: ownerId || '49a44198-e6e5-4b1e-b8fb-b1c50ee0639d', // Use provided ownerId or fallback
-        status: 'active' // Default status
+        owner_id: ownerId || '49a44198-e6e5-4b1e-b8fb-b1c50ee0639d',
+        status: 'active',
+        logo_url: body.selectedLogo || null,
+        brand_color: body.selectedColor || null,
+        content_types: body.selectedContentTypes || []
       })
       .returning();
     
@@ -185,6 +206,61 @@ router.post('/', async (req, res) => {
     }
     
     const newDbSite = insertResult[0];
+    const createdSiteId = newDbSite.id;
+    let createdSpaceIds = [];
+
+    if (body.selectedContentTypes && Array.isArray(body.selectedContentTypes) && body.selectedContentTypes.length > 0) {
+      const cmsTypeDetails = await db.select({
+        id: cms_types.id,
+        name: cms_types.name,     // This is the slug, e.g., "ideas-wishlist"
+        label: cms_types.label    // This is the display name, e.g., "Ideas & Wishlist"
+      }).from(cms_types).where(sql`${cms_types.id} IN ${body.selectedContentTypes}`);
+
+      console.log(`[API_SITES] Found ${cmsTypeDetails.length} CMS types for the selected IDs to create spaces from.`);
+
+      for (const cmsType of cmsTypeDetails) {
+        // Ensure cmsType.label and cmsType.name are correctly populated here
+        console.log(`[API_SITES] Processing CMS Type for default space - ID: ${cmsType.id}, Name (for slug): ${cmsType.name}, Label (for space name): ${cmsType.label}`);
+        
+        const spaceName = cmsType.label; // Explicitly use label for the space name
+        const spaceSlug = cmsType.name;  // Explicitly use name (slug) for the space slug
+
+        if (!spaceName || !spaceSlug) {
+            console.error(`[API_SITES] Critical error: CMS Type ${cmsType.id} is missing name or label. Skipping space creation.`);
+            continue;
+        }
+
+        const spaceData = {
+          name: spaceName,
+          slug: spaceSlug,
+          description: `${spaceName} space`, // Use the actual spaceName (which is the label)
+          site_id: createdSiteId,
+          creator_id: newDbSite.owner_id, 
+          visibility: 'public', 
+          cms_type: cmsType.id, 
+          hidden: false,
+        };
+
+        console.log(`[API_SITES] Attempting to create space in database with data:`, spaceData);
+
+        try {
+          const spaceInsertResult = await db.insert(spaces).values(spaceData).returning({ id: spaces.id });
+          if (spaceInsertResult && spaceInsertResult.length > 0) {
+            createdSpaceIds.push(spaceInsertResult[0].id);
+            console.log(`[API_SITES] Space created successfully for CMS Type ${cmsType.name}, Space ID: ${spaceInsertResult[0].id}`);
+          }
+        } catch (spaceCreationError) {
+          console.error(`[API_SITES] Error creating default space for CMS type ${cmsType.name} (ID: ${cmsType.id}):`, spaceCreationError);
+        }
+      }
+      
+      if (createdSpaceIds.length > 0) {
+        console.log(`[API_SITES] Updating site ${createdSiteId} with space IDs: ${createdSpaceIds.join(', ')}`);
+        await db.update(sites).set({ space_ids: createdSpaceIds }).where(eq(sites.id, createdSiteId));
+        newDbSite.space_ids = createdSpaceIds; 
+      }
+    }
+
     const newSiteResponse = {
       id: newDbSite.id,
       name: newDbSite.name,
@@ -195,7 +271,9 @@ router.post('/', async (req, res) => {
       status: newDbSite.status,
       plan: newDbSite.plan,
       logo_url: newDbSite.logo_url,
-      brand_color: newDbSite.brand_color
+      brand_color: newDbSite.brand_color,
+      content_types: newDbSite.content_types,
+      space_ids: newDbSite.space_ids || [],
     };
     
     console.log(`[API_SITES] Site created successfully:`, newSiteResponse);

@@ -31,6 +31,7 @@ import {
   Palette,
   Camera,
   Zap,
+  Layout,
 } from "lucide-react";
 import { SideNavItem, SideNavItemWithBadge } from "./SidebarNavigationItems";
 import { APP_ROUTES } from "@/config/routes";
@@ -44,6 +45,7 @@ import { getApiUrl } from '@/lib/utils';
 interface CmsType {
   id: string;
   name: string;
+  label: string;
   description?: string;
   icon_name?: string;
   color?: string;
@@ -56,24 +58,34 @@ function getApiBaseUrl(): string {
   return getApiUrl();
 }
 
-// Utility function to get icon component based on CMS type
-function getIconComponent(cmsType: string): React.ReactNode {
-  switch (cmsType.toLowerCase()) {
-    case 'event':
-    case 'events':
-      return <Calendar className="h-3.5 w-3.5" />;
-    case 'discussion':
-    case 'discussions':
+// Updated utility function to get icon component based on icon_name string
+function getIconByName(iconName?: string): React.ReactNode {
+  if (!iconName) return <FileText className="h-3.5 w-3.5" />;
+  const normalizedIcon = iconName.toLowerCase().trim();
+  switch (normalizedIcon) {
+    case 'calendar': return <Calendar className="h-3.5 w-3.5" />;
+    case 'message-square':
+    case 'messagesquare':
+    case 'message-circle':
       return <MessageSquare className="h-3.5 w-3.5" />;
-    case 'article':
-    case 'articles':
+    case 'file-text':
+    case 'filetext':
+    case 'feather':
       return <FileText className="h-3.5 w-3.5" />;
-    case 'question':
-    case 'questions':
+    case 'help-circle':
+    case 'helpcircle':
       return <HelpCircle className="h-3.5 w-3.5" />;
-    case 'wishlist':
+    case 'star':
+    case 'lightbulb':
       return <Star className="h-3.5 w-3.5" />;
+    case 'layout': return <Layout className="h-3.5 w-3.5" />;
+    case 'book-open':
+    case 'bookopen':
+    case 'book':
+      return <BookOpen className="h-3.5 w-3.5" />;
+    case 'briefcase': return <Briefcase className="h-3.5 w-3.5" />;
     default:
+      console.warn(`[ContentSidebar] Unknown icon_name: ${iconName}, using default FileText.`);
       return <FileText className="h-3.5 w-3.5" />;
   }
 }
@@ -261,9 +273,9 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
                     key={cmsType.id}
                     href={getContentSectionUrl(cmsType.name.toLowerCase())}
                     isActive={isActiveUrl && isActiveUrl(getContentSectionUrl(cmsType.name.toLowerCase()), currentPathname)}
-                    icon={getIconComponent(cmsType.name)}
+                    icon={getIconByName(cmsType.icon_name)}
                   >
-                    {cmsType.name}
+                    {cmsType.label}
                   </SideNavItem>
                 ))}
               </>

@@ -55,6 +55,7 @@ interface CmsType {
   favorite: boolean;
   type: string;
   fields: any[];
+  label: string;
 }
 
 // --- Validation Schema (for create site form) ---
@@ -85,7 +86,7 @@ const getIconComponent = (iconName: string) => {
   const normalizedIcon = iconName?.toLowerCase().trim();
   
   // Knowledge Base icons
-  if (normalizedIcon?.includes('knowledge') || normalizedIcon === 'kb' || 
+  if (normalizedIcon === 'book-open' || normalizedIcon?.includes('knowledge') || normalizedIcon === 'kb' || 
       normalizedIcon === 'book' || normalizedIcon?.includes('doc')) {
     return <BookOpen className="h-4 w-4 text-rose-500" />;
   }
@@ -182,15 +183,15 @@ const getColorClass = (color: string) => {
   return colorMap[normalizedColor] || normalizedColor || 'gray';
 };
 
-// Content Types for Step 3 ---
-interface ContentType {
-  id: string;        // This should be the actual UUID from cms_types table
-  title: string;
+// Content type for UI (ensure this is accessible or redefined in SitePreview.tsx if not imported)
+interface ContentTypeUIData {
+  id: string;
+  title: string; // This is the label
   description: string;
   icon: React.ReactNode;
   color: string;
   preview: React.ReactNode;
-  name: string;
+  name: string; // This is the slug/name
 }
 
 // نام شرکت‌های معروف برای ایجاد لیست Dropdown
@@ -270,7 +271,7 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
   const [showManualColorInput, setShowManualColorInput] = useState(false);
   
   // Content types state
-  const [contentTypes, setContentTypes] = useState<ContentType[]>([]);
+  const [contentTypes, setContentTypes] = useState<ContentTypeUIData[]>([]);
   const [loadingContentTypes, setLoadingContentTypes] = useState(false);
   
   // Fetch content types from API
@@ -293,16 +294,16 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
               let normalizedName = item.name.toLowerCase().trim();
               
               // For debugging
-              console.log(`CMS Type: ${item.name} (ID: ${item.id})`);
+              console.log(`CMS Type: ${item.name} (ID: ${item.id}), Label: ${item.label}`);
               
               return {
                 id: item.id, // Use the actual UUID from the cms_types table
-                title: item.name.charAt(0).toUpperCase() + item.name.slice(1).replace(/_/g, ' '),
+                title: item.label, // CHANGED: Use label for display title
                 description: item.description || `Create ${item.name} content`,
                 icon: getIconComponent(item.icon_name),
                 color: getColorClass(item.color),
                 preview: getPreviewComponent(item.name),
-                name: normalizedName // Keep normalized name for display
+                name: normalizedName // Keep normalized name for internal use / keying if needed
               };
             });
             
@@ -366,6 +367,16 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
   const selectedColor = watch('selectedColor') || '#6366f1';
   const selectedContentTypes = watch('selectedContentTypes') || [];
   
+  // Derive selected content type objects for preview
+  const selectedContentTypeObjects = React.useMemo(() => {
+    if (!contentTypes || contentTypes.length === 0 || !selectedContentTypes || selectedContentTypes.length === 0) {
+      return [];
+    }
+    return selectedContentTypes
+      .map(id => contentTypes.find(ct => ct.id === id))
+      .filter(Boolean) as ContentTypeUIData[]; // Asserting as ContentTypeUIData defined above or imported
+  }, [selectedContentTypes, contentTypes]);
+
   // Function to fetch brand data
   const fetchBrandData = async () => {
     if (!domainValue) {
@@ -1087,7 +1098,7 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                 previewLogo={selectedLogo || (brandData.logos.length > 0 ? brandData.logos[0].url : "")}
                 subdomainValue={subdomainValue || ""}
                 wizardStep={wizardStep}
-                selectedContentTypes={selectedContentTypes}
+                selectedContentTypeObjects={selectedContentTypeObjects}
               />
             </div>
           </div>

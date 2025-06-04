@@ -2,13 +2,21 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, MessageSquare, HelpCircle, Star, Layout, BookOpen, Briefcase, FileText, Home, LayoutDashboard } from 'lucide-react';
 
+// Interface for the data structure of content types passed to preview
+interface ContentTypeUIDataForPreview {
+  id: string;
+  title: string; // This is the label (e.g., "Q&A", "Discussions")
+  icon: React.ReactNode; // This is already the React Icon component
+  // name: string; // slug/name, if needed for other logic, but not directly for display loop
+}
+
 interface SitePreviewProps {
   previewName: string;
   previewColor: string;
   previewLogo: string;
   subdomainValue: string;
   wizardStep: number;
-  selectedContentTypes?: string[];
+  selectedContentTypeObjects?: ContentTypeUIDataForPreview[]; // Changed prop name and type
 }
 
 export const SitePreview: React.FC<SitePreviewProps> = ({
@@ -17,227 +25,46 @@ export const SitePreview: React.FC<SitePreviewProps> = ({
   previewLogo,
   subdomainValue,
   wizardStep,
-  selectedContentTypes = [],
+  selectedContentTypeObjects = [], // Use new prop name
 }) => {
 
-  // Helper function to get icon and name for each content type
+  // Helper function to get icon and name for each content type (can be simplified or removed if icon comes from prop)
+  // For now, this might still be used as a fallback or for other parts not covered by selectedContentTypeObjects
   const getContentTypeInfo = (type: string) => {
-    // Special handling for specific content types that might have multiple formats
+    // ... (keep existing getContentTypeInfo as it might be used by other parts or as fallback) ...
+    // This function might still be useful if we need to generate a preview for a type *not* in selectedContentTypeObjects
+    // or if selectedContentTypeObjects doesn't contain all info (though it should now).
     if (!type) {
-      console.log("Undefined content type received");
+      console.log("Undefined content type received in getContentTypeInfo");
       return { 
         icon: <FileText className="h-4 w-4 text-gray-500" />, 
         name: "Unknown", 
         previewContent: null 
       };
     }
-    
-    // Knowledge Base special handling
-    if (type.toLowerCase().includes('knowledge') || type.toLowerCase() === 'kb' || type.toLowerCase().includes('docs')) {
-      return { 
-        icon: <BookOpen className="h-4 w-4 text-rose-500" />, 
-        name: 'Knowledge Base',
-        previewContent: (
-          <div className="mt-1 grid grid-cols-2 gap-2 w-full">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-16 rounded bg-gray-100 dark:bg-gray-800 p-2">
-                <div className="h-3 w-10 bg-gray-200 dark:bg-gray-700 rounded-md mb-2"></div>
-                <div className="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-md"></div>
-              </div>
-            ))}
-          </div>
-        )
-      };
-    }
-    
-    // Jobs/Job List special handling
-    if (type.toLowerCase().includes('job') || type.toLowerCase().includes('career')) {
-      return { 
-        icon: <Briefcase className="h-4 w-4 text-cyan-500" />, 
-        name: 'Jobs',
-        previewContent: (
-          <div className="mt-1 space-y-3 w-full">
-            {[...Array(2)].map((_, i) => (
-              <div key={i} className="p-2 border border-gray-100 dark:border-gray-800 rounded">
-                <div className="flex justify-between mb-1">
-                  <div className="h-3 w-24 bg-gray-100 dark:bg-gray-800 rounded-md"></div>
-                  <div className="h-4 w-16 rounded-full bg-gray-100 dark:bg-gray-800"></div>
-                </div>
-                <div className="h-2 w-full bg-gray-100 dark:bg-gray-800 rounded-md mb-2"></div>
-                <div className="flex gap-2">
-                  <div className="h-5 px-2 rounded-full bg-gray-100 dark:bg-gray-800"></div>
-                  <div className="h-5 px-2 rounded-full bg-gray-100 dark:bg-gray-800"></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )
-      };
-    }
-    
     const normalizedType = type.toLowerCase().trim();
-    
     switch (normalizedType) {
-      case 'event':
-      case 'events':
-      case 'calendar':
-        return { 
-          icon: <Calendar className="h-4 w-4 text-emerald-500" />, 
-          name: 'Events',
-          previewContent: (
-            <div className="mt-1 w-full">
-              <div className="grid grid-cols-7 gap-1">
-                {[...Array(7)].map((_, dayIndex) => (
-                  <div 
-                    key={`day-${dayIndex}`} 
-                    className="aspect-square rounded bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs text-gray-500 dark:text-gray-400"
-                  >
-                    {dayIndex + 1}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )
-        };
-      case 'discussion':
-      case 'discussions':
-      case 'forum':
-      case 'forums':
-        return { 
-          icon: <MessageSquare className="h-4 w-4 text-blue-500" />, 
-          name: 'Discussions',
-          previewContent: (
-            <div className="mt-1 space-y-1.5 w-full">
-              <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded-md w-full"></div>
-              <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded-md w-5/6"></div>
-              <div className="flex items-center justify-between mt-2">
-                <div className="flex">
-                  {[...Array(3)].map((_, i) => (
-                    <div key={i} className="w-5 h-5 rounded-full mr-1 bg-gray-100 dark:bg-gray-800"></div>
-                  ))}
-                </div>
-                <div className="h-3 w-12 bg-gray-100 dark:bg-gray-800 rounded-md"></div>
-              </div>
-            </div>
-          )
-        };
-      case 'qa':
-      case 'q&a':
-      case 'questions':
-      case 'question':
-      case 'questions_and_answers':
-      case 'questionsandanswers':
-      case 'q_and_a':
-        return { 
-          icon: <HelpCircle className="h-4 w-4 text-violet-500" />, 
-          name: 'Q&A',
-          previewContent: (
-            <div className="mt-1 space-y-3 w-full">
-              <div className="flex items-start gap-2">
-                <div className="w-5 h-5 rounded-full flex-shrink-0 bg-gray-100 dark:bg-gray-800"></div>
-                <div className="space-y-1 w-full">
-                  <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded-md w-full"></div>
-                  <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded-md w-4/5"></div>
-                </div>
-              </div>
-              <div className="flex items-center gap-1 mt-1">
-                <div className="h-6 px-2 rounded bg-gray-100 dark:bg-gray-800 flex items-center">
-                  <div className="h-3 w-5 bg-gray-200 dark:bg-gray-700 rounded-md"></div>
-                </div>
-                <div className="h-6 px-2 rounded bg-gray-100 dark:bg-gray-800 flex items-center">
-                  <div className="h-3 w-5 bg-gray-200 dark:bg-gray-700 rounded-md"></div>
-                </div>
-              </div>
-            </div>
-          )
-        };
-      case 'wishlist':
-      case 'wishlists':
-      case 'ideas':
-      case 'idea':
-      case 'feature_requests':
-      case 'feature_request':
-        return { 
-          icon: <Star className="h-4 w-4 text-amber-500" />, 
-          name: 'Wishlist',
-          previewContent: (
-            <div className="mt-1 space-y-2 w-full">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center bg-gray-100 dark:bg-gray-800">
-                    <div className="w-3 h-3 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-                  </div>
-                  <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded-md w-full"></div>
-                </div>
-              ))}
-            </div>
-          )
-        };
-      case 'landing':
-      case 'landingpage':
-      case 'landing_page':
-      case 'home':
-      case 'homepage':
-        return { 
-          icon: <Layout className="h-4 w-4 text-indigo-500" />, 
-          name: 'Landing',
-          previewContent: (
-            <div className="mt-1 space-y-2 w-full">
-              <div className="h-20 rounded bg-gray-100 dark:bg-gray-800 w-full"></div>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="h-12 rounded bg-gray-100 dark:bg-gray-800"></div>
-                <div className="h-12 rounded bg-gray-100 dark:bg-gray-800"></div>
-              </div>
-            </div>
-          )
-        };
-      case 'blog':
-      case 'blogs':
-      case 'posts':
-      case 'post':
-      case 'articles':
-      case 'article':
-        return { 
-          icon: <FileText className="h-4 w-4 text-purple-500" />, 
-          name: 'Blog',
-          previewContent: (
-            <div className="mt-1 space-y-3 w-full">
-              <div className="aspect-video w-full rounded bg-gray-100 dark:bg-gray-800"></div>
-              <div className="space-y-1.5">
-                <div className="h-3 w-full bg-gray-100 dark:bg-gray-800 rounded-md"></div>
-                <div className="h-3 w-4/5 bg-gray-100 dark:bg-gray-800 rounded-md"></div>
-                <div className="h-3 w-3/5 bg-gray-100 dark:bg-gray-800 rounded-md"></div>
-              </div>
-            </div>
-          )
-        };
-      default:
-        // Default fallback
-        console.log(`Unknown content type: ${type}`);
-        return { 
-          icon: <FileText className="h-4 w-4 text-gray-500" />, 
-          name: type.charAt(0).toUpperCase() + type.slice(1).replace(/_/g, ' '), 
-          previewContent: null 
-        };
+      case 'event': return { icon: <Calendar className="h-4 w-4 text-emerald-500" />, name: 'Events', previewContent: null };
+      case 'discussion': return { icon: <MessageSquare className="h-4 w-4 text-blue-500" />, name: 'Discussions', previewContent: null };
+      case 'qa': return { icon: <HelpCircle className="h-4 w-4 text-violet-500" />, name: 'Q&A', previewContent: null };
+      case 'wishlist': return { icon: <Star className="h-4 w-4 text-amber-500" />, name: 'Wishlist', previewContent: null };
+      case 'landing': return { icon: <Layout className="h-4 w-4 text-indigo-500" />, name: 'Landing', previewContent: null };
+      case 'knowledge-base': return { icon: <BookOpen className="h-4 w-4 text-rose-500" />, name: 'Knowledge Base', previewContent: null };
+      case 'job-board': return { icon: <Briefcase className="h-4 w-4 text-cyan-500" />, name: 'Jobs', previewContent: null };
+      case 'blog': return { icon: <FileText className="h-4 w-4 text-purple-500" />, name: 'Blog', previewContent: null };
+      default: return { icon: <FileText className="h-4 w-4 text-gray-500" />, name: type.charAt(0).toUpperCase() + type.slice(1), previewContent: null };
     }
   };
 
   // Helper function to adjust color brightness
   function adjustColor(hex: string, percent: number) {
-    // Remove the # if present
     hex = hex.replace('#', '');
-    
-    // Parse the hex color to RGB
     const r = parseInt(hex.substring(0, 2), 16);
     const g = parseInt(hex.substring(2, 4), 16);
     const b = parseInt(hex.substring(4, 6), 16);
-    
-    // Adjust brightness
     const adjustR = Math.max(0, Math.min(255, r + percent));
     const adjustG = Math.max(0, Math.min(255, g + percent));
     const adjustB = Math.max(0, Math.min(255, b + percent));
-    
-    // Convert back to hex
     return `#${Math.round(adjustR).toString(16).padStart(2, '0')}${Math.round(adjustG).toString(16).padStart(2, '0')}${Math.round(adjustB).toString(16).padStart(2, '0')}`;
   }
 
@@ -442,11 +269,11 @@ export const SitePreview: React.FC<SitePreviewProps> = ({
                 </div>
 
                 {/* Render selected content types in sidebar when on step 3 */}
-                {wizardStep === 3 && selectedContentTypes.map((type, index) => {
-                  const { icon, name } = getContentTypeInfo(type);
+                {wizardStep === 3 && selectedContentTypeObjects.map((contentType, index) => {
+                  // contentType object now has { id, title (label), icon (ReactNode) }
                   return (
                     <motion.div
-                      key={type}
+                      key={contentType.id} // Use ID for key
                       initial={{ opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.1 + (index * 0.05) }}
@@ -454,10 +281,10 @@ export const SitePreview: React.FC<SitePreviewProps> = ({
                         ${index === 0 ? 'bg-gray-100 dark:bg-gray-700' : 'hover:bg-gray-50 dark:hover:bg-gray-700'}`}
                     >
                       <div className={`w-4 h-4 ${index === 0 ? 'text-gray-800 dark:text-gray-200' : 'text-gray-500 dark:text-gray-400'}`}>
-                        {icon}
+                        {contentType.icon} {/* Use the icon ReactNode directly */}
                       </div>
                       <span className={`text-[0.8rem] font-medium ${index === 0 ? 'text-gray-800 dark:text-gray-200' : 'text-gray-700 dark:text-gray-300'}`}>
-                        {name}
+                        {contentType.title} {/* Display the title (which is the label) */}
                       </span>
                     </motion.div>
                   );

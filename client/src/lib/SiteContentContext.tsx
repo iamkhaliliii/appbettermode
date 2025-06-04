@@ -19,6 +19,7 @@ interface Space {
 interface CmsType {
   id: string;
   name: string;
+  label: string;
   description?: string;
   color?: string;
   icon_name?: string;
