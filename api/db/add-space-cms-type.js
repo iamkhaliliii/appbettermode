@@ -60,14 +60,14 @@ async function updateSpacesTable() {
     }
 }
 // Run the update
-(function () {
-    updateSpacesTable()
-        .then(() => {
-        console.log('Space cms_type field added successfully.');
-        process.exit(0);
-    })
-        .catch(error => {
-        console.error('Migration failed:', error);
-        process.exit(1);
-    });
-})();
+// (function() { // Commented out to prevent auto-execution
+//   updateSpacesTable()
+//     .then(() => {
+//       console.log('Space cms_type field added successfully.');
+//       process.exit(0);
+//     })
+//     .catch(error => {
+//       console.error('Migration failed:', error);
+//       process.exit(1);
+//     });
+// })(); 

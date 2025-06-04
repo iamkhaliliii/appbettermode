@@ -231,14 +231,14 @@ async function updateDatabase() {
     }
 }
 // Run the update
-// (function () { // Commented out to prevent auto-execution
-//     updateDatabase()
-//         .then(() => {
-//         console.log('Migration Step 4 completed successfully.');
-//         process.exit(0);
+// (function() { // Commented out to prevent auto-execution
+//   updateDatabase()
+//     .then(() => {
+//       console.log('Migration Step 4 completed successfully.');
+//       process.exit(0);
 //     })
-//         .catch(error => {
-//         console.error('Migration Step 4 failed:', error);
-//         process.exit(1);
+//     .catch(error => {
+//       console.error('Migration Step 4 failed:', error);
+//       process.exit(1);
 //     });
-// })();
+// })(); 

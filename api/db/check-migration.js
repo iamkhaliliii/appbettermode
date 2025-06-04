@@ -107,11 +107,11 @@ async function checkMigration() {
     }
 }
 // Run the check
-checkMigration()
-    .then(() => {
-    process.exit(0);
-})
-    .catch(error => {
-    console.error('Check failed:', error);
-    process.exit(1);
-});
+// checkMigration() // Commented out to prevent auto-execution
+//   .then(() => {
+//     process.exit(0);
+//   })
+//   .catch(error => {
+//     console.error('Check failed:', error);
+//     process.exit(1);
+//   }); 

@@ -121,4 +121,4 @@ async function migrateCmsTypeColumn() {
     }
 }
 // Run the migration
-// migrateCmsTypeColumn(); // Commented out to prevent auto-execution
+// migrateCmsTypeColumn(); // Commented out to prevent auto-execution 

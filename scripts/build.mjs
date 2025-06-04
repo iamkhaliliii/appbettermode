@@ -5,12 +5,50 @@ console.log('Starting build process (scripts/build.mjs)...');
 
 const serverDistDir = 'server/dist';
 const apiDir = 'api';
+const frontendDistDir = 'dist/public';
+const publicDir = 'public';
 
 // Ensure the API directory exists
 if (!existsSync(apiDir)) {
   mkdirSync(apiDir);
   console.log(`Created ${apiDir} directory`);
 }
+
+// Ensure the public directory exists for Vercel
+if (!existsSync(publicDir)) {
+  mkdirSync(publicDir, { recursive: true });
+  console.log(`Created ${publicDir} directory`);
+}
+
+// Function to copy frontend build files
+function copyFrontendFiles(srcDir, destDir) {
+  if (!existsSync(srcDir)) {
+    console.warn(`Warning: Frontend source directory ${srcDir} does not exist.`);
+    return;
+  }
+
+  if (!existsSync(destDir)) {
+    mkdirSync(destDir, { recursive: true });
+  }
+
+  const items = readdirSync(srcDir);
+  for (const item of items) {
+    const srcPath = join(srcDir, item);
+    const destPath = join(destDir, item);
+    const stat = lstatSync(srcPath);
+    
+    if (stat.isDirectory()) {
+      copyFrontendFiles(srcPath, destPath);
+    } else {
+      copyFileSync(srcPath, destPath);
+      console.log(`Copied frontend file: ${item}`);
+    }
+  }
+}
+
+// Copy frontend build files to public directory
+console.log('Copying frontend build files to public directory...');
+copyFrontendFiles(frontendDistDir, publicDir);
 
 // Attempt to delete api/env.js first to ensure a clean write
 const apiEnvJsPath = join(apiDir, 'env.js');
@@ -24,10 +62,27 @@ if (existsSync(apiEnvJsPath)) {
 }
 
 // Explicitly create api/env.js for Vercel deployment
-const envJsContent = "export const envSetupCompleted = true;\nconsole.log('[env.js] Dummy env module explicitly created by build.mjs.');";
+const envJsContent = `import dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
+
+// Export a flag to indicate env setup is complete
+export const envSetupCompleted = true;
+
+// Log that env has been loaded (useful for debugging)
+console.log('[env.js] Environment variables loaded via dotenv');
+
+// Export commonly used env variables for convenience
+export const NODE_ENV = process.env.NODE_ENV || 'development';
+export const DATABASE_URL = process.env.DATABASE_URL;
+export const POSTGRES_URL = process.env.POSTGRES_URL;
+export const VERCEL = process.env.VERCEL;
+export const PORT = process.env.PORT || 3000;`;
+
 try {
   writeFileSync(apiEnvJsPath, envJsContent);
-  console.log(`Successfully wrote ${apiEnvJsPath} with dummy export.`);
+  console.log(`Successfully wrote ${apiEnvJsPath} with proper dotenv config.`);
 } catch (err) {
   console.error(`Error writing ${apiEnvJsPath}:`, err);
 }
@@ -114,6 +169,14 @@ if (existsSync(apiEnvJsPath)) {
   }
 } else {
   console.error(`ERROR: ${apiEnvJsPath} was NOT found after all build steps in build.mjs.`);
+}
+
+// Verify frontend files are in public directory
+const publicIndexHtml = join(publicDir, 'index.html');
+if (existsSync(publicIndexHtml)) {
+  console.log('✅ Frontend files successfully copied to public directory');
+} else {
+  console.error('❌ Frontend index.html not found in public directory');
 }
 
 console.log('Build script (scripts/build.mjs) completed successfully.'); 

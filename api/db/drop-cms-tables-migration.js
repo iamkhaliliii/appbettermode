@@ -122,11 +122,11 @@ async function migrateDatabase() {
 }
 // Execute the migration
 // migrateDatabase() // Commented out to prevent auto-execution
-//     .then(() => {
+//   .then(() => {
 //     console.log('Migration script completed successfully');
 //     process.exit(0);
-// })
-//     .catch((error) => {
+//   })
+//   .catch((error) => {
 //     console.error('Migration script failed:', error);
 //     process.exit(1);
-// });
+//   }); 

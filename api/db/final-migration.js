@@ -178,7 +178,7 @@ async function finalMigration() {
     }
 }
 // Run the migration
-finalMigration().catch(err => {
-    console.error('Fatal error:', err);
-    process.exit(1);
-});
+// finalMigration().catch(err => { // Commented out to prevent auto-execution
+//   console.error('Fatal error:', err);
+//   process.exit(1);
+// }); 

@@ -171,14 +171,14 @@ async function migrateSpacesTable() {
     }
 }
 // Run the update
-(function () {
-    migrateSpacesTable()
-        .then(() => {
-        console.log('Spaces table migration completed successfully.');
-        process.exit(0);
-    })
-        .catch(error => {
-        console.error('Spaces table migration failed:', error);
-        process.exit(1);
-    });
-})();
+// (function() { // Commented out to prevent auto-execution
+//   migrateSpacesTable()
+//     .then(() => {
+//       console.log('Spaces table migration completed successfully.');
+//       process.exit(0);
+//     })
+//     .catch(error => {
+//       console.error('Spaces table migration failed:', error);
+//       process.exit(1);
+//     });
+// })(); 

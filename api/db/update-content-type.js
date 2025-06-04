@@ -90,14 +90,14 @@ async function updateSchema() {
     }
 }
 // Run the update
-// (function () { // Commented out to prevent auto-execution
-//     updateSchema()
-//         .then(() => {
-//         console.log('Migration Step 5 completed successfully.');
-//         process.exit(0);
+// (function() { // Commented out to prevent auto-execution
+//   updateSchema()
+//     .then(() => {
+//       console.log('Migration Step 5 completed successfully.');
+//       process.exit(0);
 //     })
-//         .catch(error => {
-//         console.error('Migration Step 5 failed:', error);
-//         process.exit(1);
+//     .catch(error => {
+//       console.error('Migration Step 5 failed:', error);
+//       process.exit(1);
 //     });
-// })();
+// })(); 
