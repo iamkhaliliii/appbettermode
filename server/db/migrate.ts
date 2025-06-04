@@ -580,4 +580,4 @@ async function runMigration() {
   }
 }
 
-runMigration(); 
+// runMigration(); // Commented out to prevent auto-execution 

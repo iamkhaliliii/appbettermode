@@ -111,14 +111,14 @@ async function migrateDatabase() {
     }
 }
 // Run the migration properly without top-level await
-(function () {
-    migrateDatabase()
-        .then(() => {
-        console.log('Migration Step 1 completed successfully.');
-        process.exit(0);
-    })
-        .catch(error => {
-        console.error('Migration Step 1 failed:', error);
-        process.exit(1);
-    });
-})();
+// (function () {
+//     migrateDatabase()
+//         .then(() => {
+//         console.log('Migration Step 1 completed successfully.');
+//         process.exit(0);
+//     })
+//         .catch(error => {
+//         console.error('Migration Step 1 failed:', error);
+//         process.exit(1);
+//     });
+// })(); // Commented out to prevent auto-execution

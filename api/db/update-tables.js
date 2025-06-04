@@ -720,15 +720,15 @@ const migrateDatabase = async () => {
     }
 };
 // If this file is run directly (not imported), execute the migration
-if (import.meta.url === `file://${process.argv[1]}`) {
-    migrateDatabase()
-        .then(() => {
-        console.log('Migration script completed');
-        process.exit(0);
-    })
-        .catch((error) => {
-        console.error('Migration script failed:', error);
-        process.exit(1);
-    });
-}
+// if (import.meta.url === `file://${process.argv[1]}`) {
+//     migrateDatabase() // Commented out to prevent auto-execution
+//         .then(() => {
+//         console.log('Migration script completed');
+//         process.exit(0);
+//     })
+//         .catch((error) => {
+//         console.error('Migration script failed:', error);
+//         process.exit(1);
+//     });
+// }
 export { migrateDatabase };

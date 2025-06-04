@@ -546,4 +546,4 @@ async function runMigration() {
         await pool.end();
     }
 }
-runMigration();
+// runMigration(); // Commented out to prevent auto-execution

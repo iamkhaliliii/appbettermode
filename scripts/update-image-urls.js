@@ -58,4 +58,4 @@ async function runMigration() {
 }
 
 // Run the migration
-runMigration(); 
+// runMigration(); // Commented out to prevent auto-execution 

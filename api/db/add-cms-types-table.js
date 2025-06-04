@@ -240,12 +240,12 @@ async function migrateDatabase() {
 }
 
 // Execute the migration
-migrateDatabase()
-  .then(() => {
-    console.log('Migration script completed successfully');
-    process.exit(0);
-  })
-  .catch((error) => {
-    console.error('Migration script failed:', error);
-    process.exit(1);
-  }); 
+// migrateDatabase() // Commented out to prevent auto-execution
+//   .then(() => {
+//     console.log('Migration script completed successfully');
+//     process.exit(0);
+//   })
+//   .catch((error) => {
+//     console.error('Migration script failed:', error);
+//     process.exit(1);
+//   }); 
