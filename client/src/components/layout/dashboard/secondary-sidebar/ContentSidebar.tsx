@@ -107,6 +107,7 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
   
   // Local state
   const [cmsTypes, setCmsTypes] = useState<CmsType[]>([]);
+  const [activeCmsTypes, setActiveCmsTypes] = useState<CmsType[]>([]); // Active CMS types for this site
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [postCounts, setPostCounts] = useState<number>(0);
@@ -166,32 +167,63 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
     setIsLoading(cmsTypesLoading);
     setError(cmsTypesError);
   }, [cmsTypesLoading, cmsTypesError]);
-  
-  // Fetch post counts
+
+  // Filter active CMS types based on site's content_types
   useEffect(() => {
-    const fetchPostCounts = async () => {
+    if (siteInfo && cmsTypes.length > 0) {
+      const siteContentTypes = siteInfo.content_types || [];
+      console.log('Site content_types:', siteContentTypes);
+      console.log('Available CMS types:', cmsTypes);
+      
+      if (siteContentTypes.length > 0) {
+        // Filter CMS types that are active in this site
+        const activeTypes = cmsTypes.filter(cmsType => {
+          // Check if this CMS type is in the site's content_types array
+          const isActive = siteContentTypes.some((activeCmsType: any) => {
+            // Handle both string IDs and objects
+            if (typeof activeCmsType === 'string') {
+              return activeCmsType === cmsType.id || activeCmsType === cmsType.name;
+            } else if (typeof activeCmsType === 'object') {
+              return activeCmsType.id === cmsType.id;
+            }
+            return false;
+          });
+          return isActive;
+        });
+        
+        console.log('Filtered active CMS types:', activeTypes);
+        setActiveCmsTypes(activeTypes);
+      } else {
+        // If no content types are set, show empty
+        setActiveCmsTypes([]);
+      }
+    }
+  }, [siteInfo, cmsTypes]);
+  
+  // Fetch site info and post counts
+  useEffect(() => {
+    const fetchSiteData = async () => {
       if (!currentSiteIdentifier) return;
       
       try {
         const API_BASE = getApiBaseUrl();
         
-        // Fetch site details first if needed
-        let siteId = currentSiteIdentifier;
+        // Always fetch site details to get content_types
+        console.log(`Fetching site details for: ${currentSiteIdentifier}`);
+        const siteResponse = await fetch(`${API_BASE}/api/v1/sites/${currentSiteIdentifier}`);
         
-        // If currentSiteIdentifier is not a UUID, fetch the site details
-        if (!isValidUUID(currentSiteIdentifier)) {
-          const siteResponse = await fetch(`${API_BASE}/api/v1/sites/${currentSiteIdentifier}`);
-          
-          if (!siteResponse.ok) {
-            throw new Error('Failed to fetch site details');
-          }
-          
-          const siteData = await siteResponse.json();
-          setSiteInfo(siteData);
-          siteId = siteData.id;
+        if (!siteResponse.ok) {
+          throw new Error('Failed to fetch site details');
         }
         
-        // Now fetch posts using the UUID
+        const siteData = await siteResponse.json();
+        console.log('Site data received:', siteData);
+        setSiteInfo(siteData);
+        
+        // Use the site's UUID for posts
+        const siteId = siteData.id;
+        
+        // Fetch posts using the UUID
         console.log(`Fetching post counts for site: ${siteId}`);
         const postsResponse = await fetch(`${API_BASE}/api/v1/posts/site/${siteId}`);
         
@@ -205,12 +237,12 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
           setPostCounts(0);
         }
       } catch (err) {
-        console.error('Error fetching post counts:', err);
+        console.error('Error fetching site data:', err);
         setPostCounts(0);
       }
     };
     
-    fetchPostCounts();
+    fetchSiteData();
   }, [currentSiteIdentifier]);
   
   // Default content sidebar - showing CMS Collections directly
@@ -250,7 +282,7 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
             </SideNavItem>
           </div>
 
-          {/* Content Types - Dynamic from API */}
+          {/* Content Types - Active in this site only */}
           <div className="space-y-0.5 border-t border-gray-100 dark:border-gray-700 pt-2">
             <div className="mb-2">
               <h2 className="text-xs font-normal text-gray-400 dark:text-gray-500 capitalize">
@@ -260,15 +292,15 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
             {isLoading ? (
               <div className="flex items-center justify-center py-2">
                 <Loader2 className="h-4 w-4 text-gray-400 animate-spin" />
-                <span className="ml-2 text-xs text-gray-400">Loading CMS types...</span>
+                <span className="ml-2 text-xs text-gray-400">Loading...</span>
               </div>
             ) : error ? (
               <div className="text-xs text-red-500 py-2 px-2.5">
                 {error}
               </div>
-            ) : (
+            ) : activeCmsTypes.length > 0 ? (
               <>
-                {cmsTypes.map((cmsType) => (
+                {activeCmsTypes.map((cmsType) => (
                   <SideNavItem
                     key={cmsType.id}
                     href={getContentSectionUrl(cmsType.name.toLowerCase())}
@@ -279,6 +311,10 @@ export const ContentSidebar: React.FC<BaseSidebarProps> = ({
                   </SideNavItem>
                 ))}
               </>
+            ) : (
+              <div className="text-xs text-gray-400 py-2 px-2.5">
+                No content types activated yet
+              </div>
             )}
 
             <div 

@@ -11,7 +11,14 @@ import {
   Clock,
   User,
   ThumbsUp,
-  CheckCircle
+  CheckCircle,
+  Users,
+  Heart,
+  Trophy,
+  Play,
+  Image,
+  Gift,
+  Zap
 } from "lucide-react";
 
 // Preview components for each content type
@@ -183,36 +190,290 @@ export const BlogPreview = () => (
   </div>
 );
 
+export const AnnouncementPreview = () => (
+  <div className="flex flex-col h-full relative">
+    <div className="absolute top-0 left-0">
+      <div className="w-8 h-8 rounded-xl bg-orange-100/50 dark:bg-orange-900/20 flex items-center justify-center">
+        <Zap className="w-5 h-5 text-orange-500/70 dark:text-orange-400/50" />
+      </div>
+    </div>
+    <div className="pt-14 w-full space-y-4">
+      <div className="h-2 w-3/4 bg-gray-200/40 dark:bg-gray-700/20 rounded-full"></div>
+      <div className="p-3 rounded border-l-4 border-orange-200/50 bg-orange-50/30 dark:bg-orange-900/10 space-y-2">
+        <div className="h-1.5 bg-orange-200/40 dark:bg-orange-700/20 rounded-full w-full"></div>
+        <div className="h-1.5 bg-orange-200/40 dark:bg-orange-700/20 rounded-full w-2/3"></div>
+      </div>
+    </div>
+  </div>
+);
+
+export const PollPreview = () => (
+  <div className="flex flex-col h-full relative">
+    <div className="absolute top-0 left-0">
+      <div className="w-8 h-8 rounded-xl bg-teal-100/50 dark:bg-teal-900/20 flex items-center justify-center">
+        <CheckCircle className="w-5 h-5 text-teal-500/70 dark:text-teal-400/50" />
+      </div>
+    </div>
+    <div className="pt-14 w-full space-y-4">
+      <div className="h-2 w-3/4 bg-gray-200/40 dark:bg-gray-700/20 rounded-full"></div>
+      <div className="space-y-2">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-gray-100/70 dark:bg-gray-800/20 flex-shrink-0"></div>
+            <div className="h-6 bg-gray-100/70 dark:bg-gray-800/20 rounded flex-1 relative">
+              <div className={`h-full bg-teal-200/50 dark:bg-teal-700/20 rounded`} style={{width: `${40 + i * 20}%`}}></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+export const CommunityPreview = () => (
+  <div className="flex flex-col h-full relative">
+    <div className="absolute top-0 left-0">
+      <div className="w-8 h-8 rounded-xl bg-blue-100/50 dark:bg-blue-900/20 flex items-center justify-center">
+        <Users className="w-5 h-5 text-blue-500/70 dark:text-blue-400/50" />
+      </div>
+    </div>
+    <div className="pt-14 w-full space-y-4">
+      <div className="h-2 w-3/4 bg-gray-200/40 dark:bg-gray-700/20 rounded-full"></div>
+      <div className="flex -space-x-2">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="w-8 h-8 rounded-full bg-gray-100/70 dark:bg-gray-800/20 border-2 border-white dark:border-gray-900"></div>
+        ))}
+      </div>
+      <div className="space-y-2">
+        <div className="h-1.5 bg-gray-200/40 dark:bg-gray-700/20 rounded-full w-full"></div>
+        <div className="h-1.5 bg-gray-200/40 dark:bg-gray-700/20 rounded-full w-3/4"></div>
+      </div>
+    </div>
+  </div>
+);
+
+export const AchievementPreview = () => (
+  <div className="flex flex-col h-full relative">
+    <div className="absolute top-0 left-0">
+      <div className="w-8 h-8 rounded-xl bg-yellow-100/50 dark:bg-yellow-900/20 flex items-center justify-center">
+        <Trophy className="w-5 h-5 text-yellow-500/70 dark:text-yellow-400/50" />
+      </div>
+    </div>
+    <div className="pt-14 w-full space-y-4">
+      <div className="h-2 w-3/4 bg-gray-200/40 dark:bg-gray-700/20 rounded-full"></div>
+      <div className="text-center space-y-3">
+        <div className="w-12 h-12 rounded-full bg-yellow-100/70 dark:bg-yellow-800/20 mx-auto flex items-center justify-center">
+          <Trophy className="w-6 h-6 text-yellow-500/50 dark:text-yellow-400/30" />
+        </div>
+        <div className="h-1.5 bg-gray-200/40 dark:bg-gray-700/20 rounded-full w-2/3 mx-auto"></div>
+      </div>
+    </div>
+  </div>
+);
+
+export const MediaPreview = () => (
+  <div className="flex flex-col h-full relative">
+    <div className="absolute top-0 left-0">
+      <div className="w-8 h-8 rounded-xl bg-pink-100/50 dark:bg-pink-900/20 flex items-center justify-center">
+        <Image className="w-5 h-5 text-pink-500/70 dark:text-pink-400/50" />
+      </div>
+    </div>
+    <div className="pt-14 w-full space-y-4">
+      <div className="h-2 w-3/4 bg-gray-200/40 dark:bg-gray-700/20 rounded-full"></div>
+      <div className="grid grid-cols-2 gap-2">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="aspect-square rounded bg-gray-100/70 dark:bg-gray-800/20"></div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+export const LiveStreamPreview = () => (
+  <div className="flex flex-col h-full relative">
+    <div className="absolute top-0 left-0">
+      <div className="w-8 h-8 rounded-xl bg-red-100/50 dark:bg-red-900/20 flex items-center justify-center">
+        <Play className="w-5 h-5 text-red-500/70 dark:text-red-400/50" />
+      </div>
+    </div>
+    <div className="pt-14 w-full space-y-4">
+      <div className="h-2 w-3/4 bg-gray-200/40 dark:bg-gray-700/20 rounded-full"></div>
+      <div className="aspect-video w-full rounded bg-gray-100/70 dark:bg-gray-800/20 relative">
+        <div className="absolute top-2 left-2 px-2 py-1 bg-red-500/20 rounded text-xs">
+          <div className="w-2 h-2 bg-red-500/50 rounded-full"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+export const ChallengePreview = () => (
+  <div className="flex flex-col h-full relative">
+    <div className="absolute top-0 left-0">
+      <div className="w-8 h-8 rounded-xl bg-green-100/50 dark:bg-green-900/20 flex items-center justify-center">
+        <Star className="w-5 h-5 text-green-500/70 dark:text-green-400/50" />
+      </div>
+    </div>
+    <div className="pt-14 w-full space-y-4">
+      <div className="h-2 w-3/4 bg-gray-200/40 dark:bg-gray-700/20 rounded-full"></div>
+      <div className="space-y-3">
+        <div className="flex justify-between items-center">
+          <div className="h-1.5 bg-gray-200/40 dark:bg-gray-700/20 rounded-full w-1/2"></div>
+          <div className="text-xs bg-green-100/50 dark:bg-green-900/20 px-2 py-1 rounded">
+            <div className="w-8 h-2 bg-green-200/40 dark:bg-green-700/20 rounded"></div>
+          </div>
+        </div>
+        <div className="h-2 bg-gray-100/70 dark:bg-gray-800/20 rounded-full">
+          <div className="h-2 bg-green-200/50 dark:bg-green-700/20 rounded-full w-2/3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+export const ChangelogPreview = () => (
+  <div className="flex flex-col h-full relative">
+    <div className="absolute top-0 left-0">
+      <div className="w-8 h-8 rounded-xl bg-indigo-100/50 dark:bg-indigo-900/20 flex items-center justify-center">
+        <Layout className="w-5 h-5 text-indigo-500/70 dark:text-indigo-400/50" />
+      </div>
+    </div>
+    <div className="pt-14 w-full space-y-4">
+      <div className="h-2 w-3/4 bg-gray-200/40 dark:bg-gray-700/20 rounded-full"></div>
+      <div className="space-y-3">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="flex gap-3 items-start">
+            <div className="flex-shrink-0 w-2 h-2 rounded-full bg-indigo-200/50 dark:bg-indigo-700/30 mt-1.5"></div>
+            <div className="flex-1 space-y-1">
+              <div className="h-1.5 bg-gray-200/40 dark:bg-gray-700/20 rounded-full w-full"></div>
+              <div className="h-1 bg-gray-200/30 dark:bg-gray-700/15 rounded-full w-2/3"></div>
+            </div>
+            <div className="flex-shrink-0 text-xs">
+              <div className="w-12 h-3 bg-gray-100/50 dark:bg-gray-800/20 rounded"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
 // Helper function to get preview component by type name
 export const getPreviewComponent = (typeName: string) => {
   const lowerCaseName = typeName.toLowerCase();
   
   switch (lowerCaseName) {
+    // Exact CMS types from your system
+    case 'job-board':
+    case 'job_board':
+      return <JobListPreview />;
     case 'event':
+    case 'events':
       return <EventPreview />;
-    case 'discussion':
-      return <DiscussionPreview />;
     case 'qa':
     case 'q&a':
-    case 'qa_question':
       return <QAPreview />;
+    case 'ideas-wishlist':
+    case 'ideas_wishlist':
     case 'wishlist':
     case 'idea':
+    case 'ideas':
       return <WishlistPreview />;
-    case 'landing':
-    case 'landing_page':
-      return <LandingPagePreview />;
+    case 'knowledge-base':
+    case 'knowledge_base':
     case 'knowledge':
-    case 'kb_article':
-    case 'knowledge base':
       return <KnowledgeBasePreview />;
+    case 'blog':
+      return <BlogPreview />;
+    case 'discussion':
+    case 'discussions':
+      return <DiscussionPreview />;
+    case 'changelog':
+    case 'change-log':
+    case 'change_log':
+      return <ChangelogPreview />;
+    
+    // Additional variations and aliases
     case 'job':
     case 'jobs':
     case 'job list':
+    case 'career':
+    case 'careers':
       return <JobListPreview />;
-    case 'blog':
+    case 'qa_question':
+    case 'question':
+    case 'questions':
+      return <QAPreview />;
+    case 'feature_request':
+    case 'features':
+      return <WishlistPreview />;
+    case 'landing':
+    case 'landing_page':
+    case 'page':
+      return <LandingPagePreview />;
+    case 'kb_article':
+    case 'knowledge base':
+    case 'documentation':
+    case 'docs':
+      return <KnowledgeBasePreview />;
     case 'article':
+    case 'post':
+    case 'news':
       return <BlogPreview />;
+    case 'forum':
+      return <DiscussionPreview />;
+    case 'updates':
+    case 'release':
+    case 'releases':
+    case 'release_notes':
+      return <ChangelogPreview />;
+    
+    // Additional types
+    case 'announcement':
+    case 'announcements':
+    case 'notice':
+    case 'notices':
+      return <AnnouncementPreview />;
+    case 'poll':
+    case 'polls':
+    case 'vote':
+    case 'voting':
+    case 'survey':
+      return <PollPreview />;
+    case 'community':
+    case 'group':
+    case 'groups':
+    case 'team':
+    case 'teams':
+      return <CommunityPreview />;
+    case 'achievement':
+    case 'achievements':
+    case 'badge':
+    case 'badges':
+    case 'award':
+    case 'awards':
+      return <AchievementPreview />;
+    case 'media':
+    case 'gallery':
+    case 'photo':
+    case 'photos':
+    case 'image':
+    case 'images':
+      return <MediaPreview />;
+    case 'live':
+    case 'live_stream':
+    case 'stream':
+    case 'broadcast':
+    case 'video':
+      return <LiveStreamPreview />;
+    case 'challenge':
+    case 'challenges':
+    case 'contest':
+    case 'contests':
+    case 'competition':
+      return <ChallengePreview />;
+    
+    // Default fallback
     default:
       return <DiscussionPreview />;
   }

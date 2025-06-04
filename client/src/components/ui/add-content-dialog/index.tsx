@@ -25,6 +25,7 @@ export interface AddContentDialogProps {
 interface CmsType {
   id: string;
   name: string;
+  label: string;
   description: string;
   color: string;
   icon_name: string;
@@ -174,8 +175,8 @@ export function AddContentDialog({
             // Transform data to ContentType format
             favorites = favoritesData.map((item: CmsType) => ({
               id: item.id,
-              title: item.name.charAt(0).toUpperCase() + item.name.slice(1).replace(/_/g, ' '),
-              description: item.description || `Create ${item.name} content`,
+              title: item.label || item.name.charAt(0).toUpperCase() + item.name.slice(1).replace(/_/g, ' '),
+              description: item.description || `Create ${item.label || item.name} content`,
               icon: getIconComponent(item.icon_name),
               color: getColorClass(item.color),
               preview: getPreviewComponent(item.name)
@@ -209,8 +210,8 @@ export function AddContentDialog({
               .filter((item: CmsType) => !item.favorite)
               .map((item: CmsType) => ({
                 id: item.id,
-                title: item.name.charAt(0).toUpperCase() + item.name.slice(1).replace(/_/g, ' '),
-                description: item.description || `Create ${item.name} content`,
+                title: item.label || item.name.charAt(0).toUpperCase() + item.name.slice(1).replace(/_/g, ' '),
+                description: item.description || `Create ${item.label || item.name} content`,
                 icon: getIconComponent(item.icon_name),
                 color: getColorClass(item.color),
                 preview: getPreviewComponent(item.name)
