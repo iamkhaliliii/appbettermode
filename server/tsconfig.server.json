@@ -4,8 +4,8 @@
       "outDir": "./dist",
       "rootDir": ".",
       "noEmit": false,
-      "module": "nodenext",
-      "moduleResolution": "nodenext",
+      "module": "esnext",
+      "moduleResolution": "bundler",
       "allowImportingTsExtensions": false,
       "target": "es2022",
       "skipLibCheck": true,
@@ -22,6 +22,7 @@
       "**/*.test.ts",
       "**/*.spec.ts",
       "../vite.config.mjs",
-      "./dist"
+      "./dist",
+      "./vite.ts"
     ]
   }

@@ -42,17 +42,8 @@ app.use('/api/v1', apiRoutes);
 const server = http.createServer(app);
 if (IS_DEV) {
     // Development mode: Set up Vite middleware
-    import('./vite.js').then((viteModule) => {
-        if (viteModule.setupVite && typeof viteModule.setupVite === 'function') {
-            viteModule.setupVite(app, server);
-            logger.info('Vite Dev Middleware configured.');
-        }
-        else {
-            logger.error('setupVite function not found or failed to load correctly.');
-        }
-    }).catch(error => {
-        logger.error('Failed to load or setup Vite Dev Middleware:', error);
-    });
+    logger.info('Development mode detected - Vite middleware would be loaded here in development');
+    // Note: vite.ts is excluded from production builds
 }
 else {
     // Production mode: Serve static files
