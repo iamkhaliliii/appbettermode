@@ -1,6 +1,6 @@
 import express from 'express';
 import { db } from '../db/index.js';
-import { posts, post_tags, tags, users, spaces } from '../db/schema.js';
+import { posts, post_tags, tags, users, spaces, sites } from '../db/schema.js';
 import { eq, and, inArray, desc, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { setApiResponseHeaders, handleCorsPreflightRequest } from '../utils/environment.js';
@@ -241,6 +241,218 @@ router.get('/site/:siteId', async (req, res) => {
     catch (error) {
         console.error('Error fetching posts:', error);
         return res.status(500).json({ message: 'Error fetching posts from database' });
+    }
+});
+// Test mock endpoint
+router.get('/mock-test', (req, res) => {
+    res.json({ message: 'Mock test endpoint works!' });
+});
+// Mock content generation endpoint (GET for testing)
+router.get('/mock/:siteIdentifier', async (req, res) => {
+    try {
+        const { siteIdentifier } = req.params;
+        if (!siteIdentifier) {
+            return res.status(400).json({ message: 'Site identifier is required' });
+        }
+        // Get site details by identifier (subdomain)
+        const site = await db.query.sites.findFirst({
+            where: eq(sites.subdomain, siteIdentifier),
+            with: {
+                owner: true
+            }
+        });
+        if (!site) {
+            return res.status(404).json({ message: 'Site not found' });
+        }
+        // Get all CMS types
+        const cmsTypes = await db.query.cms_types.findMany();
+        // Get all spaces for this site
+        const siteSpaces = await db.query.spaces.findMany({
+            where: eq(spaces.site_id, site.id)
+        });
+        // Mock data templates for each content type
+        const mockTemplates = {
+            'job-board': [
+                {
+                    title: 'Senior Frontend Developer',
+                    content: { job_title: 'Senior Frontend Developer', job_description: 'We are looking for an experienced frontend developer to join our team and help build amazing user experiences.', job_location: 'Remote', apply_url: 'https://example.com/apply' }
+                },
+                {
+                    title: 'Backend Engineer',
+                    content: { job_title: 'Backend Engineer', job_description: 'Join our backend team to develop scalable APIs and services that power our platform.', job_location: 'San Francisco, CA', apply_url: 'https://example.com/apply' }
+                },
+                {
+                    title: 'DevOps Engineer',
+                    content: { job_title: 'DevOps Engineer', job_description: 'Help us build and maintain our cloud infrastructure and deployment pipelines.', job_location: 'New York, NY', apply_url: 'https://example.com/apply' }
+                },
+                {
+                    title: 'Product Designer',
+                    content: { job_title: 'Product Designer', job_description: 'Design beautiful and intuitive user interfaces for our web and mobile applications.', job_location: 'Remote', apply_url: 'https://example.com/apply' }
+                }
+            ],
+            'event': [
+                {
+                    title: 'Tech Conference 2024',
+                    content: { event_title: 'Tech Conference 2024', event_date: '2024-07-15T09:00:00Z', event_location: 'San Francisco Convention Center', event_description: 'Join us for the biggest tech conference of the year featuring keynotes from industry leaders.' }
+                },
+                {
+                    title: 'Developer Meetup',
+                    content: { event_title: 'Developer Meetup', event_date: '2024-06-20T18:00:00Z', event_location: 'Local Co-working Space', event_description: 'Monthly meetup for developers to network and share knowledge.' }
+                },
+                {
+                    title: 'Design Workshop',
+                    content: { event_title: 'Design Workshop', event_date: '2024-06-25T14:00:00Z', event_location: 'Design Studio', event_description: 'Hands-on workshop covering the latest design trends and tools.' }
+                },
+                {
+                    title: 'Startup Pitch Night',
+                    content: { event_title: 'Startup Pitch Night', event_date: '2024-07-10T19:00:00Z', event_location: 'Innovation Hub', event_description: 'Watch promising startups pitch their ideas to investors and the community.' }
+                }
+            ],
+            'qa': [
+                {
+                    title: 'How to optimize React performance?',
+                    content: { question_title: 'How to optimize React performance?', question_details: 'I have a React app that is running slowly. What are the best practices for optimizing performance?' }
+                },
+                {
+                    title: 'Best practices for API design?',
+                    content: { question_title: 'Best practices for API design?', question_details: 'What are the key principles to follow when designing RESTful APIs?' }
+                },
+                {
+                    title: 'How to handle authentication in SPAs?',
+                    content: { question_title: 'How to handle authentication in SPAs?', question_details: 'What is the most secure way to handle user authentication in single-page applications?' }
+                },
+                {
+                    title: 'Database migration strategies?',
+                    content: { question_title: 'Database migration strategies?', question_details: 'What are the best practices for handling database migrations in production?' }
+                }
+            ],
+            'ideas-wishlist': [
+                {
+                    title: 'Dark mode support',
+                    content: { idea_title: 'Dark mode support', idea_description: 'Add dark mode theme option to improve user experience in low-light environments.' }
+                },
+                {
+                    title: 'Mobile app',
+                    content: { idea_title: 'Mobile app', idea_description: 'Develop a native mobile application for iOS and Android platforms.' }
+                },
+                {
+                    title: 'Advanced search filters',
+                    content: { idea_title: 'Advanced search filters', idea_description: 'Implement more sophisticated search and filtering capabilities.' }
+                },
+                {
+                    title: 'Real-time notifications',
+                    content: { idea_title: 'Real-time notifications', idea_description: 'Add push notifications and real-time updates for better user engagement.' }
+                }
+            ],
+            'knowledge-base': [
+                {
+                    title: 'Getting Started Guide',
+                    content: { kb_title: 'Getting Started Guide', kb_content: 'This comprehensive guide will help you get started with our platform and make the most of its features.' }
+                },
+                {
+                    title: 'API Documentation',
+                    content: { kb_title: 'API Documentation', kb_content: 'Complete reference for our REST API including endpoints, parameters, and examples.' }
+                },
+                {
+                    title: 'Troubleshooting Common Issues',
+                    content: { kb_title: 'Troubleshooting Common Issues', kb_content: 'Solutions to frequently encountered problems and how to resolve them.' }
+                },
+                {
+                    title: 'Best Practices',
+                    content: { kb_title: 'Best Practices', kb_content: 'Recommended practices and guidelines for optimal platform usage.' }
+                }
+            ],
+            'blog': [
+                {
+                    title: 'Introducing Our New Features',
+                    content: { article_title: 'Introducing Our New Features', article_body: 'We are excited to announce several new features that will enhance your experience on our platform.', cover_image_url: 'https://example.com/image1.jpg' }
+                },
+                {
+                    title: 'The Future of Technology',
+                    content: { article_title: 'The Future of Technology', article_body: 'Exploring emerging technologies and their potential impact on various industries.', cover_image_url: 'https://example.com/image2.jpg' }
+                },
+                {
+                    title: 'Building Better User Experiences',
+                    content: { article_title: 'Building Better User Experiences', article_body: 'Learn how to create intuitive and engaging user interfaces that delight your users.', cover_image_url: 'https://example.com/image3.jpg' }
+                },
+                {
+                    title: 'Behind the Scenes: Our Development Process',
+                    content: { article_title: 'Behind the Scenes: Our Development Process', article_body: 'Take a look at how our team develops and maintains our platform.', cover_image_url: 'https://example.com/image4.jpg' }
+                }
+            ],
+            'discussion': [
+                {
+                    title: 'What are your favorite development tools?',
+                    content: { discussion_title: 'What are your favorite development tools?', discussion_body: 'Share your favorite tools and explain why they improve your development workflow.' }
+                },
+                {
+                    title: 'Remote work best practices',
+                    content: { discussion_title: 'Remote work best practices', discussion_body: 'Let\'s discuss strategies for staying productive and connected while working remotely.' }
+                },
+                {
+                    title: 'Learning new technologies',
+                    content: { discussion_title: 'Learning new technologies', discussion_body: 'How do you approach learning new programming languages and frameworks?' }
+                },
+                {
+                    title: 'Open source contributions',
+                    content: { discussion_title: 'Open source contributions', discussion_body: 'Share your experiences contributing to open source projects and tips for getting started.' }
+                }
+            ],
+            'changelog': [
+                {
+                    title: 'Version 2.1.0 - Major Updates',
+                    content: { update_title: 'Version 2.1.0 - Major Updates', update_description: 'This release includes new features, performance improvements, and bug fixes.', update_date: '2024-06-15' }
+                },
+                {
+                    title: 'Version 2.0.5 - Bug Fixes',
+                    content: { update_title: 'Version 2.0.5 - Bug Fixes', update_description: 'Fixed several issues reported by users and improved stability.', update_date: '2024-06-10' }
+                },
+                {
+                    title: 'Version 2.0.4 - Performance Improvements',
+                    content: { update_title: 'Version 2.0.4 - Performance Improvements', update_description: 'Optimized loading times and reduced memory usage.', update_date: '2024-06-05' }
+                },
+                {
+                    title: 'Version 2.0.3 - Security Updates',
+                    content: { update_title: 'Version 2.0.3 - Security Updates', update_description: 'Enhanced security measures and vulnerability patches.', update_date: '2024-06-01' }
+                }
+            ]
+        };
+        const createdPosts = [];
+        // For each space in the site
+        for (const space of siteSpaces) {
+            // Find the CMS type for this space
+            const cmsType = cmsTypes.find(ct => ct.id === space.cms_type);
+            if (!cmsType)
+                continue;
+            const templates = mockTemplates[cmsType.name];
+            if (!templates)
+                continue;
+            // Create 4 posts for this space
+            for (const template of templates) {
+                const newPost = await db.insert(posts).values({
+                    title: template.title,
+                    content: template.content,
+                    content_format: 'richtext',
+                    status: 'published',
+                    author_id: site.owner_id,
+                    space_id: space.id,
+                    site_id: site.id,
+                    cms_type: cmsType.name,
+                    published_at: new Date(),
+                    other_properties: {}
+                }).returning();
+                createdPosts.push(newPost[0]);
+            }
+        }
+        return res.json({
+            message: 'Mock content created successfully',
+            created_posts: createdPosts.length,
+            posts: createdPosts
+        });
+    }
+    catch (error) {
+        console.error('Error creating mock content:', error);
+        return res.status(500).json({ message: 'Failed to create mock content' });
     }
 });
 // Get a single post by ID
@@ -510,4 +722,4 @@ router.delete('/:postId', async (req, res) => {
         });
     }
 });
-export default router;
+export { router as postsRouter };

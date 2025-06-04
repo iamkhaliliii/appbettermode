@@ -16,7 +16,8 @@ import {
   ChevronDown,
   FileText,
   X,
-  Settings
+  Settings,
+  Shuffle
 } from "lucide-react";
 import { Table, SortingState } from "@tanstack/react-table";
 import { Post } from './types';
@@ -61,6 +62,7 @@ export const ContentToolbar: React.FC<ContentToolbarProps> = ({
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [isNewPostDialogOpen, setIsNewPostDialogOpen] = useState(false);
+  const [isGeneratingMockContent, setIsGeneratingMockContent] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
@@ -104,6 +106,48 @@ export const ContentToolbar: React.FC<ContentToolbarProps> = ({
   const handleSearchKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
       handleSearchClose();
+    }
+  };
+
+  // Handle mock content generation
+  const handleGenerateMockContent = async () => {
+    try {
+      setIsGeneratingMockContent(true);
+      
+      // Get site ID from URL
+      const currentUrl = window.location.pathname;
+      const siteIdMatch = currentUrl.match(/\/dashboard\/site\/([^\/]+)\//);
+      const siteId = siteIdMatch?.[1];
+      
+      if (!siteId) {
+        alert('Site ID not found');
+        return;
+      }
+
+      const response = await fetch(`/api/v1/posts/mock/${siteId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate mock content');
+      }
+
+      const result = await response.json();
+      
+      // Show success message
+      alert(`Successfully created ${result.created_posts} mock posts!`);
+      
+      // Refresh the page to show new content
+      window.location.reload();
+      
+    } catch (error) {
+      console.error('Error generating mock content:', error);
+      alert('Failed to generate mock content. Please try again.');
+    } finally {
+      setIsGeneratingMockContent(false);
     }
   };
 
@@ -298,6 +342,15 @@ export const ContentToolbar: React.FC<ContentToolbarProps> = ({
               })}
           </DropdownMenuContent>
         </DropdownMenu>
+        
+        <button 
+          onClick={handleGenerateMockContent}
+          disabled={isGeneratingMockContent}
+          className="inline-flex items-center justify-center h-7 px-3.5 rounded bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 text-orange-600 dark:text-orange-400 shadow-sm text-xs font-medium gap-1 whitespace-nowrap hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <Shuffle className={`h-3.5 w-3.5 mr-1 ${isGeneratingMockContent ? 'animate-spin' : ''}`} />
+          <span>{isGeneratingMockContent ? 'Generating...' : 'Mock Content'}</span>
+        </button>
         
         <button 
           onClick={() => setIsNewPostDialogOpen(true)}

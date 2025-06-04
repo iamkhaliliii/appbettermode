@@ -1,6 +1,6 @@
 import express from 'express';
 import sitesRouter from './sites.js';
-import postsRouter from './posts.js';
+import { postsRouter } from './posts.js';
 import cmsTypesRouter from './cms-types.js';
 import spacesRouter from './spaces.js';
 import { usersRouter } from './users.js';
