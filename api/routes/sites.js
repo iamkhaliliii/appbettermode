@@ -162,7 +162,8 @@ router.post('/', async (req, res) => {
       }
       const existingSite = await db.query.sites.findFirst({ where: eq(sites.subdomain, subdomain) });
       if (existingSite) {
-        errors.fieldErrors.subdomain = ['This subdomain is already taken.'];
+        console.log(`[API_SITES] Conflict: Subdomain '${subdomain}' already exists.`);
+        return res.status(409).json({ message: 'This subdomain is already taken.', errors: { fieldErrors: { subdomain: ['This subdomain is already taken.']}} });
       }
     }
     if (Object.keys(errors.fieldErrors).length > 0) {

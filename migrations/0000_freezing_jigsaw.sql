@@ -6,6 +6,7 @@ CREATE TYPE "public"."space_visibility" AS ENUM('public', 'private', 'paid');-->
 CREATE TABLE "cms_types" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
+	"label" text NOT NULL,
 	"description" text,
 	"color" text,
 	"icon_name" text,
