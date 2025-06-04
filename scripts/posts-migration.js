@@ -28,9 +28,9 @@ buildProcess.on('close', async (code) => {
   try {
     // Run the migration to create the posts table and update schema
     console.log('Running database migration...');
-    await migrateDatabase();
+    // await migrateDatabase(); // Commented out to prevent auto-execution
     
-    console.log('Migration completed successfully.');
+    console.log('Migration skipped (commented out for safety).');
     console.log('\nSummary of changes:');
     console.log('1. Added a new "posts" table with common fields for all content types');
     console.log('2. Added "post_tags" junction table for tags relationships');
