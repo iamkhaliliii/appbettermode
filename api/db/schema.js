@@ -84,7 +84,8 @@ export const tags = pgTable('tags', {
 // CMS Types table to store content type definitions
 export const cms_types = pgTable('cms_types', {
     id: uuid('id').primaryKey().default(sql `gen_random_uuid()`),
-    name: text('name').notNull(),
+    name: text('name').notNull(), // Slug-like identifier
+    label: text('label').notNull(), // Human-readable label
     description: text('description'),
     color: text('color'),
     icon_name: text('icon_name'),

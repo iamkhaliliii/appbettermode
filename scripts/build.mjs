@@ -69,22 +69,23 @@ function copyCompiledFiles(srcDir, destDir, relativePath = '') {
   for (const item of items) {
     const srcPath = join(currentSrcDir, item);
     const stat = lstatSync(srcPath);
+    const destPath = join(currentDestDir, item);
+    
     if (stat.isDirectory()) {
       copyCompiledFiles(srcDir, destDir, join(relativePath, item));
     } else if (extname(item) === '.js') {
-      // Avoid re-copying env.js if we just wrote it, though this explicit write should be authoritative.
-      if (basename(destPath) === 'env.js' && relativePath === '') {
-          console.log(`Skipping copy of ${srcPath} over explicitly written ${destPath}`);
+      // Avoid re-copying env.js if we explicitly wrote it.
+      if (item === 'env.js' && relativePath === '') {
+          console.log(`Skipping copy of ${srcPath} over explicitly written api/env.js as it was handled at the start of this script.`);
           continue;
       }
-      const destPath = join(currentDestDir, item);
       copyFileSync(srcPath, destPath);
       console.log(`Copied: ${join(relativePath, item)} from ${srcDir} to ${destDir}`);
     }
   }
 }
 
-console.log('Copying compiled files from server/dist to api (excluding api/env.js if already written)...');
+console.log('Copying compiled files from server/dist to api (api/env.js handled separately)...');
 copyCompiledFiles(serverDistDir, apiDir);
 
 const serverIndexJs = join(serverDistDir, 'index.js'); 

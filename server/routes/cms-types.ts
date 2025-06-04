@@ -124,50 +124,6 @@ router.get('/:id', async (req, res) => {
     return res.status(500).json({ message: 'Error fetching CMS type from database' });
   }
 });
-
-// Create a new CMS type
-router.post('/', async (req, res) => {
-  try {
-    // Handle both string and object body formats (for Vercel compatibility)
-    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-    
-    const validationResult = cmsTypeSchema.safeParse(body);
-    if (!validationResult.success) {
-      return res.status(400).json({
-        message: 'Invalid CMS type data',
-        errors: { fieldErrors: validationResult.error.flatten().fieldErrors },
-      });
-    }
-
-    const { name, description, color, icon_name, favorite, type, fields } = validationResult.data;
-
-    // Check if the name already exists
-    const existingType = await db.select().from(cms_types).where(eq(cms_types.name, name));
-    if (existingType.length > 0) {
-      return res.status(409).json({ message: 'A CMS type with this name already exists' });
-    }
-
-    // Create the new CMS type
-    const result = await db.insert(cms_types).values({
-      name,
-      description,
-      color,
-      icon_name,
-      favorite,
-      type: type as 'official' | 'custom',
-      fields: fields as any,
-    }).returning();
-
-    return res.status(201).json(result[0]);
-  } catch (error: any) {
-    console.error('Error creating CMS type:', error);
-    return res.status(500).json({ 
-      message: 'Error creating CMS type in database',
-      details: error.message || 'Unknown error',
-    });
-  }
-});
-
 // Toggle favorite status
 router.patch('/:id/toggle-favorite', async (req, res) => {
   try {

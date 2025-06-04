@@ -45,39 +45,12 @@ router.get('/', async (req, res) => {
 // Get all favorite CMS types
 router.get('/favorites', async (req, res) => {
     try {
-        try {
-            const result = await db.select().from(cms_types).where(eq(cms_types.favorite, true));
-            return res.status(200).json(result);
-        } catch (dbError) {
-            if (dbError.code === '42703') {
-                console.warn('[CMS_TYPES_API] Warning: The 'favorite' column (or other) might be missing in cms_types. Returning default favorites based on names.');
-                const allOfficialTypes = await db.select({
-                    id: cms_types.id,
-                    name: cms_types.name,
-                    label: cms_types.label,
-                    fields: cms_types.fields,
-                    description: cms_types.description,
-                    icon_name: cms_types.icon_name,
-                    color: cms_types.color,
-                    type: cms_types.type
-                }).from(cms_types).where(eq(cms_types.type, 'official'));
-                
-                const defaultFavoriteNames = ['discussion', 'event', 'qa']; 
-                const favorites = allOfficialTypes
-                    .filter(t => t.name && defaultFavoriteNames.includes(t.name))
-                    .map(fav => ({ ...fav, favorite: true }));
-                
-                return res.status(200).json(favorites);
-            }
-            throw dbError;
-        }
+        const result = await db.select().from(cms_types).where(eq(cms_types.favorite, true));
+        return res.status(200).json(result);
     }
     catch (error) {
-        console.error('[CMS_TYPES_API] Error fetching favorite CMS types:', error);
-        if (error.code === '42P01') {
-            return res.status(500).json({ message: `Error: Table 'cms_types' does not exist. Please ensure database migrations have been applied.` });
-        }
-        return res.status(500).json({ message: 'Error fetching favorite CMS types from database', details: error.message });
+        console.error('Error fetching favorite CMS types:', error);
+        return res.status(500).json({ message: 'Error fetching favorite CMS types from database' });
     }
 });
 // Get all CMS types by type (official/custom)
@@ -87,41 +60,14 @@ router.get('/category/:type', async (req, res) => {
         if (!type || !['official', 'custom'].includes(type)) {
             return res.status(400).json({ message: 'Invalid CMS type category. Must be "official" or "custom".' });
         }
-        
-        try {
-            const categoryType = type;
-            const result = await db.select().from(cms_types).where(eq(cms_types.type, categoryType));
-            return res.status(200).json(result);
-        } catch (dbError) {
-            if (dbError.code === '42703') {
-                console.warn('[CMS_TYPES_API] Warning: A column might be missing in cms_types table. Returning basic data for safety.');
-                const result = await db.select({
-                    id: cms_types.id,
-                    name: cms_types.name,
-                    label: cms_types.label,
-                    fields: cms_types.fields,
-                    description: cms_types.description,
-                    icon_name: cms_types.icon_name,
-                    color: cms_types.color,
-                    favorite: cms_types.favorite,
-                    type: cms_types.type
-                }).from(cms_types);
-                
-                if (type === 'official') {
-                    const officialTypesNames = ['discussion', 'event', 'qa', 'blog', 'knowledge-base', 'ideas-wishlist', 'job-board', 'changelog'];
-                    return res.status(200).json(result.filter(r => r.name && officialTypesNames.includes(r.name)));
-                }
-                return res.status(200).json(result);
-            }
-            throw dbError; 
-        }
+        // Cast type to the enum type
+        const categoryType = type;
+        const result = await db.select().from(cms_types).where(eq(cms_types.type, categoryType));
+        return res.status(200).json(result);
     }
     catch (error) {
-        console.error('[CMS_TYPES_API] Error fetching CMS types by category:', error);
-        if (error.code === '42P01') {
-             return res.status(500).json({ message: `Error: Table 'cms_types' does not exist. Please ensure database migrations have been applied.` });
-        }
-        return res.status(500).json({ message: 'Error fetching CMS types from database', details: error.message });
+        console.error('Error fetching CMS types by category:', error);
+        return res.status(500).json({ message: 'Error fetching CMS types from database' });
     }
 });
 // Get a single CMS type by name
@@ -163,44 +109,6 @@ router.get('/:id', async (req, res) => {
     catch (error) {
         console.error('Error fetching CMS type:', error);
         return res.status(500).json({ message: 'Error fetching CMS type from database' });
-    }
-});
-// Create a new CMS type
-router.post('/', async (req, res) => {
-    try {
-        // Handle both string and object body formats (for Vercel compatibility)
-        const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-        const validationResult = cmsTypeSchema.safeParse(body);
-        if (!validationResult.success) {
-            return res.status(400).json({
-                message: 'Invalid CMS type data',
-                errors: { fieldErrors: validationResult.error.flatten().fieldErrors },
-            });
-        }
-        const { name, description, color, icon_name, favorite, type, fields } = validationResult.data;
-        // Check if the name already exists
-        const existingType = await db.select().from(cms_types).where(eq(cms_types.name, name));
-        if (existingType.length > 0) {
-            return res.status(409).json({ message: 'A CMS type with this name already exists' });
-        }
-        // Create the new CMS type
-        const result = await db.insert(cms_types).values({
-            name,
-            description,
-            color,
-            icon_name,
-            favorite,
-            type: type,
-            fields: fields,
-        }).returning();
-        return res.status(201).json(result[0]);
-    }
-    catch (error) {
-        console.error('Error creating CMS type:', error);
-        return res.status(500).json({
-            message: 'Error creating CMS type in database',
-            details: error.message || 'Unknown error',
-        });
     }
 });
 // Toggle favorite status
