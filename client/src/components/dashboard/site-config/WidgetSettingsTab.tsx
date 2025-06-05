@@ -114,11 +114,33 @@ export function WidgetSettingsTab() {
     );
   };
 
+  const handleDragStart = (e: React.DragEvent, widget: Widget) => {
+    e.dataTransfer.setData('application/json', JSON.stringify(widget));
+    e.dataTransfer.effectAllowed = 'copy';
+    
+    // Create a custom drag image
+    const dragImage = document.createElement('div');
+    dragImage.className = 'bg-white dark:bg-gray-800 p-3 rounded-lg border shadow-lg flex items-center gap-2';
+    dragImage.innerHTML = `
+      <div class="w-5 h-5 text-${widget.color}-500"></div>
+      <span class="text-sm font-medium">${widget.name}</span>
+    `;
+    dragImage.style.position = 'absolute';
+    dragImage.style.top = '-1000px';
+    document.body.appendChild(dragImage);
+    e.dataTransfer.setDragImage(dragImage, 0, 0);
+    
+    // Clean up after drag
+    setTimeout(() => {
+      document.body.removeChild(dragImage);
+    }, 0);
+  };
+
   return (
     <div className="space-y-4">
       <div className="px-2">
         <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
-          Select widgets to display in your space. Click to enable/disable each widget.
+          Select widgets to display in your space. Click to enable/disable, or drag them to the preview area to arrange them in a 4×8 grid layout over your content.
         </p>
         
         <div className="grid grid-cols-3 gap-3">
@@ -130,7 +152,9 @@ export function WidgetSettingsTab() {
               <button
                 key={widget.id}
                 onClick={() => toggleWidget(widget.id)}
-                className={`group relative flex flex-col items-center justify-center aspect-square p-3 rounded-lg border transition-all duration-200 hover:scale-[1.02] ${
+                draggable={true}
+                onDragStart={(e) => handleDragStart(e, widget)}
+                className={`group relative flex flex-col items-center justify-center aspect-square p-3 rounded-lg border transition-all duration-200 hover:scale-[1.02] cursor-grab active:cursor-grabbing ${
                   getColorClasses(widget.color, isSelected)
                 }`}
                 style={{

@@ -4,6 +4,9 @@ import { SiteHeader } from "@/components/layout/site/site-header";
 import { SiteSidebar } from "@/components/layout/site/site-sidebar";
 import { SpaceCmsContent } from "@/components/layout/site/site-space-cms-content";
 import { ContentSkeleton } from "./ContentSkeleton";
+import { WidgetModeWrapper } from "./WidgetModeWrapper";
+import { WidgetDropTarget } from "./WidgetDropTarget";
+import { MainContentArea } from "./MainContentArea";
 import { useSiteData } from "@/lib/SiteDataContext";
 
 // Interface for space data
@@ -21,12 +24,13 @@ interface Space {
 interface SpaceContentProps {
   siteSD: string;
   spaceSlug: string;
+  isWidgetMode?: boolean;
 }
 
 /**
  * Component to embed space content with full layout
  */
-export function SpaceContent({ siteSD, spaceSlug }: SpaceContentProps) {
+export function SpaceContent({ siteSD, spaceSlug, isWidgetMode = false }: SpaceContentProps) {
   // Get site data from context
   const { sites, cmsTypes } = useSiteData();
   
@@ -178,84 +182,102 @@ export function SpaceContent({ siteSD, spaceSlug }: SpaceContentProps) {
   }
 
   return (
-    <div className="h-full pb-8 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 dark:scrollbar-thumb-gray-700 flex flex-col bg-gray-50 dark:bg-gray-900 preview-container">
-      {/* Site Header - always render */}
-      <SiteHeader 
-        siteSD={siteSD}
-        site={site}
-        isMenuOpen={isMenuOpen}
-        setIsMenuOpen={setIsMenuOpen}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        handleSearch={handleSearch}
-      />
+    <WidgetModeWrapper isActive={isWidgetMode}>
+      <div className="h-full pb-8 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 dark:scrollbar-thumb-gray-700 flex flex-col bg-gray-50 dark:bg-gray-900 preview-container">
+        {/* Site Header - always render */}
+        <WidgetDropTarget widgetType="Header" isWidgetMode={isWidgetMode}>
+          <SiteHeader 
+            siteSD={siteSD}
+            site={site}
+            isMenuOpen={isMenuOpen}
+            setIsMenuOpen={setIsMenuOpen}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            handleSearch={handleSearch}
+          />
+        </WidgetDropTarget>
 
-      {/* Main Content */}
-      <div className="flex-1">
-        <div className="container mx-auto px-4 flex-grow">
-          <div className="flex flex-col md:flex-row gap-6">
-            {/* Sidebar - always render */}
-            <SiteSidebar siteSD={siteSD} activePage={spaceSlug} />
+        {/* Main Content */}
+        <div className="flex-1">
+          <div className="container mx-auto px-4 flex-grow">
+            <div className="flex flex-col md:flex-row gap-6">
+              {/* Sidebar - always render */}
+              <WidgetDropTarget widgetType="Sidebar" isWidgetMode={isWidgetMode}>
+                <SiteSidebar siteSD={siteSD} activePage={spaceSlug} />
+              </WidgetDropTarget>
 
-            {/* Main content area - animate between states */}
-            <div className="flex-1 p-4 md:p-6">
-              <AnimatePresence mode="wait">
-                {isContentLoading ? (
-                  <motion.div
-                    key="skeleton"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="bg-white dark:bg-gray-800 rounded-lg shadow p-6"
-                  >
-                    <ContentSkeleton />
-                  </motion.div>
-                ) : error ? (
-                  <motion.div
-                    key="error"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.2 }}
-                    className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
-                  >
-                    <p className="text-red-500">{error}</p>
-                  </motion.div>
-                ) : space ? (
-                  <motion.div
-                    key={`space-${spaceSlug}`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <SpaceCmsContent 
-                      siteSD={siteSD}
-                      space={space}
-                      site={site}
-                    />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="no-content"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.2 }}
-                    className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
-                  >
-                    <p className="text-gray-600 dark:text-gray-400">
-                      No content available for this space.
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {/* Main content area - animate between states */}
+              <div className="flex-1 p-4 md:p-6">
+                <MainContentArea isWidgetMode={isWidgetMode}>
+                  <AnimatePresence mode="wait">
+                    {isContentLoading ? (
+                      <motion.div
+                        key="skeleton"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="bg-white dark:bg-gray-800 rounded-lg shadow p-6"
+                      >
+                        <WidgetDropTarget widgetType="Content Loading" isWidgetMode={isWidgetMode}>
+                          <ContentSkeleton />
+                        </WidgetDropTarget>
+                      </motion.div>
+                    ) : error ? (
+                      <motion.div
+                        key="error"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.2 }}
+                        className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
+                      >
+                        <WidgetDropTarget widgetType="Error Message" isWidgetMode={isWidgetMode}>
+                          <p className="text-red-500">{error}</p>
+                        </WidgetDropTarget>
+                      </motion.div>
+                    ) : space ? (
+                      <motion.div
+                        key={`space-${spaceSlug}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <WidgetDropTarget widgetType={`${space.name} Content`} isWidgetMode={isWidgetMode}>
+                          <SpaceCmsContent 
+                            siteSD={siteSD}
+                            space={space}
+                            site={site}
+                          />
+                        </WidgetDropTarget>
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="no-content"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.2 }}
+                        className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
+                      >
+                        <WidgetDropTarget widgetType="Empty State" isWidgetMode={isWidgetMode}>
+                          <p className="text-gray-600 dark:text-gray-400">
+                            No content available for this space.
+                          </p>
+                        </WidgetDropTarget>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </MainContentArea>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Footer */}
-      {renderFooter()}
-    </div>
+        {/* Footer */}
+        <WidgetDropTarget widgetType="Footer" isWidgetMode={isWidgetMode}>
+          {renderFooter()}
+        </WidgetDropTarget>
+      </div>
+    </WidgetModeWrapper>
   );
 } 

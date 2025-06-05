@@ -115,7 +115,11 @@ export default function SpaceSettingsPage() {
                 key={`space-content-${spacesSlug}`} 
                 className="w-full h-full transition-opacity duration-300"
               >
-                <SpaceContent siteSD={siteSD} spaceSlug={spacesSlug} />
+                <SpaceContent 
+                  siteSD={siteSD} 
+                  spaceSlug={spacesSlug} 
+                  isWidgetMode={activeTab === 'widget' && sidebarVisible}
+                />
               </div>
             </BrowserMockup>
           </div>
