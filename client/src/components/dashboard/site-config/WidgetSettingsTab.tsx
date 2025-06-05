@@ -49,6 +49,7 @@ interface Props {
 }
 
 export function WidgetSettingsTab({ contentType = 'general', onWidgetHover }: Props) {
+  const [activeTab, setActiveTab] = useState('general');
   const [selectedWidgets, setSelectedWidgets] = useState<string[]>([]);
   const [currentHoveredWidget, setCurrentHoveredWidget] = useState<Widget | null>(null);
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -373,109 +374,149 @@ export function WidgetSettingsTab({ contentType = 'general', onWidgetHover }: Pr
     );
   };
 
-      return (
-      <div className="space-y-6 relative">
-        {categories.map((category) => (
-          <div key={category.id} className="space-y-3">
-            <div className="flex items-center gap-3">
-              <div 
-                className="w-1.5 h-1.5 rounded-full"
-                style={{ backgroundColor: category.color }}
-              ></div>
+  return (
+    <div className="space-y-4">
+      {/* Tab Navigation */}
+      <div className="flex border-b border-gray-200 dark:border-gray-700">
+        <button
+          onClick={() => setActiveTab('general')}
+          className={`flex-1 px-4 py-2 text-sm font-medium rounded-t-md border-b-2 transition-colors ${
+            activeTab === 'general'
+              ? 'text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20'
+              : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
+          }`}
+        >
+          General Page
+        </button>
+        <button
+          onClick={() => setActiveTab('single')}
+          className={`flex-1 px-4 py-2 text-sm font-medium rounded-t-md border-b-2 transition-colors ${
+            activeTab === 'single'
+              ? 'text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20'
+              : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
+          }`}
+        >
+          Single Page
+        </button>
+      </div>
+
+      {/* Tab Content */}
+      {activeTab === 'general' && (
+        <div className="space-y-6 relative">
+          {categories.map((category) => (
+            <div key={category.id} className="space-y-3">
               <h3 
                 className="text-xs font-medium uppercase tracking-wider"
                 style={{ color: category.color }}
               >
                 {category.name}
               </h3>
-            </div>
-          
-          <div className="grid grid-cols-3 gap-3">
-            {category.widgets.map((widget) => {
-              const isSelected = selectedWidgets.includes(widget.id);
-              const IconComponent = widget.icon;
               
-              return (
-                <button
-                  key={widget.id}
-                  onClick={() => toggleWidget(widget.id)}
-                  draggable={true}
-                  onDragStart={(e) => handleDragStart(e, widget)}
-                  onMouseEnter={(e) => handleMouseEnter(widget, e)}
-                  onMouseMove={handleMouseMove}
-                  onMouseLeave={handleMouseLeave}
-                  className="group relative flex flex-col items-center justify-center aspect-square p-3 transition-all duration-300 cursor-grab active:cursor-grabbing rounded-lg border"
-                  style={{
-                    '--category-color': category.color,
-                    '--category-rgb': category.color.replace('#', '').match(/.{2}/g)?.map(hex => parseInt(hex, 16)).join(', ') || '0, 0, 0',
-                    background: isSelected 
-                      ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.2) 100%)'
-                      : `linear-gradient(135deg, rgba(${category.color.replace('#', '').match(/.{2}/g)?.map(hex => parseInt(hex, 16)).join(', ') || '0, 0, 0'}, 0.03) 0%, rgba(${category.color.replace('#', '').match(/.{2}/g)?.map(hex => parseInt(hex, 16)).join(', ') || '0, 0, 0'}, 0.08) 100%)`,
-                    borderColor: isSelected 
-                      ? 'rgba(59, 130, 246, 0.3)'
-                      : `rgba(${category.color.replace('#', '').match(/.{2}/g)?.map(hex => parseInt(hex, 16)).join(', ') || '0, 0, 0'}, 0.2)`
-                  } as React.CSSProperties}
-                  onMouseOver={(e) => {
-                    if (!isSelected) {
-                      const target = e.currentTarget;
-                      const rgb = category.color.replace('#', '').match(/.{2}/g)?.map(hex => parseInt(hex, 16)).join(', ') || '0, 0, 0';
-                      target.style.background = `linear-gradient(135deg, rgba(${rgb}, 0.06) 0%, rgba(${rgb}, 0.12) 100%)`;
-                      target.style.borderColor = `rgba(${rgb}, 0.3)`;
-                    }
-                  }}
-                  onMouseOut={(e) => {
-                    if (!isSelected) {
-                      const target = e.currentTarget;
-                      const rgb = category.color.replace('#', '').match(/.{2}/g)?.map(hex => parseInt(hex, 16)).join(', ') || '0, 0, 0';
-                      target.style.background = `linear-gradient(135deg, rgba(${rgb}, 0.03) 0%, rgba(${rgb}, 0.08) 100%)`;
-                      target.style.borderColor = `rgba(${rgb}, 0.2)`;
-                    }
-                  }}
-                >
-                  <IconComponent 
-                    className="w-5 h-5 mb-2 transition-all duration-300"
-                    style={{ 
-                      color: isSelected ? '#3b82f6' : category.color 
-                    }}
-                  />
-                  <span 
-                    className="text-xs font-medium text-center leading-tight transition-all duration-300 truncate w-full"
-                    style={{ 
-                      color: isSelected ? '#3b82f6' : category.color 
-                    }}
-                  >
-                    {widget.name}
-                  </span>
+              <div className="grid grid-cols-3 gap-3">
+                {category.widgets.map((widget) => {
+                  const isSelected = selectedWidgets.includes(widget.id);
+                  const IconComponent = widget.icon;
                   
-                  {/* Selection indicator */}
-                  {isSelected && (
-                    <div className="absolute top-2 right-2 w-3 h-3 bg-blue-500 rounded-full border-2 border-white dark:border-gray-800 shadow-md flex items-center justify-center animate-pulse">
-                      <div className="w-1 h-1 bg-white rounded-full"></div>
-                    </div>
-                  )}
-                </button>
-              );
-            })}
+                  return (
+                    <button
+                      key={widget.id}
+                      onClick={() => toggleWidget(widget.id)}
+                      draggable={true}
+                      onDragStart={(e) => handleDragStart(e, widget)}
+                      onMouseEnter={(e) => handleMouseEnter(widget, e)}
+                      onMouseMove={handleMouseMove}
+                      onMouseLeave={handleMouseLeave}
+                      className="group relative flex flex-col items-center justify-center aspect-square p-3 transition-all duration-300 cursor-grab active:cursor-grabbing rounded-lg border"
+                      style={{
+                        '--category-color': category.color,
+                        '--category-rgb': category.color.replace('#', '').match(/.{2}/g)?.map(hex => parseInt(hex, 16)).join(', ') || '0, 0, 0',
+                        background: isSelected 
+                          ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.2) 100%)'
+                          : `linear-gradient(135deg, rgba(${category.color.replace('#', '').match(/.{2}/g)?.map(hex => parseInt(hex, 16)).join(', ') || '0, 0, 0'}, 0.03) 0%, rgba(${category.color.replace('#', '').match(/.{2}/g)?.map(hex => parseInt(hex, 16)).join(', ') || '0, 0, 0'}, 0.08) 100%)`,
+                        borderColor: isSelected 
+                          ? 'rgba(59, 130, 246, 0.3)'
+                          : `rgba(${category.color.replace('#', '').match(/.{2}/g)?.map(hex => parseInt(hex, 16)).join(', ') || '0, 0, 0'}, 0.2)`
+                      } as React.CSSProperties}
+                      onMouseOver={(e) => {
+                        if (!isSelected) {
+                          const target = e.currentTarget;
+                          const rgb = category.color.replace('#', '').match(/.{2}/g)?.map(hex => parseInt(hex, 16)).join(', ') || '0, 0, 0';
+                          target.style.background = `linear-gradient(135deg, rgba(${rgb}, 0.06) 0%, rgba(${rgb}, 0.12) 100%)`;
+                          target.style.borderColor = `rgba(${rgb}, 0.3)`;
+                        }
+                      }}
+                      onMouseOut={(e) => {
+                        if (!isSelected) {
+                          const target = e.currentTarget;
+                          const rgb = category.color.replace('#', '').match(/.{2}/g)?.map(hex => parseInt(hex, 16)).join(', ') || '0, 0, 0';
+                          target.style.background = `linear-gradient(135deg, rgba(${rgb}, 0.03) 0%, rgba(${rgb}, 0.08) 100%)`;
+                          target.style.borderColor = `rgba(${rgb}, 0.2)`;
+                        }
+                      }}
+                    >
+                      <IconComponent 
+                        className="w-5 h-5 mb-2 transition-all duration-300"
+                        style={{ 
+                          color: isSelected ? '#3b82f6' : category.color 
+                        }}
+                      />
+                      <span 
+                        className="text-xs font-medium text-center leading-tight transition-all duration-300 truncate w-full"
+                        style={{ 
+                          color: isSelected ? '#3b82f6' : category.color 
+                        }}
+                      >
+                        {widget.name}
+                      </span>
+                      
+                      {/* Selection indicator */}
+                      {isSelected && (
+                        <div className="absolute top-2 right-2 w-3 h-3 bg-blue-500 rounded-full border-2 border-white dark:border-gray-800 shadow-md flex items-center justify-center animate-pulse">
+                          <div className="w-1 h-1 bg-white rounded-full"></div>
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+
+          {selectedWidgets.length > 0 && (
+            <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+              <p className="text-xs text-blue-700 dark:text-blue-300 font-medium mb-1">
+                Selected Widgets ({selectedWidgets.length})
+              </p>
+              <p className="text-xs text-blue-600 dark:text-blue-400">
+                {categories
+                  .flatMap(cat => cat.widgets)
+                  .filter(widget => selectedWidgets.includes(widget.id))
+                  .map(widget => widget.name)
+                  .join(', ')}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Single Page Tab Content */}
+      {activeTab === 'single' && (
+        <div className="space-y-4">
+          <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+            <Grid3x3 className="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" />
+            <h3 className="text-lg font-medium mb-2">Single Page Widgets</h3>
+            <p className="text-sm">Configure widgets that appear on individual content pages.</p>
+          </div>
+          
+          <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Single page widget configuration coming soon...
+            </p>
           </div>
         </div>
-      ))}
-
-              {selectedWidgets.length > 0 && (
-          <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-            <p className="text-xs text-blue-700 dark:text-blue-300 font-medium mb-1">
-              Selected Widgets ({selectedWidgets.length})
-            </p>
-            <p className="text-xs text-blue-600 dark:text-blue-400">
-              {categories
-                .flatMap(cat => cat.widgets)
-                .filter(widget => selectedWidgets.includes(widget.id))
-                .map(widget => widget.name)
-                .join(', ')}
-            </p>
-          </div>
-        )}
-      </div>
-    );
+      )}
+    </div>
+  );
   }
 
   // Export the widget preview function for use in parent components  

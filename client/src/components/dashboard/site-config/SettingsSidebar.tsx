@@ -6,7 +6,6 @@ import { GeneralSettingsTab } from "./GeneralSettingsTab";
 import { WidgetSettingsTab } from "./WidgetSettingsTab";
 import { SEOSettingsTab } from "./SEOSettingsTab";
 import { DisplaySettingsTab } from "./DisplaySettingsTab";
-import { CustomizeSettingsTab } from "./CustomizeSettingsTab";
 import { DangerZoneSettingsTab } from "./DangerZoneSettingsTab";
 
 interface Widget {
@@ -182,10 +181,9 @@ export function SettingsSidebar({
   const getTabTitle = () => {
     switch(activeTab) {
       case 'general': return 'General settings';
-      case 'widget': return 'Widget Settings';
+      case 'widget': return 'Customize Widgets';
       case 'seo': return 'SEO Settings';
       case 'display': return 'Content Layout';
-      case 'customize': return 'Customize Settings';
       case 'danger': return 'Danger Zone';
       default: return 'Settings';
     }
@@ -198,7 +196,6 @@ export function SettingsSidebar({
       case 'widget': return 'Select and configure widgets to display in your space';
       case 'seo': return 'Optimize your space for search engines and social media';
       case 'display': return 'Customize how content is displayed and organized';
-      case 'customize': return 'Configure interactive features and space appearance';
       case 'danger': return 'Irreversible actions that affect your entire space';
       default: return 'Select a category to configure space settings';
     }
@@ -255,8 +252,6 @@ export function SettingsSidebar({
         return <SEOSettingsTab />;
       case 'display':
         return <DisplaySettingsTab />;
-      case 'customize':
-        return <CustomizeSettingsTab />;
       case 'danger':
         return <DangerZoneSettingsTab />;
       default:
