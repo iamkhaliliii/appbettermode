@@ -33,6 +33,7 @@ interface SpaceContentProps {
 export function SpaceContent({ siteSD, spaceSlug, isWidgetMode = false }: SpaceContentProps) {
   // Get site data from context
   const { sites, cmsTypes } = useSiteData();
+  const [isDragging, setIsDragging] = useState(false);
   
   const [site, setSite] = useState<any>(null);
   const [space, setSpace] = useState<Space | null>(null);
@@ -182,7 +183,7 @@ export function SpaceContent({ siteSD, spaceSlug, isWidgetMode = false }: SpaceC
   }
 
   return (
-    <WidgetModeWrapper isActive={isWidgetMode}>
+    <WidgetModeWrapper isActive={isWidgetMode} isDragging={isDragging}>
       <div className="h-full pb-8 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 dark:scrollbar-thumb-gray-700 flex flex-col bg-gray-50 dark:bg-gray-900 preview-container">
         {/* Site Header - always render */}
         <WidgetDropTarget widgetType="Header" isWidgetMode={isWidgetMode}>
@@ -208,7 +209,7 @@ export function SpaceContent({ siteSD, spaceSlug, isWidgetMode = false }: SpaceC
 
               {/* Main content area - animate between states */}
               <div className="flex-1 p-4 md:p-6">
-                <MainContentArea isWidgetMode={isWidgetMode}>
+                <MainContentArea isWidgetMode={isWidgetMode} onDragStateChange={setIsDragging}>
                   <AnimatePresence mode="wait">
                     {isContentLoading ? (
                       <motion.div

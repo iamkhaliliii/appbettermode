@@ -9,12 +9,20 @@ import { DisplaySettingsTab } from "./DisplaySettingsTab";
 import { CustomizeSettingsTab } from "./CustomizeSettingsTab";
 import { DangerZoneSettingsTab } from "./DangerZoneSettingsTab";
 
+interface Widget {
+  id: string;
+  name: string;
+  icon: any;
+  description: string;
+}
+
 interface SettingsSidebarProps {
   siteSD: string;
   spacesSlug: string;
   activeTab: string;
   siteDetails: Site | null;
   onClose?: () => void;
+  onWidgetHover?: (widget: Widget | null, position: { x: number; y: number }) => void;
 }
 
 /**
@@ -24,7 +32,8 @@ export function SettingsSidebar({
   siteSD, 
   spacesSlug, 
   activeTab,
-  onClose
+  onClose,
+  onWidgetHover
 }: Omit<SettingsSidebarProps, 'siteDetails'>) {
   // Get site details from context
   const { sites } = useSiteData();
@@ -195,6 +204,18 @@ export function SettingsSidebar({
     }
   };
 
+  // Determine content type based on space slug
+  const getContentType = (): 'blog' | 'event' | 'general' => {
+    const lowerSpaceSlug = spacesSlug.toLowerCase();
+    if (lowerSpaceSlug.includes('blog') || lowerSpaceSlug.includes('post') || lowerSpaceSlug.includes('article')) {
+      return 'blog';
+    }
+    if (lowerSpaceSlug.includes('event') || lowerSpaceSlug.includes('calendar') || lowerSpaceSlug.includes('meet')) {
+      return 'event';
+    }
+    return 'general';
+  };
+
   // Render form content based on active tab
   const renderTabContent = () => {
     switch(activeTab) {
@@ -229,7 +250,7 @@ export function SettingsSidebar({
           isLoading={isLoading}
         />;
       case 'widget':
-        return <WidgetSettingsTab />;
+        return <WidgetSettingsTab contentType={getContentType()} onWidgetHover={onWidgetHover} />;
       case 'seo':
         return <SEOSettingsTab />;
       case 'display':
@@ -248,7 +269,7 @@ export function SettingsSidebar({
   };
 
   return (
-    <div className="w-80 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 dark:scrollbar-thumb-gray-700 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-850 flex flex-col">
+    <div className="w-80 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex flex-col">
       <div className="p-2 flex flex-col flex-shrink-0">
         <div className="flex items-center justify-between mb-2">
           <button
@@ -302,7 +323,7 @@ export function SettingsSidebar({
       </div>
 
       
-      <div className="flex-1 mt-4 overflow-y-auto scrollbar-thin ">
+      <div className="flex-1 mt-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
         <div className="px-2">
           {renderTabContent()}
         </div>

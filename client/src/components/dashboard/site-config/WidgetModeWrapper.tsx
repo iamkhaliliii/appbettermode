@@ -5,9 +5,10 @@ import { Smartphone, Monitor, Tablet, Grid3x3, Sparkles } from "lucide-react";
 interface WidgetModeWrapperProps {
   isActive: boolean;
   children: React.ReactNode;
+  isDragging?: boolean;
 }
 
-export function WidgetModeWrapper({ isActive, children }: WidgetModeWrapperProps) {
+export function WidgetModeWrapper({ isActive, children, isDragging = false }: WidgetModeWrapperProps) {
   const [showIntro, setShowIntro] = useState(false);
 
   // Show intro animation when entering widget mode
@@ -104,15 +105,19 @@ export function WidgetModeWrapper({ isActive, children }: WidgetModeWrapperProps
         >
           <div className="bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 px-6 py-3 flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Widget Mode</span>
+              <div className={`w-2 h-2 rounded-full ${
+                isDragging ? 'bg-orange-500 animate-pulse' : 'bg-green-500 animate-pulse'
+              }`}></div>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {isDragging ? 'Moving Widget...' : 'Widget Mode'}
+              </span>
             </div>
             
             <div className="h-4 w-px bg-gray-300 dark:bg-gray-600"></div>
             
             <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
               <Sparkles className="w-3 h-3" />
-              <span>Linear Layout</span>
+              <span>{isDragging ? 'Drag & Drop Active' : 'Linear Layout'}</span>
             </div>
             
             <div className="flex items-center gap-1">
