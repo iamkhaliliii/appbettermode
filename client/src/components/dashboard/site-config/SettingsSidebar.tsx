@@ -184,7 +184,7 @@ export function SettingsSidebar({
       case 'general': return 'General settings';
       case 'widget': return 'Widget Settings';
       case 'seo': return 'SEO Settings';
-      case 'display': return 'Display Settings';
+      case 'display': return 'Content Layout';
       case 'customize': return 'Customize Settings';
       case 'danger': return 'Danger Zone';
       default: return 'Settings';

@@ -511,6 +511,57 @@ export const SiteConfigSidebar: React.FC<BaseSidebarProps> = memo(({
           </AccordionContent>
         </AccordionItem>
 
+        {/* Content Layout Section */}
+        <div className="border-0">
+          <div
+            className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline cursor-pointer"
+            onClick={() => {
+              const content = document.getElementById("layout-content");
+              const chevron = document.getElementById("layout-chevron");
+              if (content && chevron) {
+                content.classList.toggle("hidden");
+                chevron.style.transform = content.classList.contains("hidden")
+                  ? "rotate(-90deg)"
+                  : "rotate(0deg)";
+              }
+            }}
+          >
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center">
+                <Layout className="h-4 w-4 mr-2 text-gray-500" />
+                <span className="font-medium text-sm">
+                  Content Layout
+                </span>
+              </div>
+              <ChevronDown
+                id="layout-chevron"
+                className="h-3.5 w-3.5 text-gray-400 transition-transform duration-200"
+              />
+            </div>
+          </div>
+          <div id="layout-content" className="pb-1 hidden">
+                         <div className="px-2 mb-2">
+               <p className="text-[11px] text-gray-500 dark:text-gray-500">
+                 Configure general content settings and individual content display options.
+               </p>
+             </div>
+            <div className="space-y-1">
+                             <SideNavItem
+                 href={`${basePath}/layout/settings`}
+                 isActive={isActiveUrl && isActiveUrl(`${basePath}/layout/settings`, currentPathname)}
+               >
+                 General Content
+               </SideNavItem>
+               <SideNavItem
+                 href={`${basePath}/layout/single-event`}
+                 isActive={isActiveUrl && isActiveUrl(`${basePath}/layout/single-event`, currentPathname)}
+               >
+                 Single Content
+               </SideNavItem>
+            </div>
+          </div>
+        </div>
+
         <div className="border-0">
           <div
             className="flex items-center py-1.5 px-2.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded text-gray-700 dark:text-gray-300 hover:no-underline cursor-pointer"
