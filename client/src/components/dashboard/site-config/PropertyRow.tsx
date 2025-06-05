@@ -156,8 +156,10 @@ export function PropertyRow({
       {isChild && (
         <div className="absolute left-4 top-0 bottom-0 w-px bg-gray-200 dark:bg-gray-700"></div>
       )}
-      <div className={`flex hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-md group transition-colors ${
-        isChild ? 'px-2 pl-8' : 'px-2'
+      <div className={`flex rounded-md group transition-colors ${
+        isChild 
+          ? 'px-2 pl-8 hover:bg-gray-50 dark:hover:bg-gray-800/50' 
+          : 'px-2 hover:bg-gray-50 dark:hover:bg-gray-800/50'
       } ${
         description && showDescription ? '' : 'border-b border-gray-100 dark:border-gray-800'
       } ${
@@ -166,13 +168,17 @@ export function PropertyRow({
         <div className={`text-xs text-gray-400 dark:text-gray-500 flex items-center gap-2 ${
           (isDescription || isSlug) && isEditing ? 'w-full' : 'w-1/2 pr-2'
         }`}>
-          {Icon && !isChild && <Icon className="h-3 w-3 flex-shrink-0" />}
+          {Icon && !isChild && (
+            <div className="flex items-center justify-center w-5 h-5 rounded-md bg-gray-100 dark:bg-gray-800 group-hover:bg-gray-200 dark:group-hover:bg-gray-700 transition-colors">
+              <Icon className="h-3 w-3 text-gray-600 dark:text-gray-400" />
+            </div>
+          )}
           <div className="flex items-center">
-            <span className="truncate text-left">{label}</span>
+            <span className="truncate text-left font-medium">{label}</span>
             {description && (
               <button
                 onClick={() => setShowDescription(!showDescription)}
-                className="ml-0.5 p-1 rounded-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                className="ml-1 p-1 rounded-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 type="button"
               >
                 <Info className="h-2.5 w-2.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" />

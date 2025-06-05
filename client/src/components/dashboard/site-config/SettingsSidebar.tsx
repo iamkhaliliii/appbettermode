@@ -3,6 +3,7 @@ import { ArrowLeftToLine, Loader2, PanelLeftClose } from "lucide-react";
 import { Site } from "@/lib/api";
 import { useSiteData } from "@/lib/SiteDataContext";
 import { GeneralSettingsTab } from "./GeneralSettingsTab";
+import { WidgetSettingsTab } from "./WidgetSettingsTab";
 import { SEOSettingsTab } from "./SEOSettingsTab";
 import { DisplaySettingsTab } from "./DisplaySettingsTab";
 import { CustomizeSettingsTab } from "./CustomizeSettingsTab";
@@ -172,6 +173,7 @@ export function SettingsSidebar({
   const getTabTitle = () => {
     switch(activeTab) {
       case 'general': return 'General settings';
+      case 'widget': return 'Widget Settings';
       case 'seo': return 'SEO Settings';
       case 'display': return 'Display Settings';
       case 'customize': return 'Customize Settings';
@@ -184,6 +186,7 @@ export function SettingsSidebar({
   const getTabDescription = () => {
     switch(activeTab) {
       case 'general': return 'Configure basic space information, visibility and permissions';
+      case 'widget': return 'Select and configure widgets to display in your space';
       case 'seo': return 'Optimize your space for search engines and social media';
       case 'display': return 'Customize how content is displayed and organized';
       case 'customize': return 'Configure interactive features and space appearance';
@@ -225,6 +228,8 @@ export function SettingsSidebar({
           setWhoCanReact={handleWhoCanReactChange}
           isLoading={isLoading}
         />;
+      case 'widget':
+        return <WidgetSettingsTab />;
       case 'seo':
         return <SEOSettingsTab />;
       case 'display':

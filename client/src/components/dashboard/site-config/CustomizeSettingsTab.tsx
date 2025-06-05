@@ -55,6 +55,7 @@ export function CustomizeSettingsTab() {
           onFieldClick={handleFieldClick}
           onFieldBlur={handleFieldBlur}
           onKeyDown={handleKeyDown}
+          isChild={true}
         />
       )}
     </div>

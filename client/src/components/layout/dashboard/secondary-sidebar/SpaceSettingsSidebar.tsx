@@ -59,6 +59,7 @@ export const SpaceSettingsSidebar: React.FC<SpaceSettingsSidebarProps> = memo(({
   // Memoize menu items to prevent recreation on each render
   const menuItems = useMemo(() => [
     { id: "general", label: "General" },
+    { id: "widget", label: "Widget" },
     { id: "display", label: "Layout" },
     { id: "customize", label: "Customize" },
     { id: "seo", label: "SEO" },

@@ -324,6 +324,7 @@ export function DisplaySettingsTab() {
                 onFieldClick={handleFieldClick}
                 onFieldBlur={handleFieldBlur}
                 onKeyDown={handleKeyDown}
+                isChild={true}
               />
             )}
 
