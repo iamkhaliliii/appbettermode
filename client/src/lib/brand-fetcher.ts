@@ -71,6 +71,7 @@ export async function testBrandfetchConnection(): Promise<{
 interface BrandfetchResponse {
   name?: string;
   description?: string;
+  longDescription?: string;
   logos?: Array<{
     type: string;
     theme?: string;
@@ -92,7 +93,27 @@ interface BrandfetchResponse {
     description: string;
     industry?: string;
     location?: string;
+    employees?: number;
   };
+  links?: Array<{
+    name: string;
+    url: string;
+  }>;
+  fonts?: Array<{
+    name: string;
+    type: string;
+    origin?: string;
+  }>;
+  images?: Array<{
+    type: string;
+    formats: Array<{
+      src: string;
+      format: string;
+      width?: number;
+      height?: number;
+    }>;
+  }>;
+  qualityScore?: number;
   error?: string;
 }
 
@@ -105,9 +126,14 @@ interface BrandfetchResponse {
 export async function fetchBrandInfo(domain: string): Promise<{
   name?: string;
   description?: string;
+  longDescription?: string;
   logos: BrandLogo[];
   colors: BrandColor[];
   companyInfo?: CompanyInfo;
+  links?: Array<{ name: string; url: string }>;
+  fonts?: Array<{ name: string; type: string; origin?: string }>;
+  images?: Array<{ type: string; url: string; format: string; width?: number; height?: number }>;
+  qualityScore?: number;
   error: string | null;
 }> {
   if (!domain) {
@@ -115,7 +141,12 @@ export async function fetchBrandInfo(domain: string): Promise<{
       logos: [],
       colors: [],
       description: undefined,
+      longDescription: undefined,
       companyInfo: undefined,
+      links: undefined,
+      fonts: undefined,
+      images: undefined,
+      qualityScore: undefined,
       error: 'No domain provided'
     };
   }
@@ -187,12 +218,41 @@ export async function fetchBrandInfo(domain: string): Promise<{
     // Extract company information if available
     const companyInfo = data.companyInfo ? { ...data.companyInfo } : undefined;
     
+    // Extract social links
+    const links = data.links || [];
+    
+    // Extract fonts
+    const fonts = data.fonts || [];
+    
+    // Extract images and transform to our format
+    const images: Array<{ type: string; url: string; format: string; width?: number; height?: number }> = [];
+    if (data.images && data.images.length > 0) {
+      data.images.forEach(image => {
+        // Take the first format for each image
+        if (image.formats && image.formats.length > 0) {
+          const format = image.formats[0];
+          images.push({
+            type: image.type,
+            url: format.src,
+            format: format.format,
+            width: format.width,
+            height: format.height
+          });
+        }
+      });
+    }
+    
     return {
       name: data.name,
       description: data.description,
+      longDescription: data.longDescription,
       logos,
       colors,
       companyInfo,
+      links,
+      fonts,
+      images,
+      qualityScore: data.qualityScore,
       error: null
     };
   } catch (error) {
@@ -201,7 +261,12 @@ export async function fetchBrandInfo(domain: string): Promise<{
       logos: [],
       colors: [],
       description: undefined,
+      longDescription: undefined,
       companyInfo: undefined,
+      links: undefined,
+      fonts: undefined,
+      images: undefined,
+      qualityScore: undefined,
       error: error instanceof Error ? error.message : 'Unknown error'
     };
   }

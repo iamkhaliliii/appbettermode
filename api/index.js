@@ -16,7 +16,7 @@ const PORT = SERVER_PORT;
 app.use(cors({
     origin: '*', // Allow all origins in development
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'Cache-Control', 'Pragma'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'Cache-Control', 'Pragma', 'Expires'],
     // Cannot use credentials:true with origin:'*'
     credentials: false,
     maxAge: 86400 // 24 hours

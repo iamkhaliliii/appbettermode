@@ -29,19 +29,46 @@ export interface BrandColor {
   brightness?: number;
 }
 
+export interface BrandLink {
+  name: string;
+  url: string;
+}
+
+export interface BrandFont {
+  name: string;
+  type: string;
+  origin?: string;
+}
+
+export interface BrandImage {
+  type: string;
+  url: string;
+  format: string;
+  width?: number;
+  height?: number;
+}
+
 export interface CompanyInfo {
   name: string;
   description: string;
   industry?: string;
   location?: string;
+  employees?: number;
+  foundedYear?: number;
+  qualityScore?: number;
 }
 
 export interface BrandPreview {
   name?: string;
   description?: string;
+  longDescription?: string;
   logos: BrandLogo[];
   colors: BrandColor[];
   companyInfo?: CompanyInfo;
+  links?: BrandLink[];
+  fonts?: BrandFont[];
+  images?: BrandImage[];
+  qualityScore?: number;
   loading: boolean;
   error: string | null;
 }

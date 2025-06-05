@@ -46,6 +46,11 @@ export function SettingsSidebar({
   const [visibility, setVisibility] = useState<string>("public");
   const [inviteOnly, setInviteOnly] = useState(false);
   const [anyoneCanInvite, setAnyoneCanInvite] = useState(false);
+  const [enableComments, setEnableComments] = useState(true);
+  const [enableReactions, setEnableReactions] = useState(true);
+  const [reactionType, setReactionType] = useState('emoji');
+  const [whoCanReply, setWhoCanReply] = useState('all');
+  const [whoCanReact, setWhoCanReact] = useState('all');
   const [isLoading, setIsLoading] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
@@ -58,7 +63,12 @@ export function SettingsSidebar({
     spaceBannerUrl: "",
     visibility: "public",
     inviteOnly: false,
-    anyoneCanInvite: false
+    anyoneCanInvite: false,
+    enableComments: true,
+    enableReactions: true,
+    reactionType: 'emoji',
+    whoCanReply: 'all',
+    whoCanReact: 'all'
   };
 
   // Check if there are any changes
@@ -71,7 +81,12 @@ export function SettingsSidebar({
       spaceBannerUrl,
       visibility,
       inviteOnly,
-      anyoneCanInvite
+      anyoneCanInvite,
+      enableComments,
+      enableReactions,
+      reactionType,
+      whoCanReply,
+      whoCanReact
     };
     
     const changed = JSON.stringify(currentValues) !== JSON.stringify(initialValues);
@@ -81,7 +96,7 @@ export function SettingsSidebar({
   // Use effect to check for changes whenever state updates
   useEffect(() => {
     checkForChanges();
-  }, [name, description, slug, spaceIconUrl, spaceBannerUrl, visibility, inviteOnly, anyoneCanInvite]);
+  }, [name, description, slug, spaceIconUrl, spaceBannerUrl, visibility, inviteOnly, anyoneCanInvite, enableComments, enableReactions, reactionType, whoCanReply, whoCanReact]);
 
   // Wrapper functions to trigger change detection
   const handleNameChange = (value: string) => {
@@ -116,6 +131,26 @@ export function SettingsSidebar({
     setAnyoneCanInvite(value);
   };
 
+  const handleEnableCommentsChange = (value: boolean) => {
+    setEnableComments(value);
+  };
+
+  const handleEnableReactionsChange = (value: boolean) => {
+    setEnableReactions(value);
+  };
+
+  const handleReactionTypeChange = (value: string) => {
+    setReactionType(value);
+  };
+
+  const handleWhoCanReplyChange = (value: string) => {
+    setWhoCanReply(value);
+  };
+
+  const handleWhoCanReactChange = (value: string) => {
+    setWhoCanReact(value);
+  };
+
   // Reset all changes to initial values
   const handleDiscardChanges = () => {
     setName(initialValues.name);
@@ -126,6 +161,11 @@ export function SettingsSidebar({
     setVisibility(initialValues.visibility);
     setInviteOnly(initialValues.inviteOnly);
     setAnyoneCanInvite(initialValues.anyoneCanInvite);
+    setEnableComments(initialValues.enableComments);
+    setEnableReactions(initialValues.enableReactions);
+    setReactionType(initialValues.reactionType);
+    setWhoCanReply(initialValues.whoCanReply);
+    setWhoCanReact(initialValues.whoCanReact);
   };
 
   // Get the title for the current tab
@@ -173,6 +213,16 @@ export function SettingsSidebar({
           setInviteOnly={handleInviteOnlyChange}
           anyoneCanInvite={anyoneCanInvite}
           setAnyoneCanInvite={handleAnyoneCanInviteChange}
+          enableComments={enableComments}
+          setEnableComments={handleEnableCommentsChange}
+          enableReactions={enableReactions}
+          setEnableReactions={handleEnableReactionsChange}
+          reactionType={reactionType}
+          setReactionType={handleReactionTypeChange}
+          whoCanReply={whoCanReply}
+          setWhoCanReply={handleWhoCanReplyChange}
+          whoCanReact={whoCanReact}
+          setWhoCanReact={handleWhoCanReactChange}
           isLoading={isLoading}
         />;
       case 'seo':

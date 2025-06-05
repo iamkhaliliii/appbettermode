@@ -21,6 +21,28 @@ build/
 .vercel/
 public/
 
+# Build artifacts and duplicates
+dist/
+server/dist/
+public/assets/*.js
+public/assets/*.css
+
+# Local database files
+*.db
+*.sqlite
+*.sqlite3
+
+# NPM global and config directories
+.config/
+.npm/
+node_global/
+
+# Development and temporary files
+vite.tmp*
+.cache/
+*.cache
+.temp/
+
 # Logs
 *.log
 npm-debug.log*
@@ -35,3 +57,48 @@ coverage/
 *.tmp
 *.temp
 .cache/
+
+# System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Test files and temporary scripts
+test*.html
+test-*.html
+*test.html
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# Temporary CSV and data files
+*.csv
+spaces_rows.*
+*_rows.csv
+*_export.csv
+
+# Temporary SQL scripts (use migrations instead)
+*_temp.sql
+*_backup.sql
+rebuild*.sql
+clean*.sql
+initial*.sql
+
+# Python cache and scripts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+get_db_schema.py
+db_*.py
+
+# Backup and archive directories
+*backup*/
+*archive*/
+*_backup/
+*_archive/

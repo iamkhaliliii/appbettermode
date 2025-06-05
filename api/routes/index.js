@@ -4,12 +4,63 @@ import { postsRouter } from './posts.js';
 import cmsTypesRouter from './cms-types.js';
 import spacesRouter from './spaces.js';
 import { usersRouter } from './users.js';
-import { fetchBrandData, testBrandfetchAPI } from '../utils/brandfetch.js';
+import { fetchBrandData } from '../utils/brandfetch.js';
 import { logger } from '../utils/logger.js';
 console.log('[API] Router initialized - routes are being registered');
 const apiRouter = express.Router();
-// Brandfetch API key
-const BRANDFETCH_API_KEY = 'rPJ4fYfXffPHxhNAIo8lU7mDRQXHsrYqKXQ678ySJsc=';
+// Get Brandfetch API key from environment variables
+const BRANDFETCH_API_KEY = process.env.BRANDFETCH_API_KEY;
+
+// Demo data generator for when API key is not configured
+const getDemoDataForDomain = (domain) => {
+    const companyName = domain.split('.')[0];
+    const capitalizedName = companyName.charAt(0).toUpperCase() + companyName.slice(1);
+    // Generate demo colors based on company name
+    const colors = [
+        '#3B82F6', // Blue
+        '#10B981', // Green  
+        '#F59E0B', // Yellow
+        '#EF4444', // Red
+        '#8B5CF6', // Purple
+        '#06B6D4', // Cyan
+        '#F97316', // Orange
+        '#84CC16', // Lime
+    ];
+    const colorIndex = companyName.length % colors.length;
+    const primaryColor = colors[colorIndex];
+    // Generate demo logo URL (using a placeholder service)
+    const logoUrl = `https://via.placeholder.com/200x80/${primaryColor.slice(1)}/ffffff?text=${capitalizedName}`;
+    return {
+        name: capitalizedName,
+        description: `${capitalizedName} is a leading company in its industry, providing innovative solutions and exceptional service to customers worldwide.`,
+        logos: [
+            {
+                type: 'logo',
+                theme: 'light',
+                formats: [
+                    {
+                        src: logoUrl,
+                        format: 'png'
+                    }
+                ]
+            }
+        ],
+        colors: [
+            {
+                hex: primaryColor,
+                type: 'primary'
+            }
+        ],
+        companyInfo: {
+            name: capitalizedName,
+            description: `${capitalizedName} is a leading company in its industry.`,
+            industry: 'Technology',
+            location: 'Global',
+            employees: Math.floor(Math.random() * 10000) + 100
+        },
+        demo: true
+    };
+};
 // List all registered routes for debugging
 const listRoutes = () => {
     logger.info('[API] Registered routes:');
@@ -56,34 +107,89 @@ logger.info('[API] Users routes registered');
 // Register dedicated spaces router for space management
 apiRouter.use('/spaces', spacesRouter);
 logger.info('[API] Spaces routes registered');
+// Test brand fetch endpoint (for connection testing)
+apiRouter.get('/test-brandfetch', async (req, res) => {
+    try {
+        logger.info(`[API] Test brand fetch endpoint called`);
+        if (!BRANDFETCH_API_KEY) {
+            logger.warn('[API] BRANDFETCH_API_KEY not set, returning demo mode response');
+            return res.json({
+                status: 'success',
+                message: 'Demo mode: Brandfetch API simulation active',
+                testDomain: 'demo.com',
+                hasData: {
+                    logoUrl: true,
+                    brandColor: true,
+                    companyInfo: true
+                },
+                demo: true
+            });
+        }
+        // Import testBrandfetchAPI function
+        const { testBrandfetchAPI } = await import('../utils/brandfetch.js');
+        logger.info(`[API] Testing brand fetch API connection`);
+        const testResult = await testBrandfetchAPI(BRANDFETCH_API_KEY);
+        res.json({
+            status: testResult.success ? 'success' : 'error',
+            message: testResult.success ? 'Brandfetch API connection successful' : 'Brandfetch API connection failed',
+            testDomain: 'nike.com',
+            hasData: testResult.data ? {
+                logoUrl: !!testResult.data.logoUrl,
+                brandColor: !!testResult.data.brandColor,
+                companyInfo: !!testResult.data.companyInfo
+            } : null,
+            error: testResult.error
+        });
+    }
+    catch (error) {
+        logger.error(`[API] Error in test brand fetch endpoint: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        res.status(500).json({
+            status: 'error',
+            message: 'Internal server error while testing brand fetch',
+            error: error instanceof Error ? error.message : 'Unknown error'
+        });
+    }
+});
+logger.info('[API] Test brand fetch endpoint registered');
+
 // Brand fetch endpoint
 apiRouter.get('/brand-fetch', async (req, res) => {
     logger.info(`[API] Brand fetch endpoint called with domain: ${req.query.domain}`);
     const domain = req.query.domain;
     if (!domain) {
-        return res.status(400).json({ error: 'Missing required query parameter: domain' });
+        return res.status(400).json({
+            message: 'Domain parameter is required',
+            error: 'Missing domain parameter'
+        });
+    }
+    if (!BRANDFETCH_API_KEY) {
+        logger.warn(`[API] BRANDFETCH_API_KEY not set, returning demo data for domain: ${domain}`);
+        // Return demo data based on domain
+        const demoData = getDemoDataForDomain(domain);
+        return res.json(demoData);
     }
     try {
         logger.info(`[API] Fetching brand data for domain: ${domain}`);
         // Fetch brand data from Brandfetch API
-        const { logoUrl, brandColor } = await fetchBrandData(domain, BRANDFETCH_API_KEY);
-        // Format the response to match the Brandfetch API structure
-        // but include only the fields we need
+        const brandData = await fetchBrandData(domain, BRANDFETCH_API_KEY);
+        // Format the response to match what the frontend expects
         const response = {
-            name: domain.split('.')[0], // Extract name from domain as a fallback
+            name: brandData.companyInfo?.name || domain.split('.')[0],
+            description: brandData.companyInfo?.description,
             logos: [],
-            colors: []
+            colors: [],
+            companyInfo: brandData.companyInfo || undefined
         };
         // Add logos
-        if (logoUrl) {
-            const logoFormat = logoUrl.endsWith('.svg') ? 'svg' : 'png';
+        if (brandData.logoUrl) {
+            const logoFormat = brandData.logoUrl.endsWith('.svg') ? 'svg' : 'png';
             response.logos = [
                 {
                     type: 'logo',
                     theme: 'light',
                     formats: [
                         {
-                            src: logoUrl,
+                            src: brandData.logoUrl,
                             format: logoFormat
                         }
                     ]
@@ -91,10 +197,10 @@ apiRouter.get('/brand-fetch', async (req, res) => {
             ];
         }
         // Add colors
-        if (brandColor) {
+        if (brandData.brandColor) {
             response.colors = [
                 {
-                    hex: brandColor,
+                    hex: brandData.brandColor,
                     type: 'primary'
                 }
             ];
@@ -105,8 +211,8 @@ apiRouter.get('/brand-fetch', async (req, res) => {
     catch (error) {
         logger.error(`[API] Error fetching brand data:`, error);
         return res.status(500).json({
-            error: 'Failed to fetch brand data',
-            details: error instanceof Error ? error.message : 'Unknown error'
+            message: 'Internal server error while fetching brand data',
+            error: error instanceof Error ? error.message : 'Unknown error'
         });
     }
 });
@@ -117,39 +223,6 @@ apiRouter.get('/health', (_req, res) => {
     res.status(200).json({ status: 'ok', message: 'API is healthy' });
 });
 logger.info('[API] Health check endpoint registered');
-// Test Brandfetch API connection
-apiRouter.get('/test-brandfetch', async (_req, res) => {
-    logger.info('[API] Test Brandfetch API connection endpoint called');
-    try {
-        const result = await testBrandfetchAPI(BRANDFETCH_API_KEY);
-        if (result.success) {
-            return res.status(200).json({
-                status: 'success',
-                message: 'Brandfetch API connection successful',
-                data: {
-                    logoUrl: result.data?.logoUrl,
-                    primaryColor: result.data?.brandColor
-                }
-            });
-        }
-        else {
-            return res.status(500).json({
-                status: 'error',
-                message: 'Brandfetch API connection failed',
-                error: result.error
-            });
-        }
-    }
-    catch (error) {
-        logger.error('[API] Error testing Brandfetch API:', error);
-        return res.status(500).json({
-            status: 'error',
-            message: 'Error testing Brandfetch API',
-            error: error instanceof Error ? error.message : 'Unknown error'
-        });
-    }
-});
-logger.info('[API] Test Brandfetch API endpoint registered');
 // Test endpoint to verify API is working
 apiRouter.get('/test', (req, res) => {
     res.json({

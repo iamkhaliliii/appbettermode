@@ -1,25 +1,54 @@
+/**
+ * Optimized Brandfetch API integration
+ * Updated to match actual API v2 response structure
+ */
+
 // Use standard fetch API
 const fetch = global.fetch;
 
-// Define types for Brandfetch API response
+// Define types for actual Brandfetch API v2 response
+interface BrandfetchFormat {
+  src: string;
+  background?: string | null;
+  format: string;
+  height?: number | null;
+  width?: number | null;
+  size?: number;
+}
+
 interface BrandfetchLogo {
-  type: string;
   theme?: string;
-  formats: {
-    src: string;
-    format: string;
-    height?: number;
-    width?: number;
-    size?: number;
-    background?: string;
-  }[];
+  formats: BrandfetchFormat[];
   tags?: string[];
+  type: string;
 }
 
 interface BrandfetchColor {
   hex: string;
   type: string;
   brightness?: number;
+}
+
+interface BrandfetchCompany {
+  employees?: number;
+  foundedYear?: number | null;
+  industries?: Array<{
+    score: number;
+    id: string;
+    name: string;
+    emoji: string;
+    parent: any;
+    slug: string;
+  }>;
+  kind?: string;
+  location?: {
+    city: string;
+    country: string;
+    countryCode: string;
+    region: string;
+    state: string;
+    subregion: string;
+  };
 }
 
 interface BrandfetchResponse {
@@ -29,74 +58,93 @@ interface BrandfetchResponse {
   claimed: boolean;
   description: string;
   longDescription?: string;
-  links: { name: string; url: string }[];
+  links: Array<{ name: string; url: string }>;
   logos: BrandfetchLogo[];
   colors: BrandfetchColor[];
-  fonts: { 
-    name: string; 
-    type: string;
-    origin?: string;
-    originId?: string;
-    weights?: number[];
-  }[];
-  images: { url: string; type: string }[];
+  fonts?: Array<{ name: string; type: string; origin?: string }>;
+  images?: Array<{ formats: BrandfetchFormat[]; tags: string[]; type: string }>;
   qualityScore?: number;
-  company?: {
-    employees?: number;
-    foundedYear?: number;
-    industries?: {
-      score: number;
-      id: string;
-      name: string;
-      emoji: string;
-      parent: any;
-      slug: string;
-    }[];
-    kind?: string;
-    location?: {
-      city: string;
-      country: string;
-      countryCode: string;
-      region: string;
-      state: string;
-      subregion: string;
-    };
-  };
+  company?: BrandfetchCompany;
   isNsfw?: boolean;
   urn?: string;
 }
 
 interface BrandfetchData {
+  name?: string;
+  description?: string;
+  longDescription?: string;
   logoUrl: string | null;
   brandColor: string | null;
+  logos: Array<{
+    type: string;
+    theme?: string;
+    url: string;
+    format: string;
+    width?: number;
+    height?: number;
+    background?: string;
+  }>;
+  colors: Array<{
+    hex: string;
+    type: string;
+    brightness?: number;
+  }>;
   companyInfo?: {
     name: string;
     description: string;
     industry?: string;
     location?: string;
+    employees?: number;
   } | null;
+  links?: Array<{
+    name: string;
+    url: string;
+  }>;
+  fonts?: Array<{
+    name: string;
+    type: string;
+    origin?: string;
+  }>;
+  images?: Array<{
+    type: string;
+    url: string;
+    format: string;
+    width?: number;
+    height?: number;
+  }>;
+  qualityScore?: number;
 }
 
 /**
- * Fetches brand information from Brandfetch API
+ * Fetches brand information from Brandfetch API v2
  * @param domain The domain name to fetch brand data for
  * @param apiKey Brandfetch API key
- * @returns Brand information including logo URL and colors
- * 
- * Note: For testing, you can use the domain 'brandfetch.com' which is free
- * and doesn't count against your API quota.
+ * @returns Optimized brand information
  */
 export async function fetchBrandData(domain: string, apiKey: string): Promise<BrandfetchData> {
   try {
-    // Skip if domain is not provided
     if (!domain) {
       console.log('No domain provided, skipping Brandfetch API call');
-      return { logoUrl: null, brandColor: null, companyInfo: null };
+      return { 
+        name: undefined,
+        description: undefined,
+        longDescription: undefined,
+        logoUrl: null, 
+        brandColor: null, 
+        logos: [],
+        colors: [],
+        companyInfo: null,
+        links: [],
+        fonts: [],
+        images: [],
+        qualityScore: undefined
+      };
     }
 
     console.log(`Fetching brand data for domain: ${domain}`);
     
     const response = await fetch(`https://api.brandfetch.io/v2/brands/${domain}`, {
+      method: 'GET',
       headers: {
         'Authorization': `Bearer ${apiKey}`
       }
@@ -105,103 +153,186 @@ export async function fetchBrandData(domain: string, apiKey: string): Promise<Br
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`Brandfetch API error (${response.status}): ${errorText}`);
-      
-      // Don't throw, just return null values
-      return { logoUrl: null, brandColor: null, companyInfo: null };
+      return { 
+        name: undefined,
+        description: undefined,
+        longDescription: undefined,
+        logoUrl: null, 
+        brandColor: null, 
+        logos: [],
+        colors: [],
+        companyInfo: null,
+        links: [],
+        fonts: [],
+        images: [],
+        qualityScore: undefined
+      };
     }
 
     const data = await response.json() as BrandfetchResponse;
-    
-    // Extract the logo URL (prefer SVG format)
-    let logoUrl: string | null = null;
-    const logos = data.logos || [];
-    
-    // Get all logo formats
-    let primaryLogos = logos.filter(logo => logo.type === 'logo');
-    let iconLogos = logos.filter(logo => logo.type === 'icon');
-    
-    // Sort by theme preference: light, no theme, dark
-    const sortByThemePreference = (a: BrandfetchLogo, b: BrandfetchLogo) => {
-      if (a.theme === 'light' && b.theme !== 'light') return -1;
-      if (b.theme === 'light' && a.theme !== 'light') return 1;
-      if (!a.theme && b.theme) return -1;
-      if (!b.theme && a.theme) return 1;
-      return 0;
-    };
-    
-    primaryLogos.sort(sortByThemePreference);
-    iconLogos.sort(sortByThemePreference);
-    
-    // Function to get best format (prefer SVG, then PNG, then others)
-    const getBestFormatUrl = (logo: BrandfetchLogo): string | null => {
-      if (!logo || !logo.formats || logo.formats.length === 0) return null;
-      
-      // Prefer SVG for better quality, then PNG
-      const svgFormat = logo.formats.find(f => f.format === 'svg');
-      const pngFormat = logo.formats.find(f => f.format === 'png');
-      
-      // Get highest quality PNG if multiple are available
-      if (!svgFormat && pngFormat) {
-        const allPngs = logo.formats.filter(f => f.format === 'png')
-          .sort((a, b) => (b.width || 0) - (a.width || 0));
-        return allPngs[0]?.src || null;
-      }
-      
-      return svgFormat?.src || pngFormat?.src || logo.formats[0]?.src || null;
-    };
-    
-    // First try to get a primary logo with light theme
-    if (primaryLogos.length > 0) {
-      logoUrl = getBestFormatUrl(primaryLogos[0]);
-    }
-    
-    // If no primary logo found, try icon logo
-    if (!logoUrl && iconLogos.length > 0) {
-      logoUrl = getBestFormatUrl(iconLogos[0]);
-    }
-    
-    // If still no logo, try any logo available
-    if (!logoUrl && logos.length > 0) {
-      logoUrl = getBestFormatUrl(logos[0]);
-    }
-    
-    // Extract the primary color
-    let brandColor: string | null = null;
-    const colors = data.colors || [];
-    
-    // Look for a color with type "primary"
-    const primaryColorObj = colors.find(color => color.type === 'primary');
-    brandColor = primaryColorObj?.hex || null;
-    
-    // If no primary color, take the first color
-    if (!brandColor && colors.length > 0) {
-      brandColor = colors[0].hex;
-    }
-    
     console.log(`Successfully fetched brand data for ${domain}`);
     
+    // Extract logo URL - prefer light theme SVG, fallback to PNG
+    const logoUrl = extractBestLogo(data.logos);
+    
+    // Extract primary brand color
+    const brandColor = extractPrimaryColor(data.colors);
+    
+    // Extract company information
+    const companyInfo = extractCompanyInfo(data);
+
+    // Extract all logos
+    const logos = data.logos.map(logo => 
+      logo.formats.map(format => ({
+        type: logo.type,
+        theme: logo.theme,
+        url: format.src,
+        format: format.format,
+        width: format.width || undefined,
+        height: format.height || undefined,
+        background: format.background || undefined
+      }))
+    ).flat();
+
+    // Extract all colors
+    const colors = data.colors.map(color => ({
+      hex: color.hex,
+      type: color.type,
+      brightness: color.brightness
+    }));
+
+    // Extract links
+    const links = data.links || [];
+
+    // Extract fonts
+    const fonts = data.fonts || [];
+
+    // Extract images
+    const images = (data.images || []).map(image => 
+      image.formats.map(format => ({
+        type: image.type,
+        url: format.src,
+        format: format.format,
+        width: format.width || undefined,
+        height: format.height || undefined
+      }))
+    ).flat();
+
     return {
+      name: data.name,
+      description: data.description,
+      longDescription: data.longDescription,
       logoUrl,
       brandColor,
-      companyInfo: {
-        name: data.name,
-        description: data.description,
-        industry: data.company?.industries && data.company.industries.length > 0 ? data.company.industries[0].name : undefined,
-        location: data.company?.location ? `${data.company.location.city}, ${data.company.location.country}` : undefined
-      }
+      logos,
+      colors,
+      companyInfo,
+      links,
+      fonts,
+      images,
+      qualityScore: data.qualityScore
     };
   } catch (error) {
     console.error('Error fetching brand data:', error);
-    return { logoUrl: null, brandColor: null, companyInfo: null };
+    return { 
+      name: undefined,
+      description: undefined,
+      longDescription: undefined,
+      logoUrl: null, 
+      brandColor: null, 
+      logos: [],
+      colors: [],
+      companyInfo: null,
+      links: [],
+      fonts: [],
+      images: [],
+      qualityScore: undefined
+    };
   }
 }
 
 /**
+ * Extract the best logo URL from the logos array
+ * Priority: Light theme SVG > Light theme PNG > Any SVG > Any PNG > First available
+ */
+function extractBestLogo(logos: BrandfetchLogo[]): string | null {
+  if (!logos || logos.length === 0) return null;
+
+  // Filter to logo type only (exclude icons)
+  const logoItems = logos.filter(logo => logo.type === 'logo');
+  if (logoItems.length === 0) {
+    // Fallback to any logo if no 'logo' type found
+    return extractLogoUrl(logos[0]);
+  }
+
+  // Prefer light theme
+  const lightLogo = logoItems.find(logo => logo.theme === 'light');
+  if (lightLogo) {
+    return extractLogoUrl(lightLogo);
+  }
+
+  // Fallback to first logo
+  return extractLogoUrl(logoItems[0]);
+}
+
+/**
+ * Extract logo URL from a logo object, preferring SVG over PNG
+ */
+function extractLogoUrl(logo: BrandfetchLogo): string | null {
+  if (!logo.formats || logo.formats.length === 0) return null;
+
+  // Prefer SVG format
+  const svgFormat = logo.formats.find(format => format.format === 'svg');
+  if (svgFormat) return svgFormat.src;
+
+  // Fallback to PNG, prefer larger sizes
+  const pngFormats = logo.formats
+    .filter(format => format.format === 'png')
+    .sort((a, b) => (b.width || 0) - (a.width || 0));
+  
+  if (pngFormats.length > 0) return pngFormats[0].src;
+
+  // Fallback to any format
+  return logo.formats[0].src;
+}
+
+/**
+ * Extract primary brand color
+ * Priority: accent > dark > first available
+ */
+function extractPrimaryColor(colors: BrandfetchColor[]): string | null {
+  if (!colors || colors.length === 0) return null;
+
+  // Look for accent color first
+  const accentColor = colors.find(color => color.type === 'accent');
+  if (accentColor) return accentColor.hex;
+
+  // Then look for dark color
+  const darkColor = colors.find(color => color.type === 'dark');
+  if (darkColor) return darkColor.hex;
+
+  // Fallback to first color
+  return colors[0].hex;
+}
+
+/**
+ * Extract company information from the response
+ */
+function extractCompanyInfo(data: BrandfetchResponse): BrandfetchData['companyInfo'] {
+  const company = data.company;
+  
+  return {
+    name: data.name,
+    description: data.description,
+    industry: company?.industries?.[0]?.name,
+    location: company?.location ? `${company.location.city}, ${company.location.country}` : undefined,
+    employees: company?.employees
+  };
+}
+
+/**
  * Test function to verify the Brandfetch API connection
- * Uses the brandfetch.com domain which doesn't count against API quota
- * 
- * @param apiKey Brandfetch API key
- * @returns Test result with brand data for brandfetch.com
+ * Uses a reliable domain for testing
  */
 export async function testBrandfetchAPI(apiKey: string): Promise<{
   success: boolean;
@@ -209,8 +340,8 @@ export async function testBrandfetchAPI(apiKey: string): Promise<{
   error?: string;
 }> {
   try {
-    console.log('Testing Brandfetch API with brandfetch.com domain');
-    const testDomain = 'brandfetch.com';
+    console.log('Testing Brandfetch API with nike.com domain');
+    const testDomain = 'nike.com';
     
     const data = await fetchBrandData(testDomain, apiKey);
     
@@ -224,7 +355,7 @@ export async function testBrandfetchAPI(apiKey: string): Promise<{
       console.error('Brandfetch API test failed: No data returned');
       return {
         success: false,
-        error: 'No brand data found for brandfetch.com'
+        error: 'No brand data found for test domain'
       };
     }
   } catch (error) {

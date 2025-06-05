@@ -25,7 +25,7 @@ export default function SpaceSettingsPage() {
   
   const [addContentDialogOpen, setAddContentDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('general');
-  const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [sidebarVisible, setSidebarVisible] = useState(true);
   
   // Browser mockup state
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);

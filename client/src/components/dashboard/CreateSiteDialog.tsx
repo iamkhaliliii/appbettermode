@@ -254,9 +254,14 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
   const [brandData, setBrandData] = useState<{
     name?: string;
     description?: string;
+    longDescription?: string;
     logos: BrandLogo[];
     colors: BrandColor[];
     companyInfo?: CompanyInfo;
+    links?: Array<{ name: string; url: string }>;
+    fonts?: Array<{ name: string; type: string; origin?: string }>;
+    images?: Array<{ type: string; url: string; format: string; width?: number; height?: number }>;
+    qualityScore?: number;
     loading: boolean;
     error: string | null;
   }>({
@@ -266,9 +271,7 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
     error: null
   });
   
-  // Manual upload options
-  const [showManualLogoInput, setShowManualLogoInput] = useState(false);
-  const [showManualColorInput, setShowManualColorInput] = useState(false);
+  // No manual upload options needed - only show brand fetch results
   
   // Content types state
   const [contentTypes, setContentTypes] = useState<ContentTypeUIData[]>([]);
@@ -548,8 +551,7 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
       error: null
     });
     setWizardStep(1);
-    setShowManualLogoInput(false);
-    setShowManualColorInput(false);
+    // Manual input options removed - only brand fetch data
     setIsCreatingProcess(false);
   };
 
@@ -748,192 +750,214 @@ export const CreateSiteDialog: React.FC<CreateSiteDialogProps> = ({ isOpen, onOp
                         )}
                       </div>
                       
-                      {/* Logo Selection */}
+                      {/* Brand Logos */}
                       <div className="mb-4">
-                        <div className="flex justify-between items-center">
-                          <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Brand Logo
-                          </Label>
-                          <Button 
-                            type="button" 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-7 text-xs text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300"
-                            onClick={() => setShowManualLogoInput(!showManualLogoInput)}
-                          >
-                            {showManualLogoInput ? "Show Suggestions" : "Add Manually"}
-                          </Button>
+                        <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Brand Logos
+                        </Label>
+                        
+                        <div className="grid grid-cols-3 gap-2 mt-1">
+                          <Controller
+                            name="selectedLogo"
+                            control={control}
+                            render={({ field }) => (
+                              <>
+                                {brandData.logos.length > 0 ? (
+                                  brandData.logos
+                                    .sort((a, b) => {
+                                      if (a.type === 'logo' && b.type !== 'logo') return -1;
+                                      if (b.type === 'logo' && a.type !== 'logo') return 1;
+                                      if (a.theme === 'light' && b.theme !== 'light') return -1;
+                                      if (b.theme === 'light' && a.theme !== 'light') return 1;
+                                      return 0;
+                                    })
+                                    .map((logo, index) => (
+                                      <motion.div 
+                                        key={index}
+                                        onClick={() => field.onChange(logo.url)}
+                                        className={cn(
+                                          "cursor-pointer rounded-md p-2 h-16 transition-all flex items-center justify-center",
+                                          field.value === logo.url 
+                                            ? 'ring-2 ring-blue-500 bg-white dark:bg-gray-800' 
+                                            : 'border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-white dark:hover:bg-gray-700'
+                                        )}
+                                        initial={{ opacity: 0, y: 5 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: index * 0.05, duration: 0.2 }}
+                                      >
+                                        <img 
+                                          src={logo.url} 
+                                          alt={`${logo.type} - ${logo.theme || 'default'}`} 
+                                          className="max-h-full max-w-full object-contain"
+                                          loading="lazy"
+                                        />
+                                      </motion.div>
+                                    ))
+                                ) : (
+                                  <div className="col-span-3 text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-md border border-dashed border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
+                                    <Globe className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                                    No brand logos found
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          />
                         </div>
                         
-                        {!showManualLogoInput ? (
-                          <div className="grid grid-cols-3 gap-2 mt-1">
-                            <Controller
-                              name="selectedLogo"
-                              control={control}
-                              render={({ field }) => (
-                                <>
-                                  {brandData.logos.length > 0 ? (
-                                    brandData.logos
-                                      .sort((a, b) => {
-                                        if (a.type === 'logo' && b.type !== 'logo') return -1;
-                                        if (b.type === 'logo' && a.type !== 'logo') return 1;
-                                        if (a.theme === 'light' && b.theme !== 'light') return -1;
-                                        if (b.theme === 'light' && a.theme !== 'light') return 1;
-                                        return 0;
-                                      })
-                                      .slice(0, 6)
-                                      .map((logo, index) => (
-                                        <motion.div 
-                                          key={index}
-                                          onClick={() => field.onChange(logo.url)}
-                                          className={cn(
-                                            "cursor-pointer rounded-md p-2 h-16 transition-all flex items-center justify-center",
-                                            field.value === logo.url 
-                                              ? 'ring-1 ring-blue-500 bg-white dark:bg-gray-800' 
-                                              : 'border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 hover:bg-white dark:hover:bg-gray-700'
-                                          )}
-                                          initial={{ opacity: 0, y: 5 }}
-                                          animate={{ opacity: 1, y: 0 }}
-                                          transition={{ delay: index * 0.05, duration: 0.2 }}
-                                        >
-                                          <img 
-                                            src={logo.url} 
-                                            alt={`Logo ${index + 1}`} 
-                                            className="max-h-full max-w-full object-contain"
-                                          />
-                                        </motion.div>
-                                      ))
-                                  ) : (
-                                    <div className="col-span-3 text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-md border border-dashed border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
-                                      No logos found
-                                    </div>
-                                  )}
-                                </>
-                              )}
-                            />
-                          </div>
-                        ) : (
-                          <div className="mt-1 border border-dashed border-gray-200 dark:border-gray-700 rounded-md p-3 bg-gray-50 dark:bg-gray-800">
-                            <Controller
-                              name="selectedLogo"
-                              control={control}
-                              render={({ field }) => (
-                                <div className="flex flex-col items-center gap-2">
-                                  {field.value ? (
-                                    <div className="relative p-2 bg-white dark:bg-gray-700 rounded-md">
-                                      <img 
-                                        src={field.value} 
-                                        alt="Selected logo" 
-                                        className="max-h-16 object-contain"
-                                      />
-                                      <button
-                                        type="button"
-                                        onClick={() => field.onChange('')}
-                                        className="absolute -top-1.5 -right-1.5 bg-white dark:bg-gray-700 rounded-full p-0.5 border border-gray-200 dark:border-gray-600 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                                      >
-                                        <X className="h-3 w-3" />
-                                      </button>
-                                    </div>
-                                  ) : (
-                                    <Input
-                                      placeholder="Logo URL"
-                                      className="text-xs w-full"
-                                      onChange={(e) => field.onChange(e.target.value)}
-                                    />
-                                  )}
+                        {/* Company Information */}
+                        {(brandData.companyInfo || brandData.description || brandData.name) && (
+                          <div className="mt-3 space-y-3">
+                            {/* Basic Info */}
+                            <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700">
+                              <div className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                                {brandData.name && (
+                                  <div><strong>Company:</strong> <span className="text-gray-900 dark:text-gray-100">{brandData.name}</span></div>
+                                )}
+                                {brandData.companyInfo?.industry && (
+                                  <div><strong>Industry:</strong> <span className="text-gray-900 dark:text-gray-100">{brandData.companyInfo.industry}</span></div>
+                                )}
+                                {brandData.companyInfo?.location && (
+                                  <div><strong>Location:</strong> <span className="text-gray-900 dark:text-gray-100">{brandData.companyInfo.location}</span></div>
+                                )}
+                                {brandData.companyInfo?.employees && (
+                                  <div><strong>Employees:</strong> <span className="text-gray-900 dark:text-gray-100">{brandData.companyInfo.employees.toLocaleString()}+</span></div>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Description */}
+                            {brandData.description && (
+                              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md border border-blue-200 dark:border-blue-800">
+                                <div className="text-xs">
+                                  <strong className="text-blue-800 dark:text-blue-200">About:</strong>
+                                  <p className="text-blue-700 dark:text-blue-300 mt-1 leading-relaxed">
+                                    {brandData.description.length > 200 
+                                      ? `${brandData.description.substring(0, 200)}...` 
+                                      : brandData.description}
+                                  </p>
                                 </div>
-                              )}
-                            />
+                              </div>
+                            )}
+
+                            {/* Social Links */}
+                            {brandData.links && brandData.links.length > 0 && (
+                              <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-md border border-green-200 dark:border-green-800">
+                                <div className="text-xs">
+                                  <strong className="text-green-800 dark:text-green-200">Social Links:</strong>
+                                  <div className="flex flex-wrap gap-1 mt-1">
+                                    {brandData.links.slice(0, 4).map((link, index) => (
+                                      <span 
+                                        key={index}
+                                        className="inline-flex items-center px-2 py-1 bg-green-100 dark:bg-green-800/30 text-green-700 dark:text-green-300 rounded text-xs capitalize"
+                                      >
+                                        {link.name}
+                                      </span>
+                                    ))}
+                                    {brandData.links.length > 4 && (
+                                      <span className="text-green-600 dark:text-green-400 text-xs">
+                                        +{brandData.links.length - 4} more
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Brand Fonts */}
+                            {brandData.fonts && brandData.fonts.length > 0 && (
+                              <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-md border border-purple-200 dark:border-purple-800">
+                                <div className="text-xs">
+                                  <strong className="text-purple-800 dark:text-purple-200">Brand Fonts:</strong>
+                                  <div className="space-y-1 mt-1">
+                                    {brandData.fonts.map((font, index) => (
+                                      <div key={index} className="text-purple-700 dark:text-purple-300">
+                                        <span className="font-medium">{font.name}</span>
+                                        <span className="text-purple-600 dark:text-purple-400 ml-2">({font.type})</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Quality Score */}
+                            {brandData.qualityScore && (
+                              <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-md border border-amber-200 dark:border-amber-800">
+                                <div className="text-xs">
+                                  <strong className="text-amber-800 dark:text-amber-200">Brand Quality Score:</strong>
+                                  <div className="flex items-center mt-1">
+                                    <div className="flex-1 bg-amber-200 dark:bg-amber-700 rounded-full h-2">
+                                      <div 
+                                        className="bg-amber-500 dark:bg-amber-400 h-2 rounded-full transition-all duration-300"
+                                        style={{ width: `${Math.round(brandData.qualityScore * 100)}%` }}
+                                      />
+                                    </div>
+                                    <span className="text-amber-700 dark:text-amber-300 ml-2 font-medium">
+                                      {Math.round(brandData.qualityScore * 100)}%
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
                       
-                      {/* Color Selection */}
+                      {/* Brand Colors */}
                       <div className="mb-4">
-                        <div className="flex justify-between items-center">
-                          <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Brand Color
-                          </Label>
-                          <Button 
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="h-7 text-xs text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300"
-                            onClick={() => setShowManualColorInput(!showManualColorInput)}
-                          >
-                            {showManualColorInput ? "Show Suggestions" : "Add Manually"}
-                          </Button>
-                        </div>
+                        <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Brand Colors
+                        </Label>
                         
-                        {!showManualColorInput ? (
-                          <div className="flex flex-wrap gap-2 mt-1">
-                            <Controller
-                              name="selectedColor"
-                              control={control}
-                              render={({ field }) => (
-                                <>
-                                  {brandData.colors.length > 0 ? (
-                                    brandData.colors
-                                      .sort((a, b) => {
-                                        if (a.type === 'primary' && b.type !== 'primary') return -1;
-                                        if (b.type === 'primary' && a.type !== 'primary') return 1;
-                                        if (a.type === 'accent' && b.type !== 'accent') return -1;
-                                        if (b.type === 'accent' && a.type !== 'accent') return 1;
-                                        return 0;
-                                      })
-                                      .slice(0, 8)
-                                      .map((color, index) => (
-                                        <motion.div 
-                                          key={index}
-                                          onClick={() => field.onChange(color.hex)}
-                                          className={cn(
-                                            "cursor-pointer rounded-full border transition-all p-0.5",
-                                            field.value === color.hex ? 'border-gray-900 dark:border-white' : 'border-transparent hover:border-gray-200 dark:hover:border-gray-700'
-                                          )}
-                                          initial={{ opacity: 0, scale: 0.8 }}
-                                          animate={{ opacity: 1, scale: 1 }}
-                                          transition={{ delay: index * 0.03, duration: 0.2 }}
-                                        >
-                                          <div 
-                                            className="w-8 h-8 rounded-full"
-                                            style={{ backgroundColor: color.hex }}
-                                            title={color.type || color.hex}
-                                          />
-                                        </motion.div>
-                                      ))
-                                  ) : (
-                                    <div className="w-full text-center p-3 bg-gray-50 dark:bg-gray-800 rounded-md border border-dashed border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
-                                      No brand colors found
-                                    </div>
-                                  )}
-                                </>
-                              )}
-                            />
-                          </div>
-                        ) : (
-                          <div className="mt-1 border border-dashed border-gray-200 dark:border-gray-700 rounded-md p-3 bg-gray-50 dark:bg-gray-800">
-                            <Controller
-                              name="selectedColor"
-                              control={control}
-                              render={({ field }) => (
-                                <div className="flex items-center gap-3">
-                                  {field.value && (
-                                    <div 
-                                      className="w-8 h-8 rounded-full flex-shrink-0"
-                                      style={{ backgroundColor: field.value }}
-                                    />
-                                  )}
-                                  <Input
-                                    placeholder="#6366f1"
-                                    value={field.value}
-                                    className="text-xs w-full"
-                                    onChange={(e) => field.onChange(e.target.value)}
-                                  />
-                                </div>
-                              )}
-                            />
-                          </div>
-                        )}
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          <Controller
+                            name="selectedColor"
+                            control={control}
+                            render={({ field }) => (
+                              <>
+                                {brandData.colors.length > 0 ? (
+                                  brandData.colors
+                                    .sort((a, b) => {
+                                      if (a.type === 'primary' && b.type !== 'primary') return -1;
+                                      if (b.type === 'primary' && a.type !== 'primary') return 1;
+                                      if (a.type === 'accent' && b.type !== 'accent') return -1;
+                                      if (b.type === 'accent' && a.type !== 'accent') return 1;
+                                      return 0;
+                                    })
+                                    .map((color, index) => (
+                                      <motion.div 
+                                        key={index}
+                                        onClick={() => field.onChange(color.hex)}
+                                        className={cn(
+                                          "cursor-pointer rounded-full border-2 transition-all p-1 relative group",
+                                          field.value === color.hex 
+                                            ? 'border-gray-900 dark:border-white' 
+                                            : 'border-transparent hover:border-gray-200 dark:hover:border-gray-700'
+                                        )}
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ delay: index * 0.03, duration: 0.2 }}
+                                      >
+                                        <div 
+                                          className="w-10 h-10 rounded-full"
+                                          style={{ backgroundColor: color.hex }}
+                                        />
+                                        {/* Tooltip */}
+                                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                                          {color.type} - {color.hex}
+                                        </div>
+                                      </motion.div>
+                                    ))
+                                ) : (
+                                  <div className="w-full text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-md border border-dashed border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
+                                    <Sparkles className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                                    No brand colors found
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          />
+                        </div>
                       </div>
                     </motion.div>
                   ) : (

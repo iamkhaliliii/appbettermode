@@ -25,6 +25,7 @@ interface PropertyRowProps {
   onKeyDown: (e: React.KeyboardEvent, fieldName: string) => void;
   description?: string;
   disabled?: boolean;
+  isChild?: boolean;
 }
 
 interface CustomDropdownProps {
@@ -140,7 +141,8 @@ export function PropertyRow({
   onFieldBlur,
   onKeyDown,
   description,
-  disabled = false
+  disabled = false,
+  isChild = false
 }: PropertyRowProps) {
   const [showDescription, setShowDescription] = useState(false);
   const isEditing = editingField === fieldName;
@@ -150,8 +152,13 @@ export function PropertyRow({
   const isSlug = fieldName === 'slug';
 
   return (
-    <div className="">
-      <div className={`flex px-2 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-md group transition-colors ${
+    <div className={isChild ? "relative" : ""}>
+      {isChild && (
+        <div className="absolute left-4 top-0 bottom-0 w-px bg-gray-200 dark:bg-gray-700"></div>
+      )}
+      <div className={`flex hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-md group transition-colors ${
+        isChild ? 'px-2 pl-8' : 'px-2'
+      } ${
         description && showDescription ? '' : 'border-b border-gray-100 dark:border-gray-800'
       } ${
         (isDescription || isSlug) && isEditing ? 'flex-col items-start py-2 space-y-2' : 'items-start justify-between min-h-[2.25rem] py-2'
@@ -159,7 +166,7 @@ export function PropertyRow({
         <div className={`text-xs text-gray-400 dark:text-gray-500 flex items-center gap-2 ${
           (isDescription || isSlug) && isEditing ? 'w-full' : 'w-1/2 pr-2'
         }`}>
-          {Icon && <Icon className="h-3 w-3 flex-shrink-0" />}
+          {Icon && !isChild && <Icon className="h-3 w-3 flex-shrink-0" />}
           <div className="flex items-center">
             <span className="truncate text-left">{label}</span>
             {description && (
@@ -329,7 +336,9 @@ export function PropertyRow({
         </div>
       </div>
       {description && showDescription && (
-        <div className="px-3 pb-3 pr-20 border-b border-gray-100 dark:border-gray-800">
+        <div className={`pb-3 pr-20 border-b border-gray-100 dark:border-gray-800 ${
+          isChild ? 'px-3 pl-8' : 'px-3'
+        }`}>
           <div className="text-[0.75rem] text-gray-400 dark:text-gray-500 leading-4">
             {description}
           </div>

@@ -9,7 +9,8 @@ import slugifyPkg from 'slugify';
 const slugify = slugifyPkg.default || slugifyPkg;
 const router = express.Router();
 // Brandfetch API key
-const BRANDFETCH_API_KEY = 'rPJ4fYfXffPHxhNAIo8lU7mDRQXHsrYqKXQ678ySJsc=';
+// Get Brandfetch API key from environment variables
+const BRANDFETCH_API_KEY = process.env.BRANDFETCH_API_KEY;
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 // Zod schema for site creation
 const createSiteSchema = z.object({
