@@ -27,13 +27,11 @@ export function DisplaySettingsTab() {
   const [activeTab, setActiveTab] = useState('settings');
   const [editingField, setEditingField] = useState<string | null>(null);
   const [layout, setLayout] = useState('grid');
-  const [postsPerPage, setPostsPerPage] = useState(10);
   const [showAuthor, setShowAuthor] = useState(true);
   const [showDate, setShowDate] = useState(true);
   const [showTags, setShowTags] = useState(true);
   const [cardSize, setCardSize] = useState('medium');
   const [openPageIn, setOpenPageIn] = useState('post_page');
-  const [showMore, setShowMore] = useState(true);
   const [cardCover, setCardCover] = useState(true);
   const [fitCover, setFitCover] = useState(false);
   const [showTitle, setShowTitle] = useState(true);
@@ -305,28 +303,6 @@ export function DisplaySettingsTab() {
                   onKeyDown={handleKeyDown}
                 />
 
-                <NumberPropertyRow
-                  label="Content per page"
-                  value={postsPerPage}
-                  onValueChange={setPostsPerPage}
-                  min={1}
-                  max={100}
-                  icon={Grid2x2Plus}
-                />
-
-                <PropertyRow
-                  label='Display "Show more"'
-                  value={showMore}
-                  fieldName="showMore"
-                  type="checkbox"
-                  onValueChange={setShowMore}
-                  icon={RefreshCw}
-                  editingField={editingField}
-                  onFieldClick={handleFieldClick}
-                  onFieldBlur={handleFieldBlur}
-                  onKeyDown={handleKeyDown}
-                />
-
                 <PropertyRow
                   label="Card Cover"
                   value={cardCover}
@@ -391,28 +367,6 @@ export function DisplaySettingsTab() {
                   onKeyDown={handleKeyDown}
                 />
 
-                <NumberPropertyRow
-                  label="Number of posts per page"
-                  value={postsPerPage}
-                  onValueChange={setPostsPerPage}
-                  min={1}
-                  max={100}
-                  icon={Hash}
-                />
-
-                <PropertyRow
-                  label='Display "Show more"'
-                  value={showMore}
-                  fieldName="showMore"
-                  type="checkbox"
-                  onValueChange={setShowMore}
-                  icon={MoreHorizontal}
-                  editingField={editingField}
-                  onFieldClick={handleFieldClick}
-                  onFieldBlur={handleFieldBlur}
-                  onKeyDown={handleKeyDown}
-                />
-
                 {/* Properties Section for List */}
                 {renderPropertiesSection()}
               </>
@@ -442,28 +396,6 @@ export function DisplaySettingsTab() {
                   ]}
                   onValueChange={setOpenPageIn}
                   icon={ExternalLink}
-                  editingField={editingField}
-                  onFieldClick={handleFieldClick}
-                  onFieldBlur={handleFieldBlur}
-                  onKeyDown={handleKeyDown}
-                />
-
-                <NumberPropertyRow
-                  label="Number of posts per page"
-                  value={postsPerPage}
-                  onValueChange={setPostsPerPage}
-                  min={1}
-                  max={100}
-                  icon={Hash}
-                />
-
-                <PropertyRow
-                  label='Display "Show more"'
-                  value={showMore}
-                  fieldName="showMore"
-                  type="checkbox"
-                  onValueChange={setShowMore}
-                  icon={MoreHorizontal}
                   editingField={editingField}
                   onFieldClick={handleFieldClick}
                   onFieldBlur={handleFieldBlur}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, ChevronDown, Moon as MoonIcon } from 'lucide-react';
+import { User, ChevronDown, Moon as MoonIcon, Save, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface BrowserMockupProps {
@@ -13,6 +13,10 @@ interface BrowserMockupProps {
   responsiveDropdownOpen: boolean;
   setResponsiveDropdownOpen: (open: boolean) => void;
   siteUrl?: string;
+  hasChanges?: boolean;
+  isLoading?: boolean;
+  onSave?: () => void;
+  onDiscard?: () => void;
 }
 
 export function BrowserMockup({
@@ -26,6 +30,10 @@ export function BrowserMockup({
   responsiveDropdownOpen,
   setResponsiveDropdownOpen,
   siteUrl,
+  hasChanges,
+  isLoading,
+  onSave,
+  onDiscard,
 }: BrowserMockupProps) {
   // Format URL for display in the address bar
   const displayUrl = siteUrl ? 
@@ -35,7 +43,7 @@ export function BrowserMockup({
     "community.bettermode.io";
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 w-full h-[calc(100vh-100px)] shadow-2xl dark:shadow-gray-900/30"
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 w-full h-[calc(100vh-100px)] shadow-2xl dark:shadow-gray-900/30 flex flex-col"
       style={{
         boxShadow: '0px 32px 64px -12px rgba(16, 24, 40, 0.14)',
       }}>
@@ -60,6 +68,41 @@ export function BrowserMockup({
 
         {/* Browser controls - Right aligned */}
         <div className="flex items-center space-x-3">
+          {/* Save Controls */}
+          {hasChanges && (
+            <div className="flex items-center space-x-2 mr-2 pl-2 border-l border-gray-300 dark:border-gray-600">
+              <button
+                onClick={onDiscard}
+                className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 text-xs px-2 py-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                disabled={isLoading}
+              >
+                Discard
+              </button>
+              <button
+                onClick={onSave}
+                disabled={!hasChanges || isLoading}
+                className={cn(
+                  "flex items-center space-x-1 text-xs px-3 py-1 rounded-md transition-colors",
+                  !hasChanges || isLoading 
+                    ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed' 
+                    : 'text-white bg-blue-600 hover:bg-blue-700'
+                )}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-3 h-3" />
+                    <span>Save</span>
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+
           {/* Undo/Redo buttons */}
           <div className="flex space-x-1">
             <button className="text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md px-1.5 py-0.5 flex items-center bg-gray-50 dark:bg-gray-700 transition-colors" style={{ width: '22px', height: '22px' }}>
@@ -119,7 +162,7 @@ export function BrowserMockup({
         </div>
       </div>
       {/* Browser content will be passed as children */}
-      <div className="bg-white dark:bg-gray-900 flex-1 overflow-hidden">
+      <div className="bg-white dark:bg-gray-900 flex-1 overflow-y-auto min-h-0">
         {children}
       </div>
     </div>

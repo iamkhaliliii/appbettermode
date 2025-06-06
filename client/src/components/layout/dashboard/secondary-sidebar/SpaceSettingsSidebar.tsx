@@ -1,5 +1,5 @@
 import React, { useMemo, memo } from "react";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Users, Settings, Palette, Layout, Search, AlertTriangle } from "lucide-react";
 import { APP_ROUTES } from "@/config/routes";
 import { SideNavItem } from "./SidebarNavigationItems";
 import { motion } from "framer-motion";
@@ -17,7 +17,7 @@ const TabNavItem = memo(({
   id, 
   isActive, 
   children, 
-  onClick 
+  onClick
 }: { 
   id: string;
   isActive: boolean;
@@ -61,6 +61,7 @@ export const SpaceSettingsSidebar: React.FC<SpaceSettingsSidebarProps> = memo(({
     { id: "general", label: "General" },
     { id: "widget", label: "Customize Widgets" },
     { id: "display", label: "Content Layout" },
+    { id: "member-management", label: "Member Management" },
     { id: "seo", label: "SEO" },
     { id: "danger", label: "Danger Zone" },
   ], []);
@@ -96,6 +97,12 @@ export const SpaceSettingsSidebar: React.FC<SpaceSettingsSidebarProps> = memo(({
             isActive={activeTab === item.id}
             onClick={onTabChange}
           >
+            {item.id === "general" && <Settings className="w-4 h-4 mr-2" />}
+            {item.id === "widget" && <Palette className="w-4 h-4 mr-2" />}
+            {item.id === "display" && <Layout className="w-4 h-4 mr-2" />}
+            {item.id === "member-management" && <Users className="w-4 h-4 mr-2" />}
+            {item.id === "seo" && <Search className="w-4 h-4 mr-2" />}
+            {item.id === "danger" && <AlertTriangle className="w-4 h-4 mr-2" />}
             {item.label}
           </TabNavItem>
         ))}

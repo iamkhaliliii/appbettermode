@@ -450,16 +450,6 @@ export function QaContent({ siteSD, space, site }: QaContentProps) {
               </CardContent>
             </Card>
           ))}
-          
-          {/* Pagination */}
-          {questions.length > 5 && (
-            <div className="flex justify-center mt-8">
-              <Button variant="outline" className="text-sm">
-                Load More
-                <ChevronDown className="h-4 w-4 ml-2" />
-              </Button>
-            </div>
-          )}
         </div>
       )}
     </div>

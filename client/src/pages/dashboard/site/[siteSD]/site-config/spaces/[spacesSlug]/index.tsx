@@ -62,6 +62,14 @@ export default function SpaceSettingsPage() {
   const [activeTab, setActiveTab] = useState('general');
   const [sidebarVisible, setSidebarVisible] = useState(true);
   
+  // Space banner state for live preview
+  const [spaceBanner, setSpaceBanner] = useState(false);
+  const [spaceBannerUrl, setSpaceBannerUrl] = useState('');
+  
+  // Save state for browser preview
+  const [hasChanges, setHasChanges] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
   // Widget tooltip state
   const [hoveredWidget, setHoveredWidget] = useState<Widget | null>(null);
   const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
@@ -101,6 +109,22 @@ export default function SpaceSettingsPage() {
     setHoverPosition(position);
   };
 
+  // Handle save action
+  const handleSave = () => {
+    setIsLoading(true);
+    // Simulate save process
+    setTimeout(() => {
+      setIsLoading(false);
+      setHasChanges(false);
+    }, 1000);
+  };
+
+  // Handle discard changes
+  const handleDiscard = () => {
+    setHasChanges(false);
+    // Reset any changes - this would typically call a reset function
+  };
+
   return (
     <DashboardPageWrapper 
       siteSD={siteSD}
@@ -138,6 +162,15 @@ export default function SpaceSettingsPage() {
             activeTab={activeTab}
             onClose={() => setSidebarVisible(false)}
             onWidgetHover={handleWidgetHover}
+            spaceBanner={spaceBanner}
+            setSpaceBanner={setSpaceBanner}
+            spaceBannerUrl={spaceBannerUrl}
+            setSpaceBannerUrl={setSpaceBannerUrl}
+            hasChanges={hasChanges}
+            setHasChanges={setHasChanges}
+            isLoading={isLoading}
+            onSave={handleSave}
+            onDiscard={handleDiscard}
           />
         </div>
         
@@ -156,15 +189,22 @@ export default function SpaceSettingsPage() {
               responsiveDropdownOpen={responsiveDropdownOpen}
               setResponsiveDropdownOpen={setResponsiveDropdownOpen}
               siteUrl={siteUrl}
+              hasChanges={hasChanges}
+              isLoading={isLoading}
+              onSave={handleSave}
+              onDiscard={handleDiscard}
             >
               <div 
                 key={`space-content-${spacesSlug}`} 
-                className="w-full h-full transition-opacity duration-300"
+                className="w-full transition-opacity duration-300"
               >
+
                 <SpaceContent 
                   siteSD={siteSD} 
                   spaceSlug={spacesSlug} 
                   isWidgetMode={activeTab === 'widget' && sidebarVisible}
+                  spaceBanner={spaceBanner}
+                  spaceBannerUrl={spaceBannerUrl}
                 />
               </div>
             </BrowserMockup>

@@ -2,8 +2,16 @@ import { useState, useEffect, useRef } from "react";
 import {
   Globe,
   Lock,
-  Info
+  Info,
+  Search,
+  Plus,
+  Folder,
+  Check,
+  X,
+  FolderPlus
 } from "lucide-react";
+import { IconUploadDialog } from "@/components/ui/icon-upload-dialog";
+import { IconDisplay } from "@/components/ui/icon-display";
 
 interface PropertyRowProps {
   label: string;
@@ -26,6 +34,9 @@ interface PropertyRowProps {
   description?: string;
   disabled?: boolean;
   isChild?: boolean;
+  isIconUpload?: boolean;
+  enableDropdownSearch?: boolean;
+  onAddNew?: (folderName: string) => void;
 }
 
 interface CustomDropdownProps {
@@ -38,17 +49,35 @@ interface CustomDropdownProps {
   }[];
   onChange: (value: string) => void;
   placeholder?: string;
+  enableSearch?: boolean;
+  onAddNew?: (folderName: string) => void;
 }
 
-function CustomDropdown({ value, options, onChange, placeholder = "Select option" }: CustomDropdownProps) {
+function CustomDropdown({ value, options, onChange, placeholder = "Select option", enableSearch = false, onAddNew }: CustomDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showAddInput, setShowAddInput] = useState(false);
+  const [newFolderName, setNewFolderName] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const addInputRef = useRef<HTMLInputElement>(null);
+
+  // Filter options based on search query
+  const filteredOptions = enableSearch && searchQuery
+    ? options.filter(option => 
+        option.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        option.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : options;
 
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
+        setSearchQuery('');
+        setShowAddInput(false);
+        setNewFolderName('');
       }
     }
 
@@ -58,7 +87,57 @@ function CustomDropdown({ value, options, onChange, placeholder = "Select option
     };
   }, []);
 
+  // Focus search input when dropdown opens
+  useEffect(() => {
+    if (isOpen && enableSearch && searchInputRef.current) {
+      setTimeout(() => searchInputRef.current?.focus(), 100);
+    }
+  }, [isOpen, enableSearch]);
+
+  // Focus add input when it's shown
+  useEffect(() => {
+    if (showAddInput && addInputRef.current) {
+      setTimeout(() => addInputRef.current?.focus(), 100);
+    }
+  }, [showAddInput]);
+
   const selectedOption = options.find(option => option.value === value);
+
+  const handleOptionSelect = (optionValue: string) => {
+    onChange(optionValue);
+    setIsOpen(false);
+    setSearchQuery('');
+    setShowAddInput(false);
+    setNewFolderName('');
+  };
+
+  const handleShowAddInput = () => {
+    setShowAddInput(true);
+    setSearchQuery('');
+  };
+
+  const handleCreateFolder = () => {
+    if (newFolderName.trim() && onAddNew) {
+      // Pass the folder name to the parent component
+      const folderName = newFolderName.trim();
+      onAddNew(folderName);
+      setIsOpen(false);
+      setSearchQuery('');
+      setShowAddInput(false);
+      setNewFolderName('');
+    }
+  };
+
+  const handleAddInputKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleCreateFolder();
+    }
+    if (e.key === 'Escape') {
+      setShowAddInput(false);
+      setNewFolderName('');
+    }
+  };
 
   return (
     <div className="relative w-full" ref={dropdownRef}>
@@ -79,47 +158,117 @@ function CustomDropdown({ value, options, onChange, placeholder = "Select option
       
       {isOpen && (
         <div className="absolute z-200 right-0 top-full mt-1 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-[99999]">
-          <div className="py-1.5">
-            {options.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => {
-                  onChange(option.value);
-                  setIsOpen(false);
-                }}
-                className={`w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-start gap-2.5 group ${
-                  value === option.value 
-                    ? 'bg-primary-50/50 dark:bg-primary-900/10' 
-                    : ''
-                }`}
-              >
-                {option.icon && (
-                  <option.icon className={`w-3.5 h-3.5 mt-0.5 flex-shrink-0 transition-colors ${
-                    value === option.value 
-                      ? 'text-primary-500 dark:text-primary-400' 
-                      : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-400'
-                  }`} />
-                )}
-                <div className="flex-1 min-w-0">
-                  <div className={`text-xs font-medium leading-4 ${
-                    value === option.value 
-                      ? 'text-primary-600 dark:text-primary-400' 
-                      : 'text-gray-900 dark:text-gray-100'
-                  }`}>
-                    {option.label}
-                  </div>
-                  {option.description && (
-                    <div className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 leading-3 opacity-75">
-                      {option.description}
-                    </div>
-                  )}
+          {enableSearch && !showAddInput && (
+            <div className="p-2 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1">
+                  <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-gray-400" />
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    placeholder="Search folders..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full h-7 pl-7 pr-2 text-xs bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md outline-none text-gray-900 dark:text-gray-100 focus:ring-1 focus:ring-primary-500"
+                  />
                 </div>
-                {value === option.value && (
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary-500 dark:bg-primary-400 flex-shrink-0 mt-1.5" />
+                {onAddNew && (
+                  <button
+                    type="button"
+                    onClick={handleShowAddInput}
+                    className="flex-shrink-0 h-7 w-7 flex items-center justify-center bg-primary-600 hover:bg-primary-700 text-white rounded-md transition-colors"
+                    title="Add new folder"
+                  >
+                    <FolderPlus className="w-3 h-3" />
+                  </button>
                 )}
-              </button>
-            ))}
+              </div>
+            </div>
+          )}
+
+          {showAddInput && (
+            <div className="p-2 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1">
+                  <Folder className="absolute left-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-gray-400" />
+                  <input
+                    ref={addInputRef}
+                    type="text"
+                    placeholder="Enter folder name..."
+                    value={newFolderName}
+                    onChange={(e) => setNewFolderName(e.target.value)}
+                    onKeyDown={handleAddInputKeyDown}
+                    className="w-full h-7 pl-7 pr-2 text-xs bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md outline-none text-gray-900 dark:text-gray-100 focus:ring-1 focus:ring-primary-500"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={handleCreateFolder}
+                  disabled={!newFolderName.trim()}
+                  className="flex-shrink-0 h-7 w-7 flex items-center justify-center bg-green-600 hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-md transition-colors"
+                  title="Create folder"
+                >
+                  <Check className="w-3 h-3" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAddInput(false);
+                    setNewFolderName('');
+                  }}
+                  className="flex-shrink-0 h-7 w-7 flex items-center justify-center bg-gray-500 hover:bg-gray-600 text-white rounded-md transition-colors"
+                  title="Cancel"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="py-1.5 max-h-48 overflow-y-auto">
+            {filteredOptions.length === 0 ? (
+              <div className="px-3 py-2 text-xs text-gray-500 dark:text-gray-400">
+                No folders found
+              </div>
+            ) : (
+              filteredOptions.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => handleOptionSelect(option.value)}
+                  className={`w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-start gap-2.5 group ${
+                    value === option.value 
+                      ? 'bg-primary-50/50 dark:bg-primary-900/10' 
+                      : ''
+                  }`}
+                >
+                  {option.icon && (
+                    <option.icon className={`w-3.5 h-3.5 mt-0.5 flex-shrink-0 transition-colors ${
+                      value === option.value 
+                        ? 'text-primary-500 dark:text-primary-400' 
+                        : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-400'
+                    }`} />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className={`text-xs font-medium leading-4 ${
+                      value === option.value 
+                        ? 'text-primary-600 dark:text-primary-400' 
+                        : 'text-gray-900 dark:text-gray-100'
+                    }`}>
+                      {option.label}
+                    </div>
+                    {option.description && (
+                      <div className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 leading-3 opacity-75">
+                        {option.description}
+                      </div>
+                    )}
+                  </div>
+                  {value === option.value && (
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary-500 dark:bg-primary-400 flex-shrink-0 mt-1.5" />
+                  )}
+                </button>
+              ))
+            )}
           </div>
         </div>
       )}
@@ -142,14 +291,69 @@ export function PropertyRow({
   onKeyDown,
   description,
   disabled = false,
-  isChild = false
+  isChild = false,
+  isIconUpload = false,
+  enableDropdownSearch = false,
+  onAddNew
 }: PropertyRowProps) {
   const [showDescription, setShowDescription] = useState(false);
+  const [iconDialogOpen, setIconDialogOpen] = useState(false);
   const isEditing = editingField === fieldName;
   const displayValue = value || "Empty";
   const isEmpty = !value;
   const isDescription = fieldName === 'description';
   const isSlug = fieldName === 'slug';
+
+  // Handle icon selection from dialog
+  const handleIconSelect = (iconData: { 
+    type: 'emoji' | 'lucide' | 'custom'; 
+    value: string; 
+    name?: string;
+    color?: string;
+  }) => {
+    // Store the icon data as an object
+    onValueChange(iconData);
+  };
+
+  // Parse icon data if it exists
+  const getIconData = () => {
+    if (!value) return null;
+    
+    // If it's already an object with type, return it
+    if (typeof value === 'object' && value.type) {
+      return value;
+    }
+    
+    // If it's a string that looks like a URL, treat as custom
+    if (typeof value === 'string' && (value.startsWith('http') || value.startsWith('blob:'))) {
+      return { type: 'custom', value, name: 'Custom icon' };
+    }
+    
+    // If it's a single character, treat as emoji
+    if (typeof value === 'string' && value.length <= 4) {
+      return { type: 'emoji', value };
+    }
+    
+    return null;
+  };
+
+  const iconData = getIconData();
+
+  // Get display text for icon type
+  const getIconDisplayText = (iconData: any) => {
+    if (!iconData) return 'Empty';
+    
+    switch (iconData.type) {
+      case 'emoji':
+        return 'Emoji';
+      case 'lucide':
+        return iconData.color ? `${iconData.name} (Colored)` : iconData.name;
+      case 'custom':
+        return 'Custom';
+      default:
+        return 'Icon';
+    }
+  };
 
   return (
     <div className={isChild ? "relative" : ""}>
@@ -280,41 +484,70 @@ export function PropertyRow({
                 options={options}
                 onChange={onValueChange}
                 placeholder="Select option"
+                enableSearch={enableDropdownSearch}
+                onAddNew={onAddNew}
               />
             </div>
           )}
 
           {type === 'upload' && (
             <div className="flex items-center gap-2 justify-end h-6 w-full mt-0.5">
-              {value ? (
-                <div className="flex items-center gap-2 h-6">
-                  <span className="text-sm text-gray-900 dark:text-gray-100 truncate">Uploaded</span>
-                  <img src={value} alt="" className="w-5 h-5 rounded object-cover flex-shrink-0" />
-                  <button
-                    onClick={() => onValueChange('')}
-                    className="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex-shrink-0"
-                  >
-                    ×
-                  </button>
-                </div>
+              {isIconUpload ? (
+                // Icon upload mode
+                <>
+                  {iconData ? (
+                    <div className="flex items-center gap-2 h-6">
+                      <IconDisplay iconData={iconData} size="sm" />
+                      <button
+                        onClick={() => onValueChange(null)}
+                        className="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex-shrink-0"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setIconDialogOpen(true)}
+                      className="text-sm text-gray-300 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer h-6 flex items-center justify-end rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors truncate w-full text-right"
+                    >
+                      Empty
+                    </button>
+                  )}
+                </>
               ) : (
-                <button
-                  onClick={() => {
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = 'image/*';
-                    input.onchange = (e) => {
-                      const file = (e.target as HTMLInputElement).files?.[0];
-                      if (file) {
-                        onValueChange(URL.createObjectURL(file));
-                      }
-                    };
-                    input.click();
-                  }}
-                  className="text-sm text-gray-300 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer h-6 flex items-center justify-end rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors truncate w-full text-right"
-                >
-                  Empty
-                </button>
+                // Regular file upload mode
+                <>
+                  {value ? (
+                    <div className="flex items-center gap-2 h-6">
+                      <span className="text-sm text-gray-900 dark:text-gray-100 truncate">Uploaded</span>
+                      <img src={value} alt="" className="w-5 h-5 rounded object-cover flex-shrink-0" />
+                      <button
+                        onClick={() => onValueChange('')}
+                        className="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 flex-shrink-0"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.accept = 'image/*';
+                        input.onchange = (e) => {
+                          const file = (e.target as HTMLInputElement).files?.[0];
+                          if (file) {
+                            onValueChange(URL.createObjectURL(file));
+                          }
+                        };
+                        input.click();
+                      }}
+                      className="text-sm text-gray-300 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer h-6 flex items-center justify-end rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors truncate w-full text-right"
+                    >
+                      Empty
+                    </button>
+                  )}
+                </>
               )}
             </div>
           )}
@@ -349,6 +582,16 @@ export function PropertyRow({
             {description}
           </div>
         </div>
+      )}
+
+      {/* Icon Upload Dialog */}
+      {isIconUpload && (
+        <IconUploadDialog
+          open={iconDialogOpen}
+          onOpenChange={setIconDialogOpen}
+          onIconSelect={handleIconSelect}
+          currentValue={iconData?.value}
+        />
       )}
     </div>
   );

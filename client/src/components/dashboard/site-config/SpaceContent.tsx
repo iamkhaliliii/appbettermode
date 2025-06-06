@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SiteHeader } from "@/components/layout/site/site-header";
 import { SiteSidebar } from "@/components/layout/site/site-sidebar";
-import { SpaceCmsContent } from "@/components/layout/site/site-space-cms-content";
+import { SpaceCmsContent } from "@/components/layout/site/site-space-cms-content/index";
+import { SpaceBanner } from "@/components/layout/site/site-space-cms-content/SpaceBanner";
 import { ContentSkeleton } from "./ContentSkeleton";
 import { WidgetModeWrapper } from "./WidgetModeWrapper";
 import { WidgetDropTarget } from "./WidgetDropTarget";
@@ -25,12 +26,14 @@ interface SpaceContentProps {
   siteSD: string;
   spaceSlug: string;
   isWidgetMode?: boolean;
+  spaceBanner?: boolean;
+  spaceBannerUrl?: string;
 }
 
 /**
  * Component to embed space content with full layout
  */
-export function SpaceContent({ siteSD, spaceSlug, isWidgetMode = false }: SpaceContentProps) {
+export function SpaceContent({ siteSD, spaceSlug, isWidgetMode = false, spaceBanner, spaceBannerUrl }: SpaceContentProps) {
   // Get site data from context
   const { sites, cmsTypes } = useSiteData();
   const [isDragging, setIsDragging] = useState(false);
@@ -57,7 +60,7 @@ export function SpaceContent({ siteSD, spaceSlug, isWidgetMode = false }: SpaceC
   // Create space from content type
   useEffect(() => {
     const createSpace = () => {
-      if (!site || !spaceSlug || cmsTypes.length === 0) {
+      if (!site || !spaceSlug) {
         return;
       }
 
@@ -142,7 +145,7 @@ export function SpaceContent({ siteSD, spaceSlug, isWidgetMode = false }: SpaceC
       }
     };
 
-    if (site && cmsTypes.length > 0) {
+    if (site && spaceSlug) {
       createSpace();
     }
   }, [site, spaceSlug, cmsTypes]);
@@ -184,91 +187,123 @@ export function SpaceContent({ siteSD, spaceSlug, isWidgetMode = false }: SpaceC
 
   return (
     <WidgetModeWrapper isActive={isWidgetMode} isDragging={isDragging}>
-      <div className="h-full pb-8 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 dark:scrollbar-thumb-gray-700 flex flex-col bg-gray-50 dark:bg-gray-900 preview-container">
-        {/* Site Header - always render */}
-        <WidgetDropTarget widgetType="Header" isWidgetMode={isWidgetMode}>
-          <SiteHeader 
-            siteSD={siteSD}
-            site={site}
-            isMenuOpen={isMenuOpen}
-            setIsMenuOpen={setIsMenuOpen}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            handleSearch={handleSearch}
-          />
-        </WidgetDropTarget>
+      <div className="pb-8 flex flex-col bg-gray-50 dark:bg-gray-900 preview-container">
+        {/* Site Header - sticky */}
+        <div className="sticky top-0 z-10 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800">
+          <WidgetDropTarget widgetType="Header" isWidgetMode={isWidgetMode}>
+            <SiteHeader 
+              siteSD={siteSD}
+              site={site}
+              isMenuOpen={isMenuOpen}
+              setIsMenuOpen={setIsMenuOpen}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              handleSearch={handleSearch}
+            />
+          </WidgetDropTarget>
+        </div>
 
         {/* Main Content */}
-        <div className="flex-1">
-          <div className="container mx-auto px-4 flex-grow">
-            <div className="flex flex-col md:flex-row gap-6">
-              {/* Sidebar - always render */}
-              <WidgetDropTarget widgetType="Sidebar" isWidgetMode={isWidgetMode}>
-                <SiteSidebar siteSD={siteSD} activePage={spaceSlug} />
-              </WidgetDropTarget>
+        <div className="flex-1 min-h-0">
+          <div className="container mx-auto px-4 h-full">
+            <div className="flex flex-col md:flex-row gap-6 h-full">
+              {/* Sidebar - sticky */}
+              <div className="md:sticky md:top-6 md:self-start">
+                <WidgetDropTarget widgetType="Sidebar" isWidgetMode={isWidgetMode}>
+                  <SiteSidebar siteSD={siteSD} activePage={spaceSlug} />
+                </WidgetDropTarget>
+              </div>
 
-              {/* Main content area - animate between states */}
+              {/* Main content area */}
               <div className="flex-1 p-4 md:p-6">
-                <MainContentArea isWidgetMode={isWidgetMode} onDragStateChange={setIsDragging}>
-                  <AnimatePresence mode="wait">
-                    {isContentLoading ? (
-                      <motion.div
-                        key="skeleton"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="bg-white dark:bg-gray-800 rounded-lg shadow p-6"
-                      >
-                        <WidgetDropTarget widgetType="Content Loading" isWidgetMode={isWidgetMode}>
-                          <ContentSkeleton />
+                <AnimatePresence mode="wait">
+                  {isContentLoading ? (
+                    <motion.div
+                      key="skeleton"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="bg-white dark:bg-gray-800 rounded-lg shadow p-6"
+                    >
+                      <WidgetDropTarget widgetType="Content Loading" isWidgetMode={isWidgetMode}>
+                        <ContentSkeleton />
+                      </WidgetDropTarget>
+                    </motion.div>
+                  ) : error ? (
+                    <motion.div
+                      key="error"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.2 }}
+                      className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
+                    >
+                      <WidgetDropTarget widgetType="Error Message" isWidgetMode={isWidgetMode}>
+                        <p className="text-red-500">{error}</p>
+                      </WidgetDropTarget>
+                    </motion.div>
+                  ) : space ? (
+                    <motion.div
+                      key={`space-${spaceSlug}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="space-y-6"
+                    >
+                      {/* Space Header/Banner Section */}
+                      {spaceBanner ? (
+                        <WidgetDropTarget widgetType="Space Banner" isWidgetMode={isWidgetMode}>
+                          <AnimatePresence mode="wait">
+                            <SpaceBanner 
+                              key="space-banner"
+                              show={spaceBanner} 
+                              bannerUrl={spaceBannerUrl} 
+                              spaceName={space.name} 
+                            />
+                          </AnimatePresence>
                         </WidgetDropTarget>
-                      </motion.div>
-                    ) : error ? (
-                      <motion.div
-                        key="error"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.2 }}
-                        className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
-                      >
-                        <WidgetDropTarget widgetType="Error Message" isWidgetMode={isWidgetMode}>
-                          <p className="text-red-500">{error}</p>
+                      ) : (
+                        <WidgetDropTarget widgetType="Space Header" isWidgetMode={isWidgetMode}>
+                          <div className="mb-6">
+                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                              {space.name}
+                            </h1>
+                            {space.description && (
+                              <p className="text-gray-600 dark:text-gray-400">{space.description}</p>
+                            )}
+                          </div>
                         </WidgetDropTarget>
-                      </motion.div>
-                    ) : space ? (
-                      <motion.div
-                        key={`space-${spaceSlug}`}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                      >
+                      )}
+                      
+                      {/* Main Content with Widget Drop Areas */}
+                      <MainContentArea isWidgetMode={isWidgetMode} onDragStateChange={setIsDragging}>
                         <WidgetDropTarget widgetType={`${space.name} Content`} isWidgetMode={isWidgetMode}>
                           <SpaceCmsContent 
                             siteSD={siteSD}
                             space={space}
                             site={site}
+                            isWidgetMode={isWidgetMode}
                           />
                         </WidgetDropTarget>
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="no-content"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.2 }}
-                        className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
-                      >
-                        <WidgetDropTarget widgetType="Empty State" isWidgetMode={isWidgetMode}>
-                          <p className="text-gray-600 dark:text-gray-400">
-                            No content available for this space.
-                          </p>
-                        </WidgetDropTarget>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </MainContentArea>
+                      </MainContentArea>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="no-content"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.2 }}
+                      className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
+                    >
+                      <WidgetDropTarget widgetType="Empty State" isWidgetMode={isWidgetMode}>
+                        <p className="text-gray-600 dark:text-gray-400">
+                          No content available for this space.
+                        </p>
+                      </WidgetDropTarget>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           </div>

@@ -7,6 +7,7 @@ import { WidgetSettingsTab } from "./WidgetSettingsTab";
 import { SEOSettingsTab } from "./SEOSettingsTab";
 import { DisplaySettingsTab } from "./DisplaySettingsTab";
 import { DangerZoneSettingsTab } from "./DangerZoneSettingsTab";
+import { MemberManagementTab } from "./MemberManagementTab";
 
 interface Widget {
   id: string;
@@ -22,6 +23,15 @@ interface SettingsSidebarProps {
   siteDetails: Site | null;
   onClose?: () => void;
   onWidgetHover?: (widget: Widget | null, position: { x: number; y: number }) => void;
+  spaceBanner?: boolean;
+  setSpaceBanner?: (value: boolean) => void;
+  spaceBannerUrl?: string;
+  setSpaceBannerUrl?: (value: string) => void;
+  hasChanges?: boolean;
+  setHasChanges?: (value: boolean) => void;
+  isLoading?: boolean;
+  onSave?: () => void;
+  onDiscard?: () => void;
 }
 
 /**
@@ -32,7 +42,16 @@ export function SettingsSidebar({
   spacesSlug, 
   activeTab,
   onClose,
-  onWidgetHover
+  onWidgetHover,
+  spaceBanner: externalSpaceBanner,
+  setSpaceBanner: externalSetSpaceBanner,
+  spaceBannerUrl: externalSpaceBannerUrl,
+  setSpaceBannerUrl: externalSetSpaceBannerUrl,
+  hasChanges: externalHasChanges,
+  setHasChanges: externalSetHasChanges,
+  isLoading: externalIsLoading,
+  onSave: externalOnSave,
+  onDiscard: externalOnDiscard
 }: Omit<SettingsSidebarProps, 'siteDetails'>) {
   // Get site details from context
   const { sites } = useSiteData();
@@ -51,6 +70,7 @@ export function SettingsSidebar({
   const [description, setDescription] = useState(`Advice and answers from the Tribe Team`);
   const [slug, setSlug] = useState(spacesSlug);
   const [spaceIconUrl, setSpaceIconUrl] = useState("");
+  const [spaceBanner, setSpaceBanner] = useState(false);
   const [spaceBannerUrl, setSpaceBannerUrl] = useState("");
   const [visibility, setVisibility] = useState<string>("public");
   const [inviteOnly, setInviteOnly] = useState(false);
@@ -60,6 +80,7 @@ export function SettingsSidebar({
   const [reactionType, setReactionType] = useState('emoji');
   const [whoCanReply, setWhoCanReply] = useState('all');
   const [whoCanReact, setWhoCanReact] = useState('all');
+  const [selectedFolder, setSelectedFolder] = useState('root');
   const [isLoading, setIsLoading] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
@@ -69,7 +90,8 @@ export function SettingsSidebar({
     description: `Advice and answers from the Tribe Team`,
     slug: spacesSlug,
     spaceIconUrl: "",
-    spaceBannerUrl: "",
+    spaceBanner: externalSpaceBanner !== undefined ? externalSpaceBanner : false,
+    spaceBannerUrl: externalSpaceBannerUrl !== undefined ? externalSpaceBannerUrl : "",
     visibility: "public",
     inviteOnly: false,
     anyoneCanInvite: false,
@@ -77,17 +99,28 @@ export function SettingsSidebar({
     enableReactions: true,
     reactionType: 'emoji',
     whoCanReply: 'all',
-    whoCanReact: 'all'
+    whoCanReact: 'all',
+    selectedFolder: 'root'
   };
 
-  // Check if there are any changes
-  const checkForChanges = () => {
+  // Use external state if provided, otherwise use internal state
+  const currentSpaceBanner = externalSpaceBanner !== undefined ? externalSpaceBanner : spaceBanner;
+  const currentSetSpaceBanner = externalSetSpaceBanner || setSpaceBanner;
+  const currentSpaceBannerUrl = externalSpaceBannerUrl !== undefined ? externalSpaceBannerUrl : spaceBannerUrl;
+  const currentSetSpaceBannerUrl = externalSetSpaceBannerUrl || setSpaceBannerUrl;
+  const currentHasChanges = externalHasChanges !== undefined ? externalHasChanges : hasChanges;
+  const currentSetHasChanges = externalSetHasChanges || setHasChanges;
+  const currentIsLoading = externalIsLoading !== undefined ? externalIsLoading : isLoading;
+
+  // Detect changes to enable/disable save button
+  useEffect(() => {
     const currentValues = {
       name,
       description,
       slug,
       spaceIconUrl,
-      spaceBannerUrl,
+      spaceBanner: currentSpaceBanner,
+      spaceBannerUrl: currentSpaceBannerUrl,
       visibility,
       inviteOnly,
       anyoneCanInvite,
@@ -95,37 +128,43 @@ export function SettingsSidebar({
       enableReactions,
       reactionType,
       whoCanReply,
-      whoCanReact
+      whoCanReact,
+      selectedFolder
     };
     
-    const changed = JSON.stringify(currentValues) !== JSON.stringify(initialValues);
-    setHasChanges(changed);
-  };
+    const hasChanges = JSON.stringify(currentValues) !== JSON.stringify(initialValues);
+    currentSetHasChanges(hasChanges);
+  }, [name, description, slug, spaceIconUrl, currentSpaceBanner, currentSpaceBannerUrl, visibility, inviteOnly, anyoneCanInvite, enableComments, enableReactions, reactionType, whoCanReply, whoCanReact, selectedFolder, initialValues, currentSetHasChanges]);
 
-  // Use effect to check for changes whenever state updates
-  useEffect(() => {
-    checkForChanges();
-  }, [name, description, slug, spaceIconUrl, spaceBannerUrl, visibility, inviteOnly, anyoneCanInvite, enableComments, enableReactions, reactionType, whoCanReply, whoCanReact]);
-
-  // Wrapper functions to trigger change detection
+  // Handler functions for state changes
   const handleNameChange = (value: string) => {
     setName(value);
+    setHasChanges(true);
   };
 
   const handleDescriptionChange = (value: string) => {
     setDescription(value);
+    setHasChanges(true);
   };
 
   const handleSlugChange = (value: string) => {
     setSlug(value);
+    setHasChanges(true);
   };
 
   const handleSpaceIconUrlChange = (value: string) => {
     setSpaceIconUrl(value);
+    setHasChanges(true);
+  };
+
+  const handleSpaceBannerChange = (value: boolean) => {
+    setSpaceBanner(value);
+    setHasChanges(true);
   };
 
   const handleSpaceBannerUrlChange = (value: string) => {
     setSpaceBannerUrl(value);
+    setHasChanges(true);
   };
 
   const handleVisibilityChange = (value: string) => {
@@ -166,7 +205,8 @@ export function SettingsSidebar({
     setDescription(initialValues.description);
     setSlug(initialValues.slug);
     setSpaceIconUrl(initialValues.spaceIconUrl);
-    setSpaceBannerUrl(initialValues.spaceBannerUrl);
+    currentSetSpaceBanner(initialValues.spaceBanner);
+    currentSetSpaceBannerUrl(initialValues.spaceBannerUrl);
     setVisibility(initialValues.visibility);
     setInviteOnly(initialValues.inviteOnly);
     setAnyoneCanInvite(initialValues.anyoneCanInvite);
@@ -175,6 +215,7 @@ export function SettingsSidebar({
     setReactionType(initialValues.reactionType);
     setWhoCanReply(initialValues.whoCanReply);
     setWhoCanReact(initialValues.whoCanReact);
+    setSelectedFolder(initialValues.selectedFolder);
   };
 
   // Get the title for the current tab
@@ -185,6 +226,7 @@ export function SettingsSidebar({
       case 'seo': return 'SEO Settings';
       case 'display': return 'Content Layout';
       case 'danger': return 'Danger Zone';
+      case 'member-management': return 'Member Management';
       default: return 'Settings';
     }
   };
@@ -197,6 +239,7 @@ export function SettingsSidebar({
       case 'seo': return 'Optimize your space for search engines and social media';
       case 'display': return 'Customize how content is displayed and organized';
       case 'danger': return 'Irreversible actions that affect your entire space';
+      case 'member-management': return 'Manage members and permissions in your space';
       default: return 'Select a category to configure space settings';
     }
   };
@@ -226,8 +269,10 @@ export function SettingsSidebar({
           setSlug={handleSlugChange}
           spaceIconUrl={spaceIconUrl}
           setSpaceIconUrl={handleSpaceIconUrlChange}
-          spaceBannerUrl={spaceBannerUrl}
-          setSpaceBannerUrl={handleSpaceBannerUrlChange}
+          spaceBanner={currentSpaceBanner}
+          setSpaceBanner={currentSetSpaceBanner}
+          spaceBannerUrl={currentSpaceBannerUrl}
+          setSpaceBannerUrl={currentSetSpaceBannerUrl}
           visibility={visibility}
           setVisibility={handleVisibilityChange}
           inviteOnly={inviteOnly}
@@ -244,7 +289,9 @@ export function SettingsSidebar({
           setWhoCanReply={handleWhoCanReplyChange}
           whoCanReact={whoCanReact}
           setWhoCanReact={handleWhoCanReactChange}
-          isLoading={isLoading}
+          selectedFolder={selectedFolder}
+          setSelectedFolder={setSelectedFolder}
+          isLoading={currentIsLoading}
         />;
       case 'widget':
         return <WidgetSettingsTab contentType={getContentType()} onWidgetHover={onWidgetHover} />;
@@ -254,6 +301,8 @@ export function SettingsSidebar({
         return <DisplaySettingsTab />;
       case 'danger':
         return <DangerZoneSettingsTab />;
+      case 'member-management':
+        return <MemberManagementTab />;
       default:
         return (
           <div className="py-6 px-2 text-center text-gray-500 dark:text-gray-400">
@@ -276,10 +325,10 @@ export function SettingsSidebar({
           </button>
           
           <div className="flex items-center">
-            {hasChanges && activeTab !== 'danger' && (
+            {currentHasChanges && activeTab !== 'danger' && (
               <button
                 type="button"
-                onClick={handleDiscardChanges}
+                onClick={externalOnDiscard || handleDiscardChanges}
                 className="px-1 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
                 Discard
@@ -288,14 +337,15 @@ export function SettingsSidebar({
             {activeTab !== 'danger' && (
               <button
                 type="button"
+                onClick={externalOnSave || (() => {})}
                 className={`px-1 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                  !hasChanges || isLoading 
+                  !currentHasChanges || currentIsLoading 
                     ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed' 
                     : 'text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20'
-                } ${hasChanges ? 'ml-2' : ''}`}
-                disabled={!hasChanges || isLoading}
+                } ${currentHasChanges ? 'ml-2' : ''}`}
+                disabled={!currentHasChanges || currentIsLoading}
               >
-                {isLoading ? (
+                {currentIsLoading ? (
                   <>
                     <Loader2 className="mr-1 h-3 w-3 animate-spin inline" />
                     Saving...

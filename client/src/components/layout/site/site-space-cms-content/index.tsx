@@ -27,9 +27,10 @@ interface SpaceCmsContentProps {
   siteSD: string;
   space: Space;
   site: any;
+  isWidgetMode?: boolean;
 }
 
-export function SpaceCmsContent({ siteSD, space, site }: SpaceCmsContentProps) {
+export function SpaceCmsContent({ siteSD, space, site, isWidgetMode = false }: SpaceCmsContentProps) {
   // Function to determine which component to render based on CMS type
   const renderContentComponent = () => {
     // Check if space exists and has a CMS type
@@ -92,15 +93,6 @@ export function SpaceCmsContent({ siteSD, space, site }: SpaceCmsContentProps) {
 
   return (
     <div className="space-content-container">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-          {space.name}
-        </h1>
-        {space.description && (
-          <p className="text-gray-600 dark:text-gray-400">{space.description}</p>
-        )}
-      </div>
-      
       {renderContentComponent()}
     </div>
   );

@@ -15,7 +15,12 @@ import {
   MessageSquare,
   Heart,
   Smile,
-  ArrowUpDown
+  ArrowUpDown,
+  ImageIcon,
+  Folder,
+  Plus,
+  Search,
+  EyeOff
 } from "lucide-react";
 import { PropertyRow } from "./PropertyRow";
 
@@ -28,6 +33,8 @@ interface GeneralSettingsTabProps {
   setSlug: (value: string) => void;
   spaceIconUrl: string;
   setSpaceIconUrl: (value: string) => void;
+  spaceBanner: boolean;
+  setSpaceBanner: (value: boolean) => void;
   spaceBannerUrl: string;
   setSpaceBannerUrl: (value: string) => void;
   visibility: string;
@@ -46,6 +53,8 @@ interface GeneralSettingsTabProps {
   setWhoCanReply: (value: string) => void;
   whoCanReact: string;
   setWhoCanReact: (value: string) => void;
+  selectedFolder: string;
+  setSelectedFolder: (value: string) => void;
   isLoading: boolean;
 }
 
@@ -58,6 +67,8 @@ export function GeneralSettingsTab({
   setSlug,
   spaceIconUrl,
   setSpaceIconUrl,
+  spaceBanner,
+  setSpaceBanner,
   spaceBannerUrl,
   setSpaceBannerUrl,
   visibility,
@@ -76,10 +87,22 @@ export function GeneralSettingsTab({
   setWhoCanReply,
   whoCanReact,
   setWhoCanReact,
+  selectedFolder,
+  setSelectedFolder,
   isLoading
 }: GeneralSettingsTabProps) {
   const [editingField, setEditingField] = useState<string | null>(null);
   const [newContentPermission, setNewContentPermission] = useState('all');
+
+  // Manage folders state - in real app this would come from API
+  const [folders, setFolders] = useState([
+    { id: 'root', name: 'Root', path: '/' },
+    { id: 'general', name: 'General', path: '/general' },
+    { id: 'support', name: 'Support', path: '/support' },
+    { id: 'community', name: 'Community', path: '/community' },
+    { id: 'announcements', name: 'Announcements', path: '/announcements' },
+    { id: 'feedback', name: 'Feedback', path: '/feedback' }
+  ]);
 
   const handleFieldClick = (fieldName: string) => {
     setEditingField(fieldName);
@@ -98,6 +121,36 @@ export function GeneralSettingsTab({
     }
   };
 
+  // Handle adding new folder
+  const handleAddNewFolder = (folderName: string) => {
+    if (folderName && folderName.trim()) {
+      const trimmedName = folderName.trim();
+      const folderId = trimmedName.toLowerCase().replace(/\s+/g, '-');
+      const folderPath = `/${folderId}`;
+      
+      // Check if folder already exists
+      const exists = folders.some(folder => 
+        folder.id === folderId || folder.name.toLowerCase() === trimmedName.toLowerCase()
+      );
+      
+      if (exists) {
+        alert('A folder with this name already exists.');
+        return;
+      }
+      
+      // Add new folder to the list
+      const newFolder = {
+        id: folderId,
+        name: trimmedName,
+        path: folderPath
+      };
+      
+      setFolders(prev => [...prev, newFolder]);
+      // Automatically select the newly created folder
+      setSelectedFolder(folderId);
+    }
+  };
+
   return (
     <div className="space-y-0 [&>*:last-child>div:first-child]:border-b-0">
       <PropertyRow
@@ -112,7 +165,39 @@ export function GeneralSettingsTab({
         onFieldClick={handleFieldClick}
         onFieldBlur={handleFieldBlur}
         onKeyDown={handleKeyDown}
+        isIconUpload={true}
       />
+
+      <PropertyRow
+        label="Space banner"
+        value={spaceBanner}
+        fieldName="spaceBanner"
+        type="checkbox"
+        onValueChange={setSpaceBanner}
+        icon={ImageIcon}
+        editingField={editingField}
+        onFieldClick={handleFieldClick}
+        onFieldBlur={handleFieldBlur}
+        onKeyDown={handleKeyDown}
+        description="Enable banner image for this space"
+      />
+
+      {spaceBanner && (
+        <PropertyRow
+          label="Upload banner"
+          value={spaceBannerUrl}
+          fieldName="spaceBannerUrl"
+          type="upload"
+          onValueChange={setSpaceBannerUrl}
+          placeholder="Upload banner"
+          icon={Image}
+          editingField={editingField}
+          onFieldClick={handleFieldClick}
+          onFieldBlur={handleFieldBlur}
+          onKeyDown={handleKeyDown}
+          isChild={true}
+        />
+      )}
 
       <PropertyRow
         label="Name"
@@ -157,6 +242,28 @@ export function GeneralSettingsTab({
       />
 
       <PropertyRow
+        label="Folder"
+        value={selectedFolder}
+        fieldName="folder"
+        type="select"
+        options={folders.map(folder => ({
+          value: folder.id,
+          label: folder.name,
+          description: `Place this space in ${folder.path}`,
+          icon: Folder
+        }))}
+        onValueChange={setSelectedFolder}
+        icon={Folder}
+        editingField={editingField}
+        onFieldClick={handleFieldClick}
+        onFieldBlur={handleFieldBlur}
+        onKeyDown={handleKeyDown}
+        enableDropdownSearch={true}
+        onAddNew={handleAddNewFolder}
+        description="Choose which folder this space belongs to"
+      />
+
+      <PropertyRow
         label="Visibility"
         value={visibility}
         fieldName="visibility"
@@ -173,10 +280,16 @@ export function GeneralSettingsTab({
             label: 'Private',
             description: 'Only invited members can access this space',
             icon: Lock
+          },
+          { 
+            value: 'hidden', 
+            label: 'Private and hidden',
+            description: 'Completely hidden from discovery, invitation only',
+            icon: EyeOff
           }
         ]}
         onValueChange={setVisibility}
-        icon={visibility === 'public' ? Globe : Lock}
+        icon={visibility === 'public' ? Globe : visibility === 'private' ? Lock : EyeOff}
         editingField={editingField}
         onFieldClick={handleFieldClick}
         onFieldBlur={handleFieldBlur}
