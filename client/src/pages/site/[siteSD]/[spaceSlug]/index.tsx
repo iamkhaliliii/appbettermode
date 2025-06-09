@@ -12,6 +12,7 @@ import { getApiBaseUrl } from '@/lib/utils';
 import { useSiteData } from '../../../../lib/SiteDataContext';
 import { Avatar } from '@/components/ui/primitives';
 import { SiteContext } from '../index';
+import EventDetailsPage from './[postID]/index';
 
 // Types
 interface Space {
@@ -156,8 +157,13 @@ function ContentSkeleton() {
 
 // Space page content component - this is only the content section
 export function SpaceContent() {
-  const { siteSD, spaceSlug } = useParams();
+  const { siteSD, spaceSlug, postID } = useParams();
   const { site, isLoading: siteIsLoading } = React.useContext(SiteContext);
+  
+  // If we have a postID, render the event details page instead
+  if (postID) {
+    return <EventDetailsPage />;
+  }
   const [space, setSpace] = useState<Space | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -334,7 +340,12 @@ export function SpaceContent() {
 export default function SpacePage() {
   // Check if we're using nested routing through the SiteContext
   const siteContext = React.useContext(SiteContext);
-  const { siteSD, spaceSlug } = useParams();
+  const { siteSD, spaceSlug, postID } = useParams();
+  
+  // If we have a postID, render the event details page directly
+  if (postID) {
+    return <EventDetailsPage />;
+  }
   
   // If we have siteContext, we're in nested routing mode
   if (siteContext && siteContext.site) {

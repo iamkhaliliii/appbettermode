@@ -261,7 +261,7 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
   };
 
   const handleViewEvent = (eventId: string) => {
-    setLocation(`/site/${siteSD}/${space.slug}/event/${eventId}`);
+    setLocation(`/site/${siteSD}/${space.slug}/${eventId}`);
   };
 
   const handleRSVP = (eventId: string, event: EnhancedEvent) => {
