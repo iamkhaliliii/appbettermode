@@ -1,3 +1,4 @@
+import * as React from "react";
 import { defaultProps } from "@blocknote/core";
 import { createReactBlockSpec } from "@blocknote/react";
 import { Button } from "@/components/ui/button";
@@ -50,66 +51,30 @@ const parseConfigValue = (value: any, defaultValue: any) => {
   return value !== undefined ? value : defaultValue;
 };
 
-// The Poll block (Read-only display version)
-export const Poll = createReactBlockSpec(
-  {
-    type: "poll",
-    propSchema: {
-      textAlignment: defaultProps.textAlignment,
-      textColor: defaultProps.textColor,
-      pollType: {
-        default: "single",
-        values: ["single", "multiple"],
-      },
-      optionsJson: {
-        default: '["Option 1", "Option 2"]',
-      },
-      votesJson: {
-        default: '{}',
-      },
-      // Configuration props
-      maxVotesPerUser: {
-        default: 1,
-      },
-      allowedUsers: {
-        default: "all",
-        values: ["all", "members", "staff"],
-      },
-      startDate: {
-        default: "",
-      },
-      endDate: {
-        default: "",
-      },
-      showResultsAfterVote: {
-        default: true,
-      },
-      showResultsBeforeEnd: {
-        default: false,
-      },
-      allowAddOptions: {
-        default: true,
-      },
-    },
-    content: "inline",
-  },
-  {
-    render: (props) => {
-      const pollType = pollTypes.find(
-        (p) => p.value === props.block.props.pollType,
-      )!;
-      
-      const options = parseOptions(props.block.props.optionsJson as string);
-      const votes = parseVotes(props.block.props.votesJson as string);
-      
-      // Parse configuration
-      const maxVotesPerUser = parseConfigValue(props.block.props.maxVotesPerUser, 1);
-      const allowedUsers = parseConfigValue(props.block.props.allowedUsers, "all");
-      const startDate = parseConfigValue(props.block.props.startDate, "");
-      const endDate = parseConfigValue(props.block.props.endDate, "");
-      const showResultsAfterVote = parseConfigValue(props.block.props.showResultsAfterVote, true);
-      const showResultsBeforeEnd = parseConfigValue(props.block.props.showResultsBeforeEnd, false);
-      const allowAddOptions = parseConfigValue(props.block.props.allowAddOptions, true);
+// Create a forwardRef component for the poll display
+const PollComponent = React.forwardRef<HTMLDivElement, any>((props, ref) => {
+  return <PollDisplay {...props} forwardedRef={ref} />;
+});
+
+PollComponent.displayName = "PollComponent";
+
+// Poll display component
+const PollDisplay = ({ block, contentRef, forwardedRef, ...otherProps }: any) => {
+  const pollType = pollTypes.find(
+    (p) => p.value === block.props.pollType,
+  )!;
+  
+  const options = parseOptions(block.props.optionsJson as string);
+  const votes = parseVotes(block.props.votesJson as string);
+  
+  // Parse configuration
+  const maxVotesPerUser = parseConfigValue(block.props.maxVotesPerUser, 1);
+  const allowedUsers = parseConfigValue(block.props.allowedUsers, "all");
+  const startDate = parseConfigValue(block.props.startDate, "");
+  const endDate = parseConfigValue(block.props.endDate, "");
+  const showResultsAfterVote = parseConfigValue(block.props.showResultsAfterVote, true);
+  const showResultsBeforeEnd = parseConfigValue(block.props.showResultsBeforeEnd, false);
+  const allowAddOptions = parseConfigValue(block.props.allowAddOptions, true);
       
       // Calculate vote counts for display
       const voteCounts: Record<number, number> = options.reduce((acc, _, index) => {
@@ -134,29 +99,29 @@ export const Poll = createReactBlockSpec(
         staff: "Staff only"
       }[allowedUsers as string] || "All users";
       
-      // Handle edit functionality
-      const handleEdit = () => {
-        // Dispatch a custom event to trigger modal opening
-        // This will be caught by the parent component
-        const editEvent = new CustomEvent('editPoll', {
-          detail: {
-            blockId: props.block.id,
-            currentConfig: {
-                             question: "", // Will be filled from contentRef
-              pollType: props.block.props.pollType,
-              options,
-              maxVotesPerUser,
-              allowedUsers,
-              startDate,
-              endDate,
-              showResultsAfterVote,
-              showResultsBeforeEnd,
-              allowAddOptions,
-            }
-          }
-        });
-        window.dispatchEvent(editEvent);
-      };
+  // Handle edit functionality
+  const handleEdit = () => {
+    // Dispatch a custom event to trigger modal opening
+    // This will be caught by the parent component
+    const editEvent = new CustomEvent('editPoll', {
+      detail: {
+        blockId: block.id,
+        currentConfig: {
+          question: "", // Will be filled from contentRef
+          pollType: block.props.pollType,
+          options,
+          maxVotesPerUser,
+          allowedUsers,
+          startDate,
+          endDate,
+          showResultsAfterVote,
+          showResultsBeforeEnd,
+          allowAddOptions,
+        }
+      }
+    });
+    window.dispatchEvent(editEvent);
+  };
       
       return (
         <div className="poll-block border border-gray-200 dark:border-gray-700 rounded-lg p-4 my-2 bg-white dark:bg-gray-900">
@@ -196,7 +161,7 @@ export const Poll = createReactBlockSpec(
           <div className="mb-4">
             <div 
               className="text-lg font-medium text-gray-900 dark:text-white min-h-[1.5rem] outline-none" 
-              ref={props.contentRef}
+              ref={contentRef}
             />
           </div>
           
@@ -219,7 +184,7 @@ export const Poll = createReactBlockSpec(
                       <div className="flex items-center gap-3">
                         <div className={cn(
                           "w-4 h-4 border-2 border-gray-400 dark:border-gray-500",
-                          props.block.props.pollType === "single" ? "rounded-full" : "rounded-sm"
+                          block.props.pollType === "single" ? "rounded-full" : "rounded-sm"
                         )} />
                         <span className="text-gray-900 dark:text-white">{option}</span>
                       </div>
@@ -275,6 +240,54 @@ export const Poll = createReactBlockSpec(
           </div>
         </div>
       );
+};
+
+// The Poll block (Read-only display version)
+export const Poll = createReactBlockSpec(
+  {
+    type: "poll",
+    propSchema: {
+      textAlignment: defaultProps.textAlignment,
+      textColor: defaultProps.textColor,
+      pollType: {
+        default: "single",
+        values: ["single", "multiple"],
+      },
+      optionsJson: {
+        default: '["Option 1", "Option 2"]',
+      },
+      votesJson: {
+        default: '{}',
+      },
+      // Configuration props
+      maxVotesPerUser: {
+        default: 1,
+      },
+      allowedUsers: {
+        default: "all",
+        values: ["all", "members", "staff"],
+      },
+      startDate: {
+        default: "",
+      },
+      endDate: {
+        default: "",
+      },
+      showResultsAfterVote: {
+        default: true,
+      },
+      showResultsBeforeEnd: {
+        default: false,
+      },
+      allowAddOptions: {
+        default: true,
+      },
+    },
+    content: "inline",
+  },
+  {
+    render: (props) => {
+      return <PollDisplay {...props} />;
     },
   },
 ); 

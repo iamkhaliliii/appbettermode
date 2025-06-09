@@ -118,6 +118,8 @@ const userPermissionOptions = [
 ];
 
 export function PollConfigModal({ open, onOpenChange, onConfirm, initialConfig }: PollConfigModalProps) {
+  console.log('PollConfigModal rendered with:', { open, initialConfig });
+  
   const [question, setQuestion] = React.useState(initialConfig?.question || "");
   const [pollType, setPollType] = React.useState<"single" | "multiple">(initialConfig?.pollType || "single");
   const [options, setOptions] = React.useState<string[]>(initialConfig?.options || ["Option 1", "Option 2"]);
@@ -176,6 +178,7 @@ export function PollConfigModal({ open, onOpenChange, onConfirm, initialConfig }
   };
 
   const handleCancel = () => {
+    console.log('Poll modal cancelled');
     handleReset();
     onOpenChange(false);
   };
@@ -194,6 +197,31 @@ export function PollConfigModal({ open, onOpenChange, onConfirm, initialConfig }
     setShowSettings(false);
     setEditingField(null);
   };
+
+  // Update state when initialConfig changes
+  React.useEffect(() => {
+    console.log('InitialConfig changed:', initialConfig);
+    if (initialConfig) {
+      setQuestion(initialConfig.question || "");
+      setPollType(initialConfig.pollType || "single");
+      setOptions(initialConfig.options || ["Option 1", "Option 2"]);
+      setMaxVotesPerUser(initialConfig.maxVotesPerUser || 1);
+      setAllowedUsers(initialConfig.allowedUsers || "all");
+      setStartDate(initialConfig.startDate || "");
+      setEndDate(initialConfig.endDate || "");
+      setShowResultsAfterVote(initialConfig.showResultsAfterVote ?? true);
+      setShowResultsBeforeEnd(initialConfig.showResultsBeforeEnd ?? false);
+      setAllowAddOptions(initialConfig.allowAddOptions ?? true);
+    }
+  }, [initialConfig]);
+
+  // Reset form when modal closes
+  React.useEffect(() => {
+    if (!open) {
+      console.log('Modal closed, resetting form');
+      handleReset();
+    }
+  }, [open]);
 
   // Auto-adjust max votes when poll type changes
   React.useEffect(() => {

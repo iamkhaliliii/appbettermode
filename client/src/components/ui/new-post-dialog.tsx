@@ -80,9 +80,13 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
 
   // Function to create poll block from config
   const createPollBlock = (config: PollConfig) => {
+    console.log('Creating poll block with config:', config);
+    console.log('Editing block ID:', editingBlockId);
+    
     if (editingBlockId) {
       // Update existing block
       const block = editor.document.find(b => b.id === editingBlockId);
+      console.log('Found block to update:', block);
       if (block) {
         editor.updateBlock(block, {
           type: "poll",
@@ -105,6 +109,7 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
       setEditingPollConfig(null);
     } else {
       // Create new block
+      console.log('Creating new poll block');
       insertOrUpdateBlock(editor, {
         type: "poll",
         props: {
@@ -148,18 +153,28 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
   // Listen for poll edit events
   React.useEffect(() => {
     const handleEditPoll = (event: CustomEvent) => {
+      console.log('Edit poll event received:', event.detail);
       const { blockId, currentConfig } = event.detail;
+      
+      // Prevent multiple modals from opening
+      if (pollModalOpen) {
+        console.log('Modal already open, ignoring event');
+        return;
+      }
+      
       setEditingBlockId(blockId);
       setEditingPollConfig(currentConfig);
       setPollModalOpen(true);
     };
 
+    // Remove any existing listener first
+    window.removeEventListener('editPoll', handleEditPoll as EventListener);
     window.addEventListener('editPoll', handleEditPoll as EventListener);
     
     return () => {
       window.removeEventListener('editPoll', handleEditPoll as EventListener);
     };
-  }, []);
+  }, [pollModalOpen]);
 
   const handleSaveDraft = () => {
     // TODO: Implement save draft functionality
@@ -188,6 +203,7 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
   };
 
   const handlePollModalClose = () => {
+    console.log('Closing poll modal');
     setPollModalOpen(false);
     setEditingPollConfig(null);
     setEditingBlockId(null);
@@ -376,12 +392,14 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
       </Dialog>
 
       {/* Poll Configuration Modal */}
-      <PollConfigModal
-        open={pollModalOpen}
-        onOpenChange={handlePollModalClose}
-        onConfirm={createPollBlock}
-        initialConfig={editingPollConfig || undefined}
-      />
+      {pollModalOpen && (
+        <PollConfigModal
+          open={pollModalOpen}
+          onOpenChange={handlePollModalClose}
+          onConfirm={createPollBlock}
+          initialConfig={editingPollConfig || undefined}
+        />
+      )}
     </>
   );
 } 
