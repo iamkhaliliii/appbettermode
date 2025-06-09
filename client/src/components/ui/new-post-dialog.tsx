@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,6 +60,59 @@ const schema = BlockNoteSchema.create({
   },
 });
 
+// Global singleton to manage poll edit events
+class PollEditEventManager {
+  private static instance: PollEditEventManager;
+  private activeDialogId: string | null = null;
+  private isProcessing: boolean = false;
+
+  static getInstance(): PollEditEventManager {
+    if (!PollEditEventManager.instance) {
+      PollEditEventManager.instance = new PollEditEventManager();
+    }
+    return PollEditEventManager.instance;
+  }
+
+  registerDialog(dialogId: string): boolean {
+    // Only allow one active dialog at a time
+    if (this.activeDialogId === null) {
+      this.activeDialogId = dialogId;
+      console.log(`[EDIT-MANAGER] Registered active dialog: ${dialogId}`);
+      return true;
+    }
+    console.log(`[EDIT-MANAGER] Dialog ${dialogId} blocked - active dialog: ${this.activeDialogId}`);
+    return false;
+  }
+
+  unregisterDialog(dialogId: string): void {
+    if (this.activeDialogId === dialogId) {
+      this.activeDialogId = null;
+      this.isProcessing = false;
+      console.log(`[EDIT-MANAGER] Unregistered dialog: ${dialogId}`);
+    }
+  }
+
+  canProcess(dialogId: string): boolean {
+    if (this.isProcessing) {
+      console.log(`[EDIT-MANAGER] Event already being processed, ignoring ${dialogId}`);
+      return false;
+    }
+    if (this.activeDialogId !== dialogId) {
+      console.log(`[EDIT-MANAGER] Dialog ${dialogId} not active, ignoring`);
+      return false;
+    }
+    return true;
+  }
+
+  startProcessing(): void {
+    this.isProcessing = true;
+  }
+
+  stopProcessing(): void {
+    this.isProcessing = false;
+  }
+}
+
 export interface NewPostDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -72,6 +126,10 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
   const [editingPollConfig, setEditingPollConfig] = React.useState<Partial<PollConfig> | null>(null);
   const [editingBlockId, setEditingBlockId] = React.useState<string | null>(null);
 
+  // Generate unique dialog ID
+  const dialogId = React.useRef(`dialog-${Math.random().toString(36).substr(2, 9)}`);
+  const editManager = React.useRef(PollEditEventManager.getInstance());
+
   // Create BlockNote editor instance with custom schema
   const editor = useCreateBlockNote({
     schema,
@@ -80,17 +138,17 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
 
   // Function to create poll block from config
   const createPollBlock = (config: PollConfig) => {
-    console.log('Creating poll block with config:', config);
-    console.log('Editing block ID:', editingBlockId);
+    console.log('[POLL] Creating/updating poll block', { editingBlockId, config });
     
     if (editingBlockId) {
       // Update existing block
+      console.log(`[POLL] Updating existing block: ${editingBlockId}`);
       const block = editor.document.find(b => b.id === editingBlockId);
-      console.log('Found block to update:', block);
       if (block) {
         editor.updateBlock(block, {
           type: "poll",
           props: {
+            question: config.question,
             pollType: config.pollType,
             optionsJson: JSON.stringify(config.options),
             votesJson: JSON.stringify({}),
@@ -102,17 +160,20 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
             showResultsBeforeEnd: config.showResultsBeforeEnd,
             allowAddOptions: config.allowAddOptions,
           },
-          content: config.question,
         });
+        console.log(`[POLL] Successfully updated block: ${editingBlockId}`);
+      } else {
+        console.error(`[POLL] Block not found: ${editingBlockId}`);
       }
       setEditingBlockId(null);
       setEditingPollConfig(null);
     } else {
       // Create new block
-      console.log('Creating new poll block');
+      console.log('[POLL] Creating new poll block');
       insertOrUpdateBlock(editor, {
         type: "poll",
         props: {
+          question: config.question,
           pollType: config.pollType,
           optionsJson: JSON.stringify(config.options),
           votesJson: JSON.stringify({}),
@@ -124,9 +185,11 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
           showResultsBeforeEnd: config.showResultsBeforeEnd,
           allowAddOptions: config.allowAddOptions,
         },
-        content: config.question,
       });
+      console.log('[POLL] Successfully created new poll block');
     }
+    
+    console.log('[POLL] Poll block operation completed');
   };
 
   // Slash menu item to open Poll config modal
@@ -150,31 +213,68 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
     icon: <BarChart3 />,
   });
 
-  // Listen for poll edit events
+  // Track modal state with ref to avoid stale closures
+  const pollModalOpenRef = React.useRef(false);
+  
+  // Update ref when state changes
   React.useEffect(() => {
+    pollModalOpenRef.current = pollModalOpen;
+  }, [pollModalOpen]);
+
+  // Listen for poll edit events using singleton manager
+  React.useEffect(() => {
+    const currentDialogId = dialogId.current;
+    const manager = editManager.current;
+    
+    // Try to register this dialog as the active one
+    const isActive = manager.registerDialog(currentDialogId);
+    
+    if (!isActive) {
+      console.log(`[${currentDialogId}] Not active, skipping event listener setup`);
+      return;
+    }
+
     const handleEditPoll = (event: CustomEvent) => {
-      console.log('Edit poll event received:', event.detail);
       const { blockId, currentConfig } = event.detail;
       
-      // Prevent multiple modals from opening
-      if (pollModalOpen) {
-        console.log('Modal already open, ignoring event');
+      console.log(`[${currentDialogId}] Received edit poll event for block: ${blockId}`);
+      
+      // Check if this dialog can process the event
+      if (!manager.canProcess(currentDialogId)) {
         return;
       }
       
+      // Check if modal is already open
+      if (pollModalOpenRef.current) {
+        console.log(`[${currentDialogId}] Modal already open, ignoring event`);
+        return;
+      }
+      
+      console.log(`[${currentDialogId}] Processing edit poll event for block: ${blockId}`);
+      
+      // Start processing
+      manager.startProcessing();
+      
+      // Process the event
       setEditingBlockId(blockId);
       setEditingPollConfig(currentConfig);
       setPollModalOpen(true);
+      
+      // Reset processing flag after a delay
+      setTimeout(() => {
+        manager.stopProcessing();
+      }, 500);
     };
 
-    // Remove any existing listener first
-    window.removeEventListener('editPoll', handleEditPoll as EventListener);
+    console.log(`[${currentDialogId}] Registering edit poll event listener`);
     window.addEventListener('editPoll', handleEditPoll as EventListener);
     
     return () => {
+      console.log(`[${currentDialogId}] Removing edit poll event listener`);
       window.removeEventListener('editPoll', handleEditPoll as EventListener);
+      manager.unregisterDialog(currentDialogId);
     };
-  }, [pollModalOpen]);
+  }, [pollModalOpen]); // Add pollModalOpen dependency
 
   const handleSaveDraft = () => {
     // TODO: Implement save draft functionality
@@ -203,10 +303,15 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
   };
 
   const handlePollModalClose = () => {
-    console.log('Closing poll modal');
+    console.log('[MODAL] Closing poll modal');
     setPollModalOpen(false);
     setEditingPollConfig(null);
     setEditingBlockId(null);
+    
+    // Reset the modal state ref to ensure clean state
+    pollModalOpenRef.current = false;
+    
+    console.log('[MODAL] Poll modal closed and state reset');
   };
 
   return (
@@ -228,9 +333,14 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
                   <path d="M3 3h18v18H3V3zm2 2v14h14V5H5zm2 2h10v2H7V7zm0 4h10v2H7v-2zm0 4h7v2H7v-2z"/>
                 </svg>
               </div>
+                          <div>
               <DialogTitle className="text-lg font-medium text-gray-900 dark:text-white">
                 Create a new Discussion
               </DialogTitle>
+              <DialogDescription className="sr-only">
+                Create and share a new discussion post with your community
+              </DialogDescription>
+            </div>
             </div>
             <div className="flex items-center justify-center gap-1">
               {/* Control Buttons */}
