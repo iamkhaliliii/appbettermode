@@ -121,7 +121,9 @@ const userPermissionOptions = [
 export function PollConfigModal({ open, onOpenChange, onConfirm, initialConfig }: PollConfigModalProps) {
   const [question, setQuestion] = React.useState(initialConfig?.question || "");
   const [pollType, setPollType] = React.useState<"single" | "multiple">(initialConfig?.pollType || "single");
-  const [options, setOptions] = React.useState<string[]>(initialConfig?.options || ["Option 1", "Option 2"]);
+  const [options, setOptions] = React.useState<string[]>(
+    initialConfig?.options || ["", ""] // Empty strings for new polls
+  );
   const [showSettings, setShowSettings] = React.useState(false);
 
   // Configuration state
@@ -184,7 +186,7 @@ export function PollConfigModal({ open, onOpenChange, onConfirm, initialConfig }
   const handleReset = () => {
     setQuestion("");
     setPollType("single");
-    setOptions(["Option 1", "Option 2"]);
+    setOptions(["", ""]);
     setMaxVotesPerUser(1);
     setAllowedUsers("all");
     setStartDate("");
@@ -201,7 +203,7 @@ export function PollConfigModal({ open, onOpenChange, onConfirm, initialConfig }
     if (initialConfig) {
       setQuestion(initialConfig.question || "");
       setPollType(initialConfig.pollType || "single");
-      setOptions(initialConfig.options || ["Option 1", "Option 2"]);
+      setOptions(initialConfig.options || ["", ""]);
       setMaxVotesPerUser(initialConfig.maxVotesPerUser || 1);
       setAllowedUsers(initialConfig.allowedUsers || "all");
       setStartDate(initialConfig.startDate || "");
@@ -371,9 +373,8 @@ export function PollConfigModal({ open, onOpenChange, onConfirm, initialConfig }
                     <Button
                       variant="outline"
                       onClick={() => {
-                        // Focus on creating a simple add experience
-                        const newOpt = `Option ${options.length + 1}`;
-                        setOptions([...options, newOpt]);
+                        // Add empty option for user to fill in
+                        setOptions([...options, ""]);
                       }}
                       className="w-full justify-start text-gray-600 dark:text-gray-400 border-dashed hover:border-blue-300 dark:hover:border-blue-600 hover:text-blue-600 dark:hover:text-blue-400 h-9"
                     >

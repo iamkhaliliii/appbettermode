@@ -213,14 +213,6 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
     icon: <BarChart3 />,
   });
 
-  // Track modal state with ref to avoid stale closures
-  const pollModalOpenRef = React.useRef(false);
-  
-  // Update ref when state changes
-  React.useEffect(() => {
-    pollModalOpenRef.current = pollModalOpen;
-  }, [pollModalOpen]);
-
   // Listen for poll edit events using singleton manager
   React.useEffect(() => {
     const currentDialogId = dialogId.current;
@@ -245,7 +237,7 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
       }
       
       // Check if modal is already open
-      if (pollModalOpenRef.current) {
+      if (pollModalOpen) {
         console.log(`[${currentDialogId}] Modal already open, ignoring event`);
         return;
       }
@@ -275,6 +267,41 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
       manager.unregisterDialog(currentDialogId);
     };
   }, [pollModalOpen]); // Add pollModalOpen dependency
+
+  // Listen for poll delete events using singleton manager
+  React.useEffect(() => {
+    const currentDialogId = dialogId.current;
+    const manager = editManager.current;
+    
+    // Only listen if this dialog is active
+    if (!manager.canProcess(currentDialogId)) {
+      return;
+    }
+
+    const handleDeletePoll = (event: CustomEvent) => {
+      const { blockId } = event.detail;
+      
+      console.log(`[${currentDialogId}] Received delete poll event for block: ${blockId}`);
+      
+      // Find and remove the block
+      const blockToDelete = editor.document.find(b => b.id === blockId);
+      if (blockToDelete) {
+        console.log(`[${currentDialogId}] Deleting poll block: ${blockId}`);
+        editor.removeBlocks([blockToDelete]);
+        console.log(`[${currentDialogId}] Successfully deleted poll block: ${blockId}`);
+      } else {
+        console.error(`[${currentDialogId}] Poll block not found: ${blockId}`);
+      }
+    };
+
+    console.log(`[${currentDialogId}] Registering delete poll event listener`);
+    window.addEventListener('deletePoll', handleDeletePoll as EventListener);
+    
+    return () => {
+      console.log(`[${currentDialogId}] Removing delete poll event listener`);
+      window.removeEventListener('deletePoll', handleDeletePoll as EventListener);
+    };
+  }, [editor]); // Add editor dependency
 
   const handleSaveDraft = () => {
     // TODO: Implement save draft functionality
@@ -307,9 +334,6 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
     setPollModalOpen(false);
     setEditingPollConfig(null);
     setEditingBlockId(null);
-    
-    // Reset the modal state ref to ensure clean state
-    pollModalOpenRef.current = false;
     
     console.log('[MODAL] Poll modal closed and state reset');
   };
