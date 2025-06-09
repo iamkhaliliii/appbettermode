@@ -10,7 +10,6 @@ console.log('[API] Router initialized - routes are being registered');
 const apiRouter = express.Router();
 // Get Brandfetch API key from environment variables
 const BRANDFETCH_API_KEY = process.env.BRANDFETCH_API_KEY;
-
 // Demo data generator for when API key is not configured
 const getDemoDataForDomain = (domain) => {
     const companyName = domain.split('.')[0];
@@ -151,7 +150,6 @@ apiRouter.get('/test-brandfetch', async (req, res) => {
     }
 });
 logger.info('[API] Test brand fetch endpoint registered');
-
 // Brand fetch endpoint
 apiRouter.get('/brand-fetch', async (req, res) => {
     logger.info(`[API] Brand fetch endpoint called with domain: ${req.query.domain}`);
@@ -174,37 +172,33 @@ apiRouter.get('/brand-fetch', async (req, res) => {
         const brandData = await fetchBrandData(domain, BRANDFETCH_API_KEY);
         // Format the response to match what the frontend expects
         const response = {
-            name: brandData.companyInfo?.name || domain.split('.')[0],
-            description: brandData.companyInfo?.description,
-            logos: [],
-            colors: [],
-            companyInfo: brandData.companyInfo || undefined
+            name: brandData.name || brandData.companyInfo?.name || domain.split('.')[0],
+            description: brandData.description || brandData.companyInfo?.description,
+            longDescription: brandData.longDescription,
+            logos: brandData.logos.map(logo => ({
+                type: logo.type,
+                theme: logo.theme,
+                formats: [{
+                        src: logo.url,
+                        format: logo.format
+                    }]
+            })),
+            colors: brandData.colors.map(color => ({
+                hex: color.hex,
+                type: color.type
+            })),
+            companyInfo: brandData.companyInfo || undefined,
+            links: brandData.links,
+            fonts: brandData.fonts,
+            images: brandData.images?.map(image => ({
+                type: image.type,
+                url: image.url,
+                format: image.format,
+                width: image.width,
+                height: image.height
+            })),
+            qualityScore: brandData.qualityScore
         };
-        // Add logos
-        if (brandData.logoUrl) {
-            const logoFormat = brandData.logoUrl.endsWith('.svg') ? 'svg' : 'png';
-            response.logos = [
-                {
-                    type: 'logo',
-                    theme: 'light',
-                    formats: [
-                        {
-                            src: brandData.logoUrl,
-                            format: logoFormat
-                        }
-                    ]
-                }
-            ];
-        }
-        // Add colors
-        if (brandData.brandColor) {
-            response.colors = [
-                {
-                    hex: brandData.brandColor,
-                    type: 'primary'
-                }
-            ];
-        }
         logger.info(`[API] Successfully fetched brand data for ${domain}`);
         return res.status(200).json(response);
     }

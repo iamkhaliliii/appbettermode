@@ -31,7 +31,8 @@ import {
   ChevronRight,
   ChevronLeft,
   Palette,
-  Hash
+  Hash,
+  ArrowLeftToLine
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -120,7 +121,6 @@ export function PollConfigModal({ open, onOpenChange, onConfirm, initialConfig }
   const [question, setQuestion] = React.useState(initialConfig?.question || "");
   const [pollType, setPollType] = React.useState<"single" | "multiple">(initialConfig?.pollType || "single");
   const [options, setOptions] = React.useState<string[]>(initialConfig?.options || ["Option 1", "Option 2"]);
-  const [newOption, setNewOption] = React.useState("");
   const [showSettings, setShowSettings] = React.useState(false);
 
   // Configuration state
@@ -138,10 +138,9 @@ export function PollConfigModal({ open, onOpenChange, onConfirm, initialConfig }
   // Form validation
   const isValid = question.trim().length > 0 && options.length >= 2 && options.every(opt => opt.trim().length > 0);
 
-  const handleAddOption = () => {
-    if (newOption.trim() && options.length < 10) {
-      setOptions([...options, newOption.trim()]);
-      setNewOption("");
+  const handleAddOption = (optionText: string) => {
+    if (optionText.trim() && options.length < 10) {
+      setOptions([...options, optionText.trim()]);
     }
   };
 
@@ -185,7 +184,6 @@ export function PollConfigModal({ open, onOpenChange, onConfirm, initialConfig }
     setQuestion("");
     setPollType("single");
     setOptions(["Option 1", "Option 2"]);
-    setNewOption("");
     setMaxVotesPerUser(1);
     setAllowedUsers("all");
     setStartDate("");
@@ -227,33 +225,33 @@ export function PollConfigModal({ open, onOpenChange, onConfirm, initialConfig }
     <>
       <style>{drawerAnimationClasses}</style>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col bg-white dark:bg-gray-900 p-0">
-          {/* Header */}
-          <DialogHeader className="px-6 py-4 border-b border-gray-100 dark:border-gray-800 shrink-0">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
-                  <BarChart3 className="h-5 w-5 text-white" />
-                </div>
-                <div>
-                  <DialogTitle className="text-lg font-semibold text-gray-900 dark:text-white">
-                    {initialConfig ? "Edit Poll" : "Create Poll"}
-                  </DialogTitle>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Create an interactive poll for your community
-                  </p>
-                </div>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-0 [&>button]:hidden">
+          {/* Header - Fixed */}
+          <DialogHeader className="flex-shrink-0 flex flex-row items-center justify-between p-2 pb-2 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-2">
+              <div className="ml-2 w-6 h-6 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                <BarChart3 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               </div>
-              
+              <DialogTitle className="text-sm font-medium text-gray-900 dark:text-white">
+                {initialConfig ? "Edit Poll" : "Create Poll"}
+              </DialogTitle>
+            </div>
+            <div className="flex items-center gap-0.5">
               <Button
-                variant="outline"
-                size="sm"
+                variant="ghost"
+                size="icon"
                 onClick={() => setShowSettings(!showSettings)}
-                className="flex items-center gap-2"
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
               >
                 <Settings className="h-4 w-4" />
-                Settings
-                <ChevronRight className={cn("h-3 w-3 transition-transform", showSettings && "rotate-180")} />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleCancel}
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <X className="h-4 w-4" />
               </Button>
             </div>
           </DialogHeader>
@@ -262,113 +260,129 @@ export function PollConfigModal({ open, onOpenChange, onConfirm, initialConfig }
           <div className="flex-1 flex overflow-hidden">
             {/* Main Content */}
             <div className={cn(
-              "flex-1 flex flex-col transition-all duration-300 ease-in-out",
+              "flex-1 flex flex-col main-content-shift",
               showSettings && "mr-96"
             )}>
-              <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              <div className="flex-1">
+                {/* Content */}
+                <div className="px-16 pt-8 pb-6 space-y-6">
                 {/* Poll Question */}
-                <div className="space-y-3">
-                  <Label htmlFor="question" className="text-base font-medium text-gray-900 dark:text-white">
-                    Poll Question
-                  </Label>
+                <div className="space-y-4">
+                  <div className="space-y-0">
+                    <Label htmlFor="question" className="text-sm font-medium text-gray-900 dark:text-white">
+                      Poll Question
+                    </Label>
+                    <p className="text-xs text-gray-400 dark:text-gray-400">
+                      Ask a clear and engaging question for your community
+                    </p>
+                  </div>
                   <Input
                     id="question"
                     placeholder="What would you like to ask your community?"
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
-                    className="text-base py-3 focus:ring-2 focus:ring-blue-500 border-gray-200 dark:border-gray-700"
+                    className="py-4 border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400 bg-gray-50 dark:bg-gray-900 hover:bg-white dark:hover:bg-gray-800 transition-colors"
                   />
                 </div>
 
                 {/* Poll Options */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <Label className="text-base font-medium text-gray-900 dark:text-white">
-                      Answer Options
-                    </Label>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      {options.length}/10 options
+                    <div className="space-y-0">
+                      <Label className="text-sm font-medium text-gray-900 dark:text-white">
+                        Answer Options
+                      </Label>
+                      <p className="text-xs text-gray-400 dark:text-gray-400">
+                        Add up to 10 options for users to choose from
+                      </p>
+                    </div>
+                    <span className="text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full">
+                      {options.length}/10
                     </span>
                   </div>
 
-                  <div className="space-y-3">
+                  {/* Options List - Scrollable when many items */}
+                  <div className={cn(
+                    "space-y-2",
+                    options.length > 6 && "max-h-64 overflow-y-auto pr-1"
+                  )}
+                  style={{
+                    scrollbarWidth: 'thin',
+                    scrollbarColor: 'rgb(156, 163, 175) transparent'
+                  }}>
                     {options.map((option, index) => (
-                      <div key={index} className="flex items-center gap-3 group">
-                        <div className="flex items-center gap-3 flex-1 p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
-                          <div className={cn(
-                            "w-4 h-4 border-2 border-gray-400 dark:border-gray-500 flex-shrink-0",
-                            pollType === "single" ? "rounded-full" : "rounded-sm"
-                          )} />
+                      <div key={index} className="flex items-center gap-2 group">
+                        <div className="flex items-center gap-2 flex-1 px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-md hover:border-gray-300 dark:hover:border-gray-600 transition-colors bg-white dark:bg-gray-800">
+                          <span className="text-xs font-medium text-gray-400 dark:text-gray-500 min-w-[1.5rem] text-center">
+                            {index + 1}.
+                          </span>
                           <Input
                             value={option}
                             onChange={(e) => handleUpdateOption(index, e.target.value)}
                             placeholder={`Option ${index + 1}`}
-                            className="border-0 p-0 h-auto focus-visible:ring-0 bg-transparent"
+                            className="border-0 p-0 h-auto focus-visible:ring-0 bg-transparent text-sm"
                           />
                         </div>
                         {options.length > 2 && (
                           <Button
                             variant="ghost"
-                            size="icon"
+                            size="sm"
                             onClick={() => handleRemoveOption(index)}
-                            className="opacity-0 group-hover:opacity-100 transition-opacity text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                            className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-red-500 w-8 h-8 p-0"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <X className="h-3 w-3" />
                           </Button>
                         )}
                       </div>
                     ))}
                   </div>
 
-                  {/* Add New Option */}
+                  {/* Add New Option - Minimal */}
                   {options.length < 10 && (
-                    <div className="flex items-center gap-3 p-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-gray-400 dark:hover:border-gray-500 transition-colors">
-                      <div className={cn(
-                        "w-4 h-4 border-2 border-gray-400 dark:border-gray-500 flex-shrink-0",
-                        pollType === "single" ? "rounded-full" : "rounded-sm"
-                      )} />
-                      <Input
-                        value={newOption}
-                        onChange={(e) => setNewOption(e.target.value)}
-                        placeholder="Add a new option..."
-                        className="border-0 p-0 h-auto focus-visible:ring-0 bg-transparent"
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            handleAddOption();
-                          }
-                        }}
-                      />
-                      <Button
-                        onClick={handleAddOption}
-                        disabled={!newOption.trim()}
-                        size="sm"
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-3"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        // Focus on creating a simple add experience
+                        const newOpt = `Option ${options.length + 1}`;
+                        setOptions([...options, newOpt]);
+                      }}
+                      className="w-full justify-start text-gray-600 dark:text-gray-400 border-dashed hover:border-blue-300 dark:hover:border-blue-600 hover:text-blue-600 dark:hover:text-blue-400 h-9"
+                    >
+                      <Plus className="h-3 w-3 mr-2" />
+                      Add option
+                    </Button>
                   )}
                   
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Minimum 2 options required • {pollType === "single" ? "Single choice" : "Multiple choice"} poll
-                  </p>
+                  {/* Status Footer - Minimal */}
+                  <div className="flex items-center justify-center">
+                    <span className="text-xs text-gray-400 dark:text-gray-500">
+                      {pollType === "single" ? "Single choice" : "Multiple choice"} • Min 2 options
+                    </span>
+                  </div>
+                </div>
                 </div>
               </div>
 
-              {/* Footer */}
-              <div className="flex items-center justify-between p-6 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {isValid ? "Ready to create your poll" : "Complete the required fields"}
-                </p>
+              {/* Footer Actions - Fixed */}
+              <div className="flex-shrink-0 flex items-center justify-between p-6 pt-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                <div className="flex items-center">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {isValid ? "Ready to create your poll" : "Complete the required fields"}
+                  </p>
+                </div>
                 
                 <div className="flex items-center gap-3">
-                  <Button variant="outline" onClick={handleCancel}>
+                  <Button
+                    variant="outline"
+                    onClick={handleCancel}
+                    className="text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600"
+                  >
                     Cancel
                   </Button>
                   <Button 
                     onClick={handleConfirm}
                     disabled={!isValid}
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-6"
                   >
                     <Check className="h-4 w-4 mr-2" />
                     {initialConfig ? "Update Poll" : "Create Poll"}
@@ -383,28 +397,20 @@ export function PollConfigModal({ open, onOpenChange, onConfirm, initialConfig }
               showSettings ? "translate-x-0" : "translate-x-full"
             )}>
               {/* Drawer Header - Fixed */}
-              <div className="flex-shrink-0 p-6 border-b border-gray-100 dark:border-gray-800">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                      <Settings className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                        Poll Settings
-                      </h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Configure advanced options
-                      </p>
-                    </div>
-                  </div>
+              <div className="flex-shrink-0 flex flex-row items-center justify-between p-[0.68rem] border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-3">
+                  <h3 className="text-sm font-medium text-gray-900 dark:text-white">
+                    Poll Settings
+                  </h3>
+                </div>
+                <div className="flex items-center gap-1">
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => setShowSettings(false)}
                     className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                   >
-                    <ChevronLeft className="h-4 w-4" />
+                    <ArrowLeftToLine className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
@@ -412,9 +418,8 @@ export function PollConfigModal({ open, onOpenChange, onConfirm, initialConfig }
               {/* Drawer Content - Scrollable */}
               <div className="flex-1 overflow-y-auto min-h-0">
                 {/* General Settings */}
-                <div className="p-6 border-b border-gray-100 dark:border-gray-800">
-                  <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                    <Palette className="h-4 w-4" />
+                <div className="p-4 pt-4">
+                  <h4 className="text-xs text-gray-500 dark:text-white mb-3 flex items-center gap-2">
                     General Settings
                   </h4>
                   <div>
@@ -475,9 +480,8 @@ export function PollConfigModal({ open, onOpenChange, onConfirm, initialConfig }
                 </div>
 
                 {/* Schedule Settings */}
-                <div className="p-6 border-b border-gray-100 dark:border-gray-800">
-                  <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                    <Calendar className="h-4 w-4" />
+                <div className="p-4 pt-0">
+                  <h4 className="text-xs text-gray-500 dark:text-white mb-3 flex items-center gap-2">
                     Schedule
                   </h4>
                   <div>
@@ -514,9 +518,8 @@ export function PollConfigModal({ open, onOpenChange, onConfirm, initialConfig }
                 </div>
 
                 {/* Privacy & Results */}
-                <div className="p-6">
-                  <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                    <Eye className="h-4 w-4" />
+                <div className="p-4 pt-0">
+                  <h4 className="text-xs text-gray-500 dark:text-white mb-3 flex items-center gap-2">
                     Privacy & Results
                   </h4>
                   <div>

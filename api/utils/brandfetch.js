@@ -14,7 +14,20 @@ export async function fetchBrandData(domain, apiKey) {
     try {
         if (!domain) {
             console.log('No domain provided, skipping Brandfetch API call');
-            return { logoUrl: null, brandColor: null, companyInfo: null };
+            return {
+                name: undefined,
+                description: undefined,
+                longDescription: undefined,
+                logoUrl: null,
+                brandColor: null,
+                logos: [],
+                colors: [],
+                companyInfo: null,
+                links: [],
+                fonts: [],
+                images: [],
+                qualityScore: undefined
+            };
         }
         console.log(`Fetching brand data for domain: ${domain}`);
         const response = await fetch(`https://api.brandfetch.io/v2/brands/${domain}`, {
@@ -26,7 +39,20 @@ export async function fetchBrandData(domain, apiKey) {
         if (!response.ok) {
             const errorText = await response.text();
             console.error(`Brandfetch API error (${response.status}): ${errorText}`);
-            return { logoUrl: null, brandColor: null, companyInfo: null };
+            return {
+                name: undefined,
+                description: undefined,
+                longDescription: undefined,
+                logoUrl: null,
+                brandColor: null,
+                logos: [],
+                colors: [],
+                companyInfo: null,
+                links: [],
+                fonts: [],
+                images: [],
+                qualityScore: undefined
+            };
         }
         const data = await response.json();
         console.log(`Successfully fetched brand data for ${domain}`);
@@ -36,15 +62,65 @@ export async function fetchBrandData(domain, apiKey) {
         const brandColor = extractPrimaryColor(data.colors);
         // Extract company information
         const companyInfo = extractCompanyInfo(data);
+        // Extract all logos
+        const logos = data.logos.map(logo => logo.formats.map(format => ({
+            type: logo.type,
+            theme: logo.theme,
+            url: format.src,
+            format: format.format,
+            width: format.width || undefined,
+            height: format.height || undefined,
+            background: format.background || undefined
+        }))).flat();
+        // Extract all colors
+        const colors = data.colors.map(color => ({
+            hex: color.hex,
+            type: color.type,
+            brightness: color.brightness
+        }));
+        // Extract links
+        const links = data.links || [];
+        // Extract fonts
+        const fonts = data.fonts || [];
+        // Extract images
+        const images = (data.images || []).map(image => image.formats.map(format => ({
+            type: image.type,
+            url: format.src,
+            format: format.format,
+            width: format.width || undefined,
+            height: format.height || undefined
+        }))).flat();
         return {
+            name: data.name,
+            description: data.description,
+            longDescription: data.longDescription,
             logoUrl,
             brandColor,
-            companyInfo
+            logos,
+            colors,
+            companyInfo,
+            links,
+            fonts,
+            images,
+            qualityScore: data.qualityScore
         };
     }
     catch (error) {
         console.error('Error fetching brand data:', error);
-        return { logoUrl: null, brandColor: null, companyInfo: null };
+        return {
+            name: undefined,
+            description: undefined,
+            longDescription: undefined,
+            logoUrl: null,
+            brandColor: null,
+            logos: [],
+            colors: [],
+            companyInfo: null,
+            links: [],
+            fonts: [],
+            images: [],
+            qualityScore: undefined
+        };
     }
 }
 /**
