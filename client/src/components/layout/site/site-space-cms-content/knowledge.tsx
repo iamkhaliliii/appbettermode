@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/primitives';
+import { Button } from '@/components/ui/primitives';
 import { BookOpen, Plus, Calendar, ArrowRight, Loader2, RefreshCw } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { getApiBaseUrl } from '@/lib/utils';

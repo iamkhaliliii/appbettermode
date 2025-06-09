@@ -18,7 +18,7 @@ import {
   Info
 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/primitives';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,9 +26,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+} from '@/components/ui/forms';
+import { Input } from '@/components/ui/primitives';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/primitives';
 import { Site } from '@/lib/api';
 
 // Theme toggle component

@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { BrowserMockup } from "@/components/layout/dashboard/browser-mockup";
-import { AddContentDialog } from "@/components/ui/add-content-dialog";
+import { AddContentDialog } from "@/components/features/content";
 import { SpaceContent } from "@/components/dashboard/site-config/SpaceContent";
 import { SiteContent } from "../../../../../components/dashboard/site-config/SiteContent";
 import { DashboardPageWrapper } from "@/components/dashboard/DashboardPageWrapper";

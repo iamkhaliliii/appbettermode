@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/primitives";
+import { Input } from "@/components/ui/primitives";
 import { 
   Bell, 
   Menu, 
@@ -37,9 +37,9 @@ import { sitesApi, Site } from "@/lib/api";
 import { APP_ROUTES, getSiteIdentifierFromRoute } from "@/config/routes";
 import { getApiBaseUrl } from "@/lib/utils";
 import { useSiteContent } from "@/lib/SiteContentContext";
-import { NewPostDialog } from "@/components/ui/new-post-dialog";
-import { NewPeopleDialog } from "@/components/ui/new-people-dialog";
-import { AddContentDialog } from "@/components/ui/add-content-dialog";
+import { NewPostDialog } from "@/components/features/content";
+import { NewPeopleDialog } from "@/components/features/people";
+import { AddContentDialog } from "@/components/features/content/add-content-dialog";
 
 // Define interface for Space
 interface Space {

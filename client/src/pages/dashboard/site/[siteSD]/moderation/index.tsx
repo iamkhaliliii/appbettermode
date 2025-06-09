@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { useRoute } from "wouter";
 import { DashboardLayout } from "@/components/layout/dashboard/dashboard-layout";
 import { withSiteContext, WithSiteContextProps } from "@/lib/with-site-context";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/primitives";
 import { DashboardSkeleton } from "@/components/dashboard/DashboardSkeleton";
 import {
   ColumnFiltersState,

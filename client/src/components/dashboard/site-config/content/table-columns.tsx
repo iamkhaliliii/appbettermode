@@ -9,8 +9,8 @@ import {
   File,
   Hash,
 } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/primitives";
+import { Button } from "@/components/ui/primitives";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +18,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/forms";
 import { Post } from './types';
 
 // Column definitions for the table

@@ -1,6 +1,6 @@
 import { DashboardLayout } from "@/components/layout/dashboard/dashboard-layout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/primitives";
+import { Button } from "@/components/ui/primitives";
 import { 
   Plus, 
   Search, 
@@ -20,11 +20,11 @@ import {
   Crown,
   Settings
 } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/primitives";
 import { useLocation, useRoute, useParams, Redirect } from "wouter";
 import { useEffect, useState, useMemo } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/primitives";
+import { Checkbox } from "@/components/ui/primitives";
 import {
   Table,
   TableBody,
@@ -32,7 +32,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/primitives";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -52,7 +52,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/forms";
 import { withSiteContext, WithSiteContextProps } from "@/lib/with-site-context";
 
 // Define Person data type

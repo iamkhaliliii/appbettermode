@@ -4,7 +4,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
+} from "@/components/ui/primitives";
 import {
   Files,
   Search,
@@ -29,8 +29,8 @@ import {
   Paintbrush
 } from "lucide-react";
 import { MinimalItem, TreeFolder } from "./SidebarTreeComponents";
-import { NavigationItem as NavItemUI } from "@/components/ui/navigation-item"; // Renaming to avoid conflict
-import { NavigationSection as NavSectionUI } from "@/components/ui/navigation-section"; // Renaming to avoid conflict
+import { NavigationItem as NavItemUI } from "@/components/features/navigation"; // Renaming to avoid conflict
+import { NavigationSection as NavSectionUI } from "@/components/features/navigation"; // Renaming to avoid conflict
 import { APP_ROUTES, getSiteAdminRoute } from "@/config/routes";
 import { DesignStudioSidebarProps } from "./types";
 

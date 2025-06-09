@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/primitives";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,22 +7,22 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/forms";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Calendar } from "@/components/ui/calendar";
+} from "@/components/ui/primitives";
+import { Input } from "@/components/ui/primitives";
+import { Checkbox } from "@/components/ui/primitives";
+import { Calendar } from "@/components/ui/primitives";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@/components/ui/primitives";
 import {
   Filter,
   X,

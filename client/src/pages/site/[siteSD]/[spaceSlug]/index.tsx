@@ -6,11 +6,11 @@ import { SiteSidebar } from '@/components/layout/site/site-sidebar';
 import { SpaceCmsContent } from '@/components/layout/site/site-space-cms-content';
 import { Loader2 } from 'lucide-react';
 import { Header } from '@/components/layout/dashboard/header';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@/components/ui/primitives';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getApiBaseUrl } from '@/lib/utils';
 import { useSiteData } from '../../../../lib/SiteDataContext';
-import { Avatar } from '@/components/ui/avatar';
+import { Avatar } from '@/components/ui/primitives';
 import { SiteContext } from '../index';
 
 // Types
@@ -199,18 +199,18 @@ export function SpaceContent() {
             normalizedSlug = 'qa';
           }
           
-          const matchedType = site.content_types.find((type: string) => 
-            type.toLowerCase() === normalizedSlug || 
-            type.toLowerCase().replace(/[^a-z0-9]/g, '') === normalizedSlug.replace(/[^a-z0-9]/g, '')
+          const matchedType = site.content_types.find((type: any) => 
+            type.name?.toLowerCase() === normalizedSlug || 
+            type.name?.toLowerCase().replace(/[^a-z0-9]/g, '') === normalizedSlug.replace(/[^a-z0-9]/g, '')
           );
           
           if (matchedType) {
             const simulatedSpace = {
-              id: `simulated-${matchedType}`,
-              name: matchedType.charAt(0).toUpperCase() + matchedType.slice(1),
+              id: `simulated-${matchedType.name}`,
+              name: matchedType.name.charAt(0).toUpperCase() + matchedType.name.slice(1),
               slug: spaceSlug,
-              description: `${matchedType} content`,
-              cms_type: matchedType,
+              description: `${matchedType.name} content`,
+              cms_type: matchedType.name,
               hidden: false,
               visibility: 'public' as 'public' | 'private' | 'paid',
               site_id: site.id

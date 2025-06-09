@@ -1,19 +1,19 @@
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/primitives";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/forms";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/primitives";
 import {
   ArrowUpDown,
   ArrowUp,

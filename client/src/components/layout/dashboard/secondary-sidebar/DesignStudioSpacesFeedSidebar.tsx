@@ -12,8 +12,8 @@ import {
   FileBox,
   FileCog,
 } from "lucide-react";
-import { NavigationItem as NavItemUI } from "@/components/ui/navigation-item"; // Renaming to avoid conflict
-import { NavigationSection as NavSectionUI } from "@/components/ui/navigation-section"; // Renaming to avoid conflict
+import { NavigationItem as NavItemUI } from "@/components/features/navigation"; // Renaming to avoid conflict
+import { NavigationSection as NavSectionUI } from "@/components/features/navigation"; // Renaming to avoid conflict
 import {
   AppWindow,
   Logs,

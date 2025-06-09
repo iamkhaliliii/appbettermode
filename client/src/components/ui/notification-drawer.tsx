@@ -6,8 +6,8 @@ import {
   DrawerTitle,
   DrawerFooter,
   DrawerDescription,
-} from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/primitives";
+import { Button } from "@/components/ui/primitives";
 import { NotificationData } from "@/lib/dashboard-data";
 import { getNotifications } from "@/lib/dashboard-data";
 import {
@@ -36,10 +36,10 @@ import {
   X,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/primitives";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/primitives";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/primitives";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,7 +47,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/forms";
 
 interface NotificationDrawerProps {
   open: boolean;

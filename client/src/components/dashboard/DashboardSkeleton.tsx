@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/primitives";
 import { DashboardLayout } from "@/components/layout/dashboard/dashboard-layout";
 
 interface DashboardSkeletonProps {

@@ -2,10 +2,7 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, useLocation, Switch, Route } from 'wouter';
 import { SiteLayout } from '@/components/layout/site/site-layout';
 import { SiteSidebar } from '@/components/layout/site/site-sidebar';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button, Card, CardContent, CardHeader, CardTitle, Badge, Avatar, AvatarFallback, AvatarImage } from '@/components/ui/primitives';
 import { 
   MessageSquare, 
   HelpCircle, 
@@ -19,7 +16,7 @@ import { sitesApi, Site } from '@/lib/api';
 import { Link } from 'wouter';
 import { useSiteData } from '@/lib/SiteDataContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@/components/ui/primitives';
 import SpacePage from './/[spaceSlug]';
 
 interface SiteContextType {

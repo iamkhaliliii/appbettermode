@@ -6,7 +6,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
+} from "@/components/ui/primitives";
 import {
   Search,
   Plus,
@@ -34,13 +34,13 @@ import {
   Briefcase
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { NavigationItem as NavItemUI } from "@/components/ui/navigation-item";
-import { NavigationSection as NavSectionUI } from "@/components/ui/navigation-section";
+import { NavigationItem as NavItemUI } from "@/components/features/navigation";
+import { NavigationSection as NavSectionUI } from "@/components/features/navigation";
 import { SideNavItem } from "./SidebarNavigationItems";
 import { MinimalItem, TreeFolder } from "./SidebarTreeComponents";
 import { sitesApi } from "@/lib/api";
 import { getApiBaseUrl } from "@/lib/utils";
-import { EditSpaceDialog } from "@/components/ui/edit-space-dialog";
+import { EditSpaceDialog } from "@/components/features/spaces";
 import { useSiteData } from "../../../../lib/SiteDataContext";
 
 // Define interface for spaces

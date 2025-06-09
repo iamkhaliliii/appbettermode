@@ -3,7 +3,7 @@ import { useLocation } from 'wouter';
 import { Header } from '@/components/layout/dashboard/header';
 import { SiteHeader } from '@/components/layout/site/site-header';
 import { SiteContext } from '@/pages/site/[siteSD]';
-import { SearchModal } from '@/components/ui/search-modal';
+import { SearchModal } from '@/components/features/search';
 
 interface SiteLayoutProps {
   children: React.ReactNode;

@@ -1,7 +1,7 @@
 import { useRoute, useLocation } from "wouter";
 import { useState, useEffect, useMemo } from "react";
 import { BrowserMockup } from "@/components/layout/dashboard/browser-mockup";
-import { AddContentDialog } from "@/components/ui/add-content-dialog";
+import { AddContentDialog } from "@/components/features/content";
 import { SpaceSettingsSidebar } from "@/components/layout/dashboard/secondary-sidebar/SpaceSettingsSidebar";
 import { SpaceContent } from "@/components/dashboard/site-config/SpaceContent";
 import { SettingsSidebar } from "@/components/dashboard/site-config/SettingsSidebar";

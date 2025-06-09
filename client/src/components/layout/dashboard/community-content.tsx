@@ -1,6 +1,6 @@
 import React from 'react';
-import { Avatar } from "@/components/ui/avatar";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar } from "@/components/ui/primitives";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/primitives";
 import {
   Home,
   Search,

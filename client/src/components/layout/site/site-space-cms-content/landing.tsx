@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/primitives';
+import { Button } from '@/components/ui/primitives';
 import { Layout, Plus } from 'lucide-react';
 import { useLocation } from 'wouter';
 

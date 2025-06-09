@@ -5,10 +5,10 @@ import { SiteHeader } from '@/components/layout/site/site-header';
 import { SiteSidebar } from '@/components/layout/site/site-sidebar';
 import { Header } from '@/components/layout/dashboard/header';
 import { getApiBaseUrl } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/primitives';
+import { Input } from '@/components/ui/primitives';
+import { Textarea } from '@/components/ui/primitives';
+import { Label } from '@/components/ui/primitives';
 import {
   Card,
   CardContent,
@@ -16,14 +16,14 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/components/ui/primitives';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/components/ui/primitives';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 

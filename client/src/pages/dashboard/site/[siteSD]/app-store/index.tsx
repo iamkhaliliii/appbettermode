@@ -2,7 +2,7 @@ import { DashboardLayout } from "@/components/layout/dashboard/dashboard-layout"
 import { useLocation, useRoute } from "wouter";
 import { useEffect, useState } from "react";
 import { APP_ROUTES } from "@/config/routes";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/primitives";
 import { AlertTriangle, Loader2 } from "lucide-react";
 import { sitesApi, Site } from "@/lib/api";
 

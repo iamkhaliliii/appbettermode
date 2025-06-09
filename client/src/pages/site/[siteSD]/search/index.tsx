@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'wouter';
 import { SiteLayout } from '@/components/layout/site/site-layout';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Input, Button } from '@/components/ui/primitives';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+} from '@/components/ui/primitives';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/primitives';
 import { MessageSquare, HelpCircle, Star, Search as SearchIcon, Calendar } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/primitives';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/primitives';
 import { sitesApi } from '@/lib/api';
 import { 
   BookOpenIcon, 

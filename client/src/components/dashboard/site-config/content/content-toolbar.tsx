@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/primitives";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,7 +7,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/forms";
 import {
   Columns,
   Search,
@@ -24,7 +24,7 @@ import { Post } from './types';
 import { ContentFilter, FilterRule } from './content-filter';
 import { ContentSort } from './content-sort';
 import { ContentViewManager, CustomView } from './content-view-manager.tsx';
-import { NewPostDialog } from '@/components/ui/new-post-dialog';
+import { NewPostDialog } from '@/components/features/content';
 
 interface ContentToolbarProps {
   table: Table<Post>;

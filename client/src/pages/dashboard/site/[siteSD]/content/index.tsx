@@ -1,5 +1,5 @@
 import { AdaptiveDashboardLayout } from "@/components/layout/dashboard/adaptive-dashboard-layout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/primitives";
 import { MessageSquare, FileText } from "lucide-react";
 import { useLocation, useRoute } from "wouter";
 import { useEffect, useState, useRef } from "react";

@@ -37,7 +37,7 @@ import { SideNavItem, SideNavItemWithBadge } from "./SidebarNavigationItems";
 import { APP_ROUTES } from "@/config/routes";
 import { BaseSidebarProps } from "./types";
 import { isValidUUID } from "@/lib/with-site-context";
-import { AddContentDialog } from "@/components/ui/add-content-dialog";
+import { AddContentDialog } from "@/components/features/content/add-content-dialog";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { getApiUrl } from '@/lib/utils';
 

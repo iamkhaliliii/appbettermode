@@ -10,8 +10,8 @@ import {
   X,
   FolderPlus
 } from "lucide-react";
-import { IconUploadDialog } from "@/components/ui/icon-upload-dialog";
-import { IconDisplay } from "@/components/ui/icon-display";
+import { IconUploadDialog } from "@/components/shared/icons";
+import { IconDisplay } from "@/components/shared/icons";
 
 interface PropertyRowProps {
   label: string;

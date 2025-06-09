@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/primitives';
+import { Button } from '@/components/ui/primitives';
 import { FileText, Plus, Calendar, ArrowRight, Clock, ChevronDown, Filter, Tag, LayoutGrid, Database } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { getApiBaseUrl } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/primitives';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/primitives';
+import { Skeleton } from '@/components/ui/primitives';
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
   DropdownMenuLabel 
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui/forms';
 import { 
   BlogPostForDisplay, 
   BlogLayoutType, 

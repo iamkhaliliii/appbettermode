@@ -1,8 +1,8 @@
 import React from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/primitives';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/primitives';
+import { Button } from '@/components/ui/primitives';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/primitives';
 import { ArrowRight, Calendar, Clock, FileText } from 'lucide-react';
 
 // Define the common BlogPost type used across layouts

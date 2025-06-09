@@ -1,10 +1,10 @@
 import { DashboardLayout } from "@/components/layout/dashboard/dashboard-layout";
 import { useRoute } from "wouter";
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/primitives";
+import { Input } from "@/components/ui/primitives";
+import { Label } from "@/components/ui/primitives";
+import { Button } from "@/components/ui/primitives";
 import { AlertTriangle, Loader2 } from "lucide-react";
 import { sitesApi, Site } from "@/lib/api";
 

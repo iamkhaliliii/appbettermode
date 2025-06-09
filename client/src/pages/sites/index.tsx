@@ -3,9 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button, Input, Label } from '@/components/ui/primitives';
 import { useToast } from "@/hooks/use-toast";
 import { sitesApi, Site } from '@/lib/api'; // Import the new API client
 import {
@@ -38,7 +36,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "@/components/ui/primitives";
 import {
   Card,
   CardContent,
@@ -46,16 +44,16 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/primitives";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/forms";
 import { SiteCreationFormInputs, BrandLogo, BrandColor, CompanyInfo } from './types';
 import CreateSiteDialog from '@/components/dashboard/CreateSiteDialog';
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/primitives";
 
 // --- Validation Schema (for create site form) ---
 const siteCreationSchema = z.object({

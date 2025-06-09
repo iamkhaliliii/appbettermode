@@ -3,7 +3,7 @@ import { MessageSquare, HelpCircle, Star, Calendar, BookOpen, Layout, Briefcase,
 import { motion, AnimatePresence } from "framer-motion";
 import { SiteHeader } from "@/components/layout/site/site-header";
 import { SiteSidebar } from "@/components/layout/site/site-sidebar";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/primitives";
 import { useSiteData } from "@/lib/SiteDataContext";
 
 // Skeleton component for content feed items

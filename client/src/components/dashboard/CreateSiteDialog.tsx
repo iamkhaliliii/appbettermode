@@ -10,12 +10,12 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from '@/components/ui/primitives';
+import { Button } from '@/components/ui/primitives';
+import { Input } from '@/components/ui/primitives';
+import { Label } from '@/components/ui/primitives';
 import { useToast } from '@/hooks/use-toast';
-import { MultiStepLoader } from '@/components/ui/multi-step-loader';
+import { MultiStepLoader } from '@/components/shared/loaders';
 import {
   Globe,
   X,
@@ -42,7 +42,7 @@ import { z } from 'zod';
 import { BrandLogo, BrandColor, CompanyInfo } from '@/pages/sites/types';
 import { cn } from '@/lib/utils';
 import { SitePreview } from './SitePreview';
-import { getPreviewComponent } from '@/components/ui/add-content-dialog/content-types';
+import { getPreviewComponent } from '@/components/features/content/add-content-dialog/content-types';
 import { getApiUrl } from '@/lib/utils';
 
 // CMS Type from database
