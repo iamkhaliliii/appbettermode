@@ -1,0 +1,65 @@
+.poll-block {
+  /* Basic poll styling */
+}
+
+.poll-option {
+  /* Poll option styling */
+}
+
+.poll-progress {
+  /* Progress bar styling */
+  transition: width 0.3s ease-in-out;
+}
+
+.poll-icon {
+  /* Poll icon styling */
+}
+
+/* Drawer Animation */
+@keyframes slide-in-from-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out-to-right {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.animate-in {
+  animation: slide-in-from-right 0.3s ease-out forwards;
+}
+
+.animate-out {
+  animation: slide-out-to-right 0.3s ease-out forwards;
+}
+
+.slide-in-from-right {
+  animation: slide-in-from-right 0.3s ease-out;
+}
+
+/* Backdrop animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.backdrop-blur-sm {
+  animation: fade-in 0.2s ease-out;
+} 
