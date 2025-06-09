@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Button } from '@/components/ui/primitives';
 import { BookOpen, Plus, Calendar, ArrowRight, Loader2, RefreshCw } from 'lucide-react';
 import { useLocation } from 'wouter';
-import { getApiBaseUrl } from '@/lib/utils';
+import { fetchContentData, isSimulatedSpace, getSpaceInfo } from './utils';
 
 interface Space {
   id: string;
@@ -110,46 +110,38 @@ const MOCK_ARTICLES = [
 export function KnowledgeContent({ siteSD, space, site }: KnowledgeContentProps) {
   const [, setLocation] = useLocation();
   const [articles, setArticles] = useState<Article[]>([]);
-  const [isLoading, setIsLoading] = useState(true); // Start with loading state
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [useMockData, setUseMockData] = useState(false); // Start with assumption we'll get real data
+  const [useMockData, setUseMockData] = useState(false);
 
-  // Load data function
+  // Get space info for debugging
+  const spaceInfo = getSpaceInfo(space);
+
+  // Load data function using the utility
   const fetchArticleData = async () => {
     try {
       setIsLoading(true);
       setError(null);
       
-      // Get the API base URL
-      const API_BASE = getApiBaseUrl();
+      console.log(`🔍 KnowledgeContent: Fetching data for space:`, spaceInfo);
       
-      // If we don't have site ID or space ID, we can't fetch
-      if (!site?.id || !space?.id) {
-        throw new Error('Missing site or space information');
-      }
+      const data = await fetchContentData({
+        siteId: site.id,
+        spaceId: space?.id,
+        cmsType: 'knowledge'
+      });
       
-      console.log(`Fetching knowledge base articles for site ${site.id} and space ${space.id}`);
-      
-      // Use the site ID and space ID to fetch articles
-      const response = await fetch(`${API_BASE}/api/v1/posts/site/${site.id}?cmsType=knowledge&spaceId=${space.id}&status=published`);
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch articles: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      console.log('Fetched knowledge base articles:', data);
-      
-      if (Array.isArray(data) && data.length > 0) {
+      if (data.length > 0) {
         setArticles(data);
         setUseMockData(false);
+        console.log(`✅ Successfully loaded ${data.length} knowledge articles`);
       } else {
-        console.log('No articles found, using empty array');
+        console.log('📭 No knowledge articles found, showing empty state');
         setArticles([]);
         setUseMockData(false);
       }
     } catch (err) {
-      console.error('Error fetching knowledge base articles:', err);
+      console.error('💥 Error fetching knowledge articles:', err);
       setError('Failed to load articles. Using demo data as a fallback.');
       
       // Fall back to mock data on error

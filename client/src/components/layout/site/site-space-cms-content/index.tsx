@@ -10,6 +10,7 @@ import { EventContent } from './event.tsx';
 import { KnowledgeContent } from './knowledge.tsx';
 import { LandingContent } from './landing.tsx';
 import { JobsContent } from './jobs.tsx';
+import { ChangelogContent } from './changelog.tsx';
 
 // Types
 interface Space {
@@ -44,19 +45,52 @@ export function SpaceCmsContent({ siteSD, space, site, isWidgetMode = false }: S
       );
     }
 
-    // Normalize CMS type to handle potential casing or format issues
-    let cmsType = space.cms_type.toLowerCase();
+    // Start with the space's cms_type
+    let cmsType = space.cms_type;
     
-    // Special handling for "q&a" format
-    if (cmsType === 'q&a') {
+    console.log("🔍 SpaceCmsContent: Original cms_type from space:", cmsType);
+    console.log("🔍 SpaceCmsContent: Site content_types:", site?.content_types);
+    
+    // If cms_type looks like a UUID, try to find the actual type name
+    if (cmsType.includes('-') && cmsType.length > 20) {
+      console.log("🔍 SpaceCmsContent: cms_type appears to be a UUID, looking up name...");
+      
+      // Look for the content type in site data
+      if (site?.content_types && Array.isArray(site.content_types)) {
+        const matchedContentType = site.content_types.find((ct: any) => 
+          ct.id === cmsType || ct.uuid === cmsType
+        );
+        
+        if (matchedContentType) {
+          cmsType = matchedContentType.name;
+          console.log("✅ SpaceCmsContent: Found content type name:", cmsType);
+        } else {
+          console.log("❌ SpaceCmsContent: Could not find content type for UUID:", cmsType);
+        }
+      }
+    }
+    
+    // Normalize CMS type to handle potential casing or format issues
+    cmsType = cmsType.toLowerCase();
+    
+    // Special handling for various name formats
+    if (cmsType === 'q&a' || cmsType === 'qa') {
       cmsType = 'qa';
+    }
+    if (cmsType === 'job-board' || cmsType === 'jobboard') {
+      cmsType = 'jobs';
+    }
+    if (cmsType === 'ideas-wishlist' || cmsType === 'wishlist') {
+      cmsType = 'wishlist';
+    }
+    if (cmsType === 'knowledge-base' || cmsType === 'knowledge') {
+      cmsType = 'knowledge';
     }
     
     // Remove any special characters and normalize
     cmsType = cmsType.replace(/[^a-z0-9]/g, '');
     
-    console.log("Original cms_type:", space.cms_type);
-    console.log("Normalized cms_type for rendering:", cmsType);
+    console.log("🎯 SpaceCmsContent: Final normalized cms_type for rendering:", cmsType);
     
     // Render component based on CMS type
     switch (cmsType) {
@@ -76,6 +110,8 @@ export function SpaceCmsContent({ siteSD, space, site, isWidgetMode = false }: S
         return <LandingContent siteSD={siteSD} space={space} site={site} />;
       case 'jobs':
         return <JobsContent siteSD={siteSD} space={space} site={site} />;
+      case 'changelog':
+        return <ChangelogContent siteSD={siteSD} space={space} site={site} />;
       default:
         // Fallback for unsupported CMS types
         return (
@@ -86,6 +122,10 @@ export function SpaceCmsContent({ siteSD, space, site, isWidgetMode = false }: S
             <p className="text-gray-600 dark:text-gray-400">
               Content type "{space.cms_type}" is not supported yet.
             </p>
+            <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+              <p>Original cms_type: {space.cms_type}</p>
+              <p>Normalized: {cmsType}</p>
+            </div>
           </div>
         );
     }

@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Button } from '@/components/ui/primitives';
 import { Briefcase, Plus, Calendar, ArrowRight, Loader2, RefreshCw, MapPin } from 'lucide-react';
 import { useLocation } from 'wouter';
-import { getApiBaseUrl } from '@/lib/utils';
+import { fetchContentData, isSimulatedSpace, getSpaceInfo } from './utils';
 
 interface Space {
   id: string;
@@ -104,42 +104,34 @@ export function JobsContent({ siteSD, space, site }: JobsContentProps) {
   const [error, setError] = useState<string | null>(null);
   const [useMockData, setUseMockData] = useState(false);
 
-  // Fetch job posts
+  // Get space info for debugging
+  const spaceInfo = getSpaceInfo(space);
+  
+  // Fetch job posts using the utility function
   const fetchJobsData = async () => {
     try {
       setIsLoading(true);
       setError(null);
       
-      // Get the API base URL
-      const API_BASE = getApiBaseUrl();
+      console.log(`🔍 JobsContent: Fetching data for space:`, spaceInfo);
       
-      // If we don't have site ID or space ID, we can't fetch
-      if (!site?.id || !space?.id) {
-        throw new Error('Missing site or space information');
-      }
+      const data = await fetchContentData({
+        siteId: site.id,
+        spaceId: space?.id,
+        cmsType: 'jobs'
+      });
       
-      console.log(`Fetching job posts for site ${site.id} and space ${space.id}`);
-      
-      // Use the site ID and space ID to fetch job posts
-      const response = await fetch(`${API_BASE}/api/v1/posts/site/${site.id}?cmsType=jobs&spaceId=${space.id}&status=published`);
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch job posts: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      console.log('Fetched job posts:', data);
-      
-      if (Array.isArray(data) && data.length > 0) {
+      if (data.length > 0) {
         setJobs(data);
         setUseMockData(false);
+        console.log(`✅ Successfully loaded ${data.length} job posts`);
       } else {
-        console.log('No job posts found, using empty array');
+        console.log('📭 No job posts found, showing empty state');
         setJobs([]);
         setUseMockData(false);
       }
     } catch (err) {
-      console.error('Error fetching job posts:', err);
+      console.error('💥 Error fetching job posts:', err);
       setError('Failed to load job posts. Using demo data as a fallback.');
       
       // Fall back to mock data on error

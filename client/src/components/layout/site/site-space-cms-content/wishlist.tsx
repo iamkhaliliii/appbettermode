@@ -5,6 +5,7 @@ import { Star, Plus, Calendar, ArrowRight, Loader2, RefreshCw, ThumbsUp, Message
 import { useLocation } from 'wouter';
 import { getApiBaseUrl } from '@/lib/utils';
 import { Badge } from '@/components/ui/primitives';
+import { fetchContentData, isSimulatedSpace, getSpaceInfo } from './utils';
 
 interface Space {
   id: string;
@@ -31,12 +32,13 @@ interface WishlistItem {
   site_id: string;
   wishlist_metadata?: {
     votes: number;
-    status: 'planned' | 'in-progress' | 'completed' | 'under-review' | 'open';
-    priority?: 'low' | 'medium' | 'high';
+    status: 'submitted' | 'in-progress' | 'completed' | 'planned' | 'rejected';
+    priority: 'low' | 'medium' | 'high';
     category?: string;
   };
   comments_count?: number;
   likes_count?: number;
+  tags?: string[];
 }
 
 interface WishlistContentProps {
@@ -114,42 +116,34 @@ export function WishlistContent({ siteSD, space, site }: WishlistContentProps) {
   const [error, setError] = useState<string | null>(null);
   const [useMockData, setUseMockData] = useState(false);
 
-  // Fetch wishlist/ideas data
+  // Get space info for debugging
+  const spaceInfo = getSpaceInfo(space);
+
+  // Fetch wishlist/ideas data using the utility function
   const fetchIdeasData = async () => {
     try {
       setIsLoading(true);
       setError(null);
       
-      // Get the API base URL
-      const API_BASE = getApiBaseUrl();
+      console.log(`🔍 WishlistContent: Fetching data for space:`, spaceInfo);
       
-      // If we don't have site ID or space ID, we can't fetch
-      if (!site?.id || !space?.id) {
-        throw new Error('Missing site or space information');
-      }
+      const data = await fetchContentData({
+        siteId: site.id,
+        spaceId: space?.id,
+        cmsType: 'wishlist'
+      });
       
-      console.log(`Fetching ideas/wishlist items for site ${site.id} and space ${space.id}`);
-      
-      // Use the site ID and space ID to fetch ideas/wishlist items
-      const response = await fetch(`${API_BASE}/api/v1/posts/site/${site.id}?cmsType=wishlist&spaceId=${space.id}&status=published`);
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch ideas/wishlist items: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      console.log('Fetched ideas/wishlist items:', data);
-      
-      if (Array.isArray(data) && data.length > 0) {
+      if (data.length > 0) {
         setIdeas(data);
         setUseMockData(false);
+        console.log(`✅ Successfully loaded ${data.length} wishlist items`);
       } else {
-        console.log('No ideas/wishlist items found, using empty array');
+        console.log('📭 No wishlist items found, showing empty state');
         setIdeas([]);
         setUseMockData(false);
       }
     } catch (err) {
-      console.error('Error fetching ideas/wishlist items:', err);
+      console.error('💥 Error fetching wishlist items:', err);
       setError('Failed to load ideas. Using demo data as a fallback.');
       
       // Fall back to mock data on error
