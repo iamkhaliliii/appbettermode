@@ -41,6 +41,7 @@ interface ContentToolbarProps {
   onClearFilters: () => void;
   onDiscardChanges: () => void;
   activeTab: string;
+  onStatusChange?: (post: Post, newStatus: string) => void;
 }
 
 export const ContentToolbar: React.FC<ContentToolbarProps> = ({
@@ -57,7 +58,8 @@ export const ContentToolbar: React.FC<ContentToolbarProps> = ({
   onUpdateView,
   onClearFilters,
   onDiscardChanges,
-  activeTab
+  activeTab,
+  onStatusChange
 }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -364,7 +366,8 @@ export const ContentToolbar: React.FC<ContentToolbarProps> = ({
       {/* New Post Dialog */}
       <NewPostDialog 
         open={isNewPostDialogOpen} 
-        onOpenChange={setIsNewPostDialogOpen} 
+        onOpenChange={setIsNewPostDialogOpen}
+        onStatusChange={onStatusChange}
       />
     </div>
   );

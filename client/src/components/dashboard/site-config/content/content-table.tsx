@@ -19,7 +19,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Post } from './types';
-import { columns } from './table-columns';
+import { createColumns } from './table-columns';
 
 interface ContentTableProps {
   data: Post[];
@@ -38,6 +38,7 @@ interface ContentTableProps {
   setActiveTab: (tab: string) => void;
   setShowPublishedOnly: (show: boolean) => void;
   setShowStatusFilter: (show: boolean) => void;
+  onEdit?: (post: Post) => void;
 }
 
 export const ContentTable: React.FC<ContentTableProps> = ({
@@ -56,8 +57,12 @@ export const ContentTable: React.FC<ContentTableProps> = ({
   activeTab,
   setActiveTab,
   setShowPublishedOnly,
-  setShowStatusFilter
+  setShowStatusFilter,
+  onEdit
 }) => {
+  // Create columns with edit callback
+  const columns = React.useMemo(() => createColumns({ onEdit }), [onEdit]);
+
   // Create table instance
   const table = useReactTable({
     data,

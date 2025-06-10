@@ -21,8 +21,19 @@ import {
 } from "@/components/ui/forms";
 import { Post } from './types';
 
+// Define column options interface
+interface ColumnOptions {
+  onEdit?: (post: Post) => void;
+  onUnpublish?: (post: Post) => void;
+  onReschedule?: (post: Post) => void;
+  onPublish?: (post: Post) => void;
+  onArchive?: (post: Post) => void;
+  onDuplicate?: (post: Post) => void;
+  onDelete?: (post: Post) => void;
+}
+
 // Column definitions for the table
-export const columns: ColumnDef<Post>[] = [
+export const createColumns = (options: ColumnOptions = {}): ColumnDef<Post>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -459,6 +470,7 @@ export const columns: ColumnDef<Post>[] = [
     header: () => <span className="sr-only">Actions</span>,
     enableHiding: false,
     cell: ({ row }) => {
+      const post = row.original;
       return (
         <div className="text-right">
           <DropdownMenu>
@@ -470,11 +482,39 @@ export const columns: ColumnDef<Post>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem>Edit</DropdownMenuItem>
-              <DropdownMenuItem>Duplicate</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => options.onEdit?.(post)}>
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => options.onDuplicate?.(post)}>
+                Duplicate
+              </DropdownMenuItem>
+              
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Archive</DropdownMenuItem>
-              <DropdownMenuItem className="text-red-600">
+              
+              {/* Post Management Actions based on status */}
+              {post.status === 'Published' && (
+                <DropdownMenuItem onClick={() => options.onUnpublish?.(post)}>
+                  Unpublish
+                </DropdownMenuItem>
+              )}
+              
+              {post.status === 'Draft' && (
+                <DropdownMenuItem onClick={() => options.onPublish?.(post)}>
+                  Publish Now
+                </DropdownMenuItem>
+              )}
+              
+              {(post.status === 'Published' || post.status === 'Schedule') && (
+                <DropdownMenuItem onClick={() => options.onReschedule?.(post)}>
+                  Reschedule
+                </DropdownMenuItem>
+              )}
+              
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => options.onArchive?.(post)}>
+                Archive
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-red-600" onClick={() => options.onDelete?.(post)}>
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -486,4 +526,7 @@ export const columns: ColumnDef<Post>[] = [
       sticky: "right"
     }
   },
-]; 
+];
+
+// Export default columns for backward compatibility
+export const columns = createColumns(); 

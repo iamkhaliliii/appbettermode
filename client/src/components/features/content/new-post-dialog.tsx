@@ -21,7 +21,13 @@ import {
   Clock,
   Save,
   ArrowUpRight,
-  ChevronUp
+  ChevronUp,
+  Lock,
+  EyeOff,
+  Calendar,
+  Undo2,
+  Timer,
+  SquarePen
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -49,6 +55,12 @@ import { BarChart3 } from "lucide-react";
 // Import custom poll block and modal
 import { Poll } from "@/components/features/polls/poll-block";
 import { PollConfigModal, PollConfig } from "@/components/features/polls/poll-config-modal";
+
+// Import Post type for editing
+import { Post } from "@/components/dashboard/site-config/content/types";
+
+// Import Schedule Post Popover
+import { SchedulePopover } from "./schedule-popover";
 
 // Create custom schema with poll block
 const schema = BlockNoteSchema.create({
@@ -116,19 +128,49 @@ class PollEditEventManager {
 export interface NewPostDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  editingPost?: Post | null; // Add optional editing post prop
+  onStatusChange?: (post: Post, newStatus: string) => void; // Add status change handler
 }
 
-export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
+export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange }: NewPostDialogProps) {
   const [title, setTitle] = React.useState("");
   const [content, setContent] = React.useState<any[]>([]);
   const [isFullscreen, setIsFullscreen] = React.useState(false);
   const [pollModalOpen, setPollModalOpen] = React.useState(false);
   const [editingPollConfig, setEditingPollConfig] = React.useState<Partial<PollConfig> | null>(null);
   const [editingBlockId, setEditingBlockId] = React.useState<string | null>(null);
-
+  const [currentStatus, setCurrentStatus] = React.useState<string>("Draft");
+  
+  // Track schedule popover state to prevent dropdown from closing
+  const [isSchedulePopoverOpen, setIsSchedulePopoverOpen] = React.useState(false);
+  
+  // Add scheduled date state
+  const [scheduledDate, setScheduledDate] = React.useState<Date | null>(null);
+  
   // Generate unique dialog ID
   const dialogId = React.useRef(`dialog-${Math.random().toString(36).substr(2, 9)}`);
   const editManager = React.useRef(PollEditEventManager.getInstance());
+
+  // Initialize form data when editing post changes
+  React.useEffect(() => {
+    if (editingPost) {
+      setTitle(editingPost.title);
+      setCurrentStatus(editingPost.status);
+      // Set scheduled date if post is scheduled
+      if (editingPost.status === 'Schedule' && editingPost.publishedAt) {
+        setScheduledDate(new Date(editingPost.publishedAt));
+      } else {
+        setScheduledDate(null);
+      }
+      // For now, start with empty content - you can extend this to parse actual content
+      setContent([]);
+    } else {
+      setTitle("");
+      setCurrentStatus("Draft");
+      setScheduledDate(null);
+      setContent([]);
+    }
+  }, [editingPost]);
 
   // Create BlockNote editor instance with custom schema
   const editor = useCreateBlockNote({
@@ -308,21 +350,104 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
     console.log("Save draft:", { title, content });
   };
 
-  const handleSchedulePost = () => {
-    // TODO: Implement schedule post functionality
-    console.log("Schedule post:", { title, content });
+  const handleScheduleConfirm = (scheduledDateTime: Date) => {
+    setScheduledDate(scheduledDateTime);
+    if (editingPost) {
+      handleStatusChange("Schedule");
+      console.log("Post scheduled for:", scheduledDateTime.toLocaleString());
+    } else {
+      setCurrentStatus("Schedule");
+      console.log("New post scheduled for:", scheduledDateTime.toLocaleString());
+    }
+  };
+
+  const handleScheduleNewPostConfirm = (scheduledDateTime: Date) => {
+    setScheduledDate(scheduledDateTime);
+    setCurrentStatus("Schedule");
+    console.log("New post scheduled for:", scheduledDateTime.toLocaleString());
+  };
+
+  const handleRemoveSchedule = () => {
+    setScheduledDate(null);
+    setCurrentStatus("Draft");
+    if (editingPost) {
+      handleStatusChange("Draft");
+    }
+    console.log("Schedule removed");
+  };
+
+  const handleEditSchedule = (newScheduledDateTime: Date) => {
+    setScheduledDate(newScheduledDateTime);
+    console.log("Schedule updated to:", newScheduledDateTime.toLocaleString());
   };
 
   const handlePublish = () => {
-    // TODO: Implement publish functionality
-    console.log("Publish:", { title, content });
-    onOpenChange(false);
+    if (editingPost) {
+      // If editing, handle status change to Published
+      if (currentStatus === 'Draft') {
+        handleMoveToPublished();
+      } else {
+        // For other statuses, just republish/update
+        console.log("Republishing/Updating:", { title, content, status: currentStatus });
+        alert(`Updated "${title}" and refreshed publication status`);
+      }
+    } else {
+      // Creating new post
+      console.log("Publishing new post:", { title, content });
+      alert(`Published new post: "${title}"`);
+      onOpenChange(false);
+    }
+  };
+
+  const handleUpdate = () => {
+    // TODO: Implement update functionality (save changes without changing status)
+    console.log("Update:", { title, content, status: currentStatus });
+    alert(`Updated "${title}" - Changes saved. Status remains: ${currentStatus}`);
+    // onOpenChange(false); // Keep dialog open for now so user can make more changes
   };
 
   const handleCancel = () => {
     setTitle("");
     setContent([]);
     onOpenChange(false);
+  };
+
+  // Status change handlers
+  const handleStatusChange = (newStatus: string) => {
+    if (editingPost && onStatusChange) {
+      setCurrentStatus(newStatus);
+      onStatusChange(editingPost, newStatus);
+    }
+  };
+
+  const handleUnpublish = () => {
+    if (editingPost) {
+      handleStatusChange("Draft");
+      console.log("Unpublishing post:", editingPost.title);
+    }
+  };
+
+  const handleMoveToPublished = () => {
+    if (editingPost) {
+      handleStatusChange("Published");
+      console.log("Publishing post:", editingPost.title);
+    }
+  };
+
+  const handleHidePost = () => {
+    if (editingPost && onStatusChange) {
+      // TODO: Implement hide functionality (this might be a separate property, not status)
+      console.log("Hiding post:", editingPost.title);
+      alert(`Hide "${editingPost.title}" - This will be implemented with API call`);
+    }
+  };
+
+  const handleLockPost = () => {
+    if (editingPost && onStatusChange) {
+      // TODO: Implement lock functionality (this might be a separate property, not status)
+      console.log("Locking post:", editingPost.title);
+      alert(`Lock "${editingPost.title}" - This will be implemented with API call`);
+    }
   };
 
   const handleContentChange = () => {
@@ -359,14 +484,27 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
               </div>
                           <div>
               <DialogTitle className="text-lg font-medium text-gray-900 dark:text-white">
-                Create a new Discussion
+                {editingPost ? 'Edit Discussion' : 'Create a new Discussion'}
               </DialogTitle>
               <DialogDescription className="sr-only">
-                Create and share a new discussion post with your community
+                {editingPost ? 'Edit and update your discussion post' : 'Create and share a new discussion post with your community'}
               </DialogDescription>
             </div>
             </div>
-            <div className="flex items-center justify-center gap-1">
+            <div className="flex items-center justify-center gap-3">
+              {/* Status Display - Only show when editing */}
+              {editingPost && (
+                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                  currentStatus === 'Published' 
+                    ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700/50'
+                    : currentStatus === 'Schedule'
+                    ? 'bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700/50'
+                    : 'bg-slate-100 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600/50'
+                }`}>
+                  {currentStatus}
+                </span>
+              )}
+              
               {/* Control Buttons */}
               <div className="flex items-center gap-1">
                 <Button
@@ -460,67 +598,214 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
           </div>
 
           {/* Footer Actions - Fixed */}
-          <div className="flex-shrink-0 flex items-center justify-between p-6 pt-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-            <div className="flex items-center">
-              <Button
-                variant="link"
-                asChild
-                className="flex items-center gap-2 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600"
-              >
-                <a href="http://localhost:4000/dashboard/site/google/content?status=draft" target="_blank" rel="noopener noreferrer">
-                  <Save className="h-4 w-4" />
-                  View all drafts <span className="text-xs text-gray-400 dark:text-gray-400"><ArrowUpRight/></span>
-                </a>
-              </Button>
-              <Button
-                variant="link"
-                asChild
-                className="flex items-center gap-2 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600"
-              >
-                <a href="http://localhost:4000/dashboard/site/google/content?status=scheduled" target="_blank" rel="noopener noreferrer">
-                  <Clock className="h-4 w-4" /> View all scheduled <span className="text-xs text-gray-400 dark:text-gray-400"><ArrowUpRight/></span>
-                </a>
-              </Button>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                onClick={handleCancel}
-                className="text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600"
-              >
-                Cancel
-              </Button>
-              <div className="flex items-center">
-                <Button
-                  onClick={handlePublish}
-                  className="bg-green-600 hover:bg-green-700 text-white px-6 rounded-r-none"
-                >
-                  Publish
-                </Button>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      className="bg-green-600 hover:bg-green-700 text-white px-2 rounded-l-none border-l border-green-500"
-                    >
-                      <ChevronUp className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" side="top" className="w-48">
-                    <DropdownMenuItem onClick={handleSaveDraft} className="flex items-center gap-2">
+          <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+            {/* Scheduled State - Show links + scheduled post button + icon actions */}
+            {scheduledDate ? (
+              <div className="flex items-center justify-between p-6 pt-4">
+                <div className="flex items-center gap-0">
+                  {/* View all links - Always show */}
+                  <Button
+                    variant="link"
+                    asChild
+                    className="flex items-center gap-2 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600"
+                  >
+                    <a href="http://localhost:4000/dashboard/site/google/content?status=draft" target="_blank" rel="noopener noreferrer">
                       <Save className="h-4 w-4" />
-                      Save draft
-                      <span className="ml-auto text-xs text-gray-400">⌘D</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleSchedulePost} className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      Schedule post
-                      <span className="ml-auto text-xs text-gray-400">⌘S</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                      View all drafts <span className="text-xs text-gray-400 dark:text-gray-400"><ArrowUpRight/></span>
+                    </a>
+                  </Button>
+                  <Button
+                    variant="link"
+                    asChild
+                    className="flex items-center gap-2 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600"
+                  >
+                    <a href="http://localhost:4000/dashboard/site/google/content?status=scheduled" target="_blank" rel="noopener noreferrer">
+                      <Clock className="h-4 w-4" /> View all scheduled <span className="text-xs text-gray-400 dark:text-gray-400"><ArrowUpRight/></span>
+                    </a>
+                  </Button>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleCancel}
+                    className="h-8 px-3 text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    Cancel
+                  </Button>
+                  
+                  <div className="flex items-center">
+                    <Button
+                      className="bg-white border border-blue-600 text-blue-600 hover:bg-blue-50 px-6 rounded-r-none text-sm"
+                    >
+                      Scheduled Post ({(scheduledDate.getMonth() + 1).toString().padStart(2, '0')}/{scheduledDate.getDate().toString().padStart(2, '0')}/{scheduledDate.getFullYear()} {scheduledDate.getHours().toString().padStart(2, '0')}:{scheduledDate.getMinutes().toString().padStart(2, '0')})
+                    </Button>
+                    <SchedulePopover
+                      onConfirm={handleEditSchedule}
+                      title="Edit Schedule"
+                      initialDate={scheduledDate}
+                      side="top"
+                      align="end"
+                      onOpenChange={setIsSchedulePopoverOpen}
+                    >
+                      <Button
+                        className="bg-white border-t border-blue-600 text-blue-600 hover:bg-blue-50 px-2 rounded-none border-b border-blue-600"
+                        title="Edit schedule time"
+                      >
+                        <SquarePen className="h-4 w-4" />
+                      </Button>
+                    </SchedulePopover>
+                    <Button
+                      onClick={handleRemoveSchedule}
+                      className="bg-white border border-blue-600 text-blue-600 hover:bg-blue-50 px-2 rounded-l-none border-l border-blue-600"
+                      title="Remove schedule"
+                    >
+                      <Undo2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
               </div>
-            </div>
+            ) : (
+              /* Normal State */
+              <div className="flex items-center justify-between p-6 pt-4">
+                <div className="flex items-center gap-0">
+                  {/* View all links - Always show */}
+                  <Button
+                    variant="link"
+                    asChild
+                    className="flex items-center gap-2 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600"
+                  >
+                    <a href="http://localhost:4000/dashboard/site/google/content?status=draft" target="_blank" rel="noopener noreferrer">
+                      <Save className="h-4 w-4" />
+                      View all drafts <span className="text-xs text-gray-400 dark:text-gray-400"><ArrowUpRight/></span>
+                    </a>
+                  </Button>
+                  <Button
+                    variant="link"
+                    asChild
+                    className="flex items-center gap-2 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600"
+                  >
+                    <a href="http://localhost:4000/dashboard/site/google/content?status=scheduled" target="_blank" rel="noopener noreferrer">
+                      <Clock className="h-4 w-4" /> View all scheduled <span className="text-xs text-gray-400 dark:text-gray-400"><ArrowUpRight/></span>
+                    </a>
+                  </Button>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleCancel}
+                    className="h-8 px-3 text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    Cancel
+                  </Button>
+                  
+                  {/* Update button - Show for Draft and Scheduled, but not Published */}
+                  {editingPost && currentStatus !== 'Published' && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleUpdate}
+                      className="h-8 px-3 text-xs text-gray-600 border-gray-300 hover:bg-gray-50 hover:text-gray-700 hover:border-gray-400"
+                    >
+                      Update
+                    </Button>
+                  )}
+                  
+                  <div className="flex items-center">
+                    <Button
+                      onClick={currentStatus === 'Published' ? handleUpdate : handlePublish}
+                      className="bg-green-600 hover:bg-green-700 text-white px-6 rounded-r-none"
+                    >
+                      {editingPost ? (currentStatus === 'Draft' ? 'Publish' : currentStatus === 'Published' ? 'Update' : 'Publish') : 'Publish'}
+                    </Button>
+                    <DropdownMenu 
+                      open={isSchedulePopoverOpen ? true : undefined}
+                      onOpenChange={(open) => {
+                        // Prevent dropdown from closing when schedule popover is open
+                        if (isSchedulePopoverOpen && !open) {
+                          return;
+                        }
+                      }}
+                    >
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          className="bg-green-600 hover:bg-green-700 text-white px-2 rounded-l-none border-l border-green-500"
+                        >
+                          <ChevronUp className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" side="top" className="w-48">
+                        {editingPost ? (
+                          // Editing mode - Post management actions
+                          <>
+                            {currentStatus === 'Published' && (
+                              <DropdownMenuItem onClick={handleUnpublish} className="flex items-center gap-2">
+                                <ArrowUpRight className="h-4 w-4 rotate-180" />
+                                Unpublish
+                              </DropdownMenuItem>
+                            )}
+                            {currentStatus !== 'Draft' && (
+                              <DropdownMenuItem onClick={handleHidePost} className="flex items-center gap-2">
+                                <EyeOff className="h-4 w-4" />
+                                Hide post
+                              </DropdownMenuItem>
+                            )}
+                            {currentStatus !== 'Draft' && (
+                              <DropdownMenuItem onClick={handleLockPost} className="flex items-center gap-2">
+                                <Lock className="h-4 w-4" />
+                                Lock post
+                              </DropdownMenuItem>
+                            )}
+                            {currentStatus !== 'Published' && (
+                              <SchedulePopover
+                                onConfirm={handleScheduleConfirm}
+                                title={currentStatus === 'Draft' ? 'Schedule & Publish' : 'Reschedule'}
+                                initialDate={currentStatus === 'Schedule' && editingPost?.publishedAt ? new Date(editingPost.publishedAt) : undefined}
+                                side="top"
+                                align="end"
+                                onOpenChange={setIsSchedulePopoverOpen}
+                                keepDropdownOpen={true}
+                              >
+                                <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="flex items-center gap-2">
+                                  <Calendar className="h-4 w-4" />
+                                  {currentStatus === 'Draft' ? 'Schedule & Publish' : 'Reschedule'}
+                                </DropdownMenuItem>
+                              </SchedulePopover>
+                            )}
+                          </>
+                        ) : (
+                          // Creating mode - Original actions
+                          <>
+                            <DropdownMenuItem onClick={handleSaveDraft} className="flex items-center gap-2">
+                              <Save className="h-4 w-4" />
+                              Save draft
+                              <span className="ml-auto text-xs text-gray-400">⌘D</span>
+                            </DropdownMenuItem>
+                            <SchedulePopover
+                              onConfirm={handleScheduleNewPostConfirm}
+                              title="Schedule Post"
+                              side="top"
+                              align="end"
+                              onOpenChange={setIsSchedulePopoverOpen}
+                              keepDropdownOpen={true}
+                            >
+                              <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="flex items-center gap-2">
+                                <Clock className="h-4 w-4" />
+                                Schedule post
+                                <span className="ml-auto text-xs text-gray-400">⌘S</span>
+                              </DropdownMenuItem>
+                            </SchedulePopover>
+                          </>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>
@@ -534,6 +819,8 @@ export function NewPostDialog({ open, onOpenChange }: NewPostDialogProps) {
           initialConfig={editingPollConfig || undefined}
         />
       )}
+
+
     </>
   );
 } 

@@ -2,7 +2,7 @@ import { AdaptiveDashboardLayout } from "@/components/layout/dashboard/adaptive-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/primitives";
 import { MessageSquare, FileText } from "lucide-react";
 import { useLocation, useRoute } from "wouter";
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   ColumnFiltersState,
   SortingState,
@@ -21,7 +21,8 @@ import { ContentToolbar } from "@/components/dashboard/site-config/content/conte
 import { ContentTabs } from "@/components/dashboard/site-config/content/content-tabs";
 import { ContentPagination } from "@/components/dashboard/site-config/content/content-pagination";
 import { useContentData } from "@/components/dashboard/site-config/content/use-content-data";
-import { columns } from "@/components/dashboard/site-config/content/table-columns";
+import { createColumns } from "@/components/dashboard/site-config/content/table-columns";
+import { NewPostDialog } from '@/components/features/content';
 import { FilterRule } from "@/components/dashboard/site-config/content/content-filter";
 import { applyFilters } from "@/components/dashboard/site-config/content/filter-logic";
 import { withSiteContext, WithSiteContextProps } from "@/lib/with-site-context";
@@ -51,6 +52,10 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
   
   // Filter state
   const [filters, setFilters] = useState<FilterRule[]>([]);
+
+  // Edit functionality state
+  const [editingPost, setEditingPost] = useState<Post | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   // Custom views state
   const {
@@ -152,7 +157,70 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
     
   }, [allPosts, activeTab, selectedCmsType, filters, currentView, section]);
 
-  // Create table instance
+  // Handle edit post
+  const handleEditPost = (post: Post) => {
+    setEditingPost(post);
+    setIsEditDialogOpen(true);
+  };
+
+  // Handle close edit dialog
+  const handleCloseEditDialog = () => {
+    setIsEditDialogOpen(false);
+    setEditingPost(null);
+  };
+
+  // Post management handlers
+  const handleUnpublish = (post: Post) => {
+    // TODO: Implement unpublish API call
+    console.log('Unpublishing post:', post.title);
+    alert(`Unpublish "${post.title}" - This will be implemented with API call`);
+  };
+
+  const handleReschedule = (post: Post) => {
+    // TODO: Implement reschedule functionality 
+    console.log('Rescheduling post:', post.title);
+    alert(`Reschedule "${post.title}" - This will open a date picker`);
+  };
+
+  const handlePublish = (post: Post) => {
+    // TODO: Implement publish API call
+    console.log('Publishing post:', post.title);
+    alert(`Publishing "${post.title}" - This will be implemented with API call`);
+  };
+
+  const handleArchive = (post: Post) => {
+    // TODO: Implement archive API call
+    console.log('Archiving post:', post.title);
+    if (confirm(`Are you sure you want to archive "${post.title}"?`)) {
+      alert(`Archive "${post.title}" - This will be implemented with API call`);
+    }
+  };
+
+  const handleDuplicate = (post: Post) => {
+    // TODO: Implement duplicate functionality
+    console.log('Duplicating post:', post.title);
+    alert(`Duplicate "${post.title}" - This will create a copy as draft`);
+  };
+
+  const handleDelete = (post: Post) => {
+    // TODO: Implement delete API call
+    console.log('Deleting post:', post.title);
+    if (confirm(`Are you sure you want to permanently delete "${post.title}"? This action cannot be undone.`)) {
+      alert(`Delete "${post.title}" - This will be implemented with API call`);
+    }
+  };
+
+  // Create table instance with columns that support edit and post management functionality
+  const columns = React.useMemo(() => createColumns({ 
+    onEdit: handleEditPost,
+    onUnpublish: handleUnpublish,
+    onReschedule: handleReschedule,
+    onPublish: handlePublish,
+    onArchive: handleArchive,
+    onDuplicate: handleDuplicate,
+    onDelete: handleDelete,
+  }), []);
+  
   const table = useReactTable({
     data,
     columns,
@@ -455,6 +523,28 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
       deleteView(view.id);
     }
   };
+
+  // Handle status change from dialog
+  const handleStatusChangeFromDialog = (post: Post, newStatus: string) => {
+    console.log(`Changing status of "${post.title}" from ${post.status} to ${newStatus}`);
+    
+    // Update the local data to reflect the status change
+    setData(prevData => 
+      prevData.map(p => 
+        p.id === post.id 
+          ? { ...p, status: newStatus as any }
+          : p
+      )
+    );
+    
+    // TODO: Make API call to update status on backend
+    alert(`Status changed from ${post.status} to ${newStatus}. This will be connected to API.`);
+    
+    // Update the editing post state to reflect the change
+    if (editingPost && editingPost.id === post.id) {
+      setEditingPost({ ...editingPost, status: newStatus as any });
+    }
+  };
   
   // For the Inbox section
   if (section === 'inbox') {
@@ -579,6 +669,7 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
             onClearFilters={handleClearFilters}
             onDiscardChanges={handleDiscardChanges}
             activeTab={activeTab}
+            onStatusChange={handleStatusChangeFromDialog}
           />
         </div>
 
@@ -601,11 +692,20 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
             setActiveTab={setActiveTab}
             setShowPublishedOnly={setShowPublishedOnly}
             setShowStatusFilter={setShowStatusFilter}
+            onEdit={handleEditPost}
           />
         </div>
         
         {/* Pagination controls - container with padding */}
         <ContentPagination table={table} isLoading={isLoading} />
+        
+        {/* Edit Post Dialog */}
+        <NewPostDialog 
+          open={isEditDialogOpen} 
+          onOpenChange={handleCloseEditDialog}
+          editingPost={editingPost}
+          onStatusChange={handleStatusChangeFromDialog}
+        />
       </div>
     </AdaptiveDashboardLayout>
   );
