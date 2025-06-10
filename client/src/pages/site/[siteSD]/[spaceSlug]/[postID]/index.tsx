@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getApiBaseUrl } from '@/lib/utils';
+import { SiteHeader } from '@/components/layout/site/site-header';
+import { Site } from '@/lib/api';
 
 // Import our minimal components
 import {
@@ -133,10 +135,18 @@ export default function EventDetailsPage() {
   const [, setLocation] = useLocation();
   
   const [event, setEvent] = useState<EventDetails | null>(null);
+  const [site, setSite] = useState<Site | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isRSVPed, setIsRSVPed] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
+  
+  // SiteHeader state
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  // RSVP button visibility in header
+  const [showHeaderRSVP, setShowHeaderRSVP] = useState(false);
 
   // Navigation handlers
   const handleBack = () => setLocation(`/site/${siteSD}/${spaceSlug}`);
@@ -158,6 +168,18 @@ export default function EventDetailsPage() {
     setIsLoading(true);
     fetchEventDetails();
   };
+  
+  // SiteHeader handlers
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      setLocation(`/site/${siteSD}/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+  
+  const onSearchInputClick = () => {
+    setLocation(`/site/${siteSD}/search`);
+  };
 
   // Fetch event details
   const fetchEventDetails = async () => {
@@ -173,6 +195,7 @@ export default function EventDetailsPage() {
       const siteResponse = await fetch(`${API_BASE}/api/v1/sites/${siteSD}`);
       if (!siteResponse.ok) throw new Error('Site not found');
       const siteData = await siteResponse.json();
+      setSite(siteData);
       
       // Get site spaces
       const spacesResponse = await fetch(`${API_BASE}/api/v1/sites/${siteData.id}/spaces`);
@@ -275,6 +298,17 @@ export default function EventDetailsPage() {
     fetchEventDetails();
   }, [postID, siteSD, spaceSlug]);
 
+  // Scroll detection for header RSVP button
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show header RSVP when scrolled past 150px for smoother transition
+      setShowHeaderRSVP(window.scrollY > 150);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   if (isLoading) return <MinimalLoadingState />;
   if (error || !event) {
     return (
@@ -288,13 +322,29 @@ export default function EventDetailsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      {/* Minimal Header */}
+      {/* Site Header */}
+      <SiteHeader
+        siteSD={siteSD || ''}
+        site={site}
+        isMenuOpen={isMenuOpen}
+        setIsMenuOpen={setIsMenuOpen}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        handleSearch={handleSearch}
+        onSearchInputClick={onSearchInputClick}
+        isSearchPage={false}
+      />
+      
+      {/* Event Header */}
       <EventHeader
         title={event.title}
         onBack={handleBack}
         onShare={handleShare}
         onFavorite={handleFavorite}
         isFavorited={isFavorited}
+        onRSVP={handleRSVP}
+        isRSVPed={isRSVPed}
+        showRSVPButton={showHeaderRSVP}
       />
 
       {/* Main Content */}
@@ -348,8 +398,7 @@ export default function EventDetailsPage() {
 
               {/* Sidebar */}
               <div className="md:col-span-1">
-                <div className="sticky top-20">
-                  <EventSidebar
+                <EventSidebar
                     eventDate={event.event_date}
                     eventLocation={event.event_location}
                     attendeesCount={event.attendees_count}
@@ -361,8 +410,8 @@ export default function EventDetailsPage() {
                     contactInfo={event.contact_info}
                     locationDetails={event.location_details}
                     hosts={event.hosts}
+                    showRSVPCard={!showHeaderRSVP}
                   />
-                </div>
               </div>
             </div>
           </motion.div>

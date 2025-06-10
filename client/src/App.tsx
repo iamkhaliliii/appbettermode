@@ -36,6 +36,8 @@ import Content from "@/pages/dashboard/site/[siteSD]/content";
 // Import site frontend pages (public facing)
 import SiteHomePage from "@/pages/site/[siteSD]/index";
 import SiteFrontendSearch from "@/pages/site/[siteSD]/search/index";
+import SiteModerationRedirect from "@/pages/site/[siteSD]/moderation";
+import SiteModerationPage from "@/pages/site/[siteSD]/moderation/index";
 import SpacePage from "@/pages/site/[siteSD]/[spaceSlug]/index";
 
 // PageTransition component for smooth page transitions
@@ -112,6 +114,11 @@ export default function App() {
               {/* Frontend site routes */}
               <Route path="/site/:siteSD" component={SiteHomePage} />
               <Route path="/site/:siteSD/search" component={SiteFrontendSearch} />
+              
+              {/* Site moderation pages */}
+              <Route path="/site/:siteSD/moderation" component={SiteModerationRedirect} />
+              <Route path="/site/:siteSD/moderation/:section" component={SiteModerationPage} />
+              
               <Route path="/site/:siteSD/:spaceSlug" component={SpacePage} />
               <Route path="/site/:siteSD/:spaceSlug/:postID" component={SpacePage} />
               

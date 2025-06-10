@@ -7,6 +7,9 @@ interface EventHeaderProps {
   onShare: () => void;
   onFavorite: () => void;
   isFavorited: boolean;
+  onRSVP?: () => void;
+  isRSVPed?: boolean;
+  showRSVPButton?: boolean;
 }
 
 export const EventHeader: React.FC<EventHeaderProps> = ({
@@ -14,7 +17,10 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
   onBack,
   onShare,
   onFavorite,
-  isFavorited
+  isFavorited,
+  onRSVP,
+  isRSVPed = false,
+  showRSVPButton = false
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -25,7 +31,7 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
   }, []);
 
   return (
-    <header className={`sticky top-0 z-50 transition-all duration-200 ${
+    <header className={`sticky top-16 z-40 transition-all duration-200 ${
       isScrolled 
         ? 'bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800' 
         : 'bg-gray-50 dark:bg-gray-950'
@@ -45,7 +51,21 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
             </h1>
           </div>
           
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
+            {/* RSVP Button - Shows when scrolling with smooth transition */}
+            {showRSVPButton && onRSVP && (
+              <button
+                onClick={onRSVP}
+                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-300 ease-in-out ${
+                  isRSVPed
+                    ? 'bg-green-600 text-white hover:bg-green-700'
+                    : 'bg-gray-900 text-white hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100'
+                }`}
+              >
+                {isRSVPed ? 'Attending' : 'RSVP'}
+              </button>
+            )}
+            
             <button
               onClick={onFavorite}
               className={`flex items-center justify-center w-8 h-8 rounded-lg transition-colors ${

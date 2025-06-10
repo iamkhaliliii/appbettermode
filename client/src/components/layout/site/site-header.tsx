@@ -15,7 +15,8 @@ import {
   Settings,
   Moon,
   Sun,
-  Info
+  Info,
+  Shield
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/primitives';
@@ -174,6 +175,12 @@ export function SiteHeader({
                   <DropdownMenuItem>
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href={`/site/${siteSD}/moderation`}>
+                      <Shield className="mr-2 h-4 w-4" />
+                      <span>Moderation</span>
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
