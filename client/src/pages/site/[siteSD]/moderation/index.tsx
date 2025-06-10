@@ -17,12 +17,16 @@ import {
   CheckCircle,
   XCircle,
   Eye,
+  EyeOff,
   Edit,
   Trash2,
   Send,
   UserX,
   Ban,
-  ArrowLeft
+  ArrowLeft,
+  Folder,
+  CalendarClock,
+  Pause
 } from 'lucide-react';
 
 // Mock data for moderation items
@@ -104,7 +108,7 @@ const MOCK_POSTS: ModerationPost[] = [
     },
     createdAt: '2024-01-12T08:15:00Z',
     status: 'reported',
-    reportReason: 'Spam content',
+    reportReason: 'Spam',
     space: 'General'
   },
   {
@@ -118,8 +122,22 @@ const MOCK_POSTS: ModerationPost[] = [
     },
     createdAt: '2024-01-11T14:20:00Z',
     status: 'reported',
-    reportReason: 'Akismet',
+    reportReason: 'Harassment or hate speech',
     space: 'Off Topic'
+  },
+  {
+    id: '6',
+    title: 'False information about recent events',
+    content: 'This post contains misleading information about current events that could confuse readers...',
+    author: {
+      name: 'Misleading User',
+      username: '@misleadinguser',
+      avatar: 'https://i.pravatar.cc/150?img=7'
+    },
+    createdAt: '2024-01-10T16:30:00Z',
+    status: 'reported',
+    reportReason: 'Misinformation',
+    space: 'News & Updates'
   }
 ];
 
@@ -139,7 +157,7 @@ const MOCK_MEMBERS: ModerationMember[] = [
     avatar: 'https://i.pravatar.cc/150?img=6',
     status: 'reported',
     joinedAt: '2024-01-10T09:15:00Z',
-    reportReason: 'Suspicious activity'
+    reportReason: 'Harmful activities'
   }
 ];
 
@@ -147,7 +165,7 @@ const CONTENT_MODERATION_ITEMS = [
   { key: 'scheduled-posts', label: 'Scheduled Posts', icon: Calendar, count: 1 },
   { key: 'drafts-posts', label: 'Draft Posts', icon: FileText, count: 1 },
   { key: 'pending-posts', label: 'Pending Posts', icon: Clock, count: 1 },
-  { key: 'reported-posts', label: 'Reported Posts', icon: AlertTriangle, count: 2 }
+  { key: 'reported-posts', label: 'Reported Posts', icon: AlertTriangle, count: 3 }
 ];
 
 const MEMBER_MODERATION_ITEMS = [
@@ -211,31 +229,37 @@ function SiteModerationPage({ siteId, siteDetails }: WithSiteContextProps) {
       case 'scheduled':
         return [
           { icon: Eye, label: 'View', variant: 'outline' as const, color: 'default' },
-          { icon: Edit, label: 'Edit Schedule', variant: 'outline' as const, color: 'default' },
-          { icon: XCircle, label: 'Cancel', variant: 'outline' as const, color: 'destructive' }
+          { icon: Edit, label: 'Edit', variant: 'outline' as const, color: 'default' },
+          { icon: CalendarClock, label: 'Edit Schedule', variant: 'outline' as const, color: 'default' },
+          { icon: XCircle, label: 'Cancel', variant: 'outline' as const, color: 'destructive' },
+          { icon: Send, label: 'Publish Now', variant: 'success' as const, color: 'default' }
         ];
       case 'draft':
         return [
           { icon: Eye, label: 'View', variant: 'outline' as const, color: 'default' },
-          { icon: Send, label: 'Publish', variant: 'default' as const, color: 'default' },
-          { icon: Trash2, label: 'Delete', variant: 'outline' as const, color: 'destructive' }
+          { icon: Edit, label: 'Edit', variant: 'outline' as const, color: 'default' },
+          { icon: Trash2, label: 'Delete', variant: 'outline' as const, color: 'destructive' },
+          { icon: Send, label: 'Publish', variant: 'success' as const, color: 'default' }
         ];
       case 'pending':
         return [
           { icon: Eye, label: 'View', variant: 'outline' as const, color: 'default' },
-          { icon: CheckCircle, label: 'Approve', variant: 'default' as const, color: 'default' },
-          { icon: XCircle, label: 'Reject', variant: 'outline' as const, color: 'destructive' }
+          { icon: Edit, label: 'Edit', variant: 'outline' as const, color: 'default' },
+          { icon: XCircle, label: 'Reject', variant: 'outline' as const, color: 'destructive' },
+          { icon: CheckCircle, label: 'Approve', variant: 'success' as const, color: 'default' }
         ];
       case 'reported':
         return [
           { icon: Eye, label: 'View', variant: 'outline' as const, color: 'default' },
-          { icon: Trash2, label: 'Remove', variant: 'destructive' as const, color: 'destructive' },
-          { icon: CheckCircle, label: 'Keep', variant: 'outline' as const, color: 'default' },
-          { icon: UserX, label: 'Ban User', variant: 'outline' as const, color: 'destructive' }
+          { icon: Edit, label: 'Edit', variant: 'outline' as const, color: 'default' },
+          { icon: CheckCircle, label: 'Keep', variant: 'outline-success' as const, color: 'default' },
+          { icon: EyeOff, label: 'Hide', variant: 'outline' as const, color: 'default' },
+          { icon: Trash2, label: 'Remove', variant: 'destructive' as const, color: 'destructive' }
         ];
       default:
         return [
-          { icon: Eye, label: 'View', variant: 'outline' as const, color: 'default' }
+          { icon: Eye, label: 'View', variant: 'outline' as const, color: 'default' },
+          { icon: Edit, label: 'Edit', variant: 'outline' as const, color: 'default' }
         ];
     }
   };
@@ -244,81 +268,136 @@ function SiteModerationPage({ siteId, siteDetails }: WithSiteContextProps) {
     const actions = getPostActions(post);
     
     return (
-      <Card className="p-4 hover:shadow-md transition-shadow bg-white dark:bg-gray-800">
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex items-center space-x-3">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={post.author.avatar} />
-              <AvatarFallback>{post.author.name.substring(0, 1)}</AvatarFallback>
-            </Avatar>
-            <div>
-              <div className="font-medium text-sm text-gray-900 dark:text-white">
-                {post.author.name}
-              </div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">
-                {post.author.username} • {formatDate(post.createdAt)}
+      <div className="group relative bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-200 hover:shadow-lg overflow-hidden">
+        {/* Status Indicator Line */}
+        <div className={`absolute top-0 left-0 right-0 h-1 ${
+          post.status === 'reported' ? 'bg-red-500' :
+          post.status === 'pending' ? 'bg-amber-500' :
+          post.status === 'scheduled' ? 'bg-blue-500' :
+          'bg-gray-500'
+        }`} />
+        
+        <div className="p-6">
+          {/* Header Section */}
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-start space-x-3 flex-1">
+              <Avatar className="h-10 w-10 ring-2 ring-gray-100 dark:ring-gray-800">
+                <AvatarImage src={post.author.avatar} />
+                <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
+                  {post.author.name.substring(0, 1)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center space-x-2 mb-1">
+                  <h4 className="font-semibold text-gray-900 dark:text-white truncate">
+                    {post.author.name}
+                  </h4>
+                  <span className="text-gray-400 dark:text-gray-500">•</span>
+                  <time className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">
+                    {formatDate(post.createdAt)}
+                  </time>
+                </div>
+                <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                  {post.author.username}
+                </p>
               </div>
             </div>
+            
+            <div className="flex items-center space-x-3">
+              {getStatusBadge(post.status)}
+              <Button variant="ghost" size="sm">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
-          <div className="flex items-center space-x-2">
-            {getStatusBadge(post.status)}
-            <Button variant="ghost" size="sm">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
+
+          {/* Content Section */}
+          <div className="mb-4">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 leading-tight">
+              {post.title}
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-3">
+              {post.content}
+            </p>
           </div>
-        </div>
 
-        <div className="mb-3">
-          <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
-            {post.title}
-          </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-3">
-            {post.content}
-          </p>
-        </div>
-
-        {/* Enhanced metadata section */}
-        <div className="mb-3">
-          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-2">
-            <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-md">
-              Space: {post.space}
-            </span>
-            {post.scheduledFor && (
-              <span className="px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-md">
-                📅 {formatDate(post.scheduledFor)}
-              </span>
+          {/* Metadata Section */}
+          <div className="mb-5 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <div className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+                  <Folder className="h-3 w-3 mr-1.5" />
+                  {post.space}
+                </div>
+              </div>
+              
+              {post.scheduledFor && (
+                <div className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
+                  <Calendar className="h-3 w-3 mr-1.5" />
+                  {formatDate(post.scheduledFor)}
+                </div>
+              )}
+            </div>
+            
+            {post.reportReason && (
+              <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                <div className="flex items-start space-x-2">
+                  <AlertTriangle className="h-4 w-4 text-red-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs font-medium text-red-700 dark:text-red-300 mb-1">
+                      Report Reason
+                    </p>
+                    <p className="text-sm text-red-600 dark:text-red-400">
+                      {post.reportReason}
+                    </p>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
-          {post.reportReason && (
-            <div className="p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
-              <div className="flex items-center space-x-2">
-                <AlertTriangle className="h-4 w-4 text-red-500" />
-                <span className="text-xs text-red-600 dark:text-red-400 font-medium">
-                  Report: {post.reportReason}
-                </span>
-              </div>
-            </div>
-          )}
-        </div>
 
-        {/* Dynamic action buttons */}
-        <div className="flex items-center justify-end space-x-2 pt-3 border-t border-gray-100 dark:border-gray-700">
-          {actions.map((action, index) => {
-            const Icon = action.icon;
-            return (
-              <Button 
-                key={index}
-                variant={action.variant} 
-                size="sm"
-                className={action.color === 'destructive' ? 'text-red-600 hover:text-red-700 border-red-200 hover:border-red-300' : ''}
-              >
-                <Icon className="h-4 w-4 mr-1" />
-                {action.label}
-              </Button>
-            );
-          })}
+          {/* Action Buttons */}
+          <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
+            {/* Left side - Secondary actions (View, Edit) - Compact */}
+            <div className="flex items-center space-x-1">
+              {actions.filter(action => ['View', 'Edit', 'Edit Schedule'].includes(action.label)).map((action, index) => {
+                const Icon = action.icon;
+                return (
+                  <Button 
+                    key={`secondary-${index}`}
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 px-2 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                  >
+                    <Icon className="h-3 w-3 mr-1" />
+                    {action.label}
+                  </Button>
+                );
+              })}
+            </div>
+            
+            {/* Right side - Primary actions (Approve/Reject, Publish/Remove, etc.) */}
+            <div className="flex items-center space-x-2">
+              {actions.filter(action => !['View', 'Edit', 'Edit Schedule'].includes(action.label)).map((action, index) => {
+                const Icon = action.icon;
+                return (
+                  <Button 
+                    key={`primary-${index}`}
+                    variant={action.color === 'destructive' 
+                      ? (action.variant === 'outline' ? 'outline-destructive' : 'destructive')
+                      : action.variant
+                    } 
+                    size="sm"
+                  >
+                    <Icon className="h-4 w-4 mr-2" />
+                    {action.label}
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
         </div>
-      </Card>
+      </div>
     );
   };
 
@@ -327,15 +406,15 @@ function SiteModerationPage({ siteId, siteDetails }: WithSiteContextProps) {
       case 'pending':
         return [
           { icon: Eye, label: 'View Profile', variant: 'outline' as const, color: 'default' },
-          { icon: CheckCircle, label: 'Approve', variant: 'default' as const, color: 'default' },
-          { icon: XCircle, label: 'Reject', variant: 'outline' as const, color: 'destructive' }
+          { icon: XCircle, label: 'Reject', variant: 'outline' as const, color: 'destructive' },
+          { icon: CheckCircle, label: 'Approve', variant: 'success' as const, color: 'default' }
         ];
       case 'reported':
         return [
           { icon: Eye, label: 'View Profile', variant: 'outline' as const, color: 'default' },
-          { icon: Ban, label: 'Ban User', variant: 'destructive' as const, color: 'destructive' },
-          { icon: CheckCircle, label: 'Dismiss Report', variant: 'outline' as const, color: 'default' },
-          { icon: AlertTriangle, label: 'Warn User', variant: 'outline' as const, color: 'destructive' }
+          { icon: CheckCircle, label: 'Keep', variant: 'outline-success' as const, color: 'default' },
+          { icon: Pause, label: 'Suspend', variant: 'warning' as const, color: 'default' },
+          { icon: Trash2, label: 'Remove', variant: 'destructive' as const, color: 'destructive' }
         ];
       default:
         return [
@@ -348,61 +427,99 @@ function SiteModerationPage({ siteId, siteDetails }: WithSiteContextProps) {
     const actions = getMemberActions(member);
     
     return (
-      <Card className="p-4 hover:shadow-md transition-shadow bg-white dark:bg-gray-800">
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex items-center space-x-3">
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={member.avatar} />
-              <AvatarFallback>{member.name.substring(0, 1)}</AvatarFallback>
-            </Avatar>
-            <div>
-              <div className="font-medium text-sm text-gray-900 dark:text-white">
-                {member.name}
-              </div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">
-                {member.email}
-              </div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">
-                Joined: {formatDate(member.joinedAt)}
+      <div className="group relative bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-200 hover:shadow-lg overflow-hidden">
+        {/* Status Indicator Line */}
+        <div className={`absolute top-0 left-0 right-0 h-1 ${
+          member.status === 'reported' ? 'bg-red-500' : 'bg-amber-500'
+        }`} />
+        
+        <div className="p-6">
+          {/* Header Section */}
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-start space-x-4 flex-1">
+              <Avatar className="h-12 w-12 ring-2 ring-gray-100 dark:ring-gray-800">
+                <AvatarImage src={member.avatar} />
+                <AvatarFallback className="bg-gradient-to-br from-green-500 to-teal-600 text-white font-semibold text-lg">
+                  {member.name.substring(0, 1)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-bold text-lg text-gray-900 dark:text-white mb-1">
+                  {member.name}
+                </h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                  {member.email}
+                </p>
+                <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                  <Calendar className="h-3 w-3 mr-1" />
+                  Joined {formatDate(member.joinedAt)}
+                </div>
               </div>
             </div>
-          </div>
-          <div className="flex items-center space-x-2">
-            {getStatusBadge(member.status)}
-            <Button variant="ghost" size="sm">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-
-        {member.reportReason && (
-          <div className="mb-3 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
-            <div className="flex items-center space-x-2">
-              <AlertTriangle className="h-4 w-4 text-red-500" />
-              <span className="text-xs text-red-600 dark:text-red-400 font-medium">
-                Report: {member.reportReason}
-              </span>
-            </div>
-          </div>
-        )}
-
-        <div className="flex items-center justify-end space-x-2 pt-3 border-t border-gray-100 dark:border-gray-700">
-          {actions.map((action, index) => {
-            const Icon = action.icon;
-            return (
-              <Button 
-                key={index}
-                variant={action.variant} 
-                size="sm"
-                className={action.color === 'destructive' ? 'text-red-600 hover:text-red-700 border-red-200 hover:border-red-300' : ''}
-              >
-                <Icon className="h-4 w-4 mr-1" />
-                {action.label}
+            
+            <div className="flex items-center space-x-3">
+              {getStatusBadge(member.status)}
+              <Button variant="ghost" size="sm">
+                <MoreHorizontal className="h-4 w-4" />
               </Button>
-            );
-          })}
+            </div>
+          </div>
+
+          {/* Report Section */}
+          {member.reportReason && (
+            <div className="mb-5 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+              <div className="flex items-start space-x-3">
+                <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
+                <div>
+                  <h5 className="text-sm font-semibold text-red-700 dark:text-red-300 mb-2">
+                    Member Report
+                  </h5>
+                  <p className="text-sm text-red-600 dark:text-red-400">
+                    {member.reportReason}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
+            {/* Left side - Secondary actions (View Profile) */}
+            <div className="flex items-center space-x-2">
+              {actions.filter(action => action.label === 'View Profile').map((action, index) => {
+                const Icon = action.icon;
+                return (
+                  <Button 
+                    key={`secondary-${index}`}
+                    variant="ghost"
+                    size="sm"
+                  >
+                    <Icon className="h-4 w-4 mr-2" />
+                    {action.label}
+                  </Button>
+                );
+              })}
+            </div>
+            
+            {/* Right side - Primary actions (Approve/Reject, Ban/Dismiss, etc.) */}
+            <div className="flex items-center space-x-2">
+              {actions.filter(action => action.label !== 'View Profile').map((action, index) => {
+                const Icon = action.icon;
+                return (
+                  <Button 
+                    key={`primary-${index}`}
+                    variant={action.variant}
+                    size="sm"
+                  >
+                    <Icon className="h-4 w-4 mr-2" />
+                    {action.label}
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
         </div>
-      </Card>
+      </div>
     );
   };
 
@@ -411,8 +528,6 @@ function SiteModerationPage({ siteId, siteDetails }: WithSiteContextProps) {
   return (
     <SiteLayout siteSD={siteSD} site={siteDetails}>
       <div className="max-w-7xl mx-auto">
-        {/* Page Header */}
-
         {/* 3-Column Layout */}
         <div className="flex relative">
           {/* Left Sidebar */}
@@ -430,7 +545,7 @@ function SiteModerationPage({ siteId, siteDetails }: WithSiteContextProps) {
 
               {/* Content Moderation Section */}
               <div className="space-y-1">
-                <h3 className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <h3 className="px-3 text-xs text-gray-400 dark:text-gray-400 tracking-wider">
                   Content Moderation
                 </h3>
                 {CONTENT_MODERATION_ITEMS.map(item => {
@@ -463,7 +578,7 @@ function SiteModerationPage({ siteId, siteDetails }: WithSiteContextProps) {
 
               {/* Member Moderation Section */}
               <div className="space-y-1">
-                <h3 className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <h3 className="px-3 text-xs text-gray-400 dark:text-gray-400 tracking-wider">
                   Member Moderation
                 </h3>
                 {MEMBER_MODERATION_ITEMS.map(item => {
@@ -498,24 +613,46 @@ function SiteModerationPage({ siteId, siteDetails }: WithSiteContextProps) {
           </div>
 
           {/* Main Content */}
-          <div className="flex-1">
-            <div className="p-6">
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  {currentItem?.label || 'Pending Posts'}
-                </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  {filteredData.length} item{filteredData.length !== 1 ? 's' : ''} to review
-                </p>
+          <div className="flex-1 min-w-0">
+            <div className="max-w-4xl mx-auto px-6 py-8">
+              {/* Header Section */}
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {currentItem?.label || 'Pending Posts'}
+                    </h1>
+                    <p className="text-gray-600 dark:text-gray-400 mt-1">
+                      Review and moderate content that requires your attention
+                    </p>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="text-right">
+                      <div className="text-sm font-medium text-gray-900 dark:text-white">
+                        {filteredData.length}
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        item{filteredData.length !== 1 ? 's' : ''} pending
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="space-y-4">
+              {/* Content Grid */}
+              <div className="space-y-6">
                 {filteredData.length === 0 ? (
-                  <Card className="p-8 text-center bg-white dark:bg-gray-800">
-                    <div className="text-gray-500 dark:text-gray-400">
-                      No items to moderate at this time
+                  <div className="text-center py-16 px-4">
+                    <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                      <CheckCircle className="h-8 w-8 text-gray-400" />
                     </div>
-                  </Card>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                      All caught up!
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+                      No items require moderation at this time. Check back later for new content to review.
+                    </p>
+                  </div>
                 ) : (
                   filteredData.map((item: any) => (
                     isMemberSection ? (
@@ -526,6 +663,8 @@ function SiteModerationPage({ siteId, siteDetails }: WithSiteContextProps) {
                   ))
                 )}
               </div>
+              
+
             </div>
           </div>
 
@@ -538,58 +677,18 @@ function SiteModerationPage({ siteId, siteDetails }: WithSiteContextProps) {
               </h3>
               
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    Pending Posts
-                  </span>
-                  <Badge variant="outline">
-                    {MOCK_POSTS.filter(p => p.status === 'pending').length}
-                  </Badge>
-                </div>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Good evening,
+                </p>
                 
-                                 <div className="flex items-center justify-between">
-                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                     Reported Posts
-                   </span>
-                   <Badge variant="destructive">
-                     {MOCK_POSTS.filter(p => p.status === 'reported').length}
-                   </Badge>
-                 </div>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Nothing to moderate here.
+                </p>
                 
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    Pending Members
-                  </span>
-                  <Badge variant="outline">
-                    {MOCK_MEMBERS.filter(m => m.status === 'pending').length}
-                  </Badge>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    Reported Members
-                  </span>
-                  <Badge variant="destructive">
-                    {MOCK_MEMBERS.filter(m => m.status === 'reported').length}
-                  </Badge>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    Scheduled Posts
-                  </span>
-                  <Badge variant="secondary">
-                    {MOCK_POSTS.filter(p => p.status === 'scheduled').length}
-                  </Badge>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    Draft Posts
-                  </span>
-                  <Badge variant="secondary">
-                    {MOCK_POSTS.filter(p => p.status === 'draft').length}
-                  </Badge>
+                <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <Button variant="link" className="p-0 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
+                    Moderation settings
+                  </Button>
                 </div>
               </div>
             </Card>
