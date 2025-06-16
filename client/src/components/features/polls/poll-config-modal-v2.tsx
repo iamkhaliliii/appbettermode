@@ -261,7 +261,7 @@ export function PollConfigModalV2({ open, onOpenChange, onConfirm, initialConfig
               )}
               onClick={() => setActiveTab("main")}
             >
-              Main
+              Details
             </button>
             <button
               className={cn(
@@ -272,7 +272,7 @@ export function PollConfigModalV2({ open, onOpenChange, onConfirm, initialConfig
               )}
               onClick={() => setActiveTab("settings")}
             >
-              Settings
+              Poll Settings
             </button>
           </div>
         </div>
@@ -351,54 +351,6 @@ export function PollConfigModalV2({ open, onOpenChange, onConfirm, initialConfig
             </div>
           ) : (
             <div className="p-6 space-y-4">
-              {/* Poll Type */}
-              <div className="space-y-2">
-                <Label className="text-sm font-medium text-gray-900 dark:text-white">
-                  Poll Type
-                </Label>
-                <Select
-                  value={pollType}
-                  onValueChange={(value) => setPollType(value as "single" | "multiple")}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="single">Single Choice</SelectItem>
-                    <SelectItem value="multiple">Multiple Choice</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Choose whether users can select one or multiple options
-                </p>
-              </div>
-
-              {/* Max Votes per User */}
-              {pollType === "multiple" && (
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-900 dark:text-white">
-                    Max votes per user
-                  </Label>
-                  <Select
-                    value={maxVotesPerUser.toString()}
-                    onValueChange={(value) => setMaxVotesPerUser(parseInt(value))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">1 vote</SelectItem>
-                      <SelectItem value="2">2 votes</SelectItem>
-                      <SelectItem value="3">3 votes</SelectItem>
-                      <SelectItem value="5">5 votes</SelectItem>
-                      <SelectItem value="-1">Unlimited</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Limit how many options each user can vote for
-                  </p>
-                </div>
-              )}
 
               {/* User Permissions */}
               <div className="space-y-2">
@@ -486,20 +438,6 @@ export function PollConfigModalV2({ open, onOpenChange, onConfirm, initialConfig
                   </p>
                 </div>
 
-                <div className="py-1">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-sm font-medium text-gray-900 dark:text-white">
-                      Allow user options
-                    </Label>
-                    <Toggle
-                      checked={allowAddOptions}
-                      onChange={setAllowAddOptions}
-                    />
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Users can add new options to the poll
-                  </p>
-                </div>
               </div>
             </div>
           )}

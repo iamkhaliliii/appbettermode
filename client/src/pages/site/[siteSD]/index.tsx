@@ -18,6 +18,9 @@ import { useSiteData } from '@/lib/SiteDataContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Skeleton } from '@/components/ui/primitives';
 import SpacePage from './/[spaceSlug]';
+import PollsPage from './polls';
+import SearchPage from './search';
+import ModerationPage from './moderation';
 
 interface SiteContextType {
   site: Site | null;
@@ -173,7 +176,7 @@ const SiteHomeContent = () => {
       </motion.div>
 
       {/* Display content based on site's content types */}
-      {contentTypes.includes('discussion') && (
+      {contentTypes.some(ct => ct.type === 'discussion') && (
         <motion.div variants={itemVariants}>
           <Card>
             <CardHeader className="pb-3">
@@ -212,7 +215,7 @@ const SiteHomeContent = () => {
         </motion.div>
       )}
 
-      {contentTypes.includes('qa') && (
+      {contentTypes.some(ct => ct.type === 'qa') && (
         <motion.div variants={itemVariants}>
           <Card>
             <CardHeader className="pb-3">
@@ -257,7 +260,7 @@ const SiteHomeContent = () => {
         </motion.div>
       )}
 
-      {contentTypes.includes('wishlist') && (
+      {contentTypes.some(ct => ct.type === 'wishlist') && (
         <motion.div variants={itemVariants}>
           <Card>
             <CardHeader className="pb-3">
@@ -402,6 +405,15 @@ export default function SitePage() {
               <div className="flex-1">
                 <AnimatePresence mode="wait">
                   <Switch>
+                    <Route path="/site/:siteSD/polls">
+                      <PollsPage />
+                    </Route>
+                    <Route path="/site/:siteSD/search">
+                      <SearchPage />
+                    </Route>
+                    <Route path="/site/:siteSD/moderation">
+                      <ModerationPage />
+                    </Route>
                     <Route path="/site/:siteSD/:spaceSlug">
                       {(params) => <SpacePage />}
                     </Route>

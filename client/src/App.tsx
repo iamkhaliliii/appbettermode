@@ -2,6 +2,7 @@ import { Switch, Route, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
+import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLocation } from "wouter";
 import { SiteDataProvider } from "@/lib/SiteDataContext";
@@ -38,6 +39,7 @@ import SiteHomePage from "@/pages/site/[siteSD]/index";
 import SiteFrontendSearch from "@/pages/site/[siteSD]/search/index";
 import SiteModerationRedirect from "@/pages/site/[siteSD]/moderation";
 import SiteModerationPage from "@/pages/site/[siteSD]/moderation/index";
+import SitePollsPage from "@/pages/site/[siteSD]/polls/index";
 import SpacePage from "@/pages/site/[siteSD]/[spaceSlug]/index";
 
 // PageTransition component for smooth page transitions
@@ -114,6 +116,7 @@ export default function App() {
               {/* Frontend site routes */}
               <Route path="/site/:siteSD" component={SiteHomePage} />
               <Route path="/site/:siteSD/search" component={SiteFrontendSearch} />
+              <Route path="/site/:siteSD/polls" component={SitePollsPage} />
               
               {/* Site moderation pages */}
               <Route path="/site/:siteSD/moderation" component={SiteModerationRedirect} />
@@ -129,6 +132,7 @@ export default function App() {
         </SiteContentProvider>
       </SiteDataProvider>
       <Toaster />
+      <SonnerToaster position="top-right" />
     </QueryClientProvider>
   );
 }

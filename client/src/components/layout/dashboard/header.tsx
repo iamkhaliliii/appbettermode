@@ -224,7 +224,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
   const buttonBgHover = variant === 'site' ? "hover:bg-gray-700 dark:hover:bg-gray-200" : "hover:bg-gray-50 dark:hover:bg-gray-700";
   const buttonBg = variant === 'site' ? "bg-gray-900 dark:bg-white" : "bg-white dark:bg-gray-800";
   const logoContainerBase = "w-12 h-12 flex items-center justify-center transition-all duration-300 ease-in-out";
-  const logoFixedClasses = "fixed mt-8 top-3 right-5 z-50 rounded-md shadow-lg cursor-pointer bg-gray-900 dark:bg-white";
+  const logoFixedClasses = "fixed mt-8 top-3 right-5 z-[99999] rounded-md shadow-lg cursor-pointer bg-gray-900 dark:bg-white";
 
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -390,7 +390,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
           
           {/* Logo Dropdown */}
           {logoDropdownOpen && variant === 'dashboard' && (
-            <div className="absolute left-0 top-full mt-1 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50">
+            <div className="absolute left-0 top-full mt-1 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-[99999]">
               <div className="py-1">
                 <button 
                   className="w-full text-left block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 no-underline flex items-center gap-2"
@@ -468,7 +468,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                       </button>
                       
                       {spacesDropdownOpen && (
-                        <div className="absolute left-0 mt-1 w-64 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50">
+                        <div className="absolute left-0 mt-1 w-64 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-[99999]">
                           <div className="py-1">
                             {/* Top section - Feed */}
                             <a 
@@ -581,7 +581,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                       </button>
                       
                       {postsDropdownOpen && (
-                        <div className="absolute left-0 mt-1 w-64 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50">
+                        <div className="absolute left-0 mt-1 w-64 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-[99999]">
                           <div className="py-1">
                             {/* Top section - All Posts, Scheduled, Draft */}
                             <a 
@@ -688,7 +688,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                       </button>
                       
                       {insightsDropdownOpen && (
-                        <div className="absolute left-0 mt-1 w-64 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50">
+                        <div className="absolute left-0 mt-1 w-64 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-[99999]">
                           <div className="py-1">
                             <a 
                               href="#" 
@@ -749,7 +749,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                       </button>
                       
                       {moderationDropdownOpen && (
-                        <div className="absolute left-0 mt-1 w-64 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50">
+                        <div className="absolute left-0 mt-1 w-64 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-[99999]">
                           <div className="py-1">
                             <a 
                               href="#" 
@@ -880,42 +880,135 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                   {variant === 'site' && (
                     <Tooltip.Provider>
                       <div className="flex items-center">
-                        {/* Add Post Button */}
-                        <div className={cn("h-12 flex items-center justify-center border-r border-l", borderColor)}>
-                          <Tooltip.Root>
-                            <Tooltip.Trigger asChild>
-                              <Button 
-                                variant="ghost" 
-                                size="icon" 
-                                className={cn(
-                                  "w-12 h-12 transition-all duration-200",
-                                  variant === 'site' 
-                                    ? "bg-gray-900 dark:bg-white hover:bg-gray-700 dark:hover:bg-gray-200 text-gray-300 dark:text-gray-600" 
-                                    : "bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
-                                )}
-                                onClick={() => {
-                                  // Navigate to add post page
-                                  if (currentSiteIdentifier) {
-                                    const addPostUrl = `${window.location.origin}/dashboard/site/${currentSiteIdentifier}/content`;
-                                    window.location.href = addPostUrl;
-                                  }
-                                }}
-                              >
-                                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                  <path d="M12 5v14M5 12h14" />
-                                </svg>
-                              </Button>
-                            </Tooltip.Trigger>
-                            <Tooltip.Portal>
-                              <Tooltip.Content 
-                                className="bg-gray-900 dark:bg-gray-700 text-white px-2 py-1 rounded-md text-xs font-medium shadow-lg"
-                                sideOffset={8}
-                              >
-                                Add Post
-                                <Tooltip.Arrow className="fill-gray-900 dark:fill-gray-700" />
-                              </Tooltip.Content>
-                            </Tooltip.Portal>
-                          </Tooltip.Root>
+                        {/* Add Dropdown for Site Mode */}
+                        <div className={cn("h-12 flex items-center justify-center border-r border-l", borderColor)} ref={addDropdownRef}>
+                          <div className="relative">
+                            <Tooltip.Root>
+                              <Tooltip.Trigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon" 
+                                  className={cn(
+                                    "w-12 h-12 transition-all duration-200",
+                                    variant === 'site' 
+                                      ? "bg-gray-900 dark:bg-white hover:bg-gray-700 dark:hover:bg-gray-200 text-gray-300 dark:text-gray-600" 
+                                      : "bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
+                                  )}
+                                  onClick={() => setAddDropdownOpen(!addDropdownOpen)}
+                                >
+                                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M12 5v14M5 12h14" />
+                                  </svg>
+                                </Button>
+                              </Tooltip.Trigger>
+                              <Tooltip.Portal>
+                                <Tooltip.Content 
+                                  className="bg-gray-900 dark:bg-gray-700 text-white px-2 py-1 rounded-md text-xs font-medium shadow-lg"
+                                  sideOffset={8}
+                                >
+                                  Add
+                                  <Tooltip.Arrow className="fill-gray-900 dark:fill-gray-700" />
+                                </Tooltip.Content>
+                              </Tooltip.Portal>
+                            </Tooltip.Root>
+                            
+                            {addDropdownOpen && (
+                              <div className="absolute right-0 mt-1 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-[99999]">
+                                <div className="py-1">
+                                  <button 
+                                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center gap-2"
+                                    onClick={() => {
+                                      setAddDropdownOpen(false);
+                                      setNewPostDialogOpen(true);
+                                    }}
+                                  >
+                                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                      <path d="M12 5v14M5 12h14" />
+                                    </svg>
+                                    <span>New Content</span>
+                                  </button>
+                                  <button 
+                                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center gap-2"
+                                    onClick={() => {
+                                      setAddDropdownOpen(false);
+                                      setNewPeopleDialogOpen(true);
+                                    }}
+                                  >
+                                    <UserPlus className="h-4 w-4" />
+                                    <span>New People</span>
+                                  </button>
+                                  
+                                  {/* More submenu */}
+                                  <div 
+                                    className="relative" 
+                                    ref={moreSubmenuRef}
+                                    onMouseEnter={() => setMoreSubmenuOpen(true)}
+                                    onMouseLeave={() => setMoreSubmenuOpen(false)}
+                                  >
+                                    <button 
+                                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center justify-between gap-2"
+                                    >
+                                      <div className="flex items-center gap-2">
+                                        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                          <circle cx="12" cy="12" r="1"/>
+                                          <circle cx="19" cy="12" r="1"/>
+                                          <circle cx="5" cy="12" r="1"/>
+                                        </svg>
+                                        <span>More</span>
+                                      </div>
+                                      <svg className="h-3 w-3" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
+                                        <path d="M6 12L10 8L6 4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                      </svg>
+                                    </button>
+                                    
+                                    {moreSubmenuOpen && (
+                                      <div 
+                                        className="absolute right-full top-0 mr-1 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-[99999]"
+                                      >
+                                        <div className="py-1">
+                                          <button 
+                                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center gap-2"
+                                            onClick={() => {
+                                              setAddDropdownOpen(false);
+                                              setMoreSubmenuOpen(false);
+                                              setAddContentDialogOpen(true);
+                                            }}
+                                          >
+                                            <Package className="h-4 w-4" />
+                                            <span>New Content Type</span>
+                                          </button>
+                                          <button 
+                                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center gap-2"
+                                            onClick={() => {
+                                              setAddDropdownOpen(false);
+                                              setMoreSubmenuOpen(false);
+                                              // Add New Moderator functionality here
+                                              console.log("New Moderator clicked");
+                                            }}
+                                          >
+                                            <ShieldPlus className="h-4 w-4" />
+                                            <span>New Moderator</span>
+                                          </button>
+                                          <button 
+                                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center gap-2"
+                                            onClick={() => {
+                                              setAddDropdownOpen(false);
+                                              setMoreSubmenuOpen(false);
+                                              // Add New App functionality here
+                                              console.log("New App clicked");
+                                            }}
+                                          >
+                                            <AppWindowMac className="h-4 w-4" />
+                                            <span>New App</span>
+                                          </button>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
 
                         {/* View Dashboard Button */}
@@ -1024,7 +1117,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                             </Tooltip.Root>
                             
                             {addDropdownOpen && (
-                              <div className="absolute right-0 mt-1 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50">
+                              <div className="absolute right-0 mt-1 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-[99999]">
                                 <div className="py-1">
                                   <button 
                                     className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 flex items-center gap-2"
@@ -1074,7 +1167,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
                                     
                                     {moreSubmenuOpen && (
                                       <div 
-                                        className="absolute right-full top-0 mr-1 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-50"
+                                        className="absolute right-full top-0 mr-1 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-visible z-[99999]"
                                       >
                                         <div className="py-1">
                                           <button 
