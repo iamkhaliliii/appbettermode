@@ -161,9 +161,12 @@ const MOCK_MEMBERS: ModerationMember[] = [
   }
 ];
 
-const CONTENT_MODERATION_ITEMS = [
+const CONTENT_PLANNING_ITEMS = [
   { key: 'scheduled-posts', label: 'Scheduled Posts', icon: Calendar, count: 1 },
-  { key: 'drafts-posts', label: 'Draft Posts', icon: FileText, count: 1 },
+  { key: 'drafts-posts', label: 'Draft Posts', icon: FileText, count: 1 }
+];
+
+const CONTENT_MODERATION_ITEMS = [
   { key: 'pending-posts', label: 'Pending Posts', icon: Clock, count: 1 },
   { key: 'reported-posts', label: 'Reported Posts', icon: AlertTriangle, count: 3 }
 ];
@@ -173,7 +176,7 @@ const MEMBER_MODERATION_ITEMS = [
   { key: 'reported-members', label: 'Reported Members', icon: Users, count: 1 }
 ];
 
-const ALL_SIDEBAR_ITEMS = [...CONTENT_MODERATION_ITEMS, ...MEMBER_MODERATION_ITEMS];
+const ALL_SIDEBAR_ITEMS = [...CONTENT_PLANNING_ITEMS, ...CONTENT_MODERATION_ITEMS, ...MEMBER_MODERATION_ITEMS];
 
 function SiteModerationPage({ siteId, siteDetails }: WithSiteContextProps) {
   const [, params] = useRoute('/site/:siteSD/moderation/:section?');
@@ -542,6 +545,39 @@ function SiteModerationPage({ siteId, siteDetails }: WithSiteContextProps) {
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to site
               </Link>
+
+              {/* Content Planning Section */}
+              <div className="space-y-1">
+                <h3 className="px-3 text-xs text-gray-400 dark:text-gray-400 tracking-wider">
+                  Content Planning
+                </h3>
+                {CONTENT_PLANNING_ITEMS.map(item => {
+                  const Icon = item.icon;
+                  const isActive = section === item.key;
+                  
+                  return (
+                    <Link
+                      key={item.key}
+                      href={`/site/${siteSD}/moderation/${item.key}`}
+                      className={`flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                        isActive
+                          ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      }`}
+                    >
+                      <div className="flex items-center">
+                        <Icon className="h-4 w-4 mr-3" />
+                        {item.label}
+                      </div>
+                      {item.count > 0 && (
+                        <Badge variant="secondary" className="ml-2">
+                          {item.count}
+                        </Badge>
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
 
               {/* Content Moderation Section */}
               <div className="space-y-1">
