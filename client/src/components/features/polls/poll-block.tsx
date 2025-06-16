@@ -140,7 +140,7 @@ const PollComponent = (props: any) => {
     console.log(`[POLL-BLOCK] Dispatching edit poll event for block: ${block.id}`);
     
     // Dispatch the event immediately (no setTimeout needed)
-    const editEvent = new CustomEvent('editPoll', {
+    const editEvent = new CustomEvent('editPollV3', {
       detail: eventDetail,
       bubbles: false
     });
@@ -173,7 +173,7 @@ const PollComponent = (props: any) => {
       console.log(`[POLL-BLOCK] Dispatching delete poll event for block: ${block.id}`);
       
       // Dispatch the delete event
-      const deleteEvent = new CustomEvent('deletePoll', {
+      const deleteEvent = new CustomEvent('deletePollV3', {
         detail: { blockId: block.id },
         bubbles: false
       });
@@ -314,10 +314,10 @@ const PollComponent = (props: any) => {
   );
 };
 
-// The Poll block (Read-only display version)
-export const Poll = createReactBlockSpec(
+// The V3 Poll block (Read-only display version)
+export const PollV3 = createReactBlockSpec(
   {
-    type: "poll",
+    type: "pollV3",
     propSchema: {
       textAlignment: defaultProps.textAlignment,
       textColor: defaultProps.textColor,

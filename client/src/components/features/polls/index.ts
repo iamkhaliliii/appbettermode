@@ -1,7 +1,7 @@
-// Poll Components
+// Poll Components V3 (formerly V4) 
 export * from './poll-block'
 export * from './poll-config-modal'
 
-// V3 Poll Components
-export * from './poll-block-v3'
-export * from './poll-config-modal-v3' 
+// Poll Components V2 (formerly V3)
+export * from './poll-block-v2'
+export * from './poll-config-modal-v2' 

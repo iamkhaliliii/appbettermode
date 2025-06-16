@@ -53,10 +53,10 @@ import {
 import { BarChart3 } from "lucide-react";
 
 // Import custom poll block and modal
-import { Poll } from "@/components/features/polls/poll-block";
-import { PollConfigModal, PollConfig } from "@/components/features/polls/poll-config-modal";
-import { PollV3 } from "@/components/features/polls/poll-block-v3";
-import { PollConfigModalV3, PollConfigV3 } from "@/components/features/polls/poll-config-modal-v3";
+import { PollV3 } from "@/components/features/polls/poll-block";
+import { PollConfigModalV3, PollConfigV3 } from "@/components/features/polls/poll-config-modal";
+import { PollV2 } from "@/components/features/polls/poll-block-v2";
+import { PollConfigModalV2, PollConfigV2 } from "@/components/features/polls/poll-config-modal-v2";
 
 // Import Post type for editing
 import { Post } from "@/components/dashboard/site-config/content/types";
@@ -70,63 +70,12 @@ const schema = BlockNoteSchema.create({
     // Include default blocks
     ...defaultBlockSpecs,
     // Add custom poll blocks
-    poll: Poll, // V4 Poll
-    pollV3: PollV3, // V3 Poll
+    pollV3: PollV3, // V3 Poll (formerly V4)
+    pollV2: PollV2, // V2 Poll (formerly V3)
   },
 });
 
-// Global singleton to manage poll edit events
-class PollEditEventManager {
-  private static instance: PollEditEventManager;
-  private activeDialogId: string | null = null;
-  private isProcessing: boolean = false;
 
-  static getInstance(): PollEditEventManager {
-    if (!PollEditEventManager.instance) {
-      PollEditEventManager.instance = new PollEditEventManager();
-    }
-    return PollEditEventManager.instance;
-  }
-
-  registerDialog(dialogId: string): boolean {
-    // Only allow one active dialog at a time
-    if (this.activeDialogId === null) {
-      this.activeDialogId = dialogId;
-      console.log(`[EDIT-MANAGER] Registered active dialog: ${dialogId}`);
-      return true;
-    }
-    console.log(`[EDIT-MANAGER] Dialog ${dialogId} blocked - active dialog: ${this.activeDialogId}`);
-    return false;
-  }
-
-  unregisterDialog(dialogId: string): void {
-    if (this.activeDialogId === dialogId) {
-      this.activeDialogId = null;
-      this.isProcessing = false;
-      console.log(`[EDIT-MANAGER] Unregistered dialog: ${dialogId}`);
-    }
-  }
-
-  canProcess(dialogId: string): boolean {
-    if (this.isProcessing) {
-      console.log(`[EDIT-MANAGER] Event already being processed, ignoring ${dialogId}`);
-      return false;
-    }
-    if (this.activeDialogId !== dialogId) {
-      console.log(`[EDIT-MANAGER] Dialog ${dialogId} not active, ignoring`);
-      return false;
-    }
-    return true;
-  }
-
-  startProcessing(): void {
-    this.isProcessing = true;
-  }
-
-  stopProcessing(): void {
-    this.isProcessing = false;
-  }
-}
 
 export interface NewPostDialogProps {
   open: boolean;
@@ -139,10 +88,10 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
   const [title, setTitle] = React.useState("");
   const [content, setContent] = React.useState<any[]>([]);
   const [isFullscreen, setIsFullscreen] = React.useState(false);
-  const [pollModalOpen, setPollModalOpen] = React.useState(false);
   const [pollV3ModalOpen, setPollV3ModalOpen] = React.useState(false);
-  const [editingPollConfig, setEditingPollConfig] = React.useState<Partial<PollConfig> | null>(null);
+  const [pollV2ModalOpen, setPollV2ModalOpen] = React.useState(false);
   const [editingPollV3Config, setEditingPollV3Config] = React.useState<Partial<PollConfigV3> | null>(null);
+  const [editingPollV2Config, setEditingPollV2Config] = React.useState<Partial<PollConfigV2> | null>(null);
   const [editingBlockId, setEditingBlockId] = React.useState<string | null>(null);
   const [currentStatus, setCurrentStatus] = React.useState<string>("Draft");
   
@@ -152,9 +101,23 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
   // Add scheduled date state
   const [scheduledDate, setScheduledDate] = React.useState<Date | null>(null);
   
-  // Generate unique dialog ID
+  // Generate unique dialog ID (keeping for potential future use)
   const dialogId = React.useRef(`dialog-${Math.random().toString(36).substr(2, 9)}`);
-  const editManager = React.useRef(PollEditEventManager.getInstance());
+  
+  // Use refs to track modal states for event handlers (to avoid closure issues)
+  const modalStatesRef = React.useRef({
+    pollV3ModalOpen: false,
+    pollV2ModalOpen: false,
+  });
+  
+  // Update refs when modal states change
+  React.useEffect(() => {
+    modalStatesRef.current.pollV3ModalOpen = pollV3ModalOpen;
+  }, [pollV3ModalOpen]);
+  
+  React.useEffect(() => {
+    modalStatesRef.current.pollV2ModalOpen = pollV2ModalOpen;
+  }, [pollV2ModalOpen]);
 
   // Initialize form data when editing post changes
   React.useEffect(() => {
@@ -183,8 +146,8 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
     initialContent: content.length > 0 ? content : undefined,
   });
 
-  // Function to create poll block from config (V4)
-  const createPollBlock = (config: PollConfig) => {
+  // Function to create poll block from config (V3)
+  const createPollBlock = (config: PollConfigV3) => {
     console.log('[POLL V4] Creating/updating poll block', { editingBlockId, config });
     
     if (editingBlockId) {
@@ -193,7 +156,7 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
       const block = editor.document.find(b => b.id === editingBlockId);
       if (block) {
         editor.updateBlock(block, {
-          type: "poll",
+          type: "pollV3",
           props: {
             question: config.question,
             pollType: config.pollType,
@@ -213,12 +176,12 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
         console.error(`[POLL V4] Block not found: ${editingBlockId}`);
       }
       setEditingBlockId(null);
-      setEditingPollConfig(null);
+      setEditingPollV3Config(null);
     } else {
       // Create new block
-      console.log('[POLL V4] Creating new poll block');
+      console.log('[POLL V3] Creating new poll block');
       insertOrUpdateBlock(editor, {
-        type: "poll",
+        type: "pollV3",
         props: {
           question: config.question,
           pollType: config.pollType,
@@ -259,13 +222,11 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
             allowedUsers: config.allowedUsers,
             startDate: config.startDate,
             endDate: config.endDate,
-            showResultsAfterVote: config.showResultsAfterVote,
-            showResultsBeforeEnd: config.showResultsBeforeEnd,
-            allowAddOptions: config.allowAddOptions,
-            state: "open",
-            totalParticipants: 0,
-          },
-        });
+                      showResultsAfterVote: config.showResultsAfterVote,
+          showResultsBeforeEnd: config.showResultsBeforeEnd,
+          allowAddOptions: config.allowAddOptions,
+        },
+      });
         console.log(`[POLL V3] Successfully updated block: ${editingBlockId}`);
       } else {
         console.error(`[POLL V3] Block not found: ${editingBlockId}`);
@@ -289,8 +250,6 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
           showResultsAfterVote: config.showResultsAfterVote,
           showResultsBeforeEnd: config.showResultsBeforeEnd,
           allowAddOptions: config.allowAddOptions,
-          state: "open",
-          totalParticipants: 0,
         },
       });
       console.log('[POLL V3] Successfully created new poll block');
@@ -299,20 +258,76 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
     console.log('[POLL V3] Poll block operation completed');
   };
 
-  // Slash menu item to open Poll V4 config modal
+  // Function to create poll V2 block from config
+  const createPollV2Block = (config: PollConfigV2) => {
+    console.log('[POLL V2] Creating/updating poll block', { editingBlockId, config });
+    
+    if (editingBlockId) {
+      // Update existing block
+      console.log(`[POLL V2] Updating existing block: ${editingBlockId}`);
+      const block = editor.document.find(b => b.id === editingBlockId);
+      if (block) {
+        editor.updateBlock(block, {
+          type: "pollV2",
+          props: {
+            question: config.question,
+            pollType: config.pollType,
+            optionsJson: JSON.stringify(config.options),
+            votesJson: JSON.stringify({}),
+            maxVotesPerUser: config.maxVotesPerUser,
+            allowedUsers: config.allowedUsers,
+            startDate: config.startDate,
+            endDate: config.endDate,
+            showResultsAfterVote: config.showResultsAfterVote,
+            showResultsBeforeEnd: config.showResultsBeforeEnd,
+            allowAddOptions: config.allowAddOptions,
+          },
+        });
+        console.log(`[POLL V2] Successfully updated block: ${editingBlockId}`);
+      } else {
+        console.error(`[POLL V2] Block not found: ${editingBlockId}`);
+      }
+      setEditingBlockId(null);
+      setEditingPollV2Config(null);
+    } else {
+      // Create new block
+      console.log('[POLL V2] Creating new poll block');
+      insertOrUpdateBlock(editor, {
+        type: "pollV2",
+        props: {
+          question: config.question,
+          pollType: config.pollType,
+          optionsJson: JSON.stringify(config.options),
+          votesJson: JSON.stringify({}),
+          maxVotesPerUser: config.maxVotesPerUser,
+          allowedUsers: config.allowedUsers,
+          startDate: config.startDate,
+          endDate: config.endDate,
+          showResultsAfterVote: config.showResultsAfterVote,
+          showResultsBeforeEnd: config.showResultsBeforeEnd,
+          allowAddOptions: config.allowAddOptions,
+        },
+      });
+      console.log('[POLL V2] Successfully created new poll block');
+    }
+    
+    console.log('[POLL V2] Poll block operation completed');
+  };
+
+  // Slash menu item to open Poll V3 config modal
   const insertPoll = (editor: typeof schema.BlockNoteEditor) => ({
-    title: "Poll (V4)",
+    title: "Poll (V3)",
     subtext: "Create an interactive poll with advanced settings",
     onItemClick: () => {
-      setEditingPollConfig(null);
+      setEditingPollV3Config(null);
       setEditingBlockId(null);
-      setPollModalOpen(true);
+      setPollV3ModalOpen(true);
     },
     aliases: [
       "poll",
-      "pollv4",
-      "poll(v4)",
-      "vote",
+      "pollv3",
+      "poll(v3)",
+      "vote", 
       "survey",
       "question",
       "voting",
@@ -322,18 +337,18 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
     icon: <BarChart3 />,
   });
 
-  // Slash menu item to open Poll V3 config modal
-  const insertPollV3 = (editor: typeof schema.BlockNoteEditor) => ({
-    title: "Poll (V3)",
+  // Slash menu item to open Poll V2 config modal
+  const insertPollV2 = (editor: typeof schema.BlockNoteEditor) => ({
+    title: "Poll (V2)",
     subtext: "Create a simple poll with basic options",
     onItemClick: () => {
-      setEditingPollV3Config(null);
+      setEditingPollV2Config(null);
       setEditingBlockId(null);
-      setPollV3ModalOpen(true);
+      setPollV2ModalOpen(true);
     },
     aliases: [
-      "pollv3",
-      "poll(v3)",
+      "pollv2",
+      "poll(v2)",
       "simplepoll",
       "basicpoll",
     ],
@@ -341,184 +356,123 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
     icon: <BarChart3 />,
   });
 
-  // Listen for poll edit events using singleton manager
+
+
+  // Listen for poll V3 edit events
   React.useEffect(() => {
-    const currentDialogId = dialogId.current;
-    const manager = editManager.current;
-    
-    // Try to register this dialog as the active one
-    const isActive = manager.registerDialog(currentDialogId);
-    
-    if (!isActive) {
-      console.log(`[${currentDialogId}] Not active, skipping event listener setup`);
-      return;
-    }
-
-    const handleEditPoll = (event: CustomEvent) => {
-      const { blockId, currentConfig } = event.detail;
-      
-      console.log(`[${currentDialogId}] Received edit poll event for block: ${blockId}`);
-      
-      // Check if this dialog can process the event
-      if (!manager.canProcess(currentDialogId)) {
-        return;
-      }
-      
-      // Check if modal is already open
-      if (pollModalOpen) {
-        console.log(`[${currentDialogId}] Modal already open, ignoring event`);
-        return;
-      }
-      
-      console.log(`[${currentDialogId}] Processing edit poll event for block: ${blockId}`);
-      
-      // Start processing
-      manager.startProcessing();
-      
-      // Process the event
-      setEditingBlockId(blockId);
-      setEditingPollConfig(currentConfig);
-      setPollModalOpen(true);
-      
-      // Reset processing flag after a delay
-      setTimeout(() => {
-        manager.stopProcessing();
-      }, 500);
-    };
-
-    console.log(`[${currentDialogId}] Registering edit poll event listener`);
-    window.addEventListener('editPoll', handleEditPoll as EventListener);
-    
-    return () => {
-      console.log(`[${currentDialogId}] Removing edit poll event listener`);
-      window.removeEventListener('editPoll', handleEditPoll as EventListener);
-      manager.unregisterDialog(currentDialogId);
-    };
-  }, [pollModalOpen]); // Add pollModalOpen dependency
-
-  // Listen for poll V3 edit events using singleton manager
-  React.useEffect(() => {
-    const currentDialogId = dialogId.current;
-    const manager = editManager.current;
-    
-    // Try to register this dialog as the active one
-    const isActive = manager.registerDialog(currentDialogId);
-    
-    if (!isActive) {
-      console.log(`[${currentDialogId}] Not active, skipping V3 event listener setup`);
-      return;
-    }
-
     const handleEditPollV3 = (event: CustomEvent) => {
+      event.stopPropagation(); // Prevent event bubbling
       const { blockId, currentConfig } = event.detail;
       
-      console.log(`[${currentDialogId}] Received edit poll V3 event for block: ${blockId}`);
+      console.log(`Received edit poll V3 event for block: ${blockId}`);
       
-      // Check if this dialog can process the event
-      if (!manager.canProcess(currentDialogId)) {
+      // Check if any modal is already open
+      if (modalStatesRef.current.pollV3ModalOpen || modalStatesRef.current.pollV2ModalOpen) {
+        console.log(`Modal already open, ignoring V3 edit event`);
         return;
       }
-      
-      // Check if modal is already open
-      if (pollV3ModalOpen) {
-        console.log(`[${currentDialogId}] V3 Modal already open, ignoring event`);
-        return;
-      }
-      
-      console.log(`[${currentDialogId}] Processing edit poll V3 event for block: ${blockId}`);
-      
-      // Start processing
-      manager.startProcessing();
       
       // Process the event
       setEditingBlockId(blockId);
       setEditingPollV3Config(currentConfig);
       setPollV3ModalOpen(true);
-      
-      // Reset processing flag after a delay
-      setTimeout(() => {
-        manager.stopProcessing();
-      }, 500);
     };
 
-    console.log(`[${currentDialogId}] Registering edit poll V3 event listener`);
+    console.log(`Registering edit poll V3 event listener`);
     window.addEventListener('editPollV3', handleEditPollV3 as EventListener);
     
     return () => {
-      console.log(`[${currentDialogId}] Removing edit poll V3 event listener`);
+      console.log(`Removing edit poll V3 event listener`);
       window.removeEventListener('editPollV3', handleEditPollV3 as EventListener);
     };
-  }, [pollV3ModalOpen]); // Add pollV3ModalOpen dependency
+  }, []); // Remove dependencies to prevent re-registration
 
-  // Listen for poll delete events using singleton manager
+
+
+  // Listen for poll V2 edit events
   React.useEffect(() => {
-    const currentDialogId = dialogId.current;
-    const manager = editManager.current;
-    
-    // Only listen if this dialog is active
-    if (!manager.canProcess(currentDialogId)) {
-      return;
-    }
-
-    const handleDeletePoll = (event: CustomEvent) => {
-      const { blockId } = event.detail;
+    const handleEditPollV2 = (event: CustomEvent) => {
+      event.stopPropagation(); // Prevent event bubbling
+      const { blockId, currentConfig } = event.detail;
       
-      console.log(`[${currentDialogId}] Received delete poll event for block: ${blockId}`);
+      console.log(`Received edit poll V2 event for block: ${blockId}`);
       
-      // Find and remove the block
-      const blockToDelete = editor.document.find(b => b.id === blockId);
-      if (blockToDelete) {
-        console.log(`[${currentDialogId}] Deleting poll block: ${blockId}`);
-        editor.removeBlocks([blockToDelete]);
-        console.log(`[${currentDialogId}] Successfully deleted poll block: ${blockId}`);
-      } else {
-        console.error(`[${currentDialogId}] Poll block not found: ${blockId}`);
+      // Check if any modal is already open
+      if (modalStatesRef.current.pollV3ModalOpen || modalStatesRef.current.pollV2ModalOpen) {
+        console.log(`Modal already open, ignoring V2 edit event`);
+        return;
       }
+      
+      // Process the event
+      setEditingBlockId(blockId);
+      setEditingPollV2Config(currentConfig);
+      setPollV2ModalOpen(true);
     };
 
-    console.log(`[${currentDialogId}] Registering delete poll event listener`);
-    window.addEventListener('deletePoll', handleDeletePoll as EventListener);
+    console.log(`Registering edit poll V2 event listener`);
+    window.addEventListener('editPollV2', handleEditPollV2 as EventListener);
     
     return () => {
-      console.log(`[${currentDialogId}] Removing delete poll event listener`);
-      window.removeEventListener('deletePoll', handleDeletePoll as EventListener);
+      console.log(`Removing edit poll V2 event listener`);
+      window.removeEventListener('editPollV2', handleEditPollV2 as EventListener);
     };
-  }, [editor]); // Add editor dependency
+  }, []); // Remove dependencies to prevent re-registration
 
-  // Listen for poll V3 delete events using singleton manager
+  // Listen for poll V3 delete events
   React.useEffect(() => {
-    const currentDialogId = dialogId.current;
-    const manager = editManager.current;
-    
-    // Only listen if this dialog is active
-    if (!manager.canProcess(currentDialogId)) {
-      return;
-    }
-
     const handleDeletePollV3 = (event: CustomEvent) => {
+      event.stopPropagation(); // Prevent event bubbling
       const { blockId } = event.detail;
       
-      console.log(`[${currentDialogId}] Received delete poll V3 event for block: ${blockId}`);
+      console.log(`Received delete poll V3 event for block: ${blockId}`);
       
       // Find and remove the block
       const blockToDelete = editor.document.find(b => b.id === blockId);
       if (blockToDelete) {
-        console.log(`[${currentDialogId}] Deleting poll V3 block: ${blockId}`);
+        console.log(`Deleting poll V3 block: ${blockId}`);
         editor.removeBlocks([blockToDelete]);
-        console.log(`[${currentDialogId}] Successfully deleted poll V3 block: ${blockId}`);
+        console.log(`Successfully deleted poll V3 block: ${blockId}`);
       } else {
-        console.error(`[${currentDialogId}] Poll V3 block not found: ${blockId}`);
+        console.error(`Poll V3 block not found: ${blockId}`);
       }
     };
 
-    console.log(`[${currentDialogId}] Registering delete poll V3 event listener`);
+    console.log(`Registering delete poll V3 event listener`);
     window.addEventListener('deletePollV3', handleDeletePollV3 as EventListener);
     
     return () => {
-      console.log(`[${currentDialogId}] Removing delete poll V3 event listener`);
+      console.log(`Removing delete poll V3 event listener`);
       window.removeEventListener('deletePollV3', handleDeletePollV3 as EventListener);
     };
-  }, [editor]); // Add editor dependency
+  }, []); // Remove editor dependency to prevent re-registration
+
+  // Listen for poll V2 delete events
+  React.useEffect(() => {
+    const handleDeletePollV2 = (event: CustomEvent) => {
+      event.stopPropagation(); // Prevent event bubbling
+      const { blockId } = event.detail;
+      
+      console.log(`Received delete poll V2 event for block: ${blockId}`);
+      
+      // Find and remove the block
+      const blockToDelete = editor.document.find(b => b.id === blockId);
+      if (blockToDelete) {
+        console.log(`Deleting poll V2 block: ${blockId}`);
+        editor.removeBlocks([blockToDelete]);
+        console.log(`Successfully deleted poll V2 block: ${blockId}`);
+      } else {
+        console.error(`Poll V2 block not found: ${blockId}`);
+      }
+    };
+
+    console.log(`Registering delete poll V2 event listener`);
+    window.addEventListener('deletePollV2', handleDeletePollV2 as EventListener);
+    
+    return () => {
+      console.log(`Removing delete poll V2 event listener`);
+      window.removeEventListener('deletePollV2', handleDeletePollV2 as EventListener);
+    };
+  }, []); // Remove editor dependency to prevent re-registration
 
   const handleSaveDraft = () => {
     // TODO: Implement save draft functionality
@@ -630,21 +584,21 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
   };
 
   const handlePollModalClose = () => {
-    console.log('[MODAL] Closing poll modal');
-    setPollModalOpen(false);
-    setEditingPollConfig(null);
-    setEditingBlockId(null);
-    
-    console.log('[MODAL] Poll modal closed and state reset');
-  };
-
-  const handlePollV3ModalClose = () => {
     console.log('[MODAL] Closing poll V3 modal');
     setPollV3ModalOpen(false);
     setEditingPollV3Config(null);
     setEditingBlockId(null);
     
     console.log('[MODAL] Poll V3 modal closed and state reset');
+  };
+
+  const handlePollV2ModalClose = () => {
+    console.log('[MODAL] Closing poll V2 modal');
+    setPollV2ModalOpen(false);
+    setEditingPollV2Config(null);
+    setEditingBlockId(null);
+    
+    console.log('[MODAL] Poll V2 modal closed and state reset');
   };
 
   return (
@@ -776,7 +730,7 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
                         );
                         // Insert the Poll items as the last items in the "Basic blocks" group
                         defaultItems.splice(lastBasicBlockIndex + 1, 0, insertPoll(editor));
-                        defaultItems.splice(lastBasicBlockIndex + 2, 0, insertPollV3(editor));
+                        defaultItems.splice(lastBasicBlockIndex + 2, 0, insertPollV2(editor));
                         
                         // Return filtered items based on the query
                         return filterSuggestionItems(defaultItems, query);
@@ -1002,22 +956,22 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
       </Dialog>
 
       {/* Poll Configuration Modal */}
-      {pollModalOpen && (
-        <PollConfigModal
-          open={pollModalOpen}
-          onOpenChange={handlePollModalClose}
-          onConfirm={createPollBlock}
-          initialConfig={editingPollConfig || undefined}
-        />
-      )}
-
-      {/* Poll V3 Configuration Modal */}
       {pollV3ModalOpen && (
         <PollConfigModalV3
           open={pollV3ModalOpen}
-          onOpenChange={handlePollV3ModalClose}
-          onConfirm={createPollV3Block}
+          onOpenChange={handlePollModalClose}
+          onConfirm={createPollBlock}
           initialConfig={editingPollV3Config || undefined}
+        />
+      )}
+
+      {/* Poll V2 Configuration Modal */}
+      {pollV2ModalOpen && (
+        <PollConfigModalV2
+          open={pollV2ModalOpen}
+          onOpenChange={handlePollV2ModalClose}
+          onConfirm={createPollV2Block}
+          initialConfig={editingPollV2Config || undefined}
         />
       )}
 

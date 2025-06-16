@@ -35,12 +35,12 @@ interface PollProps {
   showResultsAfterVote: boolean;
   showResultsBeforeEnd: boolean;
   allowAddOptions: boolean;
-  // V3 specific props
+  // V2 specific props
   state?: PollState;
   totalParticipants?: number;
 }
 
-function PollBlockV3({ block }: { block: any }) {
+function PollBlockV2({ block }: { block: any }) {
   const [votes, setVotes] = React.useState<PollVote[]>([]);
   const [userVotes, setUserVotes] = React.useState<number[]>([]);
   const [hasVoted, setHasVoted] = React.useState(false);
@@ -49,6 +49,9 @@ function PollBlockV3({ block }: { block: any }) {
   const props = block.props as PollProps;
   const options = JSON.parse(props.optionsJson || "[]");
   const votesData = JSON.parse(props.votesJson || "{}");
+  
+  // Check if we're in editing mode (composer) by looking for BlockNote editor context
+  const isEditingMode = true; // In composer, always disable voting
   
   // Calculate poll state
   const getPollState = (): PollState => {
@@ -81,6 +84,9 @@ function PollBlockV3({ block }: { block: any }) {
 
   // Handle voting
   const handleVote = (optionIndex: number) => {
+    // Disable voting in editing mode (composer)
+    if (isEditingMode) return;
+    
     if (pollState !== "open") return;
 
     if (props.pollType === "single") {
@@ -101,6 +107,9 @@ function PollBlockV3({ block }: { block: any }) {
   };
 
   const handleSubmitVote = () => {
+    // Disable voting in editing mode (composer)
+    if (isEditingMode) return;
+    
     if (userVotes.length === 0) return;
     
     setHasVoted(true);
@@ -114,8 +123,8 @@ function PollBlockV3({ block }: { block: any }) {
 
   // Handle edit poll
   const handleEditPoll = () => {
-    console.log("Editing poll V3 block:", block.id);
-    const editEvent = new CustomEvent('editPollV3', {
+    console.log("Editing poll V2 block:", block.id);
+    const editEvent = new CustomEvent('editPollV2', {
       detail: {
         blockId: block.id,
         currentConfig: {
@@ -137,8 +146,8 @@ function PollBlockV3({ block }: { block: any }) {
 
   // Handle delete poll
   const handleDeletePoll = () => {
-    console.log("Deleting poll V3 block:", block.id);
-    const deleteEvent = new CustomEvent('deletePollV3', {
+    console.log("Deleting poll V2 block:", block.id);
+    const deleteEvent = new CustomEvent('deletePollV2', {
       detail: { blockId: block.id }
     });
     window.dispatchEvent(deleteEvent);
@@ -184,21 +193,12 @@ function PollBlockV3({ block }: { block: any }) {
           {getStateIcon()}
           <div>
             <h3 className="text-sm font-medium text-gray-900 dark:text-white">
-              Poll V3
+              Poll V2 {isEditingMode && <span className="text-xs text-gray-500">• Preview</span>}
             </h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              {getStateText()}
-            </p>
           </div>
         </div>
         
         <div className="flex items-center gap-1">
-          {props.totalParticipants && (
-            <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-              <Users className="h-3 w-3" />
-              {props.totalParticipants} participants
-            </span>
-          )}
           <Button
             variant="ghost"
             size="sm"
@@ -237,14 +237,18 @@ function PollBlockV3({ block }: { block: any }) {
               <div
                 key={index}
                 className={cn(
-                  "relative rounded-lg border-2 transition-all duration-200 cursor-pointer",
-                  isSelected
+                  "relative rounded-lg border-2 transition-all duration-200",
+                  isEditingMode 
+                    ? "cursor-default border-gray-200 dark:border-gray-700" 
+                    : "cursor-pointer",
+                  !isEditingMode && isSelected
                     ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                    : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600",
-                  isHighlighted && "ring-2 ring-green-500 ring-opacity-50",
+                    : "border-gray-200 dark:border-gray-700",
+                  !isEditingMode && !isSelected && "hover:border-gray-300 dark:hover:border-gray-600",
+                  !isEditingMode && isHighlighted && "ring-2 ring-green-500 ring-opacity-50",
                   pollState === "scheduled" && "opacity-50 cursor-not-allowed"
                 )}
-                onClick={() => handleVote(index)}
+                onClick={() => !isEditingMode && handleVote(index)}
               >
                 {/* Background bar for results */}
                 {shouldShowResults && (
@@ -297,8 +301,13 @@ function PollBlockV3({ block }: { block: any }) {
         {props.pollType === "multiple" && !hasVoted && pollState === "open" && (
           <Button
             onClick={handleSubmitVote}
-            disabled={userVotes.length === 0}
-            className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white"
+            disabled={isEditingMode || userVotes.length === 0}
+            className={cn(
+              "w-full mt-4 text-white",
+              isEditingMode 
+                ? "bg-gray-400 cursor-not-allowed" 
+                : "bg-blue-600 hover:bg-blue-700"
+            )}
           >
             Submit Vote{userVotes.length > 1 ? 's' : ''}
             {userVotes.length > 0 && (
@@ -325,10 +334,10 @@ function PollBlockV3({ block }: { block: any }) {
   );
 }
 
-// Export the V3 poll block spec
-export const PollV3 = createReactBlockSpec(
+// Export the V2 poll block spec
+export const PollV2 = createReactBlockSpec(
   {
-    type: "pollV3",
+    type: "pollV2",
     propSchema: {
       question: { default: "" },
       pollType: { default: "single" },
@@ -347,6 +356,6 @@ export const PollV3 = createReactBlockSpec(
     content: "none",
   },
   {
-    render: (props) => <PollBlockV3 block={props.block} />,
+    render: (props) => <PollBlockV2 block={props.block} />,
   }
 ); 

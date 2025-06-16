@@ -35,7 +35,36 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export interface PollConfigV3 {
+// Toggle Switch Component
+const Toggle = ({ checked, onChange, disabled = false }: { 
+  checked: boolean; 
+  onChange: (checked: boolean) => void; 
+  disabled?: boolean 
+}) => {
+  return (
+    <button
+      type="button"
+      className={cn(
+        "relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+        checked 
+          ? "bg-blue-600" 
+          : "bg-gray-300 dark:bg-gray-600",
+        disabled && "opacity-50 cursor-not-allowed"
+      )}
+      onClick={() => !disabled && onChange(!checked)}
+      disabled={disabled}
+    >
+      <span
+        className={cn(
+          "inline-block h-3 w-3 transform rounded-full bg-white transition-transform",
+          checked ? "translate-x-5" : "translate-x-1"
+        )}
+      />
+    </button>
+  );
+};
+
+export interface PollConfigV2 {
   question: string;
   pollType: "single" | "multiple";
   options: string[];
@@ -49,11 +78,11 @@ export interface PollConfigV3 {
   allowAddOptions: boolean;
 }
 
-export interface PollConfigModalV3Props {
+export interface PollConfigModalV2Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: (config: PollConfigV3) => void;
-  initialConfig?: Partial<PollConfigV3>;
+  onConfirm: (config: PollConfigV2) => void;
+  initialConfig?: Partial<PollConfigV2>;
 }
 
 const pollTypeOptions = [
@@ -92,7 +121,7 @@ const userPermissionOptions = [
   }
 ];
 
-export function PollConfigModalV3({ open, onOpenChange, onConfirm, initialConfig }: PollConfigModalV3Props) {
+export function PollConfigModalV2({ open, onOpenChange, onConfirm, initialConfig }: PollConfigModalV2Props) {
   const [activeTab, setActiveTab] = React.useState<"main" | "settings">("main");
   const [question, setQuestion] = React.useState(initialConfig?.question || "");
   const [pollType, setPollType] = React.useState<"single" | "multiple">(initialConfig?.pollType || "single");
@@ -200,20 +229,14 @@ export function PollConfigModalV3({ open, onOpenChange, onConfirm, initialConfig
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-0 [&>button]:hidden">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-hidden flex flex-col bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 gap-0 p-0 [&>button]:hidden">
         {/* Header - Fixed */}
-        <DialogHeader className="flex-shrink-0 flex flex-row items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+        <DialogHeader className="flex-shrink-0 flex flex-row items-center justify-between px-4 py-2">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-            </div>
             <div>
               <DialogTitle className="text-lg font-medium text-gray-900 dark:text-white">
                 {initialConfig ? "Edit Poll" : "Create Poll"}
               </DialogTitle>
-              <DialogDescription className="text-sm text-gray-500 dark:text-gray-400">
-                {initialConfig ? "Edit your poll settings and options" : "Create a new poll with questions and voting options"}
-              </DialogDescription>
             </div>
           </div>
           <Button
@@ -227,30 +250,28 @@ export function PollConfigModalV3({ open, onOpenChange, onConfirm, initialConfig
         </DialogHeader>
 
         {/* Tabs */}
-        <div className="flex-shrink-0 border-b border-gray-200 dark:border-gray-700">
-          <div className="flex">
+        <div className="flex-shrink-0 px-6 pt-2">
+          <div className="flex rounded-lg p-1">
             <button
               className={cn(
-                "px-6 py-3 text-sm font-medium border-b-2 transition-colors",
+                "flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors",
                 activeTab === "main"
-                  ? "border-blue-500 text-blue-600 dark:text-blue-400"
-                  : "border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                  ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm"
+                  : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
               )}
               onClick={() => setActiveTab("main")}
             >
-              <Zap className="w-4 h-4 mr-2 inline" />
               Main
             </button>
             <button
               className={cn(
-                "px-6 py-3 text-sm font-medium border-b-2 transition-colors",
+                "flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors",
                 activeTab === "settings"
-                  ? "border-blue-500 text-blue-600 dark:text-blue-400"
-                  : "border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+                  ? "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm"
+                  : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
               )}
               onClick={() => setActiveTab("settings")}
             >
-              <Settings className="w-4 h-4 mr-2 inline" />
               Settings
             </button>
           </div>
@@ -259,9 +280,9 @@ export function PollConfigModalV3({ open, onOpenChange, onConfirm, initialConfig
         {/* Content - Scrollable */}
         <div className="flex-1 overflow-y-auto">
           {activeTab === "main" ? (
-            <div className="p-6 space-y-6">
+            <div className="p-6 space-y-4">
               {/* Poll Question */}
-              <div className="space-y-3">
+              <div className="space-y-1">
                 <Label htmlFor="question" className="text-sm font-medium text-gray-900 dark:text-white">
                   Poll Question
                 </Label>
@@ -272,46 +293,11 @@ export function PollConfigModalV3({ open, onOpenChange, onConfirm, initialConfig
                   onChange={(e) => setQuestion(e.target.value)}
                   className="min-h-[80px] resize-none border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Ask a clear and engaging question for your community
-                </p>
               </div>
 
-              {/* Poll Type */}
-              <div className="space-y-3">
-                <Label className="text-sm font-medium text-gray-900 dark:text-white">
-                  Poll Type
-                </Label>
-                <div className="grid grid-cols-2 gap-3">
-                  {pollTypeOptions.map((option) => (
-                    <div
-                      key={option.value}
-                      className={cn(
-                        "p-4 border-2 rounded-lg cursor-pointer transition-all",
-                        pollType === option.value
-                          ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                          : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
-                      )}
-                      onClick={() => setPollType(option.value as "single" | "multiple")}
-                    >
-                      <div className="flex items-center gap-3">
-                        <option.icon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                        <div>
-                          <h3 className="font-medium text-gray-900 dark:text-white">
-                            {option.label}
-                          </h3>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            {option.description}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
 
               {/* Poll Options */}
-              <div className="space-y-4">
+              <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label className="text-sm font-medium text-gray-900 dark:text-white">
                     Answer Options
@@ -322,7 +308,7 @@ export function PollConfigModalV3({ open, onOpenChange, onConfirm, initialConfig
                 </div>
 
                 {/* Options List */}
-                <div className="space-y-3">
+                <div className="space-y-1">
                   {options.map((option, index) => (
                     <div key={index} className="flex items-center gap-3 group">
                       <div className="flex items-center gap-3 flex-1 px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-gray-300 dark:hover:border-gray-600 transition-colors bg-white dark:bg-gray-800">
@@ -364,168 +350,155 @@ export function PollConfigModalV3({ open, onOpenChange, onConfirm, initialConfig
               </div>
             </div>
           ) : (
-            <div className="p-6 space-y-6">
-              {/* Voting Settings */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                  Voting Settings
-                </h3>
-                
-                {/* Max Votes per User */}
-                <div className="space-y-3">
+            <div className="p-6 space-y-4">
+              {/* Poll Type */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-gray-900 dark:text-white">
+                  Poll Type
+                </Label>
+                <Select
+                  value={pollType}
+                  onValueChange={(value) => setPollType(value as "single" | "multiple")}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="single">Single Choice</SelectItem>
+                    <SelectItem value="multiple">Multiple Choice</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Choose whether users can select one or multiple options
+                </p>
+              </div>
+
+              {/* Max Votes per User */}
+              {pollType === "multiple" && (
+                <div className="space-y-2">
                   <Label className="text-sm font-medium text-gray-900 dark:text-white">
-                    Maximum votes per user
+                    Max votes per user
                   </Label>
                   <Select
                     value={maxVotesPerUser.toString()}
                     onValueChange={(value) => setMaxVotesPerUser(parseInt(value))}
-                    disabled={pollType === "single"}
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {pollType === "single" ? (
-                        <SelectItem value="1">1 vote</SelectItem>
-                      ) : (
-                        <>
-                          <SelectItem value="1">1 vote</SelectItem>
-                          <SelectItem value="2">2 votes</SelectItem>
-                          <SelectItem value="3">3 votes</SelectItem>
-                          <SelectItem value="5">5 votes</SelectItem>
-                          <SelectItem value="-1">Unlimited</SelectItem>
-                        </>
-                      )}
+                      <SelectItem value="1">1 vote</SelectItem>
+                      <SelectItem value="2">2 votes</SelectItem>
+                      <SelectItem value="3">3 votes</SelectItem>
+                      <SelectItem value="5">5 votes</SelectItem>
+                      <SelectItem value="-1">Unlimited</SelectItem>
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Maximum number of options each user can vote for
+                    Limit how many options each user can vote for
+                  </p>
+                </div>
+              )}
+
+              {/* User Permissions */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-gray-900 dark:text-white">
+                  Who can vote
+                </Label>
+                <Select
+                  value={allowedUsers}
+                  onValueChange={(value) => setAllowedUsers(value as "all" | "members" | "staff")}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Users</SelectItem>
+                    <SelectItem value="members">Members Only</SelectItem>
+                    <SelectItem value="staff">Staff Only</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Control who has permission to participate in this poll
+                </p>
+              </div>
+
+              {/* Schedule */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-gray-900 dark:text-white">
+                  Start Date (optional)
+                </Label>
+                <Input
+                  type="datetime-local"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="border-gray-200 dark:border-gray-700"
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  When the poll becomes active. Leave empty to start immediately
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-gray-900 dark:text-white">
+                  End Date (optional)
+                </Label>
+                <Input
+                  type="datetime-local"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="border-gray-200 dark:border-gray-700"
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  When the poll closes. Leave empty for no end date
+                </p>
+              </div>
+
+              {/* Privacy & Results - Compact toggles */}
+              <div className="space-y-3 pt-2">
+                <div className="py-1">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium text-gray-900 dark:text-white">
+                      Show results after vote
+                    </Label>
+                    <Toggle
+                      checked={showResultsAfterVote}
+                      onChange={setShowResultsAfterVote}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Users can see results immediately after voting
                   </p>
                 </div>
 
-                {/* User Permissions */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium text-gray-900 dark:text-white">
-                    Who can vote
-                  </Label>
-                  <div className="space-y-2">
-                    {userPermissionOptions.map((option) => (
-                      <div
-                        key={option.value}
-                        className={cn(
-                          "p-3 border rounded-lg cursor-pointer transition-all",
-                          allowedUsers === option.value
-                            ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                            : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
-                        )}
-                        onClick={() => setAllowedUsers(option.value as "all" | "members" | "staff")}
-                      >
-                        <div className="flex items-center gap-3">
-                          <option.icon className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                          <div>
-                            <h4 className="font-medium text-gray-900 dark:text-white text-sm">
-                              {option.label}
-                            </h4>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                              {option.description}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Schedule Settings */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                  Schedule
-                </h3>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-gray-900 dark:text-white">
-                      Start Date
-                    </Label>
-                    <Input
-                      type="datetime-local"
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      className="border-gray-200 dark:border-gray-700"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-gray-900 dark:text-white">
-                      End Date
-                    </Label>
-                    <Input
-                      type="datetime-local"
-                      value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                      className="border-gray-200 dark:border-gray-700"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Privacy Settings */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                  Privacy & Results
-                </h3>
-                
-                <div className="space-y-3">
+                <div className="py-1">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="text-sm font-medium text-gray-900 dark:text-white">
-                        Show results after vote
-                      </Label>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Users can see results immediately after voting
-                      </p>
-                    </div>
-                    <input
-                      type="checkbox"
-                      checked={showResultsAfterVote}
-                      onChange={(e) => setShowResultsAfterVote(e.target.checked)}
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="text-sm font-medium text-gray-900 dark:text-white">
-                        Show live results
-                      </Label>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Display real-time results before poll ends
-                      </p>
-                    </div>
-                    <input
-                      type="checkbox"
+                    <Label className="text-sm font-medium text-gray-900 dark:text-white">
+                      Show live results
+                    </Label>
+                    <Toggle
                       checked={showResultsBeforeEnd}
-                      onChange={(e) => setShowResultsBeforeEnd(e.target.checked)}
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      onChange={setShowResultsBeforeEnd}
                     />
                   </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Display real-time results to all users before poll ends
+                  </p>
+                </div>
 
+                <div className="py-1">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="text-sm font-medium text-gray-900 dark:text-white">
-                        Allow user options
-                      </Label>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Users can add new options to the poll
-                      </p>
-                    </div>
-                    <input
-                      type="checkbox"
+                    <Label className="text-sm font-medium text-gray-900 dark:text-white">
+                      Allow user options
+                    </Label>
+                    <Toggle
                       checked={allowAddOptions}
-                      onChange={(e) => setAllowAddOptions(e.target.checked)}
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      onChange={setAllowAddOptions}
                     />
                   </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Users can add new options to the poll
+                  </p>
                 </div>
               </div>
             </div>

@@ -61,7 +61,7 @@ const drawerAnimationClasses = `
   }
 `;
 
-export interface PollConfig {
+export interface PollConfigV3 {
   question: string;
   pollType: "single" | "multiple";
   options: string[];
@@ -75,11 +75,11 @@ export interface PollConfig {
   allowAddOptions: boolean;
 }
 
-export interface PollConfigModalProps {
+export interface PollConfigModalV3Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: (config: PollConfig) => void;
-  initialConfig?: Partial<PollConfig>;
+  onConfirm: (config: PollConfigV3) => void;
+  initialConfig?: Partial<PollConfigV3>;
 }
 
 const pollTypeOptions = [
@@ -118,7 +118,7 @@ const userPermissionOptions = [
   }
 ];
 
-export function PollConfigModal({ open, onOpenChange, onConfirm, initialConfig }: PollConfigModalProps) {
+export function PollConfigModalV3({ open, onOpenChange, onConfirm, initialConfig }: PollConfigModalV3Props) {
   const [question, setQuestion] = React.useState(initialConfig?.question || "");
   const [pollType, setPollType] = React.useState<"single" | "multiple">(initialConfig?.pollType || "single");
   const [options, setOptions] = React.useState<string[]>(
