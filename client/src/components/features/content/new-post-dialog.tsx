@@ -110,6 +110,13 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
     pollV2ModalOpen: false,
   });
   
+  // Add debounce tracking to prevent rapid multiple events
+  const eventProcessingRef = React.useRef({
+    lastEditV3Event: 0,
+    lastEditV2Event: 0,
+    processingDelay: 300, // 300ms debounce
+  });
+  
   // Update refs when modal states change
   React.useEffect(() => {
     modalStatesRef.current.pollV3ModalOpen = pollV3ModalOpen;
@@ -118,6 +125,16 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
   React.useEffect(() => {
     modalStatesRef.current.pollV2ModalOpen = pollV2ModalOpen;
   }, [pollV2ModalOpen]);
+
+  // Cleanup on unmount to prevent any lingering event listeners
+  React.useEffect(() => {
+    return () => {
+      // Reset all timing states
+      eventProcessingRef.current.lastEditV3Event = 0;
+      eventProcessingRef.current.lastEditV2Event = 0;
+      console.log('[CLEANUP] Component unmounting, event timers reset');
+    };
+  }, []);
 
   // Initialize form data when editing post changes
   React.useEffect(() => {
@@ -360,15 +377,30 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
 
   // Listen for poll V3 edit events
   React.useEffect(() => {
+    // Only register event listener if this dialog is currently open
+    if (!open) return;
+    
     const handleEditPollV3 = (event: CustomEvent) => {
-      event.stopPropagation(); // Prevent event bubbling
-      const { blockId, currentConfig } = event.detail;
+      event.stopPropagation();
+      event.preventDefault();
       
-      console.log(`Received edit poll V3 event for block: ${blockId}`);
+      const now = Date.now();
+      const lastEvent = eventProcessingRef.current.lastEditV3Event;
+      
+      // Debounce: ignore events that come too quickly
+      if (now - lastEvent < eventProcessingRef.current.processingDelay) {
+        console.log(`[V3] Event ignored - too soon after last event (${now - lastEvent}ms)`);
+        return;
+      }
+      
+      eventProcessingRef.current.lastEditV3Event = now;
+      
+      const { blockId, currentConfig } = event.detail;
+      console.log(`[V3] Processing edit event for block: ${blockId}`);
       
       // Check if any modal is already open
       if (modalStatesRef.current.pollV3ModalOpen || modalStatesRef.current.pollV2ModalOpen) {
-        console.log(`Modal already open, ignoring V3 edit event`);
+        console.log(`[V3] Modal already open, ignoring edit event`);
         return;
       }
       
@@ -376,30 +408,47 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
       setEditingBlockId(blockId);
       setEditingPollV3Config(currentConfig);
       setPollV3ModalOpen(true);
+      
+      console.log(`[V3] Modal opened for block: ${blockId}`);
     };
 
-    console.log(`Registering edit poll V3 event listener`);
-    window.addEventListener('editPollV3', handleEditPollV3 as EventListener);
+    console.log(`[V3] Registering edit poll V3 event listener (dialog open)`);
+    window.addEventListener('editPollV3', handleEditPollV3 as EventListener, { passive: false });
     
     return () => {
-      console.log(`Removing edit poll V3 event listener`);
+      console.log(`[V3] Removing edit poll V3 event listener (dialog closing)`);
       window.removeEventListener('editPollV3', handleEditPollV3 as EventListener);
     };
-  }, []); // Remove dependencies to prevent re-registration
+  }, [open]); // Only register when dialog is open
 
 
 
   // Listen for poll V2 edit events
   React.useEffect(() => {
+    // Only register event listener if this dialog is currently open
+    if (!open) return;
+    
     const handleEditPollV2 = (event: CustomEvent) => {
-      event.stopPropagation(); // Prevent event bubbling
-      const { blockId, currentConfig } = event.detail;
+      event.stopPropagation();
+      event.preventDefault();
       
-      console.log(`Received edit poll V2 event for block: ${blockId}`);
+      const now = Date.now();
+      const lastEvent = eventProcessingRef.current.lastEditV2Event;
+      
+      // Debounce: ignore events that come too quickly
+      if (now - lastEvent < eventProcessingRef.current.processingDelay) {
+        console.log(`[V2] Event ignored - too soon after last event (${now - lastEvent}ms)`);
+        return;
+      }
+      
+      eventProcessingRef.current.lastEditV2Event = now;
+      
+      const { blockId, currentConfig } = event.detail;
+      console.log(`[V2] Processing edit event for block: ${blockId}`);
       
       // Check if any modal is already open
       if (modalStatesRef.current.pollV3ModalOpen || modalStatesRef.current.pollV2ModalOpen) {
-        console.log(`Modal already open, ignoring V2 edit event`);
+        console.log(`[V2] Modal already open, ignoring edit event`);
         return;
       }
       
@@ -407,72 +456,80 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
       setEditingBlockId(blockId);
       setEditingPollV2Config(currentConfig);
       setPollV2ModalOpen(true);
+      
+      console.log(`[V2] Modal opened for block: ${blockId}`);
     };
 
-    console.log(`Registering edit poll V2 event listener`);
-    window.addEventListener('editPollV2', handleEditPollV2 as EventListener);
+    console.log(`[V2] Registering edit poll V2 event listener (dialog open)`);
+    window.addEventListener('editPollV2', handleEditPollV2 as EventListener, { passive: false });
     
     return () => {
-      console.log(`Removing edit poll V2 event listener`);
+      console.log(`[V2] Removing edit poll V2 event listener (dialog closing)`);
       window.removeEventListener('editPollV2', handleEditPollV2 as EventListener);
     };
-  }, []); // Remove dependencies to prevent re-registration
+  }, [open]); // Only register when dialog is open
 
   // Listen for poll V3 delete events
   React.useEffect(() => {
+    // Only register event listener if this dialog is currently open
+    if (!open) return;
+    
     const handleDeletePollV3 = (event: CustomEvent) => {
       event.stopPropagation(); // Prevent event bubbling
       const { blockId } = event.detail;
       
-      console.log(`Received delete poll V3 event for block: ${blockId}`);
+      console.log(`[V3] Received delete poll V3 event for block: ${blockId}`);
       
       // Find and remove the block
       const blockToDelete = editor.document.find(b => b.id === blockId);
       if (blockToDelete) {
-        console.log(`Deleting poll V3 block: ${blockId}`);
+        console.log(`[V3] Deleting poll V3 block: ${blockId}`);
         editor.removeBlocks([blockToDelete]);
-        console.log(`Successfully deleted poll V3 block: ${blockId}`);
+        console.log(`[V3] Successfully deleted poll V3 block: ${blockId}`);
       } else {
-        console.error(`Poll V3 block not found: ${blockId}`);
+        console.error(`[V3] Poll V3 block not found: ${blockId}`);
       }
     };
 
-    console.log(`Registering delete poll V3 event listener`);
+    console.log(`[V3] Registering delete poll V3 event listener (dialog open)`);
     window.addEventListener('deletePollV3', handleDeletePollV3 as EventListener);
     
     return () => {
-      console.log(`Removing delete poll V3 event listener`);
+      console.log(`[V3] Removing delete poll V3 event listener (dialog closing)`);
       window.removeEventListener('deletePollV3', handleDeletePollV3 as EventListener);
     };
-  }, []); // Remove editor dependency to prevent re-registration
+  }, [open]); // Only register when dialog is open
 
   // Listen for poll V2 delete events
   React.useEffect(() => {
+    // Only register event listener if this dialog is currently open
+    if (!open) return;
+    
     const handleDeletePollV2 = (event: CustomEvent) => {
       event.stopPropagation(); // Prevent event bubbling
       const { blockId } = event.detail;
       
-      console.log(`Received delete poll V2 event for block: ${blockId}`);
+      console.log(`[V2] Received delete poll V2 event for block: ${blockId}`);
       
       // Find and remove the block
       const blockToDelete = editor.document.find(b => b.id === blockId);
       if (blockToDelete) {
-        console.log(`Deleting poll V2 block: ${blockId}`);
+        console.log(`[V2] Deleting poll V2 block: ${blockId}`);
         editor.removeBlocks([blockToDelete]);
-        console.log(`Successfully deleted poll V2 block: ${blockId}`);
+        console.log(`[V2] Successfully deleted poll V2 block: ${blockId}`);
       } else {
-        console.error(`Poll V2 block not found: ${blockId}`);
+        console.error(`[V2] Poll V2 block not found: ${blockId}`);
       }
     };
 
-    console.log(`Registering delete poll V2 event listener`);
+    console.log(`[V2] Registering delete poll V2 event listener (dialog open)`);
     window.addEventListener('deletePollV2', handleDeletePollV2 as EventListener);
     
     return () => {
-      console.log(`Removing delete poll V2 event listener`);
+      console.log(`[V2] Removing delete poll V2 event listener (dialog closing)`);
       window.removeEventListener('deletePollV2', handleDeletePollV2 as EventListener);
     };
-  }, []); // Remove editor dependency to prevent re-registration
+  }, [open]); // Only register when dialog is open
 
   const handleSaveDraft = () => {
     // TODO: Implement save draft functionality
@@ -584,21 +641,31 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
   };
 
   const handlePollModalClose = () => {
-    console.log('[MODAL] Closing poll V3 modal');
+    console.log('[V3] Closing poll V3 modal');
+    
+    // Reset state
     setPollV3ModalOpen(false);
     setEditingPollV3Config(null);
     setEditingBlockId(null);
     
-    console.log('[MODAL] Poll V3 modal closed and state reset');
+    // Reset debounce timing to allow new events
+    eventProcessingRef.current.lastEditV3Event = 0;
+    
+    console.log('[V3] Poll V3 modal closed and state reset');
   };
 
   const handlePollV2ModalClose = () => {
-    console.log('[MODAL] Closing poll V2 modal');
+    console.log('[V2] Closing poll V2 modal');
+    
+    // Reset state
     setPollV2ModalOpen(false);
     setEditingPollV2Config(null);
     setEditingBlockId(null);
     
-    console.log('[MODAL] Poll V2 modal closed and state reset');
+    // Reset debounce timing to allow new events
+    eventProcessingRef.current.lastEditV2Event = 0;
+    
+    console.log('[V2] Poll V2 modal closed and state reset');
   };
 
   return (

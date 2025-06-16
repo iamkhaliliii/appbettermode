@@ -2,14 +2,9 @@ import * as React from "react";
 import { Button } from "@/components/ui/primitives";
 import { 
   BarChart3, 
-  Users, 
-  Clock, 
-  CheckCircle, 
-  XCircle, 
   Settings, 
   Trash2,
-  Timer,
-  Calendar
+  Vote
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createReactBlockSpec } from "@blocknote/react";
@@ -121,81 +116,100 @@ function PollBlockV2({ block }: { block: any }) {
     console.log("Submitting votes:", userVotes);
   };
 
-  // Handle edit poll
-  const handleEditPoll = () => {
-    console.log("Editing poll V2 block:", block.id);
-    const editEvent = new CustomEvent('editPollV2', {
-      detail: {
-        blockId: block.id,
-        currentConfig: {
-          question: props.question,
-          pollType: props.pollType,
-          options: options,
-          maxVotesPerUser: props.maxVotesPerUser,
-          allowedUsers: props.allowedUsers,
-          startDate: props.startDate,
-          endDate: props.endDate,
-          showResultsAfterVote: props.showResultsAfterVote,
-          showResultsBeforeEnd: props.showResultsBeforeEnd,
-          allowAddOptions: props.allowAddOptions,
-        }
+  // Track last edit time to prevent double-clicks
+  const lastEditTimeRef = React.useRef<number>(0);
+
+  // Handle edit poll with debouncing
+  const handleEditPoll = React.useCallback((event: React.MouseEvent) => {
+    // Prevent event bubbling and default behavior
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const now = Date.now();
+    const timeSinceLastEdit = now - lastEditTimeRef.current;
+    
+    // Debounce: ignore clicks within 1000ms of the last one  
+    if (timeSinceLastEdit < 1000) {
+      console.log(`[POLL-V2] Edit request debounced for block: ${block.id} (${timeSinceLastEdit}ms since last)`);
+      return;
+    }
+    
+    // Update last edit time immediately to prevent race conditions
+    lastEditTimeRef.current = now;
+    
+    console.log(`[POLL-V2] Processing edit click for block: ${block.id}`);
+    
+    const eventDetail = {
+      blockId: block.id,
+      currentConfig: {
+        question: props.question,
+        pollType: props.pollType,
+        options: options,
+        maxVotesPerUser: props.maxVotesPerUser,
+        allowedUsers: props.allowedUsers,
+        startDate: props.startDate,
+        endDate: props.endDate,
+        showResultsAfterVote: props.showResultsAfterVote,
+        showResultsBeforeEnd: props.showResultsBeforeEnd,
+        allowAddOptions: props.allowAddOptions,
       }
+    };
+    
+    console.log(`[POLL-V2] Dispatching edit poll event for block: ${block.id}`);
+    
+    // Dispatch the event immediately with no bubbling
+    const editEvent = new CustomEvent('editPollV2', {
+      detail: eventDetail,
+      bubbles: false
     });
     window.dispatchEvent(editEvent);
-  };
+  }, [block.id, props.question, props.pollType, options, props.maxVotesPerUser, props.allowedUsers, props.startDate, props.endDate, props.showResultsAfterVote, props.showResultsBeforeEnd, props.allowAddOptions]);
 
-  // Handle delete poll
-  const handleDeletePoll = () => {
-    console.log("Deleting poll V2 block:", block.id);
-    const deleteEvent = new CustomEvent('deletePollV2', {
-      detail: { blockId: block.id }
-    });
-    window.dispatchEvent(deleteEvent);
-  };
-
-  const getStateIcon = () => {
-    switch (pollState) {
-      case "scheduled":
-        return <Calendar className="h-4 w-4 text-purple-500" />;
-      case "open":
-        return <BarChart3 className="h-4 w-4 text-blue-500" />;
-      case "voted":
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case "closed":
-        return <XCircle className="h-4 w-4 text-red-500" />;
-      default:
-        return <BarChart3 className="h-4 w-4 text-blue-500" />;
+  // Handle delete poll with debouncing
+  const handleDeletePoll = React.useCallback((event: React.MouseEvent) => {
+    // Prevent event bubbling and default behavior
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const now = Date.now();
+    const timeSinceLastEdit = now - lastEditTimeRef.current;
+    
+    // Debounce: ignore clicks within 1000ms of the last one  
+    if (timeSinceLastEdit < 1000) {
+      console.log(`[POLL-V2] Delete request debounced for block: ${block.id} (${timeSinceLastEdit}ms since last)`);
+      return;
     }
-  };
-
-  const getStateText = () => {
-    switch (pollState) {
-      case "scheduled":
-        return `Starts ${props.startDate ? new Date(props.startDate).toLocaleDateString() : "soon"}`;
-      case "open":
-        return "Open for voting";
-      case "voted":
-        return "You voted";
-      case "closed":
-        return `Closed ${props.endDate ? new Date(props.endDate).toLocaleDateString() : ""}`;
-      default:
-        return "Open for voting";
+    
+    // Update last edit time immediately to prevent race conditions
+    lastEditTimeRef.current = now;
+    
+    console.log(`[POLL-V2] Processing delete click for block: ${block.id}`);
+    
+    // Confirm deletion
+    if (window.confirm('Are you sure you want to delete this poll? This action cannot be undone.')) {
+      console.log(`[POLL-V2] Dispatching delete poll event for block: ${block.id}`);
+      
+      // Dispatch the delete event
+      const deleteEvent = new CustomEvent('deletePollV2', {
+        detail: { blockId: block.id },
+        bubbles: false
+      });
+      window.dispatchEvent(deleteEvent);
     }
-  };
+  }, [block.id]);
 
   const shouldShowResults = showResults || props.showResultsBeforeEnd || pollState === "closed";
 
   return (
-    <div className="w-full max-w-2xl mx-auto border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 shadow-sm">
+    <div className="w-full max-w-2xl mx-auto bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex items-center gap-3">
-          {getStateIcon()}
-          <div>
-            <h3 className="text-sm font-medium text-gray-900 dark:text-white">
-              Poll V2 {isEditingMode && <span className="text-xs text-gray-500">• Preview</span>}
-            </h3>
-          </div>
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center gap-2">
+          <Vote className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+          <span className="text-sm font-medium text-gray-900 dark:text-white">Poll</span>
+          {isEditingMode && (
+            <span className="text-xs text-gray-500 dark:text-gray-400">• Preview</span>
+          )}
         </div>
         
         <div className="flex items-center gap-1">
@@ -203,17 +217,21 @@ function PollBlockV2({ block }: { block: any }) {
             variant="ghost"
             size="sm"
             onClick={handleEditPoll}
-            className="h-8 w-8 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            className="h-7 w-7 p-0 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            contentEditable={false}
+            suppressContentEditableWarning={true}
           >
-            <Settings className="h-4 w-4" />
+            <Settings className="h-3.5 w-3.5" />
           </Button>
           <Button
             variant="ghost"
             size="sm"
             onClick={handleDeletePoll}
-            className="h-8 w-8 p-0 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"
+            className="h-7 w-7 p-0 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"
+            contentEditable={false}
+            suppressContentEditableWarning={true}
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="h-3.5 w-3.5" />
           </Button>
         </div>
       </div>
@@ -221,13 +239,15 @@ function PollBlockV2({ block }: { block: any }) {
       {/* Content */}
       <div className="p-4">
         {/* Question */}
-        <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-          {props.question}
-        </h2>
+        <div className="mb-3">
+          <h3 className="text-base font-medium text-gray-900 dark:text-white">
+            {props.question || "What's your question?"}
+          </h3>
+        </div>
 
         {/* Options */}
-        <div className="space-y-3">
-          {options.map((option: string, index: number) => {
+        <div className="space-y-2">
+          {options.length > 0 ? options.map((option: string, index: number) => {
             const voteCount = voteCounts[index] || 0;
             const percentage = totalVotes > 0 ? (voteCount / totalVotes) * 100 : 0;
             const isSelected = userVotes.includes(index);
@@ -237,16 +257,15 @@ function PollBlockV2({ block }: { block: any }) {
               <div
                 key={index}
                 className={cn(
-                  "relative rounded-lg border-2 transition-all duration-200",
+                  "relative rounded-md border transition-colors duration-150",
                   isEditingMode 
-                    ? "cursor-default border-gray-200 dark:border-gray-700" 
+                    ? "cursor-default border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800" 
                     : "cursor-pointer",
                   !isEditingMode && isSelected
                     ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
                     : "border-gray-200 dark:border-gray-700",
                   !isEditingMode && !isSelected && "hover:border-gray-300 dark:hover:border-gray-600",
-                  !isEditingMode && isHighlighted && "ring-2 ring-green-500 ring-opacity-50",
-                  pollState === "scheduled" && "opacity-50 cursor-not-allowed"
+                  !isEditingMode && isHighlighted && "border-green-500"
                 )}
                 onClick={() => !isEditingMode && handleVote(index)}
               >
@@ -254,78 +273,73 @@ function PollBlockV2({ block }: { block: any }) {
                 {shouldShowResults && (
                   <div
                     className={cn(
-                      "absolute inset-0 rounded-lg transition-all duration-500",
+                      "absolute inset-0 rounded-md transition-all duration-300",
                       isHighlighted
-                        ? "bg-gradient-to-r from-green-100 to-green-200 dark:from-green-900/30 dark:to-green-800/30"
-                        : "bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800/30 dark:to-gray-700/30"
+                        ? "bg-green-100 dark:bg-green-900/20"
+                        : "bg-gray-100 dark:bg-gray-800"
                     )}
                     style={{ width: `${percentage}%` }}
                   />
                 )}
                 
-                <div className="relative flex items-center justify-between p-3">
-                  <div className="flex items-center gap-3">
+                <div className="relative flex items-center justify-between px-3 py-2">
+                  <div className="flex items-center gap-2.5">
                     <div className={cn(
-                      "w-4 h-4 rounded-full border-2 transition-colors",
+                      "w-4 h-4 border-2 flex items-center justify-center",
+                      props.pollType === "multiple" ? "rounded" : "rounded-full",
                       isSelected
                         ? "border-blue-500 bg-blue-500"
-                        : "border-gray-300 dark:border-gray-600",
-                      props.pollType === "multiple" && "rounded-sm"
+                        : "border-gray-300 dark:border-gray-600"
                     )}>
                       {isSelected && (
-                        <div className="w-2 h-2 bg-white rounded-full m-0.5" />
+                        <div className={cn(
+                          "bg-white",
+                          props.pollType === "multiple" ? "w-1.5 h-1.5 rounded-sm" : "w-1.5 h-1.5 rounded-full"
+                        )} />
                       )}
                     </div>
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">
+                    <span className="text-sm text-gray-900 dark:text-white">
                       {option}
                     </span>
                   </div>
                   
                   {shouldShowResults && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {voteCount}
-                      </span>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
-                        {percentage.toFixed(1)}%
-                      </span>
+                    <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+                      <span>{voteCount}</span>
+                      <span>{percentage.toFixed(0)}%</span>
                     </div>
                   )}
                 </div>
               </div>
             );
-          })}
+          }) : (
+            <div className="text-center py-6 px-4 border border-dashed border-gray-300 dark:border-gray-600 rounded-md">
+              <p className="text-sm text-gray-500 dark:text-gray-400">No options yet</p>
+            </div>
+          )}
         </div>
 
         {/* Submit button for multiple choice */}
-        {props.pollType === "multiple" && !hasVoted && pollState === "open" && (
+        {props.pollType === "multiple" && !hasVoted && pollState === "open" && options.length > 0 && (
           <Button
             onClick={handleSubmitVote}
             disabled={isEditingMode || userVotes.length === 0}
             className={cn(
-              "w-full mt-4 text-white",
+              "w-full mt-3 text-sm",
               isEditingMode 
-                ? "bg-gray-400 cursor-not-allowed" 
-                : "bg-blue-600 hover:bg-blue-700"
+                ? "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed" 
+                : "bg-blue-600 hover:bg-blue-700 text-white"
             )}
           >
-            Submit Vote{userVotes.length > 1 ? 's' : ''}
-            {userVotes.length > 0 && (
-              <span className="ml-2 text-xs">
-                ({userVotes.length}/{props.maxVotesPerUser === -1 ? '∞' : props.maxVotesPerUser})
-              </span>
-            )}
+            {isEditingMode ? "Preview Mode" : `Submit ${userVotes.length > 1 ? 'Votes' : 'Vote'}`}
           </Button>
         )}
 
         {/* Results footer */}
-        {shouldShowResults && (
-          <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-              <span>Total votes: {totalVotes}</span>
-              {props.totalParticipants && (
-                <span>{props.totalParticipants} participants</span>
-              )}
+        {shouldShowResults && options.length > 0 && totalVotes > 0 && (
+          <div className="mt-3 pt-2 border-t border-gray-200 dark:border-gray-700">
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              {totalVotes} vote{totalVotes !== 1 ? 's' : ''}
             </div>
           </div>
         )}
