@@ -1,0 +1,304 @@
+{
+    "rootId": "x9LZ3lad7IoWIYLVUn4br",
+    "blocks": [
+        {
+            "id": "x9LZ3lad7IoWIYLVUn4br",
+            "name": "Posts",
+            "children": [],
+            "props": {
+                "views": [
+                    {
+                        "id": "_w6fHp82Zjdc0nLAdA-fd",
+                        "name": "Default",
+                        "sort": "publishedAt",
+                        "limit": 10,
+                        "style": "gallery",
+                        "fields": [
+                            {
+                                "id": "postInfoBar",
+                                "enabled": false,
+                                "isStatic": true,
+                                "settings": {
+                                    "showBackToSpaceButton": true
+                                }
+                            },
+                            {
+                                "id": "cardMemberInfo",
+                                "enabled": false,
+                                "isStatic": true,
+                                "settings": {
+                                    "fullWidth": true,
+                                    "showSpaceName": true,
+                                    "showPostOptions": false
+                                }
+                            },
+                            {
+                                "id": "galleryBanner",
+                                "enabled": true,
+                                "isStatic": true,
+                                "settings": {
+                                    "aspectRatio": "aspect-video",
+                                    "bannerStyle": "banner",
+                                    "bannerSource": "seo"
+                                }
+                            },
+                            {
+                                "id": "cardBanner",
+                                "enabled": false,
+                                "isStatic": true,
+                                "settings": {
+                                    "aspectRatio": "aspect-[4/1]",
+                                    "bannerStyle": "banner",
+                                    "bannerSource": "post"
+                                }
+                            },
+                            {
+                                "id": "listAvatar",
+                                "enabled": true,
+                                "isStatic": true,
+                                "settings": {
+                                    "avatarSize": "lg",
+                                    "bannerSource": "member"
+                                }
+                            },
+                            {
+                                "id": "listPostSummary",
+                                "fields": [
+                                    {
+                                        "id": "listPostTitle",
+                                        "enabled": true,
+                                        "isStatic": true,
+                                        "settings": {
+                                            "titleSize": "md"
+                                        }
+                                    },
+                                    {
+                                        "id": "listPostContent",
+                                        "enabled": true,
+                                        "isStatic": true,
+                                        "settings": {
+                                            "contentFormat": "Text"
+                                        }
+                                    },
+                                    {
+                                        "id": "listTags",
+                                        "enabled": false,
+                                        "isStatic": true,
+                                        "settings": {}
+                                    }
+                                ],
+                                "enabled": true,
+                                "isStatic": true,
+                                "settings": {
+                                    "stretchX": true
+                                }
+                            },
+                            {
+                                "id": "galleryPostTitle",
+                                "enabled": true,
+                                "isStatic": true,
+                                "settings": {
+                                    "fullWidth": true,
+                                    "titleSize": "sm"
+                                }
+                            },
+                            {
+                                "id": "galleryPostContent",
+                                "enabled": true,
+                                "isStatic": true,
+                                "settings": {
+                                    "stretchY": true,
+                                    "fullWidth": true,
+                                    "contentFormat": "Text"
+                                }
+                            },
+                            {
+                                "id": "cardPostContent",
+                                "enabled": true,
+                                "isStatic": true,
+                                "settings": {
+                                    "fullWidth": true,
+                                    "displayStyle": "expandable",
+                                    "truncateSize": "md"
+                                }
+                            },
+                            {
+                                "id": "tags",
+                                "enabled": false,
+                                "isStatic": true,
+                                "settings": {
+                                    "fullWidth": true
+                                }
+                            },
+                            {
+                                "id": "reactButton",
+                                "enabled": false,
+                                "isStatic": true,
+                                "settings": {
+                                    "buttonVariant": "iconText"
+                                }
+                            },
+                            {
+                                "id": "reactionCount",
+                                "enabled": false,
+                                "isStatic": true,
+                                "settings": {}
+                            },
+                            {
+                                "id": "cardPostInfoBar",
+                                "enabled": false,
+                                "isStatic": true,
+                                "settings": {
+                                    "fullWidth": true,
+                                    "showReplyCount": true,
+                                    "showFollowCount": true,
+                                    "showReactionCount": true
+                                }
+                            },
+                            {
+                                "id": "replyCount",
+                                "enabled": false,
+                                "isStatic": true,
+                                "settings": {}
+                            },
+                            {
+                                "id": "publishDate",
+                                "enabled": false,
+                                "isStatic": true,
+                                "settings": {
+                                    "customFieldSettings": [
+                                        {
+                                            "key": "view",
+                                            "value": "\"Date\""
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "id": "galleryMemberInfo",
+                                "enabled": false,
+                                "isStatic": true,
+                                "settings": {
+                                    "fullWidth": true,
+                                    "showSpaceName": true
+                                }
+                            },
+                            {
+                                "id": "actionBar",
+                                "enabled": true,
+                                "isStatic": true,
+                                "settings": {
+                                    "fullWidth": true,
+                                    "buttonVariant": "iconText"
+                                }
+                            },
+                            {
+                                "id": "replyList",
+                                "enabled": false,
+                                "isStatic": true,
+                                "settings": {
+                                    "fullWidth": true
+                                }
+                            },
+                            {
+                                "id": "customFields",
+                                "enabled": false,
+                                "isStatic": true,
+                                "settings": {
+                                    "fullWidth": true
+                                }
+                            },
+                            {
+                                "id": "title",
+                                "enabled": false,
+                                "isStatic": false,
+                                "settings": {
+                                    "customFieldSettings": [
+                                        {
+                                            "key": "subtype",
+                                            "value": "\"text\""
+                                        },
+                                        {
+                                            "key": "view",
+                                            "value": "\"Title\""
+                                        },
+                                        {
+                                            "key": "viewProps",
+                                            "value": "{\"titleSize\":\"lg\"}"
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
+                        "linkTo": "",
+                        "source": "currentSpace",
+                        "filterBy": [],
+                        "showMore": true,
+                        "gallerySize": "medium",
+                        "reverseSort": true,
+                        "showDivider": true,
+                        "inlineFilters": [
+                            {
+                                "key": "tagIds",
+                                "enabled": false,
+                                "customLabel": "Tags",
+                                "narrowedDownOptions": [],
+                                "allowOperatorSelection": false
+                            },
+                            {
+                                "key": "title",
+                                "enabled": false,
+                                "customLabel": "Title",
+                                "narrowedDownOptions": [],
+                                "allowOperatorSelection": false
+                            },
+                            {
+                                "key": "ownerId",
+                                "enabled": false,
+                                "customLabel": "Author",
+                                "narrowedDownOptions": [],
+                                "allowOperatorSelection": false
+                            },
+                            {
+                                "key": "publishedAt",
+                                "enabled": false,
+                                "customLabel": "Published date",
+                                "narrowedDownOptions": [],
+                                "allowOperatorSelection": false
+                            },
+                            {
+                                "key": "fields.duration",
+                                "enabled": false,
+                                "customLabel": "Duration",
+                                "narrowedDownOptions": [],
+                                "allowOperatorSelection": false
+                            },
+                            {
+                                "key": "fields.difficulty",
+                                "enabled": true,
+                                "customLabel": "Effort Level",
+                                "narrowedDownOptions": [],
+                                "allowOperatorSelection": false
+                            }
+                        ],
+                        "postTypeSlugs": [
+                            "z4GCMU74ZR-DRVbGw01jOzs1uu"
+                        ],
+                        "sortDirection": "asc",
+                        "postTypeSource": "specificPostTypes",
+                        "filterAppearance": "inline",
+                        "allowInlineFilters": false
+                    }
+                ],
+                "title": "",
+                "description": "",
+                "linkText": "",
+                "linkUrl": ""
+            },
+            "extraProps": {
+                "displayName": "Posts"
+            },
+            "output": {}
+        }
+    ]
+}

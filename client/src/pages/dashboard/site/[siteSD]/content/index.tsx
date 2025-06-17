@@ -22,7 +22,7 @@ import { ContentTabs } from "@/components/dashboard/site-config/content/content-
 import { ContentPagination } from "@/components/dashboard/site-config/content/content-pagination";
 import { useContentData } from "@/components/dashboard/site-config/content/use-content-data";
 import { createColumns } from "@/components/dashboard/site-config/content/table-columns";
-import { NewPostDialog } from '@/components/features/content';
+import { CreateContentDialog } from '@/components/features/content';
 import { FilterRule } from "@/components/dashboard/site-config/content/content-filter";
 import { applyFilters } from "@/components/dashboard/site-config/content/filter-logic";
 import { withSiteContext, WithSiteContextProps } from "@/lib/with-site-context";
@@ -700,7 +700,7 @@ function Content({ siteId, siteDetails, siteLoading }: WithSiteContextProps) {
         <ContentPagination table={table} isLoading={isLoading} />
         
         {/* Edit Post Dialog */}
-        <NewPostDialog 
+        <CreateContentDialog 
           open={isEditDialogOpen} 
           onOpenChange={handleCloseEditDialog}
           editingPost={editingPost}

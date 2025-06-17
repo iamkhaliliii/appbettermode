@@ -64,6 +64,12 @@ import { Post } from "@/components/dashboard/site-config/content/types";
 // Import Schedule Post Popover
 import { SchedulePopover } from "./schedule-popover";
 
+// Import ContentType
+import { ContentType } from "./content-type-selector";
+
+// Import Event Create Form
+
+
 // Create custom schema with poll blocks
 const schema = BlockNoteSchema.create({
   blockSpecs: {
@@ -82,9 +88,10 @@ export interface NewPostDialogProps {
   onOpenChange: (open: boolean) => void;
   editingPost?: Post | null; // Add optional editing post prop
   onStatusChange?: (post: Post, newStatus: string) => void; // Add status change handler
+  selectedContentType?: ContentType | null; // Add selected content type
 }
 
-export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange }: NewPostDialogProps) {
+export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange, selectedContentType }: NewPostDialogProps) {
   const [title, setTitle] = React.useState("");
   const [content, setContent] = React.useState<any[]>([]);
   const [isFullscreen, setIsFullscreen] = React.useState(false);
@@ -299,7 +306,6 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
             startDate: config.startDate,
             endDate: config.endDate,
             showResultsAfterVote: config.showResultsAfterVote,
-            showResultsBeforeEnd: config.showResultsBeforeEnd,
             allowAddOptions: config.allowAddOptions,
           },
         });
@@ -324,7 +330,6 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
           startDate: config.startDate,
           endDate: config.endDate,
           showResultsAfterVote: config.showResultsAfterVote,
-          showResultsBeforeEnd: config.showResultsBeforeEnd,
           allowAddOptions: config.allowAddOptions,
         },
       });
@@ -643,6 +648,8 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
     setContent(editor.document as any);
   };
 
+
+
   const handlePollModalClose = () => {
     console.log('[V3] Closing poll V3 modal');
     
@@ -692,10 +699,16 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
               </div>
                           <div>
               <DialogTitle className="text-lg font-medium text-gray-900 dark:text-white">
-                {editingPost ? 'Edit Discussion' : 'Create a new Discussion'}
+                {editingPost 
+                  ? `Edit ${selectedContentType?.title || 'Content'}` 
+                  : `Create a new ${selectedContentType?.title || 'Post'}`
+                }
               </DialogTitle>
               <DialogDescription className="sr-only">
-                {editingPost ? 'Edit and update your discussion post' : 'Create and share a new discussion post with your community'}
+                {editingPost 
+                  ? `Edit and update your ${selectedContentType?.title.toLowerCase() || 'content'}` 
+                  : `Create and share a new ${selectedContentType?.title.toLowerCase() || 'post'} with your community`
+                }
               </DialogDescription>
             </div>
             </div>
@@ -738,82 +751,85 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
           {/* Content - Scrollable */}
           <div className="flex-1 flex flex-col overflow-hidden">
             <div className="flex-1 overflow-y-auto">
-              {/* Title Input */}
-              <div className="p-6 pt-2 pb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Title
-                </label>
-                <Input
-                  placeholder="What is your title?"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="text-lg border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400"
-                />
-              </div>
 
-              {/* Content Editor */}
-              <div className="px-6 pb-6">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Content
-                </label>
-                
-                {/* BlockNote Rich Text Editor with Poll Support */}
-                <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden min-h-[400px] pt-8">
-                  <BlockNoteView 
-                    editor={editor} 
-                    onChange={handleContentChange}
-                    theme="light"
-                  >
-                    {/* Custom Formatting Toolbar with Poll Block Support */}
-                    <FormattingToolbarController
-                      formattingToolbar={() => (
-                        <FormattingToolbar
-                          blockTypeSelectItems={[
-                            // Default block type select items
-                            ...blockTypeSelectItems(editor.dictionary),
-                            // Add poll blocks to block type select
-                            {
-                              name: "Poll V4",
-                              type: "poll",
-                              icon: BarChart3,
-                              isSelected: (block) => block.type === "poll",
-                            } satisfies BlockTypeSelectItem,
-                            {
-                              name: "Poll V3",
-                              type: "pollV3",
-                              icon: BarChart3,
-                              isSelected: (block) => block.type === "pollV3",
-                            } satisfies BlockTypeSelectItem,
-                          ]}
+                <>
+                  {/* Title Input */}
+                  <div className="p-6 pt-2 pb-4">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Title
+                    </label>
+                    <Input
+                      placeholder="What is your title?"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      className="text-lg border-gray-200 dark:border-gray-700 focus:border-blue-500 dark:focus:border-blue-400"
+                    />
+                  </div>
+
+                  {/* Content Editor */}
+                  <div className="px-6 pb-6">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Content
+                    </label>
+                    
+                    {/* BlockNote Rich Text Editor with Poll Support */}
+                    <div className="border border-gray-200 dark:border-gray-700 rounded-md overflow-hidden min-h-[400px] pt-8">
+                      <BlockNoteView 
+                        editor={editor} 
+                        onChange={handleContentChange}
+                        theme="light"
+                      >
+                        {/* Custom Formatting Toolbar with Poll Block Support */}
+                        <FormattingToolbarController
+                          formattingToolbar={() => (
+                            <FormattingToolbar
+                              blockTypeSelectItems={[
+                                // Default block type select items
+                                ...blockTypeSelectItems(editor.dictionary),
+                                // Add poll blocks to block type select
+                                {
+                                  name: "Poll V4",
+                                  type: "poll",
+                                  icon: BarChart3,
+                                  isSelected: (block) => block.type === "poll",
+                                } satisfies BlockTypeSelectItem,
+                                {
+                                  name: "Poll V3",
+                                  type: "pollV3",
+                                  icon: BarChart3,
+                                  isSelected: (block) => block.type === "pollV3",
+                                } satisfies BlockTypeSelectItem,
+                              ]}
+                            />
+                          )}
                         />
-                      )}
-                    />
-                    {/* Custom Slash Menu with Poll Block Support */}
-                    <SuggestionMenuController
-                      triggerCharacter={"/"}
-                      getItems={async (query) => {
-                        // Get all default slash menu items
-                        const defaultItems = getDefaultReactSlashMenuItems(editor);
-                        // Find index of last item in "Basic blocks" group
-                        const lastBasicBlockIndex = defaultItems.findLastIndex(
-                          (item) => item.group === "Basic blocks",
-                        );
-                        // Insert the Poll items as the last items in the "Basic blocks" group
-                        defaultItems.splice(lastBasicBlockIndex + 1, 0, insertPoll(editor));
-                        defaultItems.splice(lastBasicBlockIndex + 2, 0, insertPollV2(editor));
-                        
-                        // Return filtered items based on the query
-                        return filterSuggestionItems(defaultItems, query);
-                      }}
-                    />
-                  </BlockNoteView>
-                </div>
-              </div>
+                        {/* Custom Slash Menu with Poll Block Support */}
+                        <SuggestionMenuController
+                          triggerCharacter={"/"}
+                          getItems={async (query) => {
+                            // Get all default slash menu items
+                            const defaultItems = getDefaultReactSlashMenuItems(editor);
+                            // Find index of last item in "Basic blocks" group
+                            const lastBasicBlockIndex = defaultItems.findLastIndex(
+                              (item) => item.group === "Basic blocks",
+                            );
+                            // Insert the Poll items as the last items in the "Basic blocks" group
+                            defaultItems.splice(lastBasicBlockIndex + 1, 0, insertPoll(editor));
+                            defaultItems.splice(lastBasicBlockIndex + 2, 0, insertPollV2(editor));
+                            
+                            // Return filtered items based on the query
+                            return filterSuggestionItems(defaultItems, query);
+                          }}
+                        />
+                      </BlockNoteView>
+                    </div>
+                  </div>
+                </>
             </div>
           </div>
 
           {/* Footer Actions - Fixed */}
-          <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+            <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
             {/* Scheduled Banner - Show above footer when scheduled */}
             {scheduledDate && (
               <div className="flex items-center justify-between px-6 py-3 bg-blue-50 dark:bg-blue-900/30 border-b border-blue-200 dark:border-blue-700/50">
@@ -1001,7 +1017,7 @@ export function NewPostDialog({ open, onOpenChange, editingPost, onStatusChange 
                 </div>
               </div>
             </div>
-          </div>
+            </div>
         </DialogContent>
       </Dialog>
 

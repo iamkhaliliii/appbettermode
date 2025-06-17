@@ -41,6 +41,52 @@ export const EventPreview = () => (
   </div>
 );
 
+export const EventPreviewXL = () => (
+  <div className="flex flex-col h-full relative p-6">
+    {/* Header with Icon */}
+    <div className="flex items-center gap-4 mb-8">
+      <div className="w-12 h-12 rounded-xl bg-emerald-100/50 dark:bg-emerald-900/20 flex items-center justify-center">
+        <Calendar className="w-7 h-7 text-emerald-500/70 dark:text-emerald-400/50" />
+      </div>
+      <div className="flex-1">
+        <div className="h-4 w-3/4 bg-gray-200/40 dark:bg-gray-700/25 rounded-lg"></div>
+      </div>
+    </div>
+
+    {/* Event Details */}
+    <div className="space-y-6 flex-1">
+      {/* Title */}
+      <div className="space-y-3">
+        <div className="h-5 w-full bg-gray-200/45 dark:bg-gray-700/30 rounded-lg"></div>
+        <div className="h-5 w-4/5 bg-gray-200/35 dark:bg-gray-700/25 rounded-lg"></div>
+      </div>
+
+      {/* Date & Location */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="w-4 h-4 bg-gray-200/40 dark:bg-gray-700/25 rounded"></div>
+          <div className="h-3 w-2/3 bg-gray-200/35 dark:bg-gray-700/20 rounded-lg"></div>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="w-4 h-4 bg-gray-200/40 dark:bg-gray-700/25 rounded"></div>
+          <div className="h-3 w-1/2 bg-gray-200/35 dark:bg-gray-700/20 rounded-lg"></div>
+        </div>
+      </div>
+
+      {/* Description */}
+      <div className="space-y-2">
+        <div className="h-3 w-full bg-gray-200/30 dark:bg-gray-700/15 rounded-lg"></div>
+        <div className="h-3 w-4/5 bg-gray-200/25 dark:bg-gray-700/12 rounded-lg"></div>
+      </div>
+    </div>
+
+    {/* Footer */}
+    <div className="pt-6">
+      <div className="h-10 w-full bg-emerald-200/35 dark:bg-emerald-800/15 rounded-lg"></div>
+    </div>
+  </div>
+);
+
 export const DiscussionPreview = () => (
   <div className="flex flex-col h-full relative">
     <div className="absolute top-0 left-0">

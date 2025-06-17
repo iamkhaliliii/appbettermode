@@ -24,7 +24,7 @@ import { Post } from './types';
 import { ContentFilter, FilterRule } from './content-filter';
 import { ContentSort } from './content-sort';
 import { ContentViewManager, CustomView } from './content-view-manager.tsx';
-import { NewPostDialog } from '@/components/features/content';
+import { CreateContentDialog } from '@/components/features/content';
 
 interface ContentToolbarProps {
   table: Table<Post>;
@@ -364,7 +364,7 @@ export const ContentToolbar: React.FC<ContentToolbarProps> = ({
       </div>
       
       {/* New Post Dialog */}
-      <NewPostDialog 
+      <CreateContentDialog 
         open={isNewPostDialogOpen} 
         onOpenChange={setIsNewPostDialogOpen}
         onStatusChange={onStatusChange}

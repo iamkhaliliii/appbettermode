@@ -1,21 +1,26 @@
-// Site Configuration Components
-export * from './SpaceContent'
-export * from './SettingsSidebar'
-export * from './GeneralSettingsTab'
-export * from './PropertyRow'
-export * from './MemberManagementTab'
-export * from './DisplaySettingsTab'
-export * from './WidgetSettingsTab'
-export * from './MainContentArea'
-export * from './WidgetModeWrapper'
-export * from './WidgetDropTarget'
-export * from './WidgetDropZone'
-export * from './CustomizeSettingsTab'
-export * from './NumberPropertyRow'
-export * from './DangerZoneSettingsTab'
-export * from './SEOSettingsTab'
-export * from './SiteContent'
-export * from './ContentSkeleton'
+// Main exports
+export { PropertyRow } from './PropertyRow';
+export { NumberPropertyRow } from './NumberPropertyRow';
 
-// Content Sub-components
-export * from './content' 
+// Property design system components
+export * from './property-design-system-components';
+
+// Site config layout components
+export { SettingsSidebar } from './SettingsSidebar';
+export { MainContentArea } from './MainContentArea';
+export { GeneralSettingsTab } from './GeneralSettingsTab';
+export { DisplaySettingsTab } from './DisplaySettingsTab';
+export { SEOSettingsTab } from './SEOSettingsTab';
+export { MemberManagementTab } from './MemberManagementTab';
+export { CustomizeSettingsTab } from './CustomizeSettingsTab';
+export { WidgetSettingsTab } from './WidgetSettingsTab';
+export { DangerZoneSettingsTab } from './DangerZoneSettingsTab';
+export { WidgetModeWrapper } from './WidgetModeWrapper';
+export { WidgetDropZone } from './WidgetDropZone';
+export { WidgetDropTarget } from './WidgetDropTarget';
+export { SiteContent } from './SiteContent';
+export { SpaceContent } from './SpaceContent';
+export { ContentSkeleton } from './ContentSkeleton';
+
+// Content management
+export * from './content'; 

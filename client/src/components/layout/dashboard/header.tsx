@@ -37,7 +37,7 @@ import { sitesApi, Site } from "@/lib/api";
 import { APP_ROUTES, getSiteIdentifierFromRoute } from "@/config/routes";
 import { getApiBaseUrl } from "@/lib/utils";
 import { useSiteContent } from "@/lib/SiteContentContext";
-import { NewPostDialog } from "@/components/features/content";
+import { CreateContentDialog } from "@/components/features/content";
 import { NewPeopleDialog } from "@/components/features/people";
 import { AddContentDialog } from "@/components/features/content/add-content-dialog";
 
@@ -1309,7 +1309,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
       </div>
       
       {/* Dialogs */}
-      <NewPostDialog 
+      <CreateContentDialog 
         open={newPostDialogOpen} 
         onOpenChange={setNewPostDialogOpen} 
       />
