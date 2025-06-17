@@ -2,7 +2,7 @@ export interface PropertyRowProps {
   label: string;
   value: any;
   fieldName: string;
-  type?: 'text' | 'textarea' | 'select' | 'upload' | 'checkbox' | 'datetime' | 'users' | 'tags' | 'timezone' | 'number';
+  type?: 'text' | 'textarea' | 'select' | 'upload' | 'checkbox' | 'datetime' | 'users' | 'tags' | 'timezone' | 'number' | 'repeat';
   options?: { 
     value: string; 
     label: string; 
@@ -25,6 +25,7 @@ export interface PropertyRowProps {
   min?: number;
   max?: number;
   step?: number;
+  startDate?: string; // For repeat component
 }
 
 export interface User {
@@ -80,6 +81,26 @@ export interface NumberInputProps {
   min?: number;
   max?: number;
   step?: number;
+}
+
+export interface RepeatConfig {
+  type: 'none' | 'daily' | 'weekly' | 'monthly' | 'annually' | 'weekdays' | 'custom';
+  weekdays?: string[];
+  ordinal?: 'first' | 'second' | 'third' | 'fourth' | 'last';
+  weekday?: string;
+  customPattern?: string;
+  // Custom recurrence fields
+  interval?: number;
+  intervalUnit?: 'day' | 'week' | 'month' | 'year';
+  endsType?: 'never' | 'on' | 'after';
+  endsOn?: string; // date
+  endsAfter?: number; // occurrences
+}
+
+export interface RepeatSelectorProps {
+  value: RepeatConfig | null;
+  onChange: (value: RepeatConfig | null) => void;
+  startDate?: string;
 }
 
 // Mock user data

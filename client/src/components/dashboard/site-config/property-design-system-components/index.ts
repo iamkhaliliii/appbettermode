@@ -7,4 +7,5 @@ export { DateTimePicker } from './DateTimePicker';
 export { UserSelector } from './UserSelector';
 export { TagInput } from './TagInput';
 export { TimezoneSelector } from './TimezoneSelector';
-export { NumberInput } from './NumberInput'; 
+export { NumberInput } from './NumberInput';
+export { RepeatSelector } from './RepeatSelector'; 

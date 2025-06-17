@@ -9,7 +9,8 @@ import {
   UserSelector, 
   TagInput,
   TimezoneSelector,
-  NumberInput
+  NumberInput,
+  RepeatSelector
 } from "./property-design-system-components";
 
 export function PropertyRow({ 
@@ -33,7 +34,8 @@ export function PropertyRow({
   onAddNew,
   min,
   max,
-  step
+  step,
+  startDate
 }: PropertyRowProps) {
   const [showDescription, setShowDescription] = useState(false);
   const [iconDialogOpen, setIconDialogOpen] = useState(false);
@@ -81,16 +83,16 @@ export function PropertyRow({
   return (
     <div className={isChild ? "relative" : ""}>
       {isChild && (
-        <div className="absolute left-4 top-0 bottom-0 w-px bg-gray-200 dark:bg-gray-700"></div>
+        <div className="absolute left-[1.1rem] top-0 bottom-0 w-px bg-gray-100 dark:bg-gray-600"></div>
       )}
       <div className={`flex rounded-md group transition-colors ${
         isChild 
-          ? 'px-2 pl-8 hover:bg-gray-50 dark:hover:bg-gray-800/50' 
+          ? 'px-2 pl-9 hover:bg-gray-50 dark:hover:bg-gray-800/50' 
           : 'px-2 hover:bg-gray-50 dark:hover:bg-gray-800/50'
       } ${
         description && showDescription ? '' : 'border-b border-gray-100 dark:border-gray-800'
       } ${
-        (isDescription || isSlug) && isEditing ? 'flex-col items-start py-2 space-y-2' : 'items-start justify-between min-h-[2.25rem] py-2'
+        (isDescription || isSlug) && isEditing ? 'flex-col items-center py-2 space-y-2' : 'items-center justify-between min-h-[2.25rem] py-2'
       }`}>
         <div className={`text-xs text-gray-400 dark:text-gray-500 flex items-center gap-2 ${
           (isDescription || isSlug) && isEditing ? 'w-full' : 'w-1/2 pr-2'
@@ -345,6 +347,16 @@ export function PropertyRow({
                 min={min}
                 max={max}
                 step={step}
+              />
+            </div>
+          )}
+
+          {type === 'repeat' && (
+            <div className="w-full mt-0.5">
+              <RepeatSelector
+                value={value}
+                onChange={onValueChange}
+                startDate={startDate}
               />
             </div>
           )}

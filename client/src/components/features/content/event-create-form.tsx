@@ -14,6 +14,12 @@ import { Button } from "@/components/ui/primitives";
 import { Input } from "@/components/ui/primitives";
 import { Textarea } from "@/components/ui/primitives";
 import { Label } from "@/components/ui/primitives";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/forms";
 import { cn } from "@/lib/utils";
 
 // BlockNote imports
@@ -71,10 +77,16 @@ import {
   Tag,
   UserCheck,
   X,
-  Check
+  Check,
+  Youtube,
+  Repeat,
+  Save,
+  ChevronUp,
+  SquarePen
 } from "lucide-react";
 import { PropertyRow } from "@/components/dashboard/site-config";
 import { EventPreviewXL } from "./add-content-dialog/content-types";
+import { SchedulePopover } from "./schedule-popover";
 
 const drawerAnimationClasses = `
   .main-content-shift {
@@ -90,11 +102,13 @@ export interface EventFormData {
   dateFrom: string;
   dateTo: string;
   timezone: string;
+  repeat: any; // RepeatConfig type
   locationType: 'address' | 'virtual' | 'tbd';
   address: string;
   virtualUrl: string;
   virtualProvider: 'url' | 'youtube' | 'streamyard' | 'zoom' | 'meet';
   registrationProvider: 'bettermode' | 'luma' | 'eventbrite' | 'bevy' | 'other';
+  registrationUrl: string;
   coverImage: string;
   tags: string[];
   slug: string;
@@ -128,11 +142,13 @@ export function EventCreateForm({ open, onOpenChange, onSubmit, initialData }: E
   const [dateFrom, setDateFrom] = React.useState(initialData?.dateFrom || "");
   const [dateTo, setDateTo] = React.useState(initialData?.dateTo || "");
   const [timezone, setTimezone] = React.useState(initialData?.timezone || "UTC");
+  const [repeat, setRepeat] = React.useState(initialData?.repeat || null);
   const [locationType, setLocationType] = React.useState<'address' | 'virtual' | 'tbd'>(initialData?.locationType || 'tbd');
   const [address, setAddress] = React.useState(initialData?.address || "");
   const [virtualUrl, setVirtualUrl] = React.useState(initialData?.virtualUrl || "");
   const [virtualProvider, setVirtualProvider] = React.useState<'url' | 'youtube' | 'streamyard' | 'zoom' | 'meet'>(initialData?.virtualProvider || 'url');
   const [registrationProvider, setRegistrationProvider] = React.useState<'bettermode' | 'luma' | 'eventbrite' | 'bevy' | 'other'>(initialData?.registrationProvider || 'bettermode');
+  const [registrationUrl, setRegistrationUrl] = React.useState(initialData?.registrationUrl || "");
   const [tags, setTags] = React.useState<string[]>(initialData?.tags || []);
   const [slug, setSlug] = React.useState(initialData?.slug || "");
   const [metaTitle, setMetaTitle] = React.useState(initialData?.metaTitle || "");
@@ -148,6 +164,12 @@ export function EventCreateForm({ open, onOpenChange, onSubmit, initialData }: E
 
   // UI state for PropertyRow editing
   const [editingField, setEditingField] = React.useState<string | null>(null);
+
+  // Status and scheduling state
+  const [currentStatus, setCurrentStatus] = React.useState<string>("Draft");
+  const [isSchedulePopoverOpen, setIsSchedulePopoverOpen] = React.useState(false);
+  const [scheduledDate, setScheduledDate] = React.useState<Date | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
 
   // Poll modal states
   const [pollV3ModalOpen, setPollV3ModalOpen] = React.useState(false);
@@ -279,11 +301,13 @@ export function EventCreateForm({ open, onOpenChange, onSubmit, initialData }: E
         dateFrom,
         dateTo,
         timezone,
+        repeat,
         locationType,
         address,
         virtualUrl,
         virtualProvider,
         registrationProvider,
+        registrationUrl,
         coverImage: '',
         tags,
         slug,
@@ -302,6 +326,39 @@ export function EventCreateForm({ open, onOpenChange, onSubmit, initialData }: E
       });
       onOpenChange(false);
     }
+  };
+
+  // Handle draft saving
+  const handleSaveDraft = () => {
+    console.log("Save event draft:", { title, content });
+    // TODO: Implement save draft functionality
+  };
+
+  // Handle schedule confirmation
+  const handleScheduleConfirm = (scheduledDateTime: Date) => {
+    setScheduledDate(scheduledDateTime);
+    setCurrentStatus("Schedule");
+    console.log("Event scheduled for:", scheduledDateTime.toLocaleString());
+  };
+
+  // Handle schedule removal
+  const handleRemoveSchedule = () => {
+    setScheduledDate(null);
+    setCurrentStatus("Draft");
+    console.log("Schedule removed");
+  };
+
+  // Handle schedule editing
+  const handleEditSchedule = (newScheduledDateTime: Date) => {
+    setScheduledDate(newScheduledDateTime);
+    console.log("Schedule updated to:", newScheduledDateTime.toLocaleString());
+  };
+
+  // Handle publish
+  const handlePublish = () => {
+    console.log("Publishing new event:", { title, content });
+    alert(`Published new event: "${title}"`);
+    onOpenChange(false);
   };
 
   // Handle content change from BlockNote editor
@@ -475,25 +532,90 @@ export function EventCreateForm({ open, onOpenChange, onSubmit, initialData }: E
 
 
   const locationTypeOptions = [
-    { value: 'address', label: 'Physical Address' },
-    { value: 'virtual', label: 'Virtual Event' },
-    { value: 'tbd', label: 'To Be Determined' },
+    { 
+      value: 'address', 
+      label: 'Physical Address',
+      description: 'Event will be held at a specific physical location',
+      icon: Building
+    },
+    { 
+      value: 'virtual', 
+      label: 'Virtual Event',
+      description: 'Online event accessible via internet link',
+      icon: Video
+    },
+    { 
+      value: 'tbd', 
+      label: 'To Be Determined',
+      description: 'Location will be announced later',
+      icon: MapPin
+    },
   ];
 
   const virtualProviderOptions = [
-    { value: 'url', label: 'Custom URL' },
-    { value: 'zoom', label: 'Zoom' },
-    { value: 'meet', label: 'Google Meet' },
-    { value: 'youtube', label: 'YouTube Live' },
-    { value: 'streamyard', label: 'StreamYard' },
+    { 
+      value: 'url', 
+      label: 'Custom URL',
+      description: 'Any custom meeting or streaming link',
+      icon: Globe
+    },
+    { 
+      value: 'zoom', 
+      label: 'Zoom',
+      description: 'Zoom video conferencing platform',
+      icon: Video
+    },
+    { 
+      value: 'meet', 
+      label: 'Google Meet',
+      description: 'Google Meet video calls',
+      icon: Video
+    },
+    { 
+      value: 'youtube', 
+      label: 'YouTube Live',
+      description: 'YouTube live streaming platform',
+      icon: Youtube
+    },
+    { 
+      value: 'streamyard', 
+      label: 'StreamYard',
+      description: 'Professional live streaming studio',
+      icon: Video
+    },
   ];
 
   const registrationProviderOptions = [
-    { value: 'bettermode', label: 'BetterMode' },
-    { value: 'luma', label: 'Luma' },
-    { value: 'eventbrite', label: 'Eventbrite' },
-    { value: 'bevy', label: 'Bevy' },
-    { value: 'other', label: 'Other' },
+    { 
+      value: 'bettermode', 
+      label: 'Bettermode',
+      description: 'Built-in registration system',
+      icon: Users
+    },
+    { 
+      value: 'luma', 
+      label: 'Luma',
+      description: 'Event discovery and ticketing platform',
+      icon: Calendar
+    },
+    { 
+      value: 'eventbrite', 
+      label: 'Eventbrite',
+      description: 'Popular event ticketing service',
+      icon: Calendar
+    },
+    { 
+      value: 'bevy', 
+      label: 'Bevy',
+      description: 'Community event platform',
+      icon: Users
+    },
+    { 
+      value: 'other', 
+      label: 'Other',
+      description: 'External registration platform',
+      icon: Globe
+    },
   ];
 
   return (
@@ -568,6 +690,21 @@ export function EventCreateForm({ open, onOpenChange, onSubmit, initialData }: E
                         />
 
                         <PropertyRow
+                          label="Repeat"
+                          value={repeat}
+                          fieldName="repeat"
+                          type="repeat"
+                          onValueChange={setRepeat}
+                          icon={Repeat}
+                          editingField={editingField}
+                          onFieldClick={handleFieldClick}
+                          onFieldBlur={handleFieldBlur}
+                          onKeyDown={handleKeyDown}
+                          description="How often this event repeats"
+                          startDate={dateFrom}
+                        />
+
+                        <PropertyRow
                           label="Timezone"
                           value={timezone}
                           fieldName="timezone"
@@ -623,6 +760,7 @@ export function EventCreateForm({ open, onOpenChange, onSubmit, initialData }: E
                           onKeyDown={handleKeyDown}
                           description="Physical address of the event"
                           placeholder="Enter full address"
+                          isChild={true}
                         />
                       )}
 
@@ -641,6 +779,7 @@ export function EventCreateForm({ open, onOpenChange, onSubmit, initialData }: E
                             onFieldBlur={handleFieldBlur}
                             onKeyDown={handleKeyDown}
                             description="Virtual meeting platform"
+                            isChild={true}
                           />
 
                           <PropertyRow
@@ -656,6 +795,7 @@ export function EventCreateForm({ open, onOpenChange, onSubmit, initialData }: E
                             onKeyDown={handleKeyDown}
                             description="Link to join the virtual event"
                             placeholder="https://..."
+                            isChild={true}
                           />
                         </>
                       )}
@@ -673,6 +813,24 @@ export function EventCreateForm({ open, onOpenChange, onSubmit, initialData }: E
                         onKeyDown={handleKeyDown}
                         description="How people register for the event"
                       />
+
+                      {registrationProvider !== 'bettermode' && (
+                        <PropertyRow
+                          label="Registration URL"
+                          value={registrationUrl}
+                          fieldName="registrationUrl"
+                          type="text"
+                          onValueChange={setRegistrationUrl}
+                          icon={Globe}
+                          editingField={editingField}
+                          onFieldClick={handleFieldClick}
+                          onFieldBlur={handleFieldBlur}
+                          onKeyDown={handleKeyDown}
+                          description="External registration page URL"
+                          placeholder="https://..."
+                          isChild={true}
+                        />
+                      )}
 
                       <PropertyRow
                         label="Capacity"
@@ -948,25 +1106,117 @@ export function EventCreateForm({ open, onOpenChange, onSubmit, initialData }: E
             </div>
 
             {/* Footer Actions - Fixed and Full Width */}
-            <div className="flex-shrink-0 flex items-center justify-end p-4 border-t border-gray-200 dark:border-gray-700/50">
-              <div className="flex items-center gap-1.5">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleCancel}
-                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 px-3 py-1.5 h-8"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={handleConfirm}
-                  disabled={!isValid}
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 h-8"
-                >
-                  <Check className="h-3 w-3 mr-1.5" />
-                  Create
-                </Button>
+            <div className="flex-shrink-0 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+              {/* Scheduled Banner - Show above footer when scheduled */}
+              {scheduledDate && (
+                <div className="flex items-center justify-between px-6 py-3 bg-blue-50 dark:bg-blue-900/30 border-b border-blue-200 dark:border-blue-700/50">
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    <span className="text-sm text-blue-700 dark:text-blue-300">
+                      Scheduled for {scheduledDate.toLocaleDateString()} at {scheduledDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <SchedulePopover
+                      onConfirm={handleEditSchedule}
+                      title="Edit Schedule"
+                      initialDate={scheduledDate}
+                      side="top"
+                      align="end"
+                      onOpenChange={setIsSchedulePopoverOpen}
+                    >
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsDropdownOpen(false)}
+                        className="h-7 px-2 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800/50"
+                      >
+                        <SquarePen className="h-3 w-3 mr-1" />
+                        Edit
+                      </Button>
+                    </SchedulePopover>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setIsDropdownOpen(false);
+                        handleRemoveSchedule();
+                      }}
+                      className="h-7 px-2 text-xs text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800/50"
+                    >
+                      <X className="h-3 w-3 mr-1" />
+                      Remove
+                    </Button>
+                  </div>
+                </div>
+              )}
+              
+              {/* Normal Footer */}
+              <div className="flex items-center justify-end p-6 pt-4">
+                
+                <div className="flex items-center gap-1.5">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleCancel}
+                    className="h-7 px-2.5 text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    Cancel
+                  </Button>
+                  
+                  <div className="flex items-center">
+                    <Button
+                      onClick={scheduledDate ? handleConfirm : handlePublish}
+                      disabled={!isValid}
+                      className="bg-green-600 hover:bg-green-700 text-white px-4 h-7 text-xs rounded-r-none"
+                    >
+                      {scheduledDate ? 'Schedule Event' : 'Create Event'}
+                    </Button>
+                    <DropdownMenu 
+                      open={isDropdownOpen}
+                      onOpenChange={(open) => {
+                        // Prevent dropdown from closing when schedule popover is open
+                        if (isSchedulePopoverOpen && !open) {
+                          return;
+                        }
+                        setIsDropdownOpen(open);
+                      }}
+                    >
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                          disabled={!isValid}
+                          className="bg-green-600 hover:bg-green-700 text-white px-1.5 h-7 rounded-l-none border-l border-green-500"
+                        >
+                          <ChevronUp className="h-3.5 w-3.5" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" side="top" className="w-48">
+                        <DropdownMenuItem onClick={handleSaveDraft} className="flex items-center gap-2">
+                          <Save className="h-4 w-4" />
+                          Save draft
+                          <span className="ml-auto text-xs text-gray-400">⌘D</span>
+                        </DropdownMenuItem>
+                        {!scheduledDate && (
+                          <SchedulePopover
+                            onConfirm={handleScheduleConfirm}
+                            title="Schedule Event"
+                            side="top"
+                            align="end"
+                            onOpenChange={setIsSchedulePopoverOpen}
+                            keepDropdownOpen={true}
+                          >
+                            <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="flex items-center gap-2">
+                              <Clock className="h-4 w-4" />
+                              Schedule event
+                              <span className="ml-auto text-xs text-gray-400">⌘S</span>
+                            </DropdownMenuItem>
+                          </SchedulePopover>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
