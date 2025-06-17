@@ -74,7 +74,6 @@ export interface PollConfigV2 {
   startDate?: string;
   endDate?: string;
   showResultsAfterVote: boolean;
-  showResultsBeforeEnd: boolean;
   allowAddOptions: boolean;
 }
 
@@ -135,7 +134,6 @@ export function PollConfigModalV2({ open, onOpenChange, onConfirm, initialConfig
   const [startDate, setStartDate] = React.useState(initialConfig?.startDate || "");
   const [endDate, setEndDate] = React.useState(initialConfig?.endDate || "");
   const [showResultsAfterVote, setShowResultsAfterVote] = React.useState(initialConfig?.showResultsAfterVote ?? true);
-  const [showResultsBeforeEnd, setShowResultsBeforeEnd] = React.useState(initialConfig?.showResultsBeforeEnd ?? false);
   const [allowAddOptions, setAllowAddOptions] = React.useState(initialConfig?.allowAddOptions ?? true);
 
   // Form validation
@@ -170,7 +168,6 @@ export function PollConfigModalV2({ open, onOpenChange, onConfirm, initialConfig
         startDate: startDate || undefined,
         endDate: endDate || undefined,
         showResultsAfterVote,
-        showResultsBeforeEnd,
         allowAddOptions,
       });
       handleReset();
@@ -193,7 +190,6 @@ export function PollConfigModalV2({ open, onOpenChange, onConfirm, initialConfig
     setStartDate("");
     setEndDate("");
     setShowResultsAfterVote(true);
-    setShowResultsBeforeEnd(false);
     setAllowAddOptions(true);
   };
 
@@ -208,7 +204,6 @@ export function PollConfigModalV2({ open, onOpenChange, onConfirm, initialConfig
       setStartDate(initialConfig.startDate || "");
       setEndDate(initialConfig.endDate || "");
       setShowResultsAfterVote(initialConfig.showResultsAfterVote ?? true);
-      setShowResultsBeforeEnd(initialConfig.showResultsBeforeEnd ?? false);
       setAllowAddOptions(initialConfig.allowAddOptions ?? true);
     }
   }, [initialConfig]);
@@ -347,6 +342,18 @@ export function PollConfigModalV2({ open, onOpenChange, onConfirm, initialConfig
                     Add another option
                   </Button>
                 )}
+
+                {/* Advanced Options Link */}
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("settings")}
+                    className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline transition-colors flex items-center gap-2"
+                  >
+                  
+                    Advanced options
+                  </button>
+                </div>
               </div>
             </div>
           ) : (
@@ -423,20 +430,7 @@ export function PollConfigModalV2({ open, onOpenChange, onConfirm, initialConfig
                   </p>
                 </div>
 
-                <div className="py-1">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-sm font-medium text-gray-900 dark:text-white">
-                      Show live results
-                    </Label>
-                    <Toggle
-                      checked={showResultsBeforeEnd}
-                      onChange={setShowResultsBeforeEnd}
-                    />
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Display real-time results to all users before poll ends
-                  </p>
-                </div>
+
 
               </div>
             </div>
