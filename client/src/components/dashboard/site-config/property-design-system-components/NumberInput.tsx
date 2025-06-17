@@ -22,16 +22,28 @@ export function NumberInput({
   const [inputValue, setInputValue] = useState(value.toString());
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleIncrement = () => {
+  const handleIncrement = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     const newValue = Math.min(max, value + step);
     onChange(newValue);
     setInputValue(newValue.toString());
+    // Keep focus on input after increment
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
   };
 
-  const handleDecrement = () => {
+  const handleDecrement = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     const newValue = Math.max(min, value - step);
     onChange(newValue);
     setInputValue(newValue.toString());
+    // Keep focus on input after decrement
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,14 +91,20 @@ export function NumberInput({
             onBlur={handleInputBlur}
             min={min}
             max={max}
-            className="w-12 text-center text-sm bg-transparent border-none outline-none text-gray-900 dark:text-gray-100"
+            className="w-12 text-center text-sm bg-transparent border-none outline-none text-gray-900 dark:text-gray-100 
+                       appearance-none [-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
+                       focus:ring-0 focus:border-none focus:outline-none"
             placeholder={placeholder}
+            style={{ 
+              MozAppearance: 'textfield',
+              WebkitAppearance: 'none'
+            }}
           />
           
           <div className="flex flex-col">
             <button
               type="button"
-              onClick={handleIncrement}
+              onMouseDown={handleIncrement}
               disabled={value >= max}
               className="w-4 h-3 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-30 rounded-sm"
             >
@@ -95,7 +113,7 @@ export function NumberInput({
             
             <button
               type="button"
-              onClick={handleDecrement}
+              onMouseDown={handleDecrement}
               disabled={value <= min}
               className="w-4 h-3 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-30 rounded-sm"
             >
