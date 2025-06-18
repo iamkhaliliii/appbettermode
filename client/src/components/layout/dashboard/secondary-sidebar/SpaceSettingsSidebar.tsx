@@ -67,7 +67,7 @@ export const SpaceSettingsSidebar: React.FC<SpaceSettingsSidebarProps> = memo(({
   ], []);
 
   return (
-    <div className="p-3 h-full bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800">
+    <div className="p-3 h-full bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800">
       <div className="flex items-center mb-4">
         <a 
           href={paths.siteConfigPath}

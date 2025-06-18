@@ -11,10 +11,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/primitives";
 import { getApiUrl } from "@/lib/utils";
 
-import { SelectContentStep } from "./select-content-step";
-import { ConfigureSpaceStep } from "./configure-space-step";
+import { SelectContentStep } from "./SelectContentTypeStep";
+import { ConfigureSpaceStep } from "./ConfigureSpaceStep";
 import { useSpaceConfig } from "./use-space-config";
-import { getPreviewComponent } from "./content-types";
+import { getPreviewComponent } from "./ContentTypePreviews";
 
 export interface AddContentDialogProps {
   open: boolean;
@@ -128,7 +128,7 @@ const slideVariants = {
   })
 };
 
-export function AddContentDialog({
+export function ContentTypeManagerModal({
   open,
   onOpenChange,
 }: AddContentDialogProps) {

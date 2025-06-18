@@ -39,7 +39,7 @@ import { getApiBaseUrl } from "@/lib/utils";
 import { useSiteContent } from "@/lib/SiteContentContext";
 import { CreateContentDialog } from "@/components/features/content";
 import { NewPeopleDialog } from "@/components/features/people";
-import { AddContentDialog } from "@/components/features/content/add-content-dialog";
+import { AddContentDialog } from "@/components/features/content/ContentTypeManagerDialog";
 
 // Define interface for Space
 interface Space {

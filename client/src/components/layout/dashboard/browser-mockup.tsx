@@ -42,8 +42,8 @@ export function BrowserMockup({
       new URL(siteUrl).host + new URL(siteUrl).pathname) : 
     "community.bettermode.io";
 
-  return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 w-full h-[calc(100vh-100px)] shadow-2xl dark:shadow-gray-900/30 flex flex-col"
+    return (
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 w-[calc(100vw-41.5rem)] h-[calc(100vh-100px)] shadow-2xl dark:shadow-gray-900/30 flex flex-col overflow-hidden"
       style={{
         boxShadow: '0px 32px 64px -12px rgba(16, 24, 40, 0.14)',
       }}>
@@ -162,8 +162,15 @@ export function BrowserMockup({
         </div>
       </div>
       {/* Browser content will be passed as children */}
-      <div className="bg-white dark:bg-gray-900 flex-1 overflow-y-auto min-h-0">
-        {children}
+      <div className="bg-white dark:bg-gray-900 flex-1 overflow-y-auto overflow-x-hidden min-h-0 scrollbar-thin scrollbar-thumb-gray-200/80 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
+        <div style={{
+          transform: 'scale(0.75)',
+          transformOrigin: 'top left',
+          width: '135%',
+          height: '100%'
+        }}>
+          {children}
+        </div>
       </div>
     </div>
   );

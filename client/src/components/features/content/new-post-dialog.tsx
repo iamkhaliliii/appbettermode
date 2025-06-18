@@ -62,7 +62,7 @@ import { PollConfigModalV2, PollConfigV2 } from "@/components/features/polls/pol
 import { Post } from "@/components/dashboard/site-config/content/types";
 
 // Import Schedule Post Popover
-import { SchedulePopover } from "./schedule-popover";
+import { SchedulePopover } from "./composer-modal/common";
 
 // Import ContentType
 import { ContentType } from "./content-type-selector";

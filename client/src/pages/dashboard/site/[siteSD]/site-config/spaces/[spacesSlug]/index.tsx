@@ -178,7 +178,7 @@ export default function SpaceSettingsPage() {
         <div className={`flex-1 p-4 flex flex-col transition-all duration-300 ease-in-out ${
           sidebarVisible ? 'ml-80' : 'ml-0'
         }`}>
-          <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
+          <div className="flex-1">
             <BrowserMockup
               userDropdownOpen={userDropdownOpen}
               setUserDropdownOpen={setUserDropdownOpen}

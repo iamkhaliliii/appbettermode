@@ -5,7 +5,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/primitives";
-import { ContentCard } from "./content-card";
+import { ContentCard } from "./ContentTypeCard";
 
 // ContentType interface
 interface ContentType {

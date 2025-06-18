@@ -42,7 +42,7 @@ import { z } from 'zod';
 import { BrandLogo, BrandColor, CompanyInfo } from '@/pages/sites/types';
 import { cn } from '@/lib/utils';
 import { SitePreview } from './SitePreview';
-import { getPreviewComponent } from '@/components/features/content/add-content-dialog/content-types';
+import { getPreviewComponent } from '@/components/features/content/content-type-manager/ContentTypePreviews';
 import { getApiUrl } from '@/lib/utils';
 
 // CMS Type from database
