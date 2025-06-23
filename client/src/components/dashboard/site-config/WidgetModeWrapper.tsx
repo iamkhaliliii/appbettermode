@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Smartphone, Monitor, Tablet, Grid3x3, Sparkles } from "lucide-react";
+import { Grid3x3 } from "lucide-react";
 
 interface WidgetModeWrapperProps {
   isActive: boolean;
@@ -15,158 +15,271 @@ export function WidgetModeWrapper({ isActive, children, isDragging = false }: Wi
   useEffect(() => {
     if (isActive) {
       setShowIntro(true);
-      const timer = setTimeout(() => setShowIntro(false), 2000);
+      const timer = setTimeout(() => setShowIntro(false), 1000);
       return () => clearTimeout(timer);
     }
   }, [isActive]);
 
   return (
-    <div className={`relative w-full h-full transition-all duration-500 ${
-      isActive ? 'bg-gradient-to-br from-blue-50/30 via-purple-50/20 to-pink-50/30 dark:from-blue-900/10 dark:via-purple-900/5 dark:to-pink-900/10' : ''
+    <div className={`relative w-full h-full transition-all duration-300 ${
+      isActive ? 'bg-gray-50/80 dark:bg-gray-900/50' : ''
     }`}>
       
-      {/* Widget Mode Background Grid */}
+      {/* Simple Grid Pattern */}
       {isActive && (
         <div 
-          className="absolute inset-0 opacity-20 pointer-events-none"
+          className="absolute inset-0 opacity-5 pointer-events-none"
           style={{
             backgroundImage: `
-              linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
+              linear-gradient(rgba(156, 163, 175, 0.4) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(156, 163, 175, 0.4) 1px, transparent 1px)
             `,
             backgroundSize: '20px 20px'
           }}
         />
       )}
 
-      {/* Widget Mode Intro Animation */}
+      {/* Simple Intro Animation */}
       <AnimatePresence>
         {showIntro && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm flex items-center justify-center pointer-events-none"
+            className="absolute inset-0 z-50 bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm flex items-center justify-center pointer-events-none"
           >
             <motion.div
-              initial={{ scale: 0.5, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 1.1, opacity: 0 }}
-              transition={{ type: "spring", duration: 0.6 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ duration: 0.3 }}
               className="text-center"
             >
               <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center"
+                initial={{ rotate: -5 }}
+                animate={{ rotate: 0 }}
+                className="w-12 h-12 mx-auto mb-2 bg-blue-500 rounded-lg flex items-center justify-center"
               >
-                <Grid3x3 className="w-8 h-8 text-white" />
+                <Grid3x3 className="w-6 h-6 text-white" />
               </motion.div>
-              <motion.h3
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="text-xl font-bold text-gray-900 dark:text-white mb-2"
-              >
-                Widget Mode Activated
-              </motion.h3>
-              <motion.p
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="text-gray-600 dark:text-gray-400"
-              >
-                Drag widgets to arrange your layout
-              </motion.p>
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Widget Mode
+              </p>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Content with Widget Mode Styling */}
-      <div 
-        className={`transition-all duration-500 ${
-          isActive ? 'widget-mode-active' : ''
-        }`}
-        style={{
-          filter: isActive ? 'none' : 'none'
-        }}
-      >
+      {/* Content */}
+      <div className={`transition-all duration-300 ${isActive ? 'widget-mode-active' : ''}`}>
         {children}
       </div>
 
-      {/* Widget Mode Status Bar */}
+      {/* Simple Status Indicator */}
       {isActive && (
         <motion.div
-          initial={{ y: 100, opacity: 0 }}
+          initial={{ y: 40, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 100, opacity: 0 }}
-          className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-40"
+          exit={{ y: 40, opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="fixed bottom-4 right-4 z-40"
         >
-          <div className="bg-white dark:bg-gray-800 rounded-full shadow-lg border border-gray-200 dark:border-gray-700 px-6 py-3 flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${
-                isDragging ? 'bg-orange-500 animate-pulse' : 'bg-green-500 animate-pulse'
-              }`}></div>
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                {isDragging ? 'Moving Widget...' : 'Widget Mode'}
-              </span>
-            </div>
-            
-            <div className="h-4 w-px bg-gray-300 dark:bg-gray-600"></div>
-            
-            <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-              <Sparkles className="w-3 h-3" />
-              <span>{isDragging ? 'Drag & Drop Active' : 'Linear Layout'}</span>
-            </div>
-            
-            <div className="flex items-center gap-1">
-              <Monitor className="w-4 h-4 text-blue-500" />
-              <Tablet className="w-4 h-4 text-gray-400" />
-              <Smartphone className="w-4 h-4 text-gray-400" />
-            </div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 px-3 py-2 flex items-center gap-2">
+            <div className={`w-2 h-2 rounded-full transition-colors ${
+              isDragging ? 'bg-orange-500' : 'bg-blue-500'
+            }`}></div>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              {isDragging ? 'Moving' : 'Widget Mode'}
+            </span>
           </div>
         </motion.div>
       )}
 
-      {/* Widget Mode Global Styles */}
+      {/* Widget Mode Styles with Blur Overlays */}
       {isActive && (
         <style dangerouslySetInnerHTML={{
           __html: `
             .widget-mode-active * {
-              transition: all 0.3s ease !important;
+              transition: all 0.2s ease !important;
             }
             
+            /* Blur non-editable sections */
+            .widget-mode-active [data-sidebar="true"],
+            .widget-mode-active [data-header="true"],
+            .widget-mode-active [data-navigation="true"],
+            .widget-mode-active [data-footer="true"],
+            .widget-mode-active [data-space-header="true"],
+            .widget-mode-active [data-space-footer="true"],
+            .widget-mode-active nav:not([data-widget-element]),
+            .widget-mode-active header:not([data-widget-element]),
+            .widget-mode-active footer:not([data-widget-element]),
+            .widget-mode-active aside:not([data-widget-element]),
+            .widget-mode-active .sidebar,
+            .widget-mode-active .header,
+            .widget-mode-active .footer,
+            .widget-mode-active .space-header,
+            .widget-mode-active .space-footer,
+            .widget-mode-active .site-header,
+            .widget-mode-active .site-footer,
+            .widget-mode-active .navigation,
+            .widget-mode-active .main-sidebar,
+            .widget-mode-active .secondary-sidebar,
+            .widget-mode-active .breadcrumb,
+            .widget-mode-active .page-header,
+            .widget-mode-active .content-header,
+            .widget-mode-active .nav-item,
+            .widget-mode-active .nav-link,
+            .widget-mode-active .menu-item,
+            .widget-mode-active .tab-item,
+            .widget-mode-active .tabs,
+            .widget-mode-active .tab-list,
+            .widget-mode-active .navigation-item,
+            .widget-mode-active .navigation-menu,
+            .widget-mode-active .space-nav,
+            .widget-mode-active .site-nav,
+            .widget-mode-active [role="navigation"]:not([data-widget-element]),
+            .widget-mode-active [role="menubar"]:not([data-widget-element]),
+            .widget-mode-active [role="tablist"]:not([data-widget-element]) {
+              filter: blur(2px) !important;
+              opacity: 0.6 !important;
+              pointer-events: none !important;
+              position: relative !important;
+            }
+            
+            /* Blur navigation specific elements */
+            .widget-mode-active nav button:not([data-widget-element]),
+            .widget-mode-active nav a:not([data-widget-element]),
+            .widget-mode-active nav span:not([data-widget-element]),
+            .widget-mode-active nav div:not([data-widget-element]),
+            .widget-mode-active .navigation button:not([data-widget-element]),
+            .widget-mode-active .navigation a:not([data-widget-element]),
+            .widget-mode-active .navigation span:not([data-widget-element]),
+            .widget-mode-active .navigation div:not([data-widget-element]),
+            .widget-mode-active header button:not([data-widget-element]),
+            .widget-mode-active header a:not([data-widget-element]),
+            .widget-mode-active header span:not([data-widget-element]),
+            .widget-mode-active header div:not([data-widget-element]) {
+              filter: blur(2px) !important;
+              opacity: 0.6 !important;
+              pointer-events: none !important;
+              position: relative !important;
+            }
+            
+            /* Blur overlay for non-editable sections */
+            .widget-mode-active [data-sidebar="true"]::before,
+            .widget-mode-active [data-header="true"]::before,
+            .widget-mode-active [data-navigation="true"]::before,
+            .widget-mode-active [data-footer="true"]::before,
+            .widget-mode-active [data-space-header="true"]::before,
+            .widget-mode-active [data-space-footer="true"]::before,
+            .widget-mode-active nav:not([data-widget-element])::before,
+            .widget-mode-active header:not([data-widget-element])::before,
+            .widget-mode-active footer:not([data-widget-element])::before,
+            .widget-mode-active aside:not([data-widget-element])::before,
+            .widget-mode-active .sidebar::before,
+            .widget-mode-active .header::before,
+            .widget-mode-active .footer::before,
+            .widget-mode-active .space-header::before,
+            .widget-mode-active .space-footer::before,
+            .widget-mode-active .site-header::before,
+            .widget-mode-active .site-footer::before,
+            .widget-mode-active .navigation::before,
+            .widget-mode-active .main-sidebar::before,
+            .widget-mode-active .secondary-sidebar::before,
+            .widget-mode-active .breadcrumb::before,
+            .widget-mode-active .page-header::before,
+            .widget-mode-active .content-header::before,
+            .widget-mode-active .nav-item::before,
+            .widget-mode-active .nav-link::before,
+            .widget-mode-active .menu-item::before,
+            .widget-mode-active .tab-item::before,
+            .widget-mode-active .tabs::before,
+            .widget-mode-active .tab-list::before,
+            .widget-mode-active .navigation-item::before,
+            .widget-mode-active .navigation-menu::before,
+            .widget-mode-active .space-nav::before,
+            .widget-mode-active .site-nav::before,
+            .widget-mode-active [role="navigation"]:not([data-widget-element])::before,
+            .widget-mode-active [role="menubar"]:not([data-widget-element])::before,
+            .widget-mode-active [role="tablist"]:not([data-widget-element])::before,
+            .widget-mode-active nav button:not([data-widget-element])::before,
+            .widget-mode-active nav a:not([data-widget-element])::before,
+            .widget-mode-active .navigation button:not([data-widget-element])::before,
+            .widget-mode-active .navigation a:not([data-widget-element])::before,
+            .widget-mode-active header button:not([data-widget-element])::before,
+            .widget-mode-active header a:not([data-widget-element])::before {
+              content: "" !important;
+              position: absolute !important;
+              top: 0 !important;
+              left: 0 !important;
+              right: 0 !important;
+              bottom: 0 !important;
+              background: rgba(255, 255, 255, 0.3) !important;
+              backdrop-filter: blur(1px) !important;
+              z-index: 1 !important;
+              border-radius: inherit !important;
+              pointer-events: none !important;
+            }
+            
+            .dark .widget-mode-active [data-sidebar="true"]::before,
+            .dark .widget-mode-active [data-header="true"]::before,
+            .dark .widget-mode-active [data-navigation="true"]::before,
+            .dark .widget-mode-active [data-footer="true"]::before,
+            .dark .widget-mode-active [data-space-header="true"]::before,
+            .dark .widget-mode-active [data-space-footer="true"]::before,
+            .dark .widget-mode-active nav:not([data-widget-element])::before,
+            .dark .widget-mode-active header:not([data-widget-element])::before,
+            .dark .widget-mode-active footer:not([data-widget-element])::before,
+            .dark .widget-mode-active aside:not([data-widget-element])::before,
+            .dark .widget-mode-active .sidebar::before,
+            .dark .widget-mode-active .header::before,
+            .dark .widget-mode-active .footer::before,
+            .dark .widget-mode-active .space-header::before,
+            .dark .widget-mode-active .space-footer::before,
+            .dark .widget-mode-active .site-header::before,
+            .dark .widget-mode-active .site-footer::before,
+            .dark .widget-mode-active .navigation::before,
+            .dark .widget-mode-active .main-sidebar::before,
+            .dark .widget-mode-active .secondary-sidebar::before,
+            .dark .widget-mode-active .breadcrumb::before,
+            .dark .widget-mode-active .page-header::before,
+            .dark .widget-mode-active .content-header::before,
+            .dark .widget-mode-active .nav-item::before,
+            .dark .widget-mode-active .nav-link::before,
+            .dark .widget-mode-active .menu-item::before,
+            .dark .widget-mode-active .tab-item::before,
+            .dark .widget-mode-active .tabs::before,
+            .dark .widget-mode-active .tab-list::before,
+            .dark .widget-mode-active .navigation-item::before,
+            .dark .widget-mode-active .navigation-menu::before,
+            .dark .widget-mode-active .space-nav::before,
+            .dark .widget-mode-active .site-nav::before,
+            .dark .widget-mode-active [role="navigation"]:not([data-widget-element])::before,
+            .dark .widget-mode-active [role="menubar"]:not([data-widget-element])::before,
+            .dark .widget-mode-active [role="tablist"]:not([data-widget-element])::before,
+            .dark .widget-mode-active nav button:not([data-widget-element])::before,
+            .dark .widget-mode-active nav a:not([data-widget-element])::before,
+            .dark .widget-mode-active .navigation button:not([data-widget-element])::before,
+            .dark .widget-mode-active .navigation a:not([data-widget-element])::before,
+            .dark .widget-mode-active header button:not([data-widget-element])::before,
+            .dark .widget-mode-active header a:not([data-widget-element])::before {
+              background: rgba(0, 0, 0, 0.3) !important;
+            }
+            
+            /* Widget elements styling */
             .widget-mode-active [data-widget-element="true"] {
-              border: 2px dashed rgba(59, 130, 246, 0.3) !important;
+              border: 1px solid rgba(59, 130, 246, 0.3) !important;
               border-radius: 8px !important;
               position: relative !important;
-              backdrop-filter: blur(1px) !important;
+              filter: none !important;
+              opacity: 1 !important;
+              pointer-events: auto !important;
             }
             
             .widget-mode-active [data-widget-element="true"]:hover {
-              border-color: rgba(59, 130, 246, 0.6) !important;
+              border-color: rgba(59, 130, 246, 0.5) !important;
               background-color: rgba(59, 130, 246, 0.05) !important;
-              transform: scale(1.02) !important;
-              box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15) !important;
-            }
-            
-            .widget-mode-active [data-widget-element="true"]::before {
-              content: "";
-              position: absolute !important;
-              top: -2px !important;
-              left: -2px !important;
-              right: -2px !important;
-              bottom: -2px !important;
-              background: linear-gradient(45deg, transparent, rgba(59, 130, 246, 0.1), transparent) !important;
-              border-radius: 8px !important;
-              pointer-events: none !important;
-              opacity: 0 !important;
-              transition: opacity 0.3s ease !important;
-            }
-            
-            .widget-mode-active [data-widget-element="true"]:hover::before {
-              opacity: 1 !important;
+              box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15) !important;
             }
             
             .widget-mode-active [data-widget-type]::after {
@@ -181,13 +294,29 @@ export function WidgetModeWrapper({ isActive, children, isDragging = false }: Wi
               border-radius: 4px !important;
               font-weight: 500 !important;
               opacity: 0 !important;
-              transition: opacity 0.3s ease !important;
+              transition: opacity 0.2s ease !important;
               pointer-events: none !important;
               z-index: 10 !important;
             }
             
             .widget-mode-active [data-widget-type]:hover::after {
               opacity: 1 !important;
+            }
+            
+            /* Ensure editable content area is not blurred */
+            .widget-mode-active [data-widget-content="true"],
+            .widget-mode-active [data-drop-zone="true"],
+            .widget-mode-active [data-widget-drop-zone="true"],
+            .widget-mode-active .main-content,
+            .widget-mode-active .content-area,
+            .widget-mode-active .drop-zone,
+            .widget-mode-active .widget-drop-zone,
+            .widget-mode-active .drop-widgets-zone,
+            .widget-mode-active .drag-widgets-zone,
+            .widget-mode-active main[data-widget-element] {
+              filter: none !important;
+              opacity: 1 !important;
+              pointer-events: auto !important;
             }
           `
         }} />
