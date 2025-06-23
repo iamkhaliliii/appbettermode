@@ -55,7 +55,7 @@ const Day: React.FC<DayProps> = ({ classNames, day, onHover }) => {
         </motion.div>
         {day.meetingInfo && (
           <motion.div
-            className="absolute bottom-1 right-1 flex size-5 items-center justify-center rounded-full bg-blue-500 dark:bg-zinc-700 p-1 text-[10px] font-bold text-white shadow-sm"
+            className="absolute bottom-1 right-1 flex size-5 items-center justify-center rounded-full bg-blue-500 dark:bg-gray-700 p-1 text-[10px] font-bold text-white shadow-sm"
             layoutId={`day-${day.day}-meeting-count`}
             style={{
               borderRadius: 999,
@@ -69,7 +69,7 @@ const Day: React.FC<DayProps> = ({ classNames, day, onHover }) => {
           {day.meetingInfo && isHovered && (
             <div className="absolute inset-0 flex size-full items-center justify-center">
               <motion.div
-                className="flex size-10 items-center justify-center bg-blue-500 dark:bg-zinc-700 p-1 text-xs font-bold text-white shadow-lg"
+                className="flex size-10 items-center justify-center bg-blue-500 dark:bg-gray-700 p-1 text-xs font-bold text-white shadow-lg"
                 layoutId={`day-${day.day}-meeting-count`}
                 style={{
                   borderRadius: 999,
@@ -165,7 +165,7 @@ const InteractiveCalendar = React.forwardRef<
       prevDate.setDate(prevDate.getDate() - (i + 1));
       days.push({
         day: `-${i + 1}`,
-        classNames: 'bg-gray-50 dark:bg-zinc-700/20 text-gray-400 dark:text-gray-500'
+        classNames: 'bg-gray-50 dark:bg-gray-700/20 text-gray-400 dark:text-gray-500'
       });
     }
     
@@ -201,7 +201,7 @@ const InteractiveCalendar = React.forwardRef<
       const isWeekend = dayDate.getDay() === 0 || dayDate.getDay() === 6;
       days.push({
         day: dayStr,
-        classNames: `${isWeekend ? 'bg-gray-100 dark:bg-zinc-700/20' : 'bg-white dark:bg-[#1e1e1e] border border-gray-200 dark:border-gray-700'} ${dayEvents.length > 0 ? 'cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-950/30' : 'hover:bg-gray-50 dark:hover:bg-gray-800'}`,
+        classNames: `${isWeekend ? 'bg-gray-100 dark:bg-gray-700/20' : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700'} ${dayEvents.length > 0 ? 'cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-950/30' : 'hover:bg-gray-50 dark:hover:bg-gray-800'}`,
         meetingInfo: dayEvents.length > 0 ? dayEvents : undefined
       });
     }
@@ -211,7 +211,7 @@ const InteractiveCalendar = React.forwardRef<
     for (let i = 1; i <= remainingDays; i++) {
       days.push({
         day: `+${i}`,
-        classNames: 'bg-gray-50 dark:bg-zinc-700/20 text-gray-400 dark:text-gray-500'
+        classNames: 'bg-gray-50 dark:bg-gray-700/20 text-gray-400 dark:text-gray-500'
       });
     }
     
@@ -254,7 +254,7 @@ const InteractiveCalendar = React.forwardRef<
               <div className="flex items-center gap-4">
                 <motion.button
                   onClick={goToPreviousMonth}
-                  className="p-1 rounded-lg border border-gray-300 dark:border-[#323232] text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  className="p-1 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   <ChevronLeft className="w-3 h-3" />
                 </motion.button>
@@ -265,7 +265,7 @@ const InteractiveCalendar = React.forwardRef<
                 
                 <motion.button
                   onClick={goToNextMonth}
-                  className="p-1 rounded-lg border border-gray-300 dark:border-[#323232] text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  className="p-1 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   <ChevronRight className="w-3 h-3" />
                 </motion.button>
@@ -275,7 +275,7 @@ const InteractiveCalendar = React.forwardRef<
               {daysOfWeek.map((day) => (
                 <div
                   key={day}
-                  className="px-0/5 rounded-xl bg-gray-100 dark:bg-[#323232] py-1 text-center text-xs text-gray-700 dark:text-white font-medium"
+                  className="px-0/5 rounded-xl bg-gray-100 dark:bg-gray-700 py-1 text-center text-xs text-gray-700 dark:text-white font-medium"
                 >
                   {day}
                 </div>
@@ -310,7 +310,7 @@ const InteractiveCalendar = React.forwardRef<
 
               {/* Enhanced Events List */}
               <motion.div
-                className="h-[580px] overflow-y-auto rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent"
+                className="h-[580px] overflow-y-auto rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900/50 shadow-sm scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent"
                 layout
               >
                 <AnimatePresence>
@@ -319,7 +319,7 @@ const InteractiveCalendar = React.forwardRef<
                       <motion.div
                         key={event.id}
                         onClick={() => handleEventClick(event.id)}
-                        className="group p-4 cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-all duration-200 border-b border-gray-100 dark:border-gray-800 last:border-b-0 hover:border-blue-200 dark:hover:border-blue-800"
+                        className="group p-4 cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-all duration-200 border-b dark:border-gray-700 last:border-b-0 hover:border-blue-200 dark:hover:border-blue-800"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}

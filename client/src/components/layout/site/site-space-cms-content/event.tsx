@@ -353,7 +353,7 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
     return (
       <Card 
         key={event.id}
-        className={`group relative overflow-hidden bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-200 cursor-pointer ${isPast ? 'opacity-70 grayscale' : ''}`}
+        className={`group relative overflow-hidden bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-300 cursor-pointer ${isPast ? 'opacity-70 grayscale' : ''}`}
         onClick={() => handleViewEvent(event.id)}
       >
         {/* Image with All Content Overlay */}
@@ -361,7 +361,7 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
           <img 
             src={event.sample_image} 
             alt={event.title}
-            className={`w-full h-full object-cover ${isPast ? 'grayscale' : ''}`}
+            className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${isPast ? 'grayscale' : ''}`}
           />
           
           {/* Progressive Blur Effect */}
@@ -377,7 +377,7 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
           {/* Category and Status Badges - Top Left */}
           <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <Badge className="bg-black/50 backdrop-blur-sm text-white text-xs px-2 py-1 font-medium shadow-lg w-fit">
+              <Badge className="bg-black/50 backdrop-blur-sm text-white text-[0.65rem] px-1.5 py-0.5 font-medium shadow-sm border-0 rounded-md">
                 {event.event_category}
               </Badge>
               {event.is_featured && !isOngoing && !isPast && (
@@ -436,7 +436,7 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
               
               {/* Title */}
               <h3 className="font-bold text-sm text-white line-clamp-2 drop-shadow-lg">
-                {event.title}
+                {event.title} <ArrowRight className="inline w-4 h-4 text-white/80 group-hover:text-white opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-300 ml-1" />
               </h3>
               
               {/* Location and Attendees */}
@@ -450,18 +450,8 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
                   )}
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <AvatarGroup
-                    members={[
-                      { username: 'user1', src: 'https://i.pravatar.cc/150?img=3' },
-                      { username: 'user2', src: 'https://i.pravatar.cc/150?img=4' },
-                      { username: 'user3', src: 'https://i.pravatar.cc/150?img=5' },
-                      { username: 'user4', src: 'https://i.pravatar.cc/150?img=6' },
-                      { username: 'user5', src: 'https://i.pravatar.cc/150?img=7' },
-                      ...Array.from({ length: Math.max(0, event.attendees_count - 5) }).map((_, index) => ({ username: `user${index + 6}`, src: undefined }))
-                    ]}
-                    limit={5}
-                    size={14}
-                  />
+                  <Users className="w-3 h-3" />
+                  <span className="text-xs font-medium">{event.attendees_count}</span>
                 </div>
               </div>
               
@@ -528,62 +518,76 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
         {/* Event Card */}
         <div className="relative ml-8 mb-6">
           <div 
-            className={`group bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-4 hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-md transition-all duration-300 cursor-pointer ${isPast ? 'opacity-80 grayscale' : ''}`}
+            className={`group bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-4 hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-300 cursor-pointer ${isPast ? 'opacity-80 grayscale' : ''}`}
             onClick={() => handleViewEvent(event.id)}
           >
                         <div className="flex items-start gap-5">
               {/* Event Info */}
               <div className="flex-1 min-w-0">
-                {/* Time and Status */}
-                <div className="flex items-center gap-3 mb-1">
+                {/* Category, Time and Status */}
+                <div className="flex items-center gap-3 mb-2">
+                  {/* Category Badge */}
+                  <Badge className="bg-gray-200/50 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-[0.75rem] px-1.5 py-0.5 font-medium border-0 rounded-md">
+                    {event.event_category}
+                  </Badge>
+                  
+                  {/* Time */}
                   <span className={`text-[0.7rem] font-medium ${isPast ? 'text-gray-500 dark:text-gray-400' : 'text-gray-700 dark:text-gray-300'}`}>
                     {timeLabel}
                   </span>
                   
-                                  {/* Status and Category Badges */}
-                <div className="flex items-center gap-2">
-                  <Badge className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs px-2 py-0.5">
-                    {event.event_category}
-                  </Badge>
-                  
-                  {event.event_type === 'online' && (
-                    <Badge className="bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 text-xs px-2 py-0.5">
-                      Online
-                    </Badge>
-                  )}
-                  
-                  {isOngoing && (
-                    <Badge className="bg-red-600 text-white text-xs px-2 py-0.5">
-                      Live
-                    </Badge>
-                  )}
-                  {isPast && (
-                    <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                      Past Event
-                    </span>
-                  )}
-                  {event.is_featured && !isOngoing && !isPast && (
-                    <Badge className="bg-blue-600 text-white text-xs px-1.5 py-0.5">
-                      <Star className="w-2.5 h-2.5 fill-current" />
-                    </Badge>
-                  )}
-                </div>
+                  {/* Other Status Badges */}
+                  <div className="flex items-center gap-2">
+                    {event.event_type === 'online' && (
+                      <Badge className="bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 text-xs px-2 py-0.5">
+                        Online
+                      </Badge>
+                    )}
+                    
+                    {isOngoing && (
+                      <Badge className="bg-red-600 text-white text-xs px-2 py-0.5">
+                        Live
+                      </Badge>
+                    )}
+                    {isPast && (
+                      <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                        Past Event
+                      </span>
+                    )}
+                    {event.is_featured && !isOngoing && !isPast && (
+                      <Badge className="bg-blue-600 text-white text-xs px-1.5 py-0.5">
+                        <Star className="w-2.5 h-2.5 fill-current" />
+                      </Badge>
+                    )}
+                  </div>
                 </div>
                 
                 {/* Title */}
-                <h4 className={`font-semibold text-[1.2rem] mb-1 line-clamp-2 ${isPast ? 'text-gray-600 dark:text-gray-400' : 'text-gray-900 dark:text-gray-100'}`}>
-                  {event.title}
+                <h4 className={`font-semibold text-[1.4rem] mb-4 mt-2 line-clamp-2 ${isPast ? 'text-gray-600 dark:text-gray-400' : 'text-gray-900 dark:text-gray-100'}`}>
+                  {event.title} <ArrowRight className="inline w-5 h-5 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-300 ml-1" />
                 </h4>
                 
-                {/* Host and Location Info */}
-                <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400 mb-2">
+                {/* Attendees, Host and Location Info */}
+                <div className="flex items-center gap-2 text-[0.8rem] text-gray-600 dark:text-gray-400">
+                  {/* Attendees */}
                   <div className="flex items-center gap-2">
+                    <AvatarGroup
+                      members={Array.from({ length: Math.min(event.attendees_count, 10) }).map((_, index) => ({
+                        username: `user${index + 1}`,
+                        src: `https://i.pravatar.cc/150?img=${(index % 70) + 1}`
+                      }))}
+                      limit={5}
+                      size={26}
+                    />
+                  </div>
+                  
+                  <div className="flex items-center gap-1 bg-gray-200/50 dark:bg-gray-800 rounded-full px-2 py-1">
                     <img 
                       src={event.host?.avatar || 'https://i.pravatar.cc/150?img=1'}
                       alt="Host"
-                      className="w-4 h-4 rounded-full border border-gray-200 dark:border-gray-700"
+                      className="w-5 h-5 rounded-full border border-gray-100 dark:border-gray-700"
                     />
-                    <span>By {event.host?.name || 'Event Host'}</span>
+                    <span>By <span className="font-semibold">{event.host?.name || 'Event Host'}</span></span>
                   </div>
                   
                   {event.event_location && (
@@ -592,22 +596,6 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
                       <span className="truncate max-w-[120px]">{event.event_location}</span>
                     </div>
                   )}
-                </div>
-                
-                {/* Attendees */}
-                <div className="flex items-center gap-2">
-                  <AvatarGroup
-                    members={[
-                      { username: 'user1', src: 'https://i.pravatar.cc/150?img=3' },
-                      { username: 'user2', src: 'https://i.pravatar.cc/150?img=4' },
-                      { username: 'user3', src: 'https://i.pravatar.cc/150?img=5' },
-                      { username: 'user4', src: 'https://i.pravatar.cc/150?img=6' },
-                      { username: 'user5', src: 'https://i.pravatar.cc/150?img=7' },
-                      ...Array.from({ length: Math.max(0, event.attendees_count - 5) }).map((_, index) => ({ username: `user${index + 6}`, src: undefined }))
-                    ]}
-                    limit={5}
-                    size={26}
-                  />
                 </div>
               </div>
               
@@ -619,10 +607,6 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
                     alt={event.title}
                     className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${isPast ? 'grayscale' : ''}`}
                   />
-                  {/* Hover Arrow */}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
-                    <ArrowRight className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300" />
-                  </div>
                 </div>
               </div>
             </div>
@@ -802,7 +786,7 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
                 {filteredEvents.map((event, index) => renderEventListItem(event, index))}
               </div>
             ) : (
-              <div className="rounded-lg bg-gray-50 dark:bg-black p-4 border border-gray-200 dark:border-gray-800">
+              <div className="rounded-lg bg-gray-50 dark:bg-gray-950 p-4 border border-gray-200 dark:border-gray-800">
                 <InteractiveCalendar 
                   events={filteredEvents} 
                   siteSD={siteSD}
