@@ -256,10 +256,10 @@ const InteractiveCalendar = React.forwardRef<
                   onClick={goToPreviousMonth}
                   className="p-1 rounded-lg border border-gray-300 dark:border-[#323232] text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
-                  <ChevronLeft className="w-5 h-5" />
+                  <ChevronLeft className="w-3 h-3" />
                 </motion.button>
                 
-                <motion.h2 className="text-xl font-bold tracking-wider text-gray-800 dark:text-zinc-300">
+                <motion.h2 className="text-sm font-medium text-gray-800 dark:text-zinc-300">
                   {monthName}
                 </motion.h2>
                 
@@ -267,11 +267,9 @@ const InteractiveCalendar = React.forwardRef<
                   onClick={goToNextMonth}
                   className="p-1 rounded-lg border border-gray-300 dark:border-[#323232] text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
-                  <ChevronRight className="w-5 h-5" />
+                  <ChevronRight className="w-3 h-3" />
                 </motion.button>
               </div>
-              
-
             </div>
             <div className="grid grid-cols-7 gap-2">
               {daysOfWeek.map((day) => (
@@ -288,7 +286,7 @@ const InteractiveCalendar = React.forwardRef<
         </motion.div>
         {moreView && (
           <motion.div
-            className="w-full max-w-sm"
+            className="w-full max-w-xs"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
@@ -299,23 +297,20 @@ const InteractiveCalendar = React.forwardRef<
               className="flex w-full flex-col"
             >
               {/* Enhanced Header */}
-              <div className="mb-6">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+              <div className="mb-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-gray-900 dark:text-white">
                     {monthName}
                   </h3>
-                  <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                    {currentMonthEvents.length}
-                  </span>
                 </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   Upcoming events this month
                 </p>
               </div>
 
-              {/* Events List */}
+              {/* Enhanced Events List */}
               <motion.div
-                className="h-[580px] overflow-y-auto rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
+                className="h-[580px] overflow-y-auto rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent"
                 layout
               >
                 <AnimatePresence>
@@ -324,7 +319,7 @@ const InteractiveCalendar = React.forwardRef<
                       <motion.div
                         key={event.id}
                         onClick={() => handleEventClick(event.id)}
-                        className="p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors border-b border-gray-100 dark:border-gray-800 last:border-b-0"
+                        className="group p-4 cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-all duration-200 border-b border-gray-100 dark:border-gray-800 last:border-b-0 hover:border-blue-200 dark:hover:border-blue-800"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
@@ -334,68 +329,51 @@ const InteractiveCalendar = React.forwardRef<
                         }}
                       >
                         <div className="flex gap-3">
-                          {/* Event Cover Image */}
-                          <div className="flex-shrink-0">
+                          {/* Enhanced Cover Image */}
+                          <div className="flex-shrink-0 relative">
                             <img 
                               src={event.cover_image_url || event.sample_image || 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=400&h=300&fit=crop&crop=center&auto=format&q=80'}
                               alt={event.title}
-                              className="w-16 h-16 rounded-lg object-cover"
+                              className="w-14 h-14 rounded-xl object-cover shadow-sm group-hover:shadow-md transition-shadow"
                             />
+                            {/* Status indicator overlay */}
+                            <div className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-white dark:border-gray-900 ${
+                              event.event_status === 'upcoming' 
+                                ? 'bg-blue-500'
+                                : event.event_status === 'ongoing'
+                                ? 'bg-green-500'
+                                : 'bg-gray-400'
+                            }`} />
                           </div>
                           
-                          {/* Event Content */}
+                          {/* Enhanced Content */}
                           <div className="flex-1 min-w-0">
-                            {/* Event Title */}
-                            <div className="flex items-center gap-2 mb-2">
-                              <Calendar className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
-                              <h3 className="font-medium text-gray-900 dark:text-white line-clamp-1">
+                            {/* Enhanced Title */}
+                            <div className="mb-0">
+                              <h3 className="font-semibold text-gray-900 dark:text-white line-clamp-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                 {event.title}
                               </h3>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
+                                {event.event_category}
+                              </p>
                             </div>
                         
-                            {/* Event Meta */}
-                            <div className="space-y-1.5">
-                              {/* Date & Time */}
-                              <div className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
-                                <Clock className="w-3.5 h-3.5" />
-                                <span>
-                                  {new Date(event.event_date).toLocaleDateString('en-US', { 
-                                    month: 'short', 
-                                    day: 'numeric' 
-                                  })} • {new Date(event.event_date).toLocaleTimeString('en-US', { 
-                                    hour: 'numeric', 
-                                    minute: '2-digit' 
-                                  })}
-                                </span>
-                              </div>
-                              
-                              {/* Location */}
-                              {event.event_location && (
-                                <div className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
-                                  <MapPin className="w-3.5 h-3.5" />
-                                  <span className="truncate">{event.event_location}</span>
+                            {/* Enhanced Meta Info */}
+                            <div className="space-y-2">
+                              {/* Primary Info - Date & Time */}
+                              <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-1.5 text-xs text-gray-700 dark:text-gray-300">
+                                  <span>
+                                    {new Date(event.event_date).toLocaleDateString('en-US', { 
+                                      month: 'short', 
+                                      day: 'numeric' 
+                                    })} • {new Date(event.event_date).toLocaleTimeString('en-US', { 
+                                      hour: 'numeric', 
+                                      minute: '2-digit' 
+                                    })}
+                                  </span>
                                 </div>
-                              )}
-                              
-                              {/* Attendees */}
-                              <div className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
-                                <Users className="w-3.5 h-3.5" />
-                                <span>{event.attendees_count} attending</span>
                               </div>
-                            </div>
-                            
-                            {/* Status Badge */}
-                            <div className="mt-2">
-                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                                event.event_status === 'upcoming' 
-                                  ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
-                                  : event.event_status === 'ongoing'
-                                  ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                                  : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
-                              }`}>
-                                {event.event_status === 'upcoming' ? 'Upcoming' : 
-                                 event.event_status === 'ongoing' ? 'Live' : 'Past'}
-                              </span>
                             </div>
                           </div>
                         </div>
@@ -403,8 +381,12 @@ const InteractiveCalendar = React.forwardRef<
                     ))
                   ) : (
                     <div className="p-8 text-center">
+                      <div className="w-12 h-12 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-xl flex items-center justify-center">
+                        <Calendar className="w-6 h-6 text-gray-400" />
+                      </div>
+                      <h4 className="font-medium text-gray-900 dark:text-white mb-1">No events yet</h4>
                       <p className="text-gray-500 dark:text-gray-400 text-sm">
-                        No events scheduled for {monthName}
+                        Events will appear here when scheduled
                       </p>
                     </div>
                   )}
@@ -420,7 +402,5 @@ const InteractiveCalendar = React.forwardRef<
 InteractiveCalendar.displayName = 'InteractiveCalendar';
 
 export default InteractiveCalendar;
-
-
 
 const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']; 

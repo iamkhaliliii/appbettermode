@@ -5,7 +5,8 @@ import { Badge } from '@/components/ui/primitives';
 import { Calendar, Plus, ArrowRight, Loader2, RefreshCw, MapPin, Clock, Users, Grid, List, Search, Star, ArrowUpRight, CalendarDays } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { fetchContentData, isSimulatedSpace, getSpaceInfo } from './utils';
-import InteractiveCalendar from '@/components/ui/visualize-booking';
+import InteractiveCalendar from '@/components/ui/calendar-layout';
+import { ProgressiveBlur } from '@/components/ui/progressive-blur';
 
 interface Space {
   id: string;
@@ -335,117 +336,112 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
     return (
       <Card 
         key={event.id}
-        className="group relative overflow-hidden bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 transition-colors duration-200"
+        className={`group relative overflow-hidden bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-200 cursor-pointer ${isPast ? 'opacity-70 grayscale' : ''}`}
+        onClick={() => handleViewEvent(event.id)}
       >
-        {/* Clean Image */}
-        <div className="relative h-44 overflow-hidden">
+        {/* Image with All Content Overlay */}
+        <div className="relative overflow-hidden rounded-lg aspect-[1/1]">
           <img 
             src={event.sample_image} 
             alt={event.title}
-            className="w-full h-full object-cover"
+            className={`w-full h-full object-cover ${isPast ? 'grayscale' : ''}`}
           />
           
-          {/* Minimal Overlay */}
-          <div className="absolute inset-0 bg-black/10" />
+          {/* Progressive Blur Effect */}
+          <ProgressiveBlur
+            className="pointer-events-none absolute bottom-0 left-0 h-[40%] w-full"
+            blurIntensity={8}
+            direction="bottom"
+          />
           
-          {/* Status Badges - Top */}
-          <div className="absolute top-3 left-3">
+          {/* Overlay for better text contrast */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10" />
+          
+          {/* Category and Status Badges - Top Left */}
+          <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <Badge className="bg-black/50 backdrop-blur-sm text-white text-xs px-2 py-1 font-medium shadow-lg w-fit">
+                {event.event_category}
+              </Badge>
+              {event.is_featured && !isOngoing && !isPast && (
+                <Badge className="bg-blue-600 text-white text-xs px-1.5 py-1 font-medium shadow-lg w-fit">
+                  <Star className="w-3 h-3 fill-current" />
+                </Badge>
+              )}
+            </div>
             {isOngoing && (
-              <Badge className="bg-red-600 text-white text-xs px-2 py-1 font-medium">
+              <Badge className="bg-red-600 text-white text-xs px-2 py-1 font-medium shadow-lg">
                 Live
               </Badge>
             )}
-            {event.is_featured && !isOngoing && (
-              <Badge className="bg-blue-600 text-white text-xs px-2 py-1 font-medium">
-                Featured
-              </Badge>
-            )}
           </div>
           
-          {/* Price Badge - Top Right */}
-          <div className="absolute top-3 right-3">
-            {event.price?.type === 'paid' ? (
-              <Badge className="bg-white text-gray-900 text-xs px-2 py-1 font-medium shadow-sm">
-                ${event.price.amount}
-              </Badge>
-            ) : (
-              <Badge className="bg-green-600 text-white text-xs px-2 py-1 font-medium">
-                Free
-              </Badge>
-            )}
+          {/* Date/Time Badge - Top Right */}
+          <div className="absolute top-3 right-3 z-10">
+            <div className="bg-black/50 backdrop-blur-sm text-white rounded-lg px-2 py-1.5 ">
+              {event.event_date ? (
+                <div className="text-center">
+                  <div className="text-[0.6rem] font-medium uppercase tracking-wider opacity-90">
+                    {new Date(event.event_date).toLocaleDateString('en-US', { month: 'short' })}
+                  </div>
+                  <div className="text-[0.75rem] font-bold leading-none">
+                    {new Date(event.event_date).getDate()}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center">
+                  <div className="text-xs font-medium">TBA</div>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Complete Event Content Overlay - Bottom */}
+          <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
+            <div className="space-y-1">
+              {/* Past Badge */}
+              {isPast && (
+                <div className="flex justify-start">
+                  <span className="text-sm text-white/80 font-medium drop-shadow-lg">
+                    Past Event
+                  </span>
+                </div>
+              )}
+              
+              {/* Online Badge */}
+              {event.event_type === 'online' && (
+                <div className="flex justify-end">
+                  <Badge className="bg-purple-500/80 backdrop-blur-sm text-white text-xs px-2 py-1 font-medium">
+                    Online
+                  </Badge>
+                </div>
+              )}
+              
+              {/* Title */}
+              <h3 className="font-bold text-sm text-white line-clamp-2 drop-shadow-lg">
+                {event.title}
+              </h3>
+              
+              {/* Location and Attendees */}
+              <div className="flex items-center justify-between text-[0.75rem] text-white/80 mb-3">
+                <div className="flex items-center gap-1.5">
+                  {event.event_location && (
+                    <>
+                      <MapPin className="w-3 h-3" />
+                      <span className="truncate max-w-[120px]">{event.event_location}</span>
+                    </>
+                  )}
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Users className="w-3 h-3" />
+                  <span>{event.attendees_count}</span>
+                </div>
+              </div>
+              
+
+            </div>
           </div>
         </div>
-        
-        <CardContent className="p-4 space-y-3">
-          {/* Meta Info */}
-          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-            <span className="font-medium">{event.event_category}</span>
-            {event.event_type === 'online' && (
-              <span className="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded font-medium">
-                Online
-              </span>
-            )}
-          </div>
-          
-          {/* Title */}
-          <h3 
-            className="font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-            onClick={() => handleViewEvent(event.id)}
-          >
-            {event.title}
-          </h3>
-          
-          {/* Date & Time */}
-          <div className="text-sm text-gray-600 dark:text-gray-300">
-            {event.event_date ? formatEventDate(event.event_date) : 'Date TBA'}
-          </div>
-          
-          {/* Location */}
-          {event.event_location && (
-            <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300">
-              <MapPin className="w-3.5 h-3.5 text-gray-400" />
-              <span className="truncate">{event.event_location}</span>
-            </div>
-          )}
-          
-          {/* Attendees */}
-          <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300 pt-1 border-t border-gray-100 dark:border-gray-800">
-            <Users className="w-3.5 h-3.5 text-gray-400" />
-            <span>{event.attendees_count} attending</span>
-          </div>
-        </CardContent>
-        
-        <CardFooter className="p-4 pt-0 flex items-center justify-between">
-          {isUpcoming && (
-            <Button 
-              size="sm" 
-              onClick={() => handleRSVP(event.id, event)}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              RSVP
-            </Button>
-          )}
-          
-          {isOngoing && (
-            <Button 
-              size="sm" 
-              className="bg-red-600 hover:bg-red-700 text-white"
-              onClick={() => handleViewEvent(event.id)}
-            >
-              Join Live
-            </Button>
-          )}
-          
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => handleViewEvent(event.id)}
-            className="ml-auto"
-          >
-            Details
-            <ArrowRight className="w-3.5 h-3.5 ml-1" />
-          </Button>
-        </CardFooter>
       </Card>
     );
   };
@@ -454,6 +450,7 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
   const renderEventListItem = (event: EnhancedEvent) => {
     const isUpcoming = event.event_status === 'upcoming';
     const isOngoing = event.event_status === 'ongoing';
+    const isPast = event.event_status === 'past';
     
     // Format date for list view
     const eventDate = event.event_date ? new Date(event.event_date) : new Date();
@@ -461,17 +458,18 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
     return (
       <Card 
         key={event.id}
-        className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-200 border border-gray-200 dark:border-gray-800"
+        className={`hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all duration-200 border border-gray-200 dark:border-gray-800 cursor-pointer ${event.event_status === 'past' ? 'opacity-90 grayscale' : ''}`}
+        onClick={() => handleViewEvent(event.id)}
       >
         <CardContent className="p-6">
           <div className="flex items-start gap-6">
             {/* Date Block */}
             <div className="flex-shrink-0">
-              <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-lg flex flex-col items-center justify-center">
-                <div className="text-lg font-bold text-gray-900 dark:text-gray-100">
+              <div className={`w-16 h-16 rounded-lg flex flex-col items-center justify-center ${isPast ? 'bg-gray-200 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-800'}`}>
+                <div className={`text-lg font-bold ${isPast ? 'text-gray-600 dark:text-gray-400' : 'text-gray-900 dark:text-gray-100'}`}>
                   {String(eventDate.getDate()).padStart(2, '0')}
                 </div>
-                <div className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+                <div className={`text-xs font-medium uppercase ${isPast ? 'text-gray-500 dark:text-gray-500' : 'text-gray-500 dark:text-gray-400'}`}>
                   {eventDate.toLocaleDateString('en-US', { month: 'short' })}
                 </div>
               </div>
@@ -479,12 +477,18 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
 
             {/* Event Info */}
             <div className="flex-1 min-w-0 space-y-2">
+              {/* Past Event Indicator */}
+              {isPast && (
+                <div className="mb-1">
+                  <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                    Past Event
+                  </span>
+                </div>
+              )}
+
               {/* Title and Status */}
               <div className="flex items-start justify-between gap-4">
-                <h3 
-                  className="font-semibold text-lg text-gray-900 dark:text-gray-100 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors line-clamp-1"
-                  onClick={() => handleViewEvent(event.id)}
-                >
+                <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100 transition-colors line-clamp-1">
                   {event.title}
                 </h3>
                 
@@ -492,11 +496,6 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
                   {isOngoing && (
                     <Badge className="bg-red-600 text-white text-xs px-2 py-1">
                       Live
-                    </Badge>
-                  )}
-                  {event.is_featured && !isOngoing && (
-                    <Badge className="bg-blue-600 text-white text-xs px-2 py-1">
-                      Featured
                     </Badge>
                   )}
                   {event.price?.type === 'paid' ? (
@@ -513,9 +512,20 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
 
               {/* Meta Info */}
               <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
-                <span>{event.event_category}</span>
+                <div className="flex items-center gap-2">
+                  <Badge className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs px-2 py-1 font-medium w-fit">
+                    {event.event_category}
+                  </Badge>
+                  {event.is_featured && !isOngoing && !isPast && (
+                    <Badge className="bg-blue-600 text-white text-xs px-1.5 py-1">
+                      <Star className="w-3 h-3 fill-current" />
+                    </Badge>
+                  )}
+                </div>
                 {event.event_type === 'online' && (
-                  <span className="text-purple-600 dark:text-purple-400">Online</span>
+                  <Badge className="bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 text-xs px-2 py-1 font-medium">
+                    Online
+                  </Badge>
                 )}
                 <span>{event.event_date ? formatEventDate(event.event_date) : 'Date TBA'}</span>
               </div>
@@ -563,7 +573,10 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
                   {isUpcoming && (
                     <Button 
                       size="sm" 
-                      onClick={() => handleRSVP(event.id, event)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRSVP(event.id, event);
+                      }}
                       className="bg-blue-600 hover:bg-blue-700 text-white"
                     >
                       RSVP
@@ -574,7 +587,10 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
                     <Button 
                       size="sm" 
                       className="bg-red-600 hover:bg-red-700 text-white"
-                      onClick={() => handleViewEvent(event.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleViewEvent(event.id);
+                      }}
                     >
                       Join Live
                     </Button>
@@ -583,7 +599,10 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    onClick={() => handleViewEvent(event.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleViewEvent(event.id);
+                    }}
                   >
                     View Details
                   </Button>
