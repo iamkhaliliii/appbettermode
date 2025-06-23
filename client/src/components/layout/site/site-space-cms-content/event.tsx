@@ -7,6 +7,7 @@ import { useLocation } from 'wouter';
 import { fetchContentData, isSimulatedSpace, getSpaceInfo } from './utils';
 import InteractiveCalendar from '@/components/ui/calendar-layout';
 import { ProgressiveBlur } from '@/components/ui/progressive-blur';
+import { AvatarGroup } from '@/components/ui/avatar';
 
 interface Space {
   id: string;
@@ -50,6 +51,10 @@ interface EnhancedEvent {
     currency?: string;
   };
   sample_image?: string;
+  host?: {
+    name: string;
+    avatar: string;
+  };
 }
 
 interface EventContentProps {
@@ -176,6 +181,14 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
         price = { type: 'paid', amount: 29, currency: 'USD' };
       }
 
+      // Generate host information
+      const hostNames = [
+        'Sarah Johnson', 'Mike Chen', 'Emily Rodriguez', 'David Kim', 'Lisa Thompson',
+        'Alex Wong', 'Maria Garcia', 'James Wilson', 'Anna Taylor', 'Chris Brown'
+      ];
+      const hostName = hostNames[index % hostNames.length];
+      const hostAvatar = `https://i.pravatar.cc/150?img=${(index % 20) + 1}`;
+
       return {
         ...event,
         event_date: eventDate,
@@ -189,7 +202,11 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
         is_featured: isFeatured,
         registration_url: `https://events.example.com/register/${event.id}`,
         price,
-        sample_image: PREMIUM_IMAGES[index % PREMIUM_IMAGES.length]
+        sample_image: PREMIUM_IMAGES[index % PREMIUM_IMAGES.length],
+        host: {
+          name: hostName,
+          avatar: hostAvatar
+        }
       };
     });
   };
@@ -433,8 +450,18 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
                   )}
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Users className="w-3 h-3" />
-                  <span>{event.attendees_count}</span>
+                  <AvatarGroup
+                    members={[
+                      { username: 'user1', src: 'https://i.pravatar.cc/150?img=3' },
+                      { username: 'user2', src: 'https://i.pravatar.cc/150?img=4' },
+                      { username: 'user3', src: 'https://i.pravatar.cc/150?img=5' },
+                      { username: 'user4', src: 'https://i.pravatar.cc/150?img=6' },
+                      { username: 'user5', src: 'https://i.pravatar.cc/150?img=7' },
+                      ...Array.from({ length: Math.max(0, event.attendees_count - 5) }).map((_, index) => ({ username: `user${index + 6}`, src: undefined }))
+                    ]}
+                    limit={5}
+                    size={14}
+                  />
                 </div>
               </div>
               
@@ -446,172 +473,162 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
     );
   };
 
-  // Minimal List View - Professional Design
-  const renderEventListItem = (event: EnhancedEvent) => {
+  // Timeline List View - Compact and Minimal
+  const renderEventListItem = (event: EnhancedEvent, index: number) => {
     const isUpcoming = event.event_status === 'upcoming';
     const isOngoing = event.event_status === 'ongoing';
     const isPast = event.event_status === 'past';
+    const isLast = index === filteredEvents.length - 1;
     
-    // Format date for list view
+    // Format date for timeline view
     const eventDate = event.event_date ? new Date(event.event_date) : new Date();
+    const today = new Date();
+    const isToday = eventDate.toDateString() === today.toDateString();
+    const isTomorrow = eventDate.toDateString() === new Date(today.getTime() + 24 * 60 * 60 * 1000).toDateString();
+    
+    let dateLabel = eventDate.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      weekday: 'long' 
+    });
+    
+    if (isToday) dateLabel = `Today ${eventDate.toLocaleDateString('en-US', { weekday: 'long' })}`;
+    if (isTomorrow) dateLabel = `Tomorrow ${eventDate.toLocaleDateString('en-US', { weekday: 'long' })}`;
+    
+    const timeLabel = eventDate.toLocaleTimeString('en-US', { 
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: true 
+    });
+    
+    // Check if this is the first event of a new day
+    const isNewDay = index === 0 || 
+      (filteredEvents[index - 1] && 
+       new Date(filteredEvents[index - 1].event_date || '').toDateString() !== eventDate.toDateString());
     
     return (
-      <Card 
-        key={event.id}
-        className={`hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all duration-200 border border-gray-200 dark:border-gray-800 cursor-pointer ${event.event_status === 'past' ? 'opacity-90 grayscale' : ''}`}
-        onClick={() => handleViewEvent(event.id)}
-      >
-        <CardContent className="p-6">
-          <div className="flex items-start gap-6">
-            {/* Date Block */}
-            <div className="flex-shrink-0">
-              <div className={`w-16 h-16 rounded-lg flex flex-col items-center justify-center ${isPast ? 'bg-gray-200 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-800'}`}>
-                <div className={`text-lg font-bold ${isPast ? 'text-gray-600 dark:text-gray-400' : 'text-gray-900 dark:text-gray-100'}`}>
-                  {String(eventDate.getDate()).padStart(2, '0')}
-                </div>
-                <div className={`text-xs font-medium uppercase ${isPast ? 'text-gray-500 dark:text-gray-500' : 'text-gray-500 dark:text-gray-400'}`}>
-                  {eventDate.toLocaleDateString('en-US', { month: 'short' })}
-                </div>
-              </div>
+      <div key={event.id} className="relative">
+        {/* Date Header */}
+        {isNewDay && (
+          <div className="sticky top-20 z-20 flex justify-start py-2 mb-3">
+            <div className="inline-flex items-center gap-2.5 bg-white/50 dark:bg-gray-900/90 backdrop-blur-md rounded-full px-3.5 py-1.5 border border-gray-200/50 dark:border-gray-800/50 shadow-lg ml-3">
+              <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${isPast ? 'bg-gray-400' : 'bg-blue-500'}`} />
+              <h3 className={`font-semibold text-sm ${isPast ? 'text-gray-500 dark:text-gray-400' : 'text-gray-900 dark:text-gray-100'}`}>
+                {dateLabel}
+              </h3>
             </div>
-
-            {/* Event Info */}
-            <div className="flex-1 min-w-0 space-y-2">
-              {/* Past Event Indicator */}
-              {isPast && (
-                <div className="mb-1">
-                  <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">
-                    Past Event
+          </div>
+        )}
+        
+        {/* Timeline Connector */}
+        {!isLast && (
+          <div className={`absolute left-[5px] w-[2px] h-full bg-gray-200 dark:bg-gray-700 ${isNewDay ? 'top-10' : 'top-8'}`} />
+        )}
+        
+        {/* Event Card */}
+        <div className="relative ml-8 mb-6">
+          <div 
+            className={`group bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-4 hover:border-gray-300 dark:hover:border-gray-700 hover:shadow-md transition-all duration-300 cursor-pointer ${isPast ? 'opacity-80 grayscale' : ''}`}
+            onClick={() => handleViewEvent(event.id)}
+          >
+                        <div className="flex items-start gap-5">
+              {/* Event Info */}
+              <div className="flex-1 min-w-0">
+                {/* Time and Status */}
+                <div className="flex items-center gap-3 mb-1">
+                  <span className={`text-[0.7rem] font-medium ${isPast ? 'text-gray-500 dark:text-gray-400' : 'text-gray-700 dark:text-gray-300'}`}>
+                    {timeLabel}
                   </span>
-                </div>
-              )}
-
-              {/* Title and Status */}
-              <div className="flex items-start justify-between gap-4">
-                <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100 transition-colors line-clamp-1">
-                  {event.title}
-                </h3>
-                
-                <div className="flex items-center gap-2 flex-shrink-0">
+                  
+                                  {/* Status and Category Badges */}
+                <div className="flex items-center gap-2">
+                  <Badge className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs px-2 py-0.5">
+                    {event.event_category}
+                  </Badge>
+                  
+                  {event.event_type === 'online' && (
+                    <Badge className="bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 text-xs px-2 py-0.5">
+                      Online
+                    </Badge>
+                  )}
+                  
                   {isOngoing && (
-                    <Badge className="bg-red-600 text-white text-xs px-2 py-1">
+                    <Badge className="bg-red-600 text-white text-xs px-2 py-0.5">
                       Live
                     </Badge>
                   )}
-                  {event.price?.type === 'paid' ? (
-                    <Badge variant="outline" className="text-xs px-2 py-1">
-                      ${event.price.amount}
-                    </Badge>
-                  ) : (
-                    <Badge className="bg-green-600 text-white text-xs px-2 py-1">
-                      Free
-                    </Badge>
-                  )}
-                </div>
-              </div>
-
-              {/* Meta Info */}
-              <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
-                <div className="flex items-center gap-2">
-                  <Badge className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs px-2 py-1 font-medium w-fit">
-                    {event.event_category}
-                  </Badge>
-                  {event.is_featured && !isOngoing && !isPast && (
-                    <Badge className="bg-blue-600 text-white text-xs px-1.5 py-1">
-                      <Star className="w-3 h-3 fill-current" />
-                    </Badge>
-                  )}
-                </div>
-                {event.event_type === 'online' && (
-                  <Badge className="bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 text-xs px-2 py-1 font-medium">
-                    Online
-                  </Badge>
-                )}
-                <span>{event.event_date ? formatEventDate(event.event_date) : 'Date TBA'}</span>
-              </div>
-
-              {/* Location */}
-              {event.event_location && (
-                <div className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300">
-                  <MapPin className="w-4 h-4 text-gray-400" />
-                  <span>{event.event_location}</span>
-                </div>
-              )}
-
-              {/* Attendees and Actions */}
-              <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-800">
-                <div className="flex items-center gap-4">
-                  {/* Attendee Avatars */}
-                  <div className="flex items-center gap-2">
-                    <div className="flex -space-x-1">
-                      {['https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=24&h=24&fit=crop&crop=face',
-                        'https://images.unsplash.com/photo-1494790108755-2616b612b4c0?w=24&h=24&fit=crop&crop=face',
-                        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=24&h=24&fit=crop&crop=face'].map((avatar, index) => (
-                        <img
-                          key={index}
-                          src={avatar}
-                          alt=""
-                          className="w-6 h-6 rounded-full border-2 border-white dark:border-gray-900"
-                        />
-                      ))}
-                      {event.attendees_count > 3 && (
-                        <div className="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 border-2 border-white dark:border-gray-900 flex items-center justify-center">
-                          <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
-                            +{event.attendees_count - 3}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                    <span className="text-sm text-gray-600 dark:text-gray-300">
-                      {event.attendees_count} attending
+                  {isPast && (
+                    <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                      Past Event
                     </span>
-                  </div>
+                  )}
+                  {event.is_featured && !isOngoing && !isPast && (
+                    <Badge className="bg-blue-600 text-white text-xs px-1.5 py-0.5">
+                      <Star className="w-2.5 h-2.5 fill-current" />
+                    </Badge>
+                  )}
                 </div>
-
-                {/* Action Buttons */}
+                </div>
+                
+                {/* Title */}
+                <h4 className={`font-semibold text-[1.2rem] mb-1 line-clamp-2 ${isPast ? 'text-gray-600 dark:text-gray-400' : 'text-gray-900 dark:text-gray-100'}`}>
+                  {event.title}
+                </h4>
+                
+                {/* Host and Location Info */}
+                <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  <div className="flex items-center gap-2">
+                    <img 
+                      src={event.host?.avatar || 'https://i.pravatar.cc/150?img=1'}
+                      alt="Host"
+                      className="w-4 h-4 rounded-full border border-gray-200 dark:border-gray-700"
+                    />
+                    <span>By {event.host?.name || 'Event Host'}</span>
+                  </div>
+                  
+                  {event.event_location && (
+                    <div className="flex items-center gap-1">
+                      <MapPin className="w-3 h-3" />
+                      <span className="truncate max-w-[120px]">{event.event_location}</span>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Attendees */}
                 <div className="flex items-center gap-2">
-                  {isUpcoming && (
-                    <Button 
-                      size="sm" 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRSVP(event.id, event);
-                      }}
-                      className="bg-blue-600 hover:bg-blue-700 text-white"
-                    >
-                      RSVP
-                    </Button>
-                  )}
-                  
-                  {isOngoing && (
-                    <Button 
-                      size="sm" 
-                      className="bg-red-600 hover:bg-red-700 text-white"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleViewEvent(event.id);
-                      }}
-                    >
-                      Join Live
-                    </Button>
-                  )}
-                  
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleViewEvent(event.id);
-                    }}
-                  >
-                    View Details
-                  </Button>
+                  <AvatarGroup
+                    members={[
+                      { username: 'user1', src: 'https://i.pravatar.cc/150?img=3' },
+                      { username: 'user2', src: 'https://i.pravatar.cc/150?img=4' },
+                      { username: 'user3', src: 'https://i.pravatar.cc/150?img=5' },
+                      { username: 'user4', src: 'https://i.pravatar.cc/150?img=6' },
+                      { username: 'user5', src: 'https://i.pravatar.cc/150?img=7' },
+                      ...Array.from({ length: Math.max(0, event.attendees_count - 5) }).map((_, index) => ({ username: `user${index + 6}`, src: undefined }))
+                    ]}
+                    limit={5}
+                    size={26}
+                  />
+                </div>
+              </div>
+              
+              {/* Event Image */}
+              <div className="flex-shrink-0 relative">
+                <div className="w-24 h-24 rounded-xl overflow-hidden group-hover:shadow-lg transition-shadow duration-300">
+                  <img 
+                    src={event.sample_image} 
+                    alt={event.title}
+                    className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${isPast ? 'grayscale' : ''}`}
+                  />
+                  {/* Hover Arrow */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+                    <ArrowRight className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300" />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   };
 
@@ -781,8 +798,8 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
                 {filteredEvents.map(event => renderEventCard(event))}
               </div>
             ) : viewMode === 'list' ? (
-              <div className="space-y-4">
-                {filteredEvents.map(event => renderEventListItem(event))}
+              <div className="space-y-0 bg-gray-50 dark:bg-gray-950 rounded-lg p-4">
+                {filteredEvents.map((event, index) => renderEventListItem(event, index))}
               </div>
             ) : (
               <div className="rounded-lg bg-gray-50 dark:bg-black p-4 border border-gray-200 dark:border-gray-800">

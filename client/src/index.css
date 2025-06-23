@@ -57,6 +57,12 @@
     --chart-3: 190 30% 50%;
     --chart-4: 180 25% 45%;
     --chart-5: 170 20% 40%;
+
+    /* Avatar component variables */
+    --ds-gray-alpha-400: hsla(0, 0%, 0%, 0.08);
+    --geist-background: #fff;
+    --accents-1: #fafafa;
+    --accents-2: #eaeaea;
   }
 
   .dark {
@@ -93,6 +99,15 @@
     --chart-3: 190 35% 55%;
     --chart-4: 180 30% 45%;
     --chart-5: 170 25% 35%;
+
+    /* Avatar component variables - dark mode */
+    --ds-gray-100: hsla(0, 0%, 10%, 1);
+    --ds-gray-400: hsla(0, 0%, 18%, 1);
+    --ds-gray-1000: hsla(0, 0%, 93%, 1);
+    --ds-gray-alpha-400: hsla(0, 0%, 100%, 0.14);
+    --geist-background: #000;
+    --accents-2: #333333;
+    --accents-1: #111111;
   }
 
   * {

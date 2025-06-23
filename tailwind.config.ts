@@ -74,7 +74,14 @@ export default {
                                 'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
                                 border: 'hsl(var(--sidebar-border))',
                                 ring: 'hsl(var(--sidebar-ring))'
-                        }
+                        },
+                        "gray-100": "var(--ds-gray-100)",
+                        "gray-400": "var(--ds-gray-400)",
+                        "gray-1000": "var(--ds-gray-1000)",
+                        "gray-alpha-400": "var(--ds-gray-alpha-400)"
+                },
+                backgroundImage: {
+                        "skeleton-gradient": "linear-gradient(270deg, var(--accents-1), var(--accents-2), var(--accents-2), var(--accents-1))"
                 },
                 keyframes: {
                         'accordion-down': {
@@ -130,6 +137,10 @@ export default {
                                 '50%': { 
                                     opacity: '1'
                                 }
+                        },
+                        'skeletonLoading': {
+                                "0%": { backgroundPosition: "200% 0" },
+                                "100%": { backgroundPosition: "-200% 0" }
                         }
                 },
                 animation: {
@@ -139,7 +150,8 @@ export default {
                         'subtle-spin': 'subtle-spin 60s linear infinite',
                         'subtle-bounce': 'subtle-bounce 1s ease-in-out infinite',
                         'fadeIn': 'fadeIn 0.5s ease-out forwards',
-                        'pulse-glow': 'pulse-glow 2s ease-in-out infinite'
+                        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+                        'skeleton-loading': 'skeletonLoading 8s infinite ease-in-out'
                 }
         }
   },
