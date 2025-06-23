@@ -1,92 +1,28 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/primitives';
-import { Button } from '@/components/ui/primitives';
-import { Badge } from '@/components/ui/primitives';
-import { Calendar, Plus, ArrowRight, Loader2, RefreshCw, MapPin, Clock, Users, Grid, List, Search, Star, ArrowUpRight, CalendarDays } from 'lucide-react';
 import { useLocation } from 'wouter';
-import { fetchContentData, isSimulatedSpace, getSpaceInfo } from './utils';
+import { Card, CardContent } from '@/components/ui/primitives';
+import { Button } from '@/components/ui/primitives';
+import { Calendar, Plus, Loader2, RefreshCw, Search } from 'lucide-react';
 import InteractiveCalendar from '@/components/ui/calendar-layout';
-import { ProgressiveBlur } from '@/components/ui/progressive-blur';
-import { AvatarGroup } from '@/components/ui/avatar';
+import { fetchContentData, isSimulatedSpace, getSpaceInfo } from './utils';
+import { EventFiltersDemo } from '@/components/ui/event-filters-demo';
+import { Filter, FilterType, FilterOperator, EventStatus, EventCategory, EventType as FilterEventType, Featured } from '@/components/ui/event-filters';
+import { EventSortDemo } from '@/components/ui/event-sort-demo';
+import { Sort, SortField, SortDirection } from '@/components/ui/event-sort';
+import { nanoid } from 'nanoid';
 
-interface Space {
-  id: string;
-  name: string;
-  slug: string;
-  description: string | null;
-  cms_type: string;
-  hidden: boolean;
-  visibility: string;
-  site_id: string;
-}
-
-interface EnhancedEvent {
-  id: string;
-  title: string;
-  content: any;
-  status: string;
-  author_id: string;
-  space_id: string;
-  published_at: string;
-  created_at: string;
-  updated_at: string;
-  cms_type: string;
-  site_id: string;
-  cover_image_url?: string;
-  
-  // Enhanced properties
-  event_date?: string;
-  event_location?: string;
-  event_description?: string;
-  event_status: 'upcoming' | 'ongoing' | 'past';
-  event_type: 'online' | 'offline' | 'hybrid';
-  attendees_count: number;
-  max_attendees?: number;
-  event_category: string;
-  is_featured: boolean;
-  registration_url?: string;
-  price?: {
-    type: 'free' | 'paid';
-    amount?: number;
-    currency?: string;
-  };
-  sample_image?: string;
-  host?: {
-    name: string;
-    avatar: string;
-  };
-}
-
-interface EventContentProps {
-  siteSD: string;
-  space: Space;
-  site: any;
-}
-
-const FILTER_OPTIONS = [
-  { value: 'all', label: 'All', count: 0 },
-  { value: 'upcoming', label: 'Upcoming', count: 0 },
-  { value: 'past', label: 'Past', count: 0 },
-  { value: 'online', label: 'Online', count: 0 }
-];
-
-const VIEW_MODES = [
-  { value: 'grid', label: 'Cards', icon: Grid },
-  { value: 'list', label: 'List', icon: List },
-  { value: 'calendar', label: 'Calendar', icon: CalendarDays },
-];
-
-// High-quality professional event images
-const PREMIUM_IMAGES = [
-  'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&h=400&fit=crop&crop=center&auto=format&q=80',
-  'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&h=400&fit=crop&crop=center&auto=format&q=80',
-  'https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&h=400&fit=crop&crop=center&auto=format&q=80',
-  'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=400&fit=crop&crop=center&auto=format&q=80',
-  'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&h=400&fit=crop&crop=center&auto=format&q=80',
-  'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&h=400&fit=crop&crop=center&auto=format&q=80',
-  'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=400&fit=crop&crop=center&auto=format&q=80',
-  'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&h=400&fit=crop&crop=center&auto=format&q=80'
-];
+// Import reusable components
+import {
+  CategoryCard,
+  FeaturedEventWidget,
+  EventCard,
+  EventListItem,
+  EventControlsBar,
+  Space,
+  EnhancedEvent,
+  EventContentProps
+} from '@/components/features/events';
+import { CATEGORIES, PREMIUM_IMAGES } from '@/components/features/events/constants';
 
 export function EventContent({ siteSD, space, site }: EventContentProps) {
   const [, setLocation] = useLocation();
@@ -96,9 +32,20 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
   const [useMockData, setUseMockData] = useState(false);
   
   // UI State
-  const [selectedFilter, setSelectedFilter] = useState('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'calendar'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isViewModeOpen, setIsViewModeOpen] = useState(false);
+  
+  // Advanced Filters & Sorts
+  const [advancedFilters, setAdvancedFilters] = useState<Filter[]>([]);
+  const [advancedSorts, setAdvancedSorts] = useState<Sort[]>([
+    {
+      id: 'default-date',
+      field: SortField.DATE,
+      direction: SortDirection.DESC
+    }
+  ]);
 
   // Get space info for debugging
   const spaceInfo = getSpaceInfo(space);
@@ -252,9 +199,222 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
     }
   }, [site?.id, space?.id]);
 
-  // Filtered events with search
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (isViewModeOpen && !target.closest('[data-dropdown="view-mode"]')) {
+        setIsViewModeOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isViewModeOpen]);
+
+  // Function to apply advanced filters
+  const applyAdvancedFilters = (events: EnhancedEvent[], filters: Filter[]): EnhancedEvent[] => {
+    return events.filter(event => {
+      for (const filter of filters) {
+        if (filter.value.length === 0) continue;
+
+        let matches = false;
+        
+        switch (filter.type) {
+          case FilterType.STATUS:
+            const statusMap = {
+              [EventStatus.UPCOMING]: 'upcoming',
+              [EventStatus.ONGOING]: 'ongoing', 
+              [EventStatus.PAST]: 'past'
+            };
+            const eventStatus = Object.keys(statusMap).find(key => 
+              statusMap[key as keyof typeof statusMap] === event.event_status
+            );
+            
+            if (filter.operator === FilterOperator.IS) {
+              matches = filter.value.includes(eventStatus || '');
+            } else if (filter.operator === FilterOperator.IS_NOT) {
+              matches = !filter.value.includes(eventStatus || '');
+            } else if (filter.operator === FilterOperator.IS_ANY_OF) {
+              matches = filter.value.includes(eventStatus || '');
+            }
+            break;
+
+          case FilterType.CATEGORY:
+            if (filter.operator === FilterOperator.INCLUDE || filter.operator === FilterOperator.INCLUDE_ANY_OF) {
+              matches = filter.value.includes(event.event_category);
+            } else if (filter.operator === FilterOperator.DO_NOT_INCLUDE || filter.operator === FilterOperator.EXCLUDE_ALL_OF) {
+              matches = !filter.value.includes(event.event_category);
+            }
+            break;
+
+          case FilterType.EVENT_TYPE:
+            const typeMap = {
+              [FilterEventType.ONLINE]: 'online',
+              [FilterEventType.OFFLINE]: 'offline',
+              [FilterEventType.HYBRID]: 'hybrid'
+            };
+            const eventType = Object.keys(typeMap).find(key => 
+              typeMap[key as keyof typeof typeMap] === event.event_type
+            );
+            
+            if (filter.operator === FilterOperator.IS) {
+              matches = filter.value.includes(eventType || '');
+            } else if (filter.operator === FilterOperator.IS_NOT) {
+              matches = !filter.value.includes(eventType || '');
+            }
+            break;
+
+          case FilterType.FEATURED:
+            const isFeatured = event.is_featured ? Featured.FEATURED : Featured.NOT_FEATURED;
+            if (filter.operator === FilterOperator.IS) {
+              matches = filter.value.includes(isFeatured);
+            } else if (filter.operator === FilterOperator.IS_NOT) {
+              matches = !filter.value.includes(isFeatured);
+            }
+            break;
+
+          case FilterType.DATE:
+            if (event.event_date) {
+              const eventDate = new Date(event.event_date);
+              const now = new Date();
+              
+              for (const dateFilter of filter.value) {
+                let dateMatches = false;
+                const today = new Date();
+                const tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                
+                switch (dateFilter) {
+                  case 'Today':
+                    dateMatches = eventDate.toDateString() === today.toDateString();
+                    break;
+                  case 'Tomorrow':
+                    dateMatches = eventDate.toDateString() === tomorrow.toDateString();
+                    break;
+                  case 'This week':
+                    const weekStart = new Date(today);
+                    weekStart.setDate(today.getDate() - today.getDay());
+                    const weekEnd = new Date(weekStart);
+                    weekEnd.setDate(weekStart.getDate() + 6);
+                    dateMatches = eventDate >= weekStart && eventDate <= weekEnd;
+                    break;
+                  case 'Next week':
+                    const nextWeekStart = new Date(today);
+                    nextWeekStart.setDate(today.getDate() + (7 - today.getDay()));
+                    const nextWeekEnd = new Date(nextWeekStart);
+                    nextWeekEnd.setDate(nextWeekStart.getDate() + 6);
+                    dateMatches = eventDate >= nextWeekStart && eventDate <= nextWeekEnd;
+                    break;
+                  case 'This month':
+                    dateMatches = eventDate.getMonth() === today.getMonth() && 
+                                 eventDate.getFullYear() === today.getFullYear();
+                    break;
+                  case 'Next month':
+                    const nextMonth = new Date(today);
+                    nextMonth.setMonth(today.getMonth() + 1);
+                    dateMatches = eventDate.getMonth() === nextMonth.getMonth() && 
+                                 eventDate.getFullYear() === nextMonth.getFullYear();
+                    break;
+                }
+                
+                if (dateMatches) {
+                  matches = true;
+                  break;
+                }
+              }
+            }
+            break;
+        }
+        
+        if (!matches) return false;
+      }
+      return true;
+    });
+  };
+
+  // Apply advanced sorting to events
+  const sortedEvents = useMemo(() => {
+    if (advancedSorts.length === 0) return events;
+    
+    const sorted = [...events].sort((a, b) => {
+      for (const sort of advancedSorts) {
+        let comparison = 0;
+        
+        switch (sort.field) {
+          case SortField.DATE:
+            const dateA = a.event_date ? new Date(a.event_date).getTime() : 0;
+            const dateB = b.event_date ? new Date(b.event_date).getTime() : 0;
+            comparison = dateA - dateB;
+            break;
+          case SortField.TITLE:
+            comparison = a.title.localeCompare(b.title);
+            break;
+          case SortField.CATEGORY:
+            comparison = a.event_category.localeCompare(b.event_category);
+            break;
+          case SortField.ATTENDEES:
+            comparison = a.attendees_count - b.attendees_count;
+            break;
+          case SortField.CREATED:
+            const createdA = new Date(a.created_at).getTime();
+            const createdB = new Date(b.created_at).getTime();
+            comparison = createdA - createdB;
+            break;
+          case SortField.UPDATED:
+            const updatedA = new Date(a.updated_at).getTime();
+            const updatedB = new Date(b.updated_at).getTime();
+            comparison = updatedA - updatedB;
+            break;
+        }
+        
+        const result = sort.direction === SortDirection.ASC ? comparison : -comparison;
+        if (result !== 0) return result;
+      }
+      return 0;
+    });
+    
+    return sorted;
+  }, [events, advancedSorts]);
+
+  // Create pinned event
+  const pinnedEvent: EnhancedEvent = {
+    id: 'pinned-workshop',
+    title: 'React Development Workshop',
+    content: {
+      event_date: '2024-01-22T14:00:00',
+      event_location: 'Online',
+      event_description: 'Learn React development with hands-on projects'
+    },
+    status: 'published',
+    author_id: 'author-1',
+    space_id: space?.id || '',
+    published_at: new Date().toISOString(),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    cms_type: 'event',
+    site_id: site?.id || '',
+    event_date: '2024-01-22T14:00:00',
+    event_location: 'Online',
+    event_description: 'Learn React development with hands-on projects',
+    event_status: 'upcoming' as const,
+    event_type: 'online' as const,
+    attendees_count: 42,
+    max_attendees: 50,
+    event_category: 'Workshop',
+    is_featured: false,
+    registration_url: 'https://events.example.com/register/workshop',
+    price: { type: 'paid', amount: 29, currency: 'USD' },
+    sample_image: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&h=400&fit=crop&crop=center&auto=format&q=80',
+    host: {
+      name: 'Sarah Johnson',
+      avatar: 'https://i.pravatar.cc/150?img=1'
+    }
+  };
+
+  // Filtered events with search and advanced filters
   const filteredEvents = useMemo(() => {
-    let filtered = events.filter(event => {
+    let filtered = sortedEvents.filter(event => {
       // Search filter
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
@@ -265,45 +425,18 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
           event.event_category.toLowerCase().includes(query);
         if (!matchesSearch) return false;
       }
-
-      // Status filter
-      if (selectedFilter === 'upcoming' && event.event_status !== 'upcoming') return false;
-      if (selectedFilter === 'past' && event.event_status !== 'past') return false;
-      if (selectedFilter === 'online' && event.event_type !== 'online') return false;
       
       return true;
     });
-    
-    // Sort by date (upcoming first, then past)
-    filtered.sort((a, b) => {
-      const dateA = a.event_date ? new Date(a.event_date).getTime() : 0;
-      const dateB = b.event_date ? new Date(b.event_date).getTime() : 0;
-      
-      // Sort upcoming events by date ascending, past events by date descending
-      if (a.event_status === 'upcoming' && b.event_status === 'upcoming') {
-        return dateA - dateB;
-      } else if (a.event_status === 'past' && b.event_status === 'past') {
-        return dateB - dateA;
-      } else if (a.event_status === 'upcoming' && b.event_status === 'past') {
-        return -1;
-      } else {
-        return 1;
-      }
-    });
-    
-    return filtered;
-  }, [events, selectedFilter, searchQuery]);
 
-  // Update filter counts
-  const filterOptionsWithCounts = useMemo(() => {
-    return FILTER_OPTIONS.map(option => ({
-      ...option,
-      count: option.value === 'all' ? events.length :
-             option.value === 'upcoming' ? events.filter(e => e.event_status === 'upcoming').length :
-             option.value === 'past' ? events.filter(e => e.event_status === 'past').length :
-             option.value === 'online' ? events.filter(e => e.event_type === 'online').length : 0
-    }));
-  }, [events]);
+    // Apply advanced filters
+    if (advancedFilters.length > 0) {
+      filtered = applyAdvancedFilters(filtered, advancedFilters);
+    }
+    
+    // Add pinned event at the beginning
+    return [pinnedEvent, ...filtered];
+  }, [sortedEvents, searchQuery, advancedFilters, pinnedEvent]);
 
   const handleNewEvent = () => {
     setLocation(`/site/${siteSD}/${space.slug}/create`);
@@ -313,314 +446,11 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
     setLocation(`/site/${siteSD}/${space.slug}/${eventId}`);
   };
 
-  const handleRSVP = (eventId: string, event: EnhancedEvent) => {
-    // Simulate RSVP
-    setEvents(prev => prev.map(e => 
-      e.id === eventId 
-        ? { ...e, attendees_count: e.attendees_count + 1 }
-        : e
-    ));
-  };
-
-  // Format date for display
-  const formatEventDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const isToday = date.toDateString() === now.toDateString();
-    const isTomorrow = date.toDateString() === new Date(now.getTime() + 24 * 60 * 60 * 1000).toDateString();
-    
-    if (isToday) {
-      return `Today at ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
-    } else if (isTomorrow) {
-      return `Tomorrow at ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
-    } else {
-      return date.toLocaleDateString('en-US', {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit'
-      });
-    }
-  };
-
-  // Minimal Card View - Professional Design
-  const renderEventCard = (event: EnhancedEvent) => {
-    const isUpcoming = event.event_status === 'upcoming';
-    const isOngoing = event.event_status === 'ongoing';
-    const isPast = event.event_status === 'past';
-    
-    return (
-      <Card 
-        key={event.id}
-        className={`group relative overflow-hidden bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-300 cursor-pointer ${isPast ? 'opacity-70 grayscale' : ''}`}
-        onClick={() => handleViewEvent(event.id)}
-      >
-        {/* Image with All Content Overlay */}
-        <div className="relative overflow-hidden rounded-lg aspect-[1/1]">
-          <img 
-            src={event.sample_image} 
-            alt={event.title}
-            className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${isPast ? 'grayscale' : ''}`}
-          />
-          
-          {/* Progressive Blur Effect */}
-          <ProgressiveBlur
-            className="pointer-events-none absolute bottom-0 left-0 h-[40%] w-full"
-            blurIntensity={8}
-            direction="bottom"
-          />
-          
-          {/* Overlay for better text contrast */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10" />
-          
-          {/* Category and Status Badges - Top Left */}
-          <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <Badge className="bg-black/50 backdrop-blur-sm text-white text-[0.65rem] px-1.5 py-0.5 font-medium shadow-sm border-0 rounded-md">
-                {event.event_category}
-              </Badge>
-              {event.is_featured && !isOngoing && !isPast && (
-                <Badge className="bg-blue-600 text-white text-xs px-1.5 py-1 font-medium shadow-lg w-fit">
-                  <Star className="w-3 h-3 fill-current" />
-                </Badge>
-              )}
-            </div>
-            {isOngoing && (
-              <Badge className="bg-red-600 text-white text-xs px-2 py-1 font-medium shadow-lg">
-                Live
-              </Badge>
-            )}
-          </div>
-          
-          {/* Date/Time Badge - Top Right */}
-          <div className="absolute top-3 right-3 z-10">
-            <div className="bg-black/50 backdrop-blur-sm text-white rounded-lg px-2 py-1.5 ">
-              {event.event_date ? (
-                <div className="text-center">
-                  <div className="text-[0.6rem] font-medium uppercase tracking-wider opacity-90">
-                    {new Date(event.event_date).toLocaleDateString('en-US', { month: 'short' })}
-                  </div>
-                  <div className="text-[0.75rem] font-bold leading-none">
-                    {new Date(event.event_date).getDate()}
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center">
-                  <div className="text-xs font-medium">TBA</div>
-                </div>
-              )}
-            </div>
-          </div>
-          
-          {/* Complete Event Content Overlay - Bottom */}
-          <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
-            <div className="space-y-1">
-              {/* Past Badge */}
-              {isPast && (
-                <div className="flex justify-start">
-                  <span className="text-sm text-white/80 font-medium drop-shadow-lg">
-                    Past Event
-                  </span>
-                </div>
-              )}
-              
-              {/* Online Badge */}
-              {event.event_type === 'online' && (
-                <div className="flex justify-end">
-                  <Badge className="bg-purple-500/80 backdrop-blur-sm text-white text-xs px-2 py-1 font-medium">
-                    Online
-                  </Badge>
-                </div>
-              )}
-              
-              {/* Title */}
-              <h3 className="font-bold text-sm text-white line-clamp-2 drop-shadow-lg">
-                {event.title} <ArrowRight className="inline w-4 h-4 text-white/80 group-hover:text-white opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-300 ml-1" />
-              </h3>
-              
-              {/* Location and Attendees */}
-              <div className="flex items-center justify-between text-[0.75rem] text-white/80 mb-3">
-                <div className="flex items-center gap-1.5">
-                  {event.event_location && (
-                    <>
-                      <MapPin className="w-3 h-3" />
-                      <span className="truncate max-w-[120px]">{event.event_location}</span>
-                    </>
-                  )}
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Users className="w-3 h-3" />
-                  <span className="text-xs font-medium">{event.attendees_count}</span>
-                </div>
-              </div>
-              
-
-            </div>
-          </div>
-        </div>
-      </Card>
-    );
-  };
-
-  // Timeline List View - Compact and Minimal
-  const renderEventListItem = (event: EnhancedEvent, index: number) => {
-    const isUpcoming = event.event_status === 'upcoming';
-    const isOngoing = event.event_status === 'ongoing';
-    const isPast = event.event_status === 'past';
-    const isLast = index === filteredEvents.length - 1;
-    
-    // Format date for timeline view
-    const eventDate = event.event_date ? new Date(event.event_date) : new Date();
-    const today = new Date();
-    const isToday = eventDate.toDateString() === today.toDateString();
-    const isTomorrow = eventDate.toDateString() === new Date(today.getTime() + 24 * 60 * 60 * 1000).toDateString();
-    
-    let dateLabel = eventDate.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric', 
-      weekday: 'long' 
-    });
-    
-    if (isToday) dateLabel = `Today ${eventDate.toLocaleDateString('en-US', { weekday: 'long' })}`;
-    if (isTomorrow) dateLabel = `Tomorrow ${eventDate.toLocaleDateString('en-US', { weekday: 'long' })}`;
-    
-    const timeLabel = eventDate.toLocaleTimeString('en-US', { 
-      hour: 'numeric', 
-      minute: '2-digit',
-      hour12: true 
-    });
-    
-    // Check if this is the first event of a new day
-    const isNewDay = index === 0 || 
-      (filteredEvents[index - 1] && 
-       new Date(filteredEvents[index - 1].event_date || '').toDateString() !== eventDate.toDateString());
-    
-    return (
-      <div key={event.id} className="relative">
-        {/* Date Header */}
-        {isNewDay && (
-          <div className="sticky top-20 z-20 flex justify-start py-2 mb-3">
-            <div className="inline-flex items-center gap-2.5 bg-white/50 dark:bg-gray-900/90 backdrop-blur-md rounded-full px-3.5 py-1.5 border border-gray-200/50 dark:border-gray-800/50 shadow-lg ml-3">
-              <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${isPast ? 'bg-gray-400' : 'bg-blue-500'}`} />
-              <h3 className={`font-semibold text-sm ${isPast ? 'text-gray-500 dark:text-gray-400' : 'text-gray-900 dark:text-gray-100'}`}>
-                {dateLabel}
-              </h3>
-            </div>
-          </div>
-        )}
-        
-        {/* Timeline Connector */}
-        {!isLast && (
-          <div className={`absolute left-[5px] w-[2px] h-full bg-gray-200 dark:bg-gray-700 ${isNewDay ? 'top-10' : 'top-8'}`} />
-        )}
-        
-        {/* Event Card */}
-        <div className="relative ml-8 mb-6">
-          <div 
-            className={`group bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-4 hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-300 cursor-pointer ${isPast ? 'opacity-80 grayscale' : ''}`}
-            onClick={() => handleViewEvent(event.id)}
-          >
-                        <div className="flex items-start gap-5">
-              {/* Event Info */}
-              <div className="flex-1 min-w-0">
-                {/* Category, Time and Status */}
-                <div className="flex items-center gap-3 mb-2">
-                  {/* Category Badge */}
-                  <Badge className="bg-gray-200/50 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-[0.75rem] px-1.5 py-0.5 font-medium border-0 rounded-md">
-                    {event.event_category}
-                  </Badge>
-                  
-                  {/* Time */}
-                  <span className={`text-[0.7rem] font-medium ${isPast ? 'text-gray-500 dark:text-gray-400' : 'text-gray-700 dark:text-gray-300'}`}>
-                    {timeLabel}
-                  </span>
-                  
-                  {/* Other Status Badges */}
-                  <div className="flex items-center gap-2">
-                    {event.event_type === 'online' && (
-                      <Badge className="bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 text-xs px-2 py-0.5">
-                        Online
-                      </Badge>
-                    )}
-                    
-                    {isOngoing && (
-                      <Badge className="bg-red-600 text-white text-xs px-2 py-0.5">
-                        Live
-                      </Badge>
-                    )}
-                    {isPast && (
-                      <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                        Past Event
-                      </span>
-                    )}
-                    {event.is_featured && !isOngoing && !isPast && (
-                      <Badge className="bg-blue-600 text-white text-xs px-1.5 py-0.5">
-                        <Star className="w-2.5 h-2.5 fill-current" />
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-                
-                {/* Title */}
-                <h4 className={`font-semibold text-[1.4rem] mb-4 mt-2 line-clamp-2 ${isPast ? 'text-gray-600 dark:text-gray-400' : 'text-gray-900 dark:text-gray-100'}`}>
-                  {event.title} <ArrowRight className="inline w-5 h-5 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-300 ml-1" />
-                </h4>
-                
-                {/* Attendees, Host and Location Info */}
-                <div className="flex items-center gap-2 text-[0.8rem] text-gray-600 dark:text-gray-400">
-                  {/* Attendees */}
-                  <div className="flex items-center gap-2">
-                    <AvatarGroup
-                      members={Array.from({ length: Math.min(event.attendees_count, 10) }).map((_, index) => ({
-                        username: `user${index + 1}`,
-                        src: `https://i.pravatar.cc/150?img=${(index % 70) + 1}`
-                      }))}
-                      limit={5}
-                      size={26}
-                    />
-                  </div>
-                  
-                  <div className="flex items-center gap-1 bg-gray-200/50 dark:bg-gray-800 rounded-full px-2 py-1">
-                    <img 
-                      src={event.host?.avatar || 'https://i.pravatar.cc/150?img=1'}
-                      alt="Host"
-                      className="w-5 h-5 rounded-full border border-gray-100 dark:border-gray-700"
-                    />
-                    <span>By <span className="font-semibold">{event.host?.name || 'Event Host'}</span></span>
-                  </div>
-                  
-                  {event.event_location && (
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-3 h-3" />
-                      <span className="truncate max-w-[120px]">{event.event_location}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-              
-              {/* Event Image */}
-              <div className="flex-shrink-0 relative">
-                <div className="w-24 h-24 rounded-xl overflow-hidden group-hover:shadow-lg transition-shadow duration-300">
-                  <img 
-                    src={event.sample_image} 
-                    alt={event.title}
-                    className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${isPast ? 'grayscale' : ''}`}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-12">
           <div className="flex items-center justify-between mb-6">
             {/* Title */}
             <div>
@@ -628,78 +458,21 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
                 Events
               </h1>
               <p className="text-gray-600 dark:text-gray-400 mt-1">
-                Discover and join community events
+                {events.length > 0 ? `Discover and join community events (${events.length} events)` : 'Discover and join community events'}
               </p>
             </div>
             
-            {/* Create Button */}
-            <Button 
-              onClick={handleNewEvent}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Create Event
-            </Button>
+            {/* Create Button - Show when no events */}
+            {events.length === 0 && (
+              <Button 
+                onClick={handleNewEvent}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Create Event
+              </Button>
+            )}
           </div>
-
-          {/* Controls */}
-          {events.length > 0 && (
-            <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-4">
-              <div className="flex flex-col sm:flex-row gap-4">
-                {/* Search */}
-                <div className="flex-1 max-w-sm">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder="Search events..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 border border-gray-200 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                    />
-                  </div>
-                </div>
-
-                {/* Filters */}
-                <div className="flex bg-gray-100 dark:bg-gray-800 rounded-md p-1">
-                  {filterOptionsWithCounts.map(option => (
-                    <button
-                      key={option.value}
-                      onClick={() => setSelectedFilter(option.value)}
-                      className={`px-3 py-1.5 text-sm font-medium rounded transition-colors ${
-                        selectedFilter === option.value
-                          ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
-                          : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
-                      }`}
-                    >
-                      {option.label} ({option.count})
-                    </button>
-                  ))}
-                </div>
-
-                {/* View Toggle */}
-                <div className="flex bg-gray-100 dark:bg-gray-800 rounded-md p-1">
-                  {VIEW_MODES.map(mode => {
-                    const IconComponent = mode.icon;
-                    return (
-                      <button
-                        key={mode.value}
-                        onClick={() => setViewMode(mode.value as 'grid' | 'list' | 'calendar')}
-                        className={`px-3 py-1.5 text-sm font-medium rounded transition-colors flex items-center gap-1.5 ${
-                          viewMode === mode.value
-                            ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm'
-                            : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
-                        }`}
-                      >
-                        <IconComponent className="w-4 h-4" />
-                        {mode.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Content */}
@@ -760,30 +533,100 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
                 <Button 
                   variant="outline" 
                   onClick={() => {
-                    setSelectedFilter('all');
                     setSearchQuery('');
+                    setAdvancedFilters([]);
+                    setAdvancedSorts([{
+                      id: 'default-date',
+                      field: SortField.DATE,
+                      direction: SortDirection.DESC
+                    }]);
                   }}
                 >
-                  Clear Filters
+                  Clear All
                 </Button>
               </CardContent>
             </Card>
           )
         ) : (
-          <div className="space-y-4">
-            {/* Results */}
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              {filteredEvents.length} of {events.length} events
+          <div className="space-y-8">
+            {/* Widgets Section */}
+            <div>
+              <div className="grid grid-cols-1 gap-4">
+                <FeaturedEventWidget />
+              </div>
+            </div>
+
+            {/* Event Categories Widget */}
+            <div className="w-full mb-12">
+              <div className="grid grid-cols-3 gap-4 mb-12">
+                {CATEGORIES.map((category, index) => (
+                  <CategoryCard
+                    key={index}
+                    icon={category.icon}
+                    title={category.title}
+                    count={category.count}
+                    colorScheme={category.colorScheme}
+                    onClick={() => {/* Handle category filter */}}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* All Events Section */}
+            <div>
+              <EventControlsBar
+                advancedSorts={advancedSorts}
+                setAdvancedSorts={setAdvancedSorts}
+                advancedFilters={advancedFilters}
+                setAdvancedFilters={setAdvancedFilters}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                isSearchOpen={isSearchOpen}
+                setIsSearchOpen={setIsSearchOpen}
+                viewMode={viewMode}
+                setViewMode={setViewMode}
+                isViewModeOpen={isViewModeOpen}
+                setIsViewModeOpen={setIsViewModeOpen}
+                onNewEvent={handleNewEvent}
+              />
             </div>
             
             {/* Events */}
             {viewMode === 'grid' ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredEvents.map(event => renderEventCard(event))}
+              <div className="space-y-6">
+                {/* Pinned Event */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filteredEvents.filter(event => event.id === 'pinned-workshop').map(event => 
+                    <EventCard 
+                      key={event.id}
+                      event={event} 
+                      onEventClick={handleViewEvent} 
+                    />
+                  )}
+                </div>
+                
+                {/* Regular Events */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filteredEvents.filter(event => event.id !== 'pinned-workshop').map(event => 
+                    <EventCard 
+                      key={event.id}
+                      event={event} 
+                      onEventClick={handleViewEvent} 
+                    />
+                  )}
+                </div>
               </div>
             ) : viewMode === 'list' ? (
               <div className="space-y-0 bg-gray-50 dark:bg-gray-950 rounded-lg p-4">
-                {filteredEvents.map((event, index) => renderEventListItem(event, index))}
+                {filteredEvents.map((event, index) => 
+                  <EventListItem 
+                    key={event.id}
+                    event={event}
+                    index={index}
+                    filteredEvents={filteredEvents}
+                    onEventClick={handleViewEvent}
+                  />
+                )}
               </div>
             ) : (
               <div className="rounded-lg bg-gray-50 dark:bg-gray-950 p-4 border border-gray-200 dark:border-gray-800">
@@ -799,4 +642,4 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
       </div>
     </div>
   );
-} 
+}

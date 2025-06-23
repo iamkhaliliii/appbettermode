@@ -1,5 +1,9 @@
 import InteractiveCalendar from '@/components/ui/calendar-layout';
 import { ProgressiveBlur } from '@/components/ui/progressive-blur';
+import React from 'react';
+import { EventFiltersDemo } from './event-filters-demo';
+import { EventSortDemo } from './event-sort-demo';
+import { Sort, SortField, SortDirection } from './event-sort';
 
 const InteractiveCalendarDemo = () => {
   return (
@@ -32,4 +36,89 @@ export function ProgressiveBlurBasic() {
   );
 }
 
-export { InteractiveCalendarDemo as DemoOne }; 
+export { InteractiveCalendarDemo as DemoOne };
+
+export default function Demo() {
+  const [demoSorts, setDemoSorts] = React.useState<Sort[]>([
+    {
+      id: 'default-date',
+      field: SortField.DATE,
+      direction: SortDirection.ASC
+    }
+  ]);
+
+  return (
+    <div className="p-8 max-w-6xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+          Event Filters & Sort Demo
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400">
+          Advanced filtering and sorting system for events with multiple operators and visual feedback
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Filters Demo */}
+        <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-6">
+          <div className="mb-4">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              🔍 Advanced Filters
+            </h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Click on "Filter" to add advanced filters with different operators
+            </p>
+          </div>
+
+          <EventFiltersDemo />
+
+          <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Available Filter Types:
+            </h3>
+            <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+              <li>• <strong>Status:</strong> Upcoming, Ongoing, Past</li>
+              <li>• <strong>Category:</strong> Meetup, Workshop, Conference, Webinar</li>
+              <li>• <strong>Event Type:</strong> Online, Offline, Hybrid</li>
+              <li>• <strong>Date:</strong> Today, Tomorrow, This week, Next week</li>
+              <li>• <strong>Featured:</strong> Featured, Not Featured</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Sort Demo */}
+        <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-6">
+          <div className="mb-4">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              📊 Advanced Sorting
+            </h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Use the sort chips to create multi-level sorting with direction control
+            </p>
+          </div>
+
+          <EventSortDemo sorts={demoSorts} setSorts={setDemoSorts} />
+
+          <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Available Sort Fields:
+            </h3>
+            <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+              <li>• <strong>📅 Date:</strong> Event date/time</li>
+              <li>• <strong>🔤 Title:</strong> Alphabetical by title</li>
+              <li>• <strong>🏷️ Category:</strong> By event category</li>
+              <li>• <strong>👥 Attendees:</strong> By attendee count</li>
+              <li>• <strong>📅 Created:</strong> By creation date</li>
+              <li>• <strong>📅 Updated:</strong> By last update</li>
+            </ul>
+            <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+              <p className="text-xs text-gray-500 dark:text-gray-500">
+                💡 Tip: Multiple sorts create priority order (first sort → second sort → etc.)
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+} 
