@@ -17,7 +17,7 @@ export const CATEGORIES = [
     count: 12,
     colorScheme: {
       hover: 'hover:border-blue-300/50 dark:hover:border-blue-600/50',
-      bg: 'bg-blue-500/10 dark:bg-blue-500/20 group-hover:bg-blue-500/20 dark:group-hover:bg-blue-500/30',
+      bg: 'bg-blue-50/60 dark:bg-blue-900/20 hover:bg-blue-100/80 dark:hover:bg-blue-900/30',
       icon: 'text-blue-600 dark:text-blue-400',
       text: 'group-hover:text-blue-600 dark:group-hover:text-blue-400'
     }
@@ -28,7 +28,7 @@ export const CATEGORIES = [
     count: 8,
     colorScheme: {
       hover: 'hover:border-purple-300/50 dark:hover:border-purple-600/50',
-      bg: 'bg-purple-500/10 dark:bg-purple-500/20 group-hover:bg-purple-500/20 dark:group-hover:bg-purple-500/30',
+      bg: 'bg-purple-50/60 dark:bg-purple-900/20 hover:bg-purple-100/80 dark:hover:bg-purple-900/30',
       icon: 'text-purple-600 dark:text-purple-400',
       text: 'group-hover:text-purple-600 dark:group-hover:text-purple-400'
     }
@@ -39,7 +39,7 @@ export const CATEGORIES = [
     count: 15,
     colorScheme: {
       hover: 'hover:border-green-300/50 dark:hover:border-green-600/50',
-      bg: 'bg-green-500/10 dark:bg-green-500/20 group-hover:bg-green-500/20 dark:group-hover:bg-green-500/30',
+      bg: 'bg-green-50/60 dark:bg-green-900/20 hover:bg-green-100/80 dark:hover:bg-green-900/30',
       icon: 'text-green-600 dark:text-green-400',
       text: 'group-hover:text-green-600 dark:group-hover:text-green-400'
     }
@@ -50,7 +50,7 @@ export const CATEGORIES = [
     count: 6,
     colorScheme: {
       hover: 'hover:border-orange-300/50 dark:hover:border-orange-600/50',
-      bg: 'bg-orange-500/10 dark:bg-orange-500/20 group-hover:bg-orange-500/20 dark:group-hover:bg-orange-500/30',
+      bg: 'bg-orange-50/60 dark:bg-orange-900/20 hover:bg-orange-100/80 dark:hover:bg-orange-900/30',
       icon: 'text-orange-600 dark:text-orange-400',
       text: 'group-hover:text-orange-600 dark:group-hover:text-orange-400'
     }
@@ -61,7 +61,7 @@ export const CATEGORIES = [
     count: 4,
     colorScheme: {
       hover: 'hover:border-red-300/50 dark:hover:border-red-600/50',
-      bg: 'bg-red-500/10 dark:bg-red-500/20 group-hover:bg-red-500/20 dark:group-hover:bg-red-500/30',
+      bg: 'bg-red-50/60 dark:bg-red-900/20 hover:bg-red-100/80 dark:hover:bg-red-900/30',
       icon: 'text-red-600 dark:text-red-400',
       text: 'group-hover:text-red-600 dark:group-hover:text-red-400'
     }
@@ -72,7 +72,7 @@ export const CATEGORIES = [
     count: 18,
     colorScheme: {
       hover: 'hover:border-teal-300/50 dark:hover:border-teal-600/50',
-      bg: 'bg-teal-500/10 dark:bg-teal-500/20 group-hover:bg-teal-500/20 dark:group-hover:bg-teal-500/30',
+      bg: 'bg-teal-50/60 dark:bg-teal-900/20 hover:bg-teal-100/80 dark:hover:bg-teal-900/30',
       icon: 'text-teal-600 dark:text-teal-400',
       text: 'group-hover:text-teal-600 dark:group-hover:text-teal-400'
     }
@@ -83,7 +83,7 @@ export const CATEGORIES = [
     count: 22,
     colorScheme: {
       hover: 'hover:border-gray-300/50 dark:hover:border-gray-600/50',
-      bg: 'bg-gray-500/10 dark:bg-gray-500/20 group-hover:bg-gray-500/20 dark:group-hover:bg-gray-500/30',
+      bg: 'bg-gray-50/60 dark:bg-gray-800/20 hover:bg-gray-100/80 dark:hover:bg-gray-800/30',
       icon: 'text-gray-600 dark:text-gray-400',
       text: 'group-hover:text-gray-600 dark:group-hover:text-gray-400'
     }
@@ -94,7 +94,7 @@ export const CATEGORIES = [
     count: 7,
     colorScheme: {
       hover: 'hover:border-indigo-300/50 dark:hover:border-indigo-600/50',
-      bg: 'bg-indigo-500/10 dark:bg-indigo-500/20 group-hover:bg-indigo-500/20 dark:group-hover:bg-indigo-500/30',
+      bg: 'bg-indigo-50/60 dark:bg-indigo-900/20 hover:bg-indigo-100/80 dark:hover:bg-indigo-900/30',
       icon: 'text-indigo-600 dark:text-indigo-400',
       text: 'group-hover:text-indigo-600 dark:group-hover:text-indigo-400'
     }
@@ -105,7 +105,7 @@ export const CATEGORIES = [
     count: 3,
     colorScheme: {
       hover: 'hover:border-yellow-300/50 dark:hover:border-yellow-600/50',
-      bg: 'bg-yellow-500/10 dark:bg-yellow-500/20 group-hover:bg-yellow-500/20 dark:group-hover:bg-yellow-500/30',
+      bg: 'bg-yellow-50/60 dark:bg-yellow-900/20 hover:bg-yellow-100/80 dark:hover:bg-yellow-900/30',
       icon: 'text-yellow-600 dark:text-yellow-400 fill-current',
       text: 'group-hover:text-yellow-600 dark:group-hover:text-yellow-400'
     }

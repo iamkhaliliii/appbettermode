@@ -23,11 +23,11 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
 }) => {
   return (
     <div 
-      className={`group relative cursor-pointer border border-gray-200/50 dark:border-gray-700/50 rounded-lg p-6 transition-all duration-200 ${colorScheme.hover}`}
+      className={`group relative cursor-pointer border border-gray-200/50 dark:border-gray-700/50 rounded-lg p-6 transition-all duration-200 ${colorScheme.hover} ${colorScheme.bg}`}
       onClick={onClick}
     >
       <div className="flex items-center space-x-3">
-        <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${colorScheme.bg}`}>
+        <div className="w-8 h-8 rounded-full flex items-center justify-center transition-colors bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/50 dark:border-gray-700/50">
           <Icon className={`w-4 h-4 ${colorScheme.icon}`} />
         </div>
         <div className="flex-1">
