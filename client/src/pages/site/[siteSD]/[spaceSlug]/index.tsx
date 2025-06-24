@@ -370,6 +370,7 @@ export default function SpacePage() {
   const [error, setError] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isAdminHeaderVisible, setIsAdminHeaderVisible] = useState(true);
 
   // Memoize handlers to prevent unnecessary re-renders
   const handleToggleMobileMenu = useCallback(() => {
@@ -438,6 +439,8 @@ export default function SpacePage() {
           variant="site"
           siteName="Loading..."
           siteIdentifier={siteSD}
+          isSiteHeaderVisible={true}
+          onSiteHeaderVisibilityChange={() => {}}
         />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
@@ -458,6 +461,8 @@ export default function SpacePage() {
           variant="site"
           siteName={site?.name || "Error"}
           siteIdentifier={siteSD}
+          isSiteHeaderVisible={true}
+          onSiteHeaderVisibilityChange={() => {}}
         />
         <div className="flex-1 flex items-center justify-center p-4">
           <motion.div 
@@ -489,6 +494,8 @@ export default function SpacePage() {
           variant="site"
           siteName={site?.name}
           siteIdentifier={siteSD}
+          isSiteHeaderVisible={isAdminHeaderVisible}
+          onSiteHeaderVisibilityChange={setIsAdminHeaderVisible}
         />
         <SiteHeader 
           siteSD={siteSD || ''} 
@@ -498,12 +505,13 @@ export default function SpacePage() {
           searchQuery={searchQuery}
           setSearchQuery={handleSearchChange}
           handleSearch={handleSearch}
+          isAdminHeaderVisible={isAdminHeaderVisible}
         />
 
         <div className="flex-1">
           <div className="container mx-auto px-4 flex-grow">
             <div className="flex flex-col md:flex-row gap-6">
-              <SiteSidebar siteSD={siteSD || ''} activePage={spaceSlug} />
+              <SiteSidebar siteSD={siteSD || ''} activePage={spaceSlug} isAdminHeaderVisible={isAdminHeaderVisible} />
 
               <div className="flex-1 p-4 md:p-6">
                 <motion.div

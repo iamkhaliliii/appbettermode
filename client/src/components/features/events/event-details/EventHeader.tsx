@@ -31,7 +31,7 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
   }, []);
 
   return (
-    <header className={`sticky top-16 z-40 transition-all duration-200 ${
+    <header className={`sticky top-28 z-40 transition-all duration-200 ${
       isScrolled 
         ? 'bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800' 
         : 'bg-gray-50 dark:bg-gray-950'

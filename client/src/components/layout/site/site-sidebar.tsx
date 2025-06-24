@@ -36,9 +36,10 @@ interface Space {
 interface SiteSidebarProps {
   siteSD: string;
   activePage?: string;
+  isAdminHeaderVisible?: boolean;
 }
 
-export function SiteSidebar({ siteSD, activePage = 'home' }: SiteSidebarProps) {
+export function SiteSidebar({ siteSD, activePage = 'home', isAdminHeaderVisible = true }: SiteSidebarProps) {
   const [location] = useLocation();
   const [site, setSite] = useState<any>(null);
   const [spaces, setSpaces] = useState<Space[]>([]);
@@ -328,7 +329,7 @@ export function SiteSidebar({ siteSD, activePage = 'home' }: SiteSidebarProps) {
 
   return (
     <div className="md:w-64 flex-shrink-0">
-      <div className="sticky top-16">
+      <div className={`sticky ${isAdminHeaderVisible ? 'top-28' : 'top-16'}`}>
         <div className="py-4">
           <div className="">
             <nav className="space-y-1">

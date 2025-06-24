@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'wouter';
 import { SiteLayout } from '@/components/layout/site/site-layout';
+import { useLayout } from '@/lib/LayoutContext';
 import { Input, Button } from '@/components/ui/primitives';
 import {
   Card,
@@ -126,6 +127,7 @@ export default function SearchPage() {
   const params = useParams();
   const siteSD = params?.siteSD || '';
   const [location, setLocation] = useLocation();
+  const { isAdminHeaderVisible } = useLayout();
   const [site, setSite] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -629,7 +631,7 @@ export default function SearchPage() {
         {/* Main Content */}
         <div className="mx-auto pb-8">
           {/* Sticky Search Header */}
-          <div className="sticky top-16 z-10 bg-gray-50 dark:bg-gray-950">
+          <div className={`sticky ${isAdminHeaderVisible ? 'top-28' : 'top-16'} z-10 bg-gray-50 dark:bg-gray-950`}>
             {/* Command Menu Style Content */}
             <div className="bg-white dark:bg-gray-900">
               <form onSubmit={handleSearchSubmit} className="max-w-5xl mx-auto px-4">

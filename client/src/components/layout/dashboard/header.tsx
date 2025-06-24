@@ -27,7 +27,7 @@ import {
     ShieldPlus,
     UserPlus
 } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { cn } from "@/lib/utils";
@@ -69,11 +69,25 @@ interface HeaderProps {
   variant?: 'dashboard' | 'site';
   siteName?: string;
   siteIdentifier?: string;
+  isSiteHeaderVisible?: boolean;
+  onSiteHeaderVisibilityChange?: (visible: boolean) => void;
 }
 
-export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, siteIdentifier }: HeaderProps) {
+export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, siteIdentifier, isSiteHeaderVisible: propIsSiteHeaderVisible, onSiteHeaderVisibilityChange }: HeaderProps) {
   const [location] = useLocation();
-  const [isSiteHeaderVisible, setIsSiteHeaderVisible] = useState(true);
+  
+  // Use prop if provided, otherwise use local state
+  const [localIsSiteHeaderVisible, setLocalIsSiteHeaderVisible] = useState(true);
+  const isSiteHeaderVisible = propIsSiteHeaderVisible !== undefined ? propIsSiteHeaderVisible : localIsSiteHeaderVisible;
+  
+  // Function to update visibility
+  const setIsSiteHeaderVisible = useCallback((visible: boolean) => {
+    if (onSiteHeaderVisibilityChange) {
+      onSiteHeaderVisibilityChange(visible);
+    } else {
+      setLocalIsSiteHeaderVisible(visible);
+    }
+  }, [onSiteHeaderVisibilityChange]);
   const [siteData, setSiteData] = useState<Site | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   
@@ -224,7 +238,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
   const buttonBgHover = variant === 'site' ? "hover:bg-gray-700 dark:hover:bg-gray-200" : "hover:bg-gray-50 dark:hover:bg-gray-700";
   const buttonBg = variant === 'site' ? "bg-gray-900 dark:bg-white" : "bg-white dark:bg-gray-800";
   const logoContainerBase = "w-12 h-12 flex items-center justify-center transition-all duration-300 ease-in-out";
-  const logoFixedClasses = "fixed mt-8 top-3 right-5 z-[99999] rounded-md shadow-lg cursor-pointer bg-gray-900 dark:bg-white";
+  const logoFixedClasses = "!fixed !top-0 !right-5 !z-[999999] rounded-b-xl shadow-lg cursor-pointer bg-gray-900 dark:bg-white p-3";
 
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -351,7 +365,22 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
   }, [spacesDropdownOpen, postsDropdownOpen, insightsDropdownOpen, moderationDropdownOpen, addDropdownOpen, logoDropdownOpen, moreSubmenuOpen]);
 
   return (
-    <motion.header
+    <>
+      {/* Fixed Logo - Always visible when header is collapsed */}
+      {variant === 'site' && !isSiteHeaderVisible && (
+        <div 
+          className={logoFixedClasses}
+          onClick={handleLogoClick}
+        >
+          <svg width="24" height="24" viewBox="0 0 58 58" fill="none" xmlns="http://www.w3.org/2000/svg" 
+             className="text-white dark:text-black">
+            <path d="M28.9912 0C12.9792 0 0 12.9792 0 28.9912C0 45.0032 12.9792 57.9824 28.9912 57.9824C45.0032 57.9824 57.9824 45.0032 57.9824 28.9912C57.9824 12.9792 45.0032 0 28.9912 0ZM34.4282 38.051H23.5554C18.551 38.051 14.4967 33.9956 14.4967 28.9912C14.4967 23.9868 18.5521 19.9315 23.5554 19.9315H34.4282C39.4326 19.9315 43.4868 23.9868 43.4868 28.9912C43.4868 33.9956 39.4315 38.051 34.4282 38.051Z" fill="currentColor"/>
+            <path d="M34.427 36.2389C38.4299 36.2389 41.6748 32.9939 41.6748 28.9911C41.6748 24.9882 38.4299 21.7433 34.427 21.7433C30.4242 21.7433 27.1792 24.9882 27.1792 28.9911C27.1792 32.9939 30.4242 36.2389 34.427 36.2389Z" fill="currentColor"/>
+          </svg>
+        </div>
+      )}
+      
+      <motion.header
       className={cn(
         "z-30 border-b transition-colors duration-300 ease-in-out",
         (variant === 'dashboard' || (variant === 'site' && isSiteHeaderVisible))
@@ -364,19 +393,18 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
       initial={false}
     >
       <div className="h-12 flex items-center">
-        {/* Logo Section - Conditionally apply fixed positioning */}
-        <div 
-          className={cn(
-            "relative", // Add relative positioning for dropdown
-            logoContainerBase,
-            variant === 'site' && !isSiteHeaderVisible 
-              ? logoFixedClasses 
-              : ["border-r", borderColor, "cursor-pointer"],
-            logoDropdownOpen && variant === 'dashboard' ? "bg-gray-50 dark:bg-gray-700" : ""
-          )}
-          ref={logoDropdownRef}
-          onClick={handleLogoClick}
-        >
+        {/* Logo Section - Only show when header is visible */}
+        {(variant === 'dashboard' || (variant === 'site' && isSiteHeaderVisible)) && (
+          <div 
+            className={cn(
+              "relative", // Add relative positioning for dropdown
+              logoContainerBase,
+              ["border-r", borderColor, "cursor-pointer"],
+              logoDropdownOpen && variant === 'dashboard' ? "bg-gray-50 dark:bg-gray-700" : ""
+            )}
+            ref={logoDropdownRef}
+            onClick={handleLogoClick}
+          >
           <svg width="24" height="24" viewBox="0 0 58 58" fill="none" xmlns="http://www.w3.org/2000/svg" 
              className={cn(variant === 'site' && !isSiteHeaderVisible 
                            ? "text-white dark:text-black"
@@ -437,7 +465,8 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
               </div>
             </div>
           )}
-        </div>
+          </div>
+        )}
 
         {/* Conditionally Render Rest of Header Content (NO INNER ANIMATION) */}
         {(variant === 'dashboard' || (variant === 'site' && isSiteHeaderVisible)) && (
@@ -1322,6 +1351,7 @@ export function Header({ onToggleMobileMenu, variant = 'dashboard', siteName, si
         onOpenChange={setAddContentDialogOpen} 
       />
     </motion.header>
+    </>
   );
 }
 

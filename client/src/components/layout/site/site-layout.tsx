@@ -4,6 +4,7 @@ import { Header } from '@/components/layout/dashboard/header';
 import { SiteHeader } from '@/components/layout/site/site-header';
 import { SiteContext } from '@/pages/site/[siteSD]';
 import { SearchModal } from '@/components/features/search';
+import { useLayout } from '@/lib/LayoutContext';
 
 interface SiteLayoutProps {
   children: React.ReactNode;
@@ -18,6 +19,7 @@ export function SiteLayout({ children, siteSD, site: propSite }: SiteLayoutProps
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const { isAdminHeaderVisible, setIsAdminHeaderVisible } = useLayout();
   
   // Check if we're on search page
   const isSearchPage = location.includes('/search');
@@ -66,6 +68,8 @@ export function SiteLayout({ children, siteSD, site: propSite }: SiteLayoutProps
         variant="site"
         siteName={site?.name}
         siteIdentifier={siteSD}
+        isSiteHeaderVisible={isAdminHeaderVisible}
+        onSiteHeaderVisibilityChange={setIsAdminHeaderVisible}
       />
       <SiteHeader 
         siteSD={siteSD}
@@ -77,6 +81,7 @@ export function SiteLayout({ children, siteSD, site: propSite }: SiteLayoutProps
         handleSearch={handleSearch}
         onSearchInputClick={handleSearchInputClick}
         isSearchPage={isSearchPage}
+        isAdminHeaderVisible={isAdminHeaderVisible}
       />
       
       {/* Search Modal */}
@@ -92,7 +97,9 @@ export function SiteLayout({ children, siteSD, site: propSite }: SiteLayoutProps
       />
       
       {/* Page content */}
-      {children}
+      <div className="site-layout-content">
+        {children}
+      </div>
       
       {/* Footer */}
       <footer className="bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 py-8">

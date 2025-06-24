@@ -57,7 +57,7 @@ export const EventListItem: React.FC<EventListItemProps> = ({
     <div key={event.id} className="relative">
       {/* Date Header or Pinned Events Header */}
       {(isNewDay || isFirstPinnedEvent || isFirstRegularEvent) && (
-        <div className="sticky top-20 z-20 flex justify-start py-2 mb-3">
+        <div className="sticky top-32 z-20 flex justify-start py-2 mb-3">
           <div className="inline-flex items-center gap-2.5 bg-white/50 dark:bg-gray-900/90 backdrop-blur-md rounded-full px-3.5 py-1.5 border border-gray-200/50 dark:border-gray-800/50 shadow-lg -ml-3.5">
             <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
               isPinnedEvent ? 'bg-yellow-500' : 

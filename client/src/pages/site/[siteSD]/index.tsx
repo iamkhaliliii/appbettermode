@@ -15,6 +15,7 @@ import {
 import { sitesApi, Site } from '@/lib/api';
 import { Link } from 'wouter';
 import { useSiteData } from '@/lib/SiteDataContext';
+import { LayoutProvider, useLayout } from '@/lib/LayoutContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Skeleton } from '@/components/ui/primitives';
 import SpacePage from './/[spaceSlug]';
@@ -135,6 +136,9 @@ const ContentSkeleton = () => (
 const SiteHomeContent = () => {
   const { site, isLoading } = React.useContext(SiteContext);
   const { siteSD } = useParams();
+  
+  // Get layout context - since we're inside LayoutProvider this should work
+  const isAdminHeaderVisible = true; // Fallback for now
   
   // Memoize content types to avoid recalculating on each render
   const contentTypes = useMemo(() => 
@@ -373,8 +377,9 @@ export default function SitePage() {
   if (!siteSD) return null;
   
   return (
-    <SiteDataProvider siteSD={siteSD}>
-      <SiteLayout siteSD={siteSD}>
+    <LayoutProvider>
+      <SiteDataProvider siteSD={siteSD}>
+        <SiteLayout siteSD={siteSD}>
         <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
           {/* Hero Section */}
           <motion.section 
@@ -399,7 +404,7 @@ export default function SitePage() {
           <div className="container mx-auto px-4 py-6 flex-grow">
             <div className="flex flex-col md:flex-row gap-6">
               {/* Sidebar */}
-              <SiteSidebar siteSD={siteSD} activePage="home" />
+              <SiteSidebar siteSD={siteSD} activePage="home" isAdminHeaderVisible={true} />
 
               {/* Main Content Feed with loading state */}
               <div className="flex-1">
@@ -428,5 +433,6 @@ export default function SitePage() {
         </div>
       </SiteLayout>
     </SiteDataProvider>
+    </LayoutProvider>
   );
 } 
