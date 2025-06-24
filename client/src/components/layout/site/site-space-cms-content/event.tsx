@@ -23,6 +23,8 @@ import {
   EventContentProps
 } from '@/components/features/events';
 import { CATEGORIES, PREMIUM_IMAGES } from '@/components/features/events/constants';
+import AppleCardsCarouselDemo from '@/components/ui/apple-cards-carousel-demo';
+import CompactProfileCarouselDemo from '@/components/ui/compact-profile-carousel-demo';
 
 export function EventContent({ siteSD, space, site }: EventContentProps) {
   const [, setLocation] = useLocation();
@@ -548,7 +550,7 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
             </Card>
           )
         ) : (
-          <div className="space-y-8">
+          <div className="space-y-16">
             {/* Widgets Section */}
             <div>
               <div className="grid grid-cols-1 gap-4">
@@ -557,7 +559,7 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
             </div>
 
             {/* Event Categories Widget */}
-            <div className="w-full mb-12">
+            <div className="w-full">
               <div className="grid grid-cols-3 gap-4 mb-12">
                 {CATEGORIES.map((category, index) => (
                   <CategoryCard
@@ -571,6 +573,18 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
                 ))}
               </div>
             </div>
+
+            {/* Apple Cards Carousel Widget */}
+            {/* <div className="w-full overflow-hidden">
+              <AppleCardsCarouselDemo />
+            </div> */}
+
+            {/* Compact Profile Cards Carousel Widget */}
+            {/* <div className="w-full">
+              <CompactProfileCarouselDemo />
+            </div> */}
+
+
 
             {/* All Events Section */}
             <div>

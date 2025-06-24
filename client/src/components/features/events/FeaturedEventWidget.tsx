@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CountdownTimer } from './CountdownTimer';
 import { ProgressiveBlur } from '@/components/ui/progressive-blur';
@@ -61,12 +61,87 @@ const events = [
 
 export const FeaturedEventWidget: React.FC = () => {
   const [activeEventId, setActiveEventId] = useState(1);
+  const [isPaused, setIsPaused] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const activeEvent = events.find(event => event.id === activeEventId) || events[0];
+
+  // Auto-advance functionality
+  useEffect(() => {
+    const startAutoAdvance = () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+      
+      // Progress bar animation
+      progressIntervalRef.current = setInterval(() => {
+        setProgress(prev => {
+          if (prev >= 100) {
+            // When progress reaches 100%, advance to next slide
+            setActiveEventId(current => {
+              const currentIndex = events.findIndex(event => event.id === current);
+              const nextIndex = (currentIndex + 1) % events.length;
+              return events[nextIndex].id;
+            });
+            return 0;
+          }
+          return prev + (100 / 50); // 50 steps for 5 seconds (100ms intervals)
+        });
+      }, 100);
+    };
+
+    const stopAutoAdvance = () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+    };
+
+    if (!isPaused) {
+      startAutoAdvance();
+    } else {
+      stopAutoAdvance();
+    }
+
+    return () => {
+      stopAutoAdvance();
+    };
+  }, [isPaused]);
+
+  const handleMouseEnter = () => setIsPaused(true);
+  const handleMouseLeave = () => setIsPaused(false);
+
+  const handleManualNavigation = (eventId: number) => {
+    setActiveEventId(eventId);
+    setProgress(0);
+    // Ensure auto-advance restarts from 0 when manually navigating
+    if (!isPaused) {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+      
+      // Restart progress immediately
+      progressIntervalRef.current = setInterval(() => {
+        setProgress(prev => {
+          if (prev >= 100) {
+            setActiveEventId(current => {
+              const currentIndex = events.findIndex(event => event.id === current);
+              const nextIndex = (currentIndex + 1) % events.length;
+              return events[nextIndex].id;
+            });
+            return 0;
+          }
+          return prev + (100 / 50);
+        });
+      }, 100);
+    }
+  };
 
   return (
     <div className="w-full">
       {/* Enhanced container with better shadows and transitions */}
-      <div className="group relative overflow-hidden bg-white dark:bg-gray-900 border border-gray-200/50 dark:border-gray-800/50 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-500 rounded-xl shadow-sm hover:shadow-xl hover:shadow-gray-200/20 dark:hover:shadow-gray-950/40">
+      <div 
+        className="group relative overflow-hidden bg-white dark:bg-gray-900 border border-gray-200/50 dark:border-gray-800/50 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-500 rounded-xl shadow-sm hover:shadow-xl hover:shadow-gray-200/20 dark:hover:shadow-gray-950/40"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         
         {/* Wide banner with enhanced blurred background */}
         <div className="relative overflow-hidden rounded-xl h-[24rem]">
@@ -94,7 +169,7 @@ export const FeaturedEventWidget: React.FC = () => {
           <div className="relative z-10 h-full flex flex-col">
             
             {/* Main Content Area */}
-            <div className="flex-1 flex gap-6 p-[2rem]">
+            <div className="flex-1 flex gap-8 p-[2rem]">
               
               {/* Left Column - Content */}
               <div className="flex-1 flex flex-col">
@@ -119,9 +194,8 @@ export const FeaturedEventWidget: React.FC = () => {
                   
                   <div className="flex items-center gap-2"> 
 
-
-                                      {/* Host Information */}
-                                      <AnimatePresence mode="wait">
+                    {/* Host Information */}
+                    <AnimatePresence mode="wait">
                       <motion.div 
                         key={`host-${activeEvent.id}`}
                         className="flex items-center gap-2"
@@ -133,22 +207,21 @@ export const FeaturedEventWidget: React.FC = () => {
                         <img 
                           src={activeEvent.host?.avatar || 'https://i.pravatar.cc/150?img=1'}
                           alt="Host"
-                          className="w-5 h-5 rounded-full border border-gray-100/20 dark:border-gray-700"
+                          className="w-6 h-6 rounded-full border border-gray-100/20 dark:border-gray-700"
                         />
-                        <span className="text-sm text-white/90 dark:text-gray-100">By <span className="font-semibold">{activeEvent.host?.name || 'Event Host'}</span></span>
+                        <span className="text-sm text-white/60 dark:text-gray-100">By <span className="font-semibold">{activeEvent.host?.name || 'Event Host'}</span></span>
                       </motion.div>
                     </AnimatePresence>
 
-
-                          </div>
+                  </div>
                     
                   {/* Enhanced Title with better hierarchy */}
                   <div className="space-y-5">
                     <div className="flex items-center gap-2">
                       <AnimatePresence mode="wait">
-                                                <motion.h3 
+                        <motion.h3 
                           key={`title-${activeEvent.id}`}
-                          className="font-bold text-[2rem] text-white leading-tight drop-shadow-lg group-hover:text-white/80 transition-colors duration-300 line-clamp-2"
+                          className="font-bold text-[1.8rem] text-white leading-tight drop-shadow-lg group-hover:text-white/80 transition-colors duration-300 line-clamp-2"
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -20 }}
@@ -171,13 +244,37 @@ export const FeaturedEventWidget: React.FC = () => {
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.4, ease: "easeInOut", delay: 0.1 }}
                       >
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-3">
                           {/* RSVP Button */}
                           <button className="flex items-center gap-2 rounded-full border border-white/20 bg-white/30 hover:bg-white/30 backdrop-blur-sm px-3 py-1.5 shadow shadow-black/5 transition-all duration-200 hover:scale-105 group">
                             <span className="text-xs font-medium text-white group-hover:text-white/90">RSVP Now →</span>
                           </button>
                           
                           {/* Attendees */}
+                          <motion.div 
+                            key={`host-${activeEvent.id}`}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ duration: 0.4, ease: "easeInOut", delay: 0.05 }}
+                            className="flex items-center"
+                          >
+                            <div className="flex -space-x-1">
+                              {Array.from({ length: Math.min(5, activeEvent.attendees) }).map((_, index) => (
+                                <img
+                                  key={index}
+                                  className="rounded-full ring-1 ring-white/30"
+                                  src={`https://i.pravatar.cc/150?img=${(index % 70) + 1}`}
+                                  width={20}
+                                  height={20}
+                                  alt={`Avatar ${index + 1}`}
+                                />
+                              ))}
+                            </div>
+                            <p className="px-2 text-xs text-white/90">
+                              <strong className="font-medium text-white/60 ">+{activeEvent.attendees}</strong> attending.
+                            </p>
+                          </motion.div>
 
                         </div>
                       </motion.div>
@@ -197,11 +294,11 @@ export const FeaturedEventWidget: React.FC = () => {
                       key={`square-${activeEvent.id}`}
                       src={activeEvent.squareImage}
                       alt={activeEvent.title}
-                      className="w-full h-full object-cover group-hover:scale-110"
-                      initial={{ opacity: 0, scale: 0.8 }}
+                      className="w-full h-full object-cover group-hover:scale-105"
+                      initial={{ opacity: 0, scale: 0.98 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 1.2 }}
-                      transition={{ duration: 0.6, ease: "easeInOut" }}
+                      exit={{ opacity: 0, scale: 1.02 }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
                     />
                   </AnimatePresence>
                   
@@ -224,13 +321,13 @@ export const FeaturedEventWidget: React.FC = () => {
                   
                   {/* Progressive Blur Effect */}
                   <ProgressiveBlur
-                    className="pointer-events-none absolute bottom-0 left-0 h-[45%] w-full rounded-b-xl"
-                    blurIntensity={8}
+                    className="pointer-events-none absolute bottom-0 left-0 h-[35%] w-full rounded-b-xl"
+                    blurIntensity={9}
                     direction="bottom"
                   />
                   
                   {/* Meta Information Overlay */}
-                  <div className="absolute bottom-0 rounded-b-xl left-0 right-0 bg-gradient-to-t from-black/30 via-black/10 to-transparent p-3">
+                  <div className="absolute bottom-0 rounded-b-lg left-0 right-0 bg-gradient-to-t from-gray-900/50 via-gray-900/10 to-transparent p-3">
                     <AnimatePresence mode="wait">
                       <motion.div 
                         key={`overlay-meta-${activeEvent.id}`}
@@ -242,56 +339,58 @@ export const FeaturedEventWidget: React.FC = () => {
                       >
                         <div className="flex items-center gap-1.5 text-xs text-white/90">
                           <Clock className="w-3 h-3" />
-                          <span className="font-medium">{activeEvent.date}</span>
+                          <span className="font-semibold">{activeEvent.date}</span>
                         </div>
                         
                         <div className="flex items-center gap-1.5 text-xs text-white/90">
                           <MapPin className="w-3 h-3" />
-                          <span className="font-medium">{activeEvent.location}</span>
+                          <span className="font-semibold">{activeEvent.location}</span>
                         </div>
                       </motion.div>
-                                          {/* Attendees */}
-                    <motion.div 
-                                           key={`host-${activeEvent.id}`}
-                                           initial={{ opacity: 0, y: 10 }}
-                                           animate={{ opacity: 1, y: 0 }}
-                                           exit={{ opacity: 0, y: -10 }}
-                                           transition={{ duration: 0.4, ease: "easeInOut", delay: 0.05 }}
-                   
-                     className="flex items-center mt-3">
-                            <div className="flex -space-x-1">
-                              {Array.from({ length: Math.min(5, activeEvent.attendees) }).map((_, index) => (
-                                <img
-                                  key={index}
-                                  className="rounded-full ring-1 ring-white/30"
-                                  src={`https://i.pravatar.cc/150?img=${(index % 70) + 1}`}
-                                  width={17}
-                                  height={17}
-                                  alt={`Avatar ${index + 1}`}
-                                />
-                              ))}
-                            </div>
-                            <p className="px-2 text-xs text-white/90">
-                              <strong className="font-medium text-white">+{activeEvent.attendees}</strong> attending.
-                            </p>
-                          
-                          </motion.div>
+
                     </AnimatePresence>
                   </div>
                 </div>
               </div>
             </div>
             
+            {/* Progress Timeline */}
+            <div className="relative z-[15] h-[1px] bg-white/10 overflow-hidden">
+              <motion.div 
+                className="h-full bg-gradient-to-r from-white/10 via-white/40 via-90%  to-transparent"
+                initial={{ width: "0%" }}
+                animate={{ 
+                  width: `${progress}%`
+                }}
+                transition={{ 
+                  duration: isPaused ? 0 : 0.1,
+                  ease: "easeOut"
+                }}
+              />
+              {/* Subtle glow effect */}
+              <motion.div 
+                className="absolute top-0 h-full w-8 bg-gradient-to-r from-transparent via-white/40 to-transparent blur-sm"
+                initial={{ x: "-2rem" }}
+                animate={{ 
+                  x: `calc(${progress}% - 1rem)`
+                }}
+                transition={{ 
+                  duration: isPaused ? 0 : 0.1,
+                  ease: "easeOut"
+                }}
+              />
+            </div>
+            
             {/* Navigation Bar */}
             <div className="relative z-[15] h-[6rem] bg-black/20 backdrop-blur-md border-t border-white/10">
               <div className="h-full flex items-center justify-start gap-3 px-6">
-                                                  {events.map((event) => (
+                {events.map((event) => (
                   <motion.button
                     key={event.id}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      setActiveEventId(event.id);
+                      handleManualNavigation(event.id);
                     }}
                     className={`
                       flex-shrink-0 w-8 h-8 rounded-lg overflow-hidden border-2 transition-all duration-300 cursor-pointer relative z-[16]
