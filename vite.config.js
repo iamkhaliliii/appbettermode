@@ -22,6 +22,20 @@ export default defineConfig({
         ]
       : []),
   ],
+  optimizeDeps: {
+    include: [
+      '@blocknote/core',
+      '@blocknote/mantine', 
+      '@blocknote/react'
+    ],
+    exclude: [
+      'rehype-parse',
+      'rehype-format',
+      'rehype-stringify',
+      'rehype-remark',
+      'remark-rehype'
+    ]
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "client", "src"),

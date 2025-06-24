@@ -93,7 +93,7 @@ export function SiteHeader({
   return (
     <>
       {/* Header */}
-      <header className="sticky top-0 z-10 w-full border-b bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800">
+      <header className="sticky top-0 z-20 w-full border-b bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo and Mobile Menu */}

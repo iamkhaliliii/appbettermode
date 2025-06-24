@@ -47,7 +47,7 @@ export const EventControlsBar: React.FC<EventControlsBarProps> = ({
     <div className="flex items-center justify-between mb-6">
       <div className="text-xl font-bold text-gray-600 dark:text-gray-400">
         All events
-        <span className="text-xs font-normal ml-2 text-gray-400/50 dark:text-gray-400">
+        <span className="text-xs font-normal ml-2 text-gray-500 dark:text-gray-400">
           Discover all community events
         </span>
       </div>

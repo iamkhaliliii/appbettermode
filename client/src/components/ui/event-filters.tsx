@@ -1,4 +1,5 @@
 import { Checkbox } from "@/components/ui/primitives/checkbox";
+import React from "react";
 import {
   Command,
   CommandEmpty,
@@ -86,7 +87,7 @@ export enum FilterType {
   CATEGORY = "Category", 
   EVENT_TYPE = "Event Type",
   DATE = "Date",
-  FEATURED = "Featured",
+  FEATURED = "Filter Featured",
 }
 
 export enum FilterOperator {

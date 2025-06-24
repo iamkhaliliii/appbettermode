@@ -19,7 +19,7 @@ export const FeaturedEventWidget: React.FC = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/40" />
           
           {/* Clean Square Image - Right Side */}
-          <div className="absolute top-0 right-0 bottom-0 w-1/3 z-20 p-2">
+          <div className="absolute top-0 right-0 bottom-0 w-1/3 z-[5] p-2">
             <div className="w-full h-full rounded-md overflow-hidden shadow-lg border border-white/5">
               <img 
                 src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=400&h=400&fit=crop&crop=center&auto=format&q=80"
@@ -30,12 +30,12 @@ export const FeaturedEventWidget: React.FC = () => {
           </div>
           
           {/* Countdown Timer - Top Left */}
-          <div className="absolute top-3 left-3 z-10">
+          <div className="absolute top-3 left-3 z-[2]">
             <CountdownTimer targetDate={new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()} />
           </div>
           
           {/* Date Badge - Top Right */}
-          <div className="absolute top-3 right-3 z-30">
+          <div className="absolute top-3 right-3 z-[6]">
             <div className="bg-black/90 backdrop-blur-sm text-white rounded-md px-1.5 py-1 shadow-lg">
               <div className="text-center">
                 <div className="text-xs font-medium uppercase tracking-wide opacity-80 leading-none">
@@ -49,7 +49,7 @@ export const FeaturedEventWidget: React.FC = () => {
           </div>
           
           {/* Event Content - Left Side Next to Image */}
-          <div className="absolute inset-0 p-4 pr-[36%] z-10 flex flex-col justify-end">
+          <div className="absolute inset-0 p-4 pr-[36%] z-[2] flex flex-col justify-end">
             <div className="max-w-full space-y-2">
               {/* Category */}
               <div className="flex justify-start">
