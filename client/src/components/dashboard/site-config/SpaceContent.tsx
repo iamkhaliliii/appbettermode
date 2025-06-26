@@ -26,6 +26,9 @@ interface SpaceContentProps {
   spaceBanner?: boolean;
   spaceBannerUrl?: string;
   isWidgetMode?: boolean;
+  eventsLayout?: string;
+  cardSize?: string;
+  cardStyle?: string;
 }
 
 /**
@@ -36,7 +39,10 @@ export function SpaceContent({
   spaceSlug, 
   spaceBanner, 
   spaceBannerUrl,
-  isWidgetMode = false
+  isWidgetMode = false,
+  eventsLayout = 'card',
+  cardSize = 'medium',
+  cardStyle = 'modern'
 }: SpaceContentProps) {
   // Get site data from context
   const { sites, cmsTypes } = useSiteData();
@@ -506,6 +512,9 @@ export function SpaceContent({
                       siteSD={siteSD}
                       space={space}
                       site={site}
+                      eventsLayout={eventsLayout}
+                      cardSize={cardSize}
+                      cardStyle={cardStyle}
                     />
                   </motion.div>
                 ) : (

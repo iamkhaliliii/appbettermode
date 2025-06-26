@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useLocation } from 'wouter';
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/primitives';
 import { Button } from '@/components/ui/primitives';
 import { Calendar, Plus, Loader2, RefreshCw, MapPin, Clock, Users, Grid, List, CalendarDays } from 'lucide-react';
@@ -225,7 +226,7 @@ const MOCK_ENHANCED_EVENTS: EnhancedEvent[] = [
   }
 ];
 
-export function EventContent({ siteSD, space, site }: EventContentProps) {
+export function EventContent({ siteSD, space, site, eventsLayout, cardSize, cardStyle }: EventContentProps) {
   const [, setLocation] = useLocation();
   const [events, setEvents] = useState<EnhancedEvent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -237,7 +238,19 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
   const [advancedFilters, setAdvancedFilters] = useState<Filter[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'calendar'>('grid');
+  // Map eventsLayout to viewMode
+  const getViewModeFromLayout = useCallback((layout: string) => {
+    switch (layout) {
+      case 'card': return 'grid';
+      case 'list': return 'list';
+      case 'calendar': return 'calendar';
+      default: return 'grid';
+    }
+  }, []);
+
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'calendar'>(() => 
+    getViewModeFromLayout(eventsLayout || 'card')
+  );
   const [isViewModeOpen, setIsViewModeOpen] = useState(false);
 
   // Get space info for debugging
@@ -312,6 +325,36 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
   useEffect(() => {
     fetchEventsData();
   }, [fetchEventsData]);
+
+  // Sync viewMode with eventsLayout prop
+  useEffect(() => {
+    if (eventsLayout) {
+      const newViewMode = getViewModeFromLayout(eventsLayout);
+      setViewMode(newViewMode);
+      console.log('ViewMode synced with eventsLayout:', eventsLayout, '->', newViewMode);
+    }
+  }, [eventsLayout, getViewModeFromLayout]);
+
+  // Grid classes based on card size
+  const gridClasses = useMemo(() => {
+    const classes = (() => {
+      switch (cardSize) {
+        case 'small': 
+          return 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'; // 4 cards per row
+        case 'medium': 
+          return 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'; // 3 cards per row
+        case 'large': 
+          return 'grid grid-cols-1 lg:grid-cols-2 gap-8'; // 2 cards per row
+        case 'extra_large': 
+          return 'grid grid-cols-1 gap-10'; // 1 card per row
+        default: 
+          return 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'; // default medium
+      }
+    })();
+    
+    console.log('Grid classes updated for cardSize:', cardSize, '->', classes);
+    return classes;
+  }, [cardSize]);
 
   // Optimized event handlers
   const handleNewEvent = useCallback(() => {
@@ -495,7 +538,7 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
       </section>
 
             {/* Events Controls & Display */}
-      <section className="events-container" data-section-name="Events Controls & List">
+      <section className="events-container" data-section-name="Events content">
       <EventControlsBar
         advancedSorts={advancedSorts}
         setAdvancedSorts={setAdvancedSorts}
@@ -546,16 +589,43 @@ export function EventContent({ siteSD, space, site }: EventContentProps) {
                 ))}
         </div>
       ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredAndSortedEvents.map(event => (
-                  <EventCard
-                    key={event.id}
-                    event={event}
-                    onEventClick={handleViewEvent}
-                    isDashboard={isDashboard}
-            />
-                ))}
-          </div>
+              <LayoutGroup>
+                <motion.div 
+                  key={cardSize} // Force re-render on cardSize change
+                  className={gridClasses}
+                  layout
+                  initial={{ opacity: 0.8 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ 
+                    layout: { duration: 0.4, ease: "easeInOut" },
+                    opacity: { duration: 0.3 }
+                  }}
+                >
+                  <AnimatePresence mode="wait">
+                    {filteredAndSortedEvents.map(event => (
+                      <motion.div
+                        key={`${event.id}-${cardStyle}`}
+                        layout
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{
+                          layout: { duration: 0.4, ease: "easeInOut" },
+                          opacity: { duration: 0.3, delay: 0.1 },
+                          y: { duration: 0.3, delay: 0.1 }
+                        }}
+                      >
+                        <EventCard
+                          event={event}
+                          onEventClick={handleViewEvent}
+                          isDashboard={isDashboard}
+                          cardStyle={cardStyle}
+                        />
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </motion.div>
+              </LayoutGroup>
             )}
         </div>
       )}

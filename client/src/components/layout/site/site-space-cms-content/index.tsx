@@ -28,9 +28,12 @@ interface SpaceCmsContentProps {
   siteSD: string;
   space: Space;
   site: any;
+  eventsLayout?: string;
+  cardSize?: string;
+  cardStyle?: string;
 }
 
-export function SpaceCmsContent({ siteSD, space, site }: SpaceCmsContentProps) {
+export function SpaceCmsContent({ siteSD, space, site, eventsLayout, cardSize, cardStyle }: SpaceCmsContentProps) {
   // Function to determine which component to render based on CMS type
   const renderContentComponent = () => {
     // Check if space exists and has a CMS type
@@ -104,7 +107,7 @@ export function SpaceCmsContent({ siteSD, space, site }: SpaceCmsContentProps) {
       case 'blog':
         return <BlogContent siteSD={siteSD} space={space} site={site} />;
       case 'event':
-        return <EventContent siteSD={siteSD} space={space} site={site} />;
+        return <EventContent siteSD={siteSD} space={space} site={site} eventsLayout={eventsLayout} cardSize={cardSize} cardStyle={cardStyle} />;
       case 'knowledge':
         return <KnowledgeContent siteSD={siteSD} space={space} site={site} />;
       case 'landing':

@@ -65,6 +65,11 @@ export default function SpaceSettingsPage() {
   const [hasChanges, setHasChanges] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
+  // Events layout state
+  const [eventsLayout, setEventsLayout] = useState('card');
+  const [cardSize, setCardSize] = useState('medium');
+  const [cardStyle, setCardStyle] = useState('modern');
+  
 
   
   // Browser mockup state - consolidated
@@ -107,6 +112,24 @@ export default function SpaceSettingsPage() {
 
   const handleDiscard = useCallback(() => {
     setHasChanges(false);
+  }, []);
+
+  // Layout change handler
+  const handleLayoutChange = useCallback((layout: string) => {
+    setEventsLayout(layout);
+    console.log('Layout changed to:', layout);
+  }, []);
+
+  // Card size change handler
+  const handleCardSizeChange = useCallback((size: string) => {
+    setCardSize(size);
+    console.log('Card size changed to:', size);
+  }, []);
+
+  // Card style change handler
+  const handleCardStyleChange = useCallback((style: string) => {
+    setCardStyle(style);
+    console.log('Card style changed to:', style);
   }, []);
 
   // Browser state handlers
@@ -158,6 +181,12 @@ export default function SpaceSettingsPage() {
             isLoading={isLoading}
             onSave={handleSave}
             onDiscard={handleDiscard}
+            onLayoutChange={handleLayoutChange}
+            onCardSizeChange={handleCardSizeChange}
+            onCardStyleChange={handleCardStyleChange}
+            currentLayout={eventsLayout}
+            currentCardSize={cardSize}
+            currentCardStyle={cardStyle}
           />
         </div>
         
@@ -192,6 +221,9 @@ export default function SpaceSettingsPage() {
                   spaceBanner={spaceBanner}
                   spaceBannerUrl={spaceBannerUrl}
                   isWidgetMode={activeTab === 'widget' && sidebarVisible}
+                  eventsLayout={eventsLayout}
+                  cardSize={cardSize}
+                  cardStyle={cardStyle}
                 />
               </div>
             </BrowserMockup>

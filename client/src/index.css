@@ -250,7 +250,8 @@
   .categories.selected-element,
   .events-container.selected-element,
   .site-footer.selected-element,
-  [data-widget-section].selected-element {
+  [data-widget-section].selected-element,
+  .widget-selected {
     outline: 3px solid #1d4ed8 !important;
     outline-offset: 2px !important;
     background-color: rgba(29, 78, 216, 0.05) !important;
@@ -260,7 +261,8 @@
   
   /* Clean section labels */
   .widget-hover::after,
-  .selected-element::after {
+  .selected-element::after,
+  .widget-selected::after {
     content: attr(data-section-name);
     position: absolute !important;
     top: -8px !important;
@@ -285,7 +287,8 @@
     transform: translateY(0) !important;
   }
   
-  .selected-element::after {
+  .selected-element::after,
+  .widget-selected::after {
     background: #1d4ed8 !important;
     opacity: 1 !important;
     transform: translateY(0) !important;
@@ -303,7 +306,8 @@
     opacity: 0.8 !important;
   }
   
-  .selected-element::before {
+  .selected-element::before,
+  .widget-selected::before {
     content: "✅" !important;
     position: absolute !important;
     top: 4px !important;
@@ -327,7 +331,8 @@
   }
   
   /* Selected element stays crisp and prominent */
-  .widget-mode.has-selection .selected-element {
+  .widget-mode.has-selection .selected-element,
+  .widget-mode.has-selection .widget-selected {
     filter: none !important;
     opacity: 1 !important;
     transform: scale(1.02) !important;
@@ -376,5 +381,54 @@
   [data-exclude-widget] .selected-element::before,
   [data-exclude-widget] .selected-element::after {
     display: none !important;
+  }
+}
+
+/* Card Style Transition Animations */
+@layer components {
+  .card-transition {
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .card-style-changing {
+    transition: all 0.3s ease-in-out;
+  }
+
+  .card-style-changing .card {
+    transform: scale(0.98);
+    opacity: 0.8;
+  }
+
+  /* Enhanced card hover effects */
+  .event-card {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .event-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .event-card:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Card style morphing animations */
+  .card-morphing {
+    transform-origin: center center;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  /* Smooth card grid transitions */
+  .events-grid {
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  /* Property row selection animation */
+  .property-row-active {
+    transform: scale(1.02);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(147, 51, 234, 0.05));
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 }

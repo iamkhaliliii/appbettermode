@@ -24,6 +24,13 @@ interface SettingsSidebarProps {
   isLoading?: boolean;
   onSave?: () => void;
   onDiscard?: () => void;
+  onLayoutChange?: (layout: string) => void;
+  onCardSizeChange?: (cardSize: string) => void;
+  onCardStyleChange?: (cardStyle: string) => void;
+  // Current values for widget tab
+  currentLayout?: string;
+  currentCardSize?: string;
+  currentCardStyle?: string;
 }
 
 /**
@@ -42,7 +49,13 @@ export function SettingsSidebar({
   setHasChanges: externalSetHasChanges,
   isLoading: externalIsLoading,
   onSave: externalOnSave,
-  onDiscard: externalOnDiscard
+  onDiscard: externalOnDiscard,
+  onLayoutChange,
+  onCardSizeChange,
+  onCardStyleChange,
+  currentLayout = 'card',
+  currentCardSize = 'medium',
+  currentCardStyle = 'modern'
 }: Omit<SettingsSidebarProps, 'siteDetails'>) {
   // Get site details from context
   const { sites } = useSiteData();
@@ -77,6 +90,7 @@ export function SettingsSidebar({
 
   const [isLoading, setIsLoading] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+  const [isWidgetSettingsMode, setIsWidgetSettingsMode] = useState(false);
 
   // Initial values for change detection
   const initialValues = useMemo(() => ({
@@ -134,7 +148,9 @@ export function SettingsSidebar({
   const tabInfo = useMemo(() => {
     const tabMap = {
       general: { title: 'General settings', description: 'Configure basic space information, visibility and permissions' },
-      widget: { title: 'Customize', description: 'Select and configure which elements are interactive in your space preview' },
+      widget: isWidgetSettingsMode 
+        ? { title: 'Widget Settings', description: 'Configure the selected widget properties and behavior' }
+        : { title: 'Customize', description: 'Select and configure which elements are interactive in your space preview' },
       seo: { title: 'SEO Settings', description: 'Optimize your space for search engines and social media' },
       display: { title: 'Content Layout', description: 'Customize how content is displayed and organized' },
       danger: { title: 'Danger Zone', description: 'Irreversible actions that affect your entire space' },
@@ -142,7 +158,7 @@ export function SettingsSidebar({
     };
     
     return tabMap[activeTab as keyof typeof tabMap] || { title: 'Settings', description: 'Select a category to configure space settings' };
-  }, [activeTab]);
+  }, [activeTab, isWidgetSettingsMode]);
 
   // Content type detection - memoized
   const contentType = useMemo((): 'blog' | 'event' | 'general' => {
@@ -197,7 +213,15 @@ export function SettingsSidebar({
         );
 
       case 'widget':
-        return <SimpleWidgetTab />;
+        return <SimpleWidgetTab 
+          onWidgetSettingsModeChange={setIsWidgetSettingsMode} 
+          onLayoutChange={onLayoutChange} 
+          onCardSizeChange={onCardSizeChange} 
+          onCardStyleChange={onCardStyleChange}
+          initialLayout={currentLayout}
+          initialCardSize={currentCardSize}
+          initialCardStyle={currentCardStyle}
+        />;
 
       case 'seo':
         return <SEOSettingsTab />;
@@ -232,6 +256,7 @@ export function SettingsSidebar({
 
   return (
     <div className="settings-sidebar w-80 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex flex-col" data-exclude-widget="true">
+      {/* Header with buttons - always show */}
       <div className="p-2 flex flex-col flex-shrink-0">
         <div className="flex items-center justify-between mb-2">
           <button
@@ -243,7 +268,7 @@ export function SettingsSidebar({
           </button>
           
           <div className="flex items-center">
-            {currentHasChanges && activeTab !== 'danger' && (
+            {currentHasChanges && activeTab !== 'danger' && !isWidgetSettingsMode && (
               <button
                 type="button"
                 onClick={externalOnDiscard || handleDiscardChanges}
@@ -252,7 +277,7 @@ export function SettingsSidebar({
                 Discard
               </button>
             )}
-            {activeTab !== 'danger' && (
+            {activeTab !== 'danger' && !isWidgetSettingsMode && (
               <button
                 type="button"
                 onClick={externalOnSave || (() => {})}
@@ -278,13 +303,16 @@ export function SettingsSidebar({
         
         <div className="border-t border-gray-100 dark:border-gray-700 mb-3"></div>
         
-        <div>
-          <h2 className="px-2 text-lg font-medium text-gray-900 dark:text-white">{tabInfo.title}</h2>
-          <p className="px-2 text-xs text-gray-500 dark:text-gray-400 mt-1">{tabInfo.description}</p>
-        </div>
+        {/* Title and Description - only show when not in widget settings mode */}
+        {!isWidgetSettingsMode && (
+          <div>
+            <h2 className="px-2 text-lg font-medium text-gray-900 dark:text-white">{tabInfo.title}</h2>
+            <p className="px-2 text-xs text-gray-500 dark:text-gray-400 mt-1">{tabInfo.description}</p>
+          </div>
+        )}
       </div>
 
-      <div className="flex-1 mt-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
+      <div className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent ${!isWidgetSettingsMode ? 'mt-4' : ''}`}>
         <div className="px-2">
           {renderTabContent()}
         </div>

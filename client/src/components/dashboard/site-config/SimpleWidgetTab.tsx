@@ -1,15 +1,69 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Settings, MousePointer, Eye, Layout, Edit3, Users, CheckCircle, Palette, LayoutGrid, Type, EyeOff, Grid3X3, List, Calendar, ChevronDown, MoreHorizontal, RefreshCw, Zap, Layers, Play, Pause } from 'lucide-react';
+import { 
+  Settings, 
+  Grid2X2, 
+  MousePointer, 
+  Calendar, 
+  Users, 
+  Layout,
+  LayoutGrid,
+  LayoutList,
+  Rows3,
+  Columns,
+  ExternalLink,
+  Square,
+  Hash,
+  Image,
+  Crop,
+  ChevronDown,
+  Heading,
+  AlignLeft,
+  User,
+  Heart,
+  MessageSquare,
+  Eye,
+  EyeOff,
+  Type,
+  Zap,
+  Layers,
+  ArrowLeft,
+  CheckCircle,
+  Grid3x3,
+  SquareStack,
+  RectangleHorizontal,
+  Sparkles,
+  FileText
+} from "lucide-react";
 import { PropertyRow } from "./PropertyRow";
+import { Tabs } from "@/components/ui/vercel-tabs";
 
 interface SimpleWidgetTabProps {
   selectedElement?: HTMLElement | null;
+  onWidgetSettingsModeChange?: (isWidgetSettingsMode: boolean) => void;
+  onLayoutChange?: (layout: string) => void;
+  onCardSizeChange?: (cardSize: string) => void;
+  onCardStyleChange?: (cardStyle: string) => void;
+  // Initial values from parent
+  initialLayout?: string;
+  initialCardSize?: string;
+  initialCardStyle?: string;
 }
 
-export function SimpleWidgetTab({ selectedElement }: SimpleWidgetTabProps) {
+export function SimpleWidgetTab({ 
+  selectedElement, 
+  onWidgetSettingsModeChange, 
+  onLayoutChange, 
+  onCardSizeChange, 
+  onCardStyleChange,
+  initialLayout = 'card',
+  initialCardSize = 'medium', 
+  initialCardStyle = 'modern'
+}: SimpleWidgetTabProps) {
   const [activeTab, setActiveTab] = useState('active-widgets');
   const [selectedInfo, setSelectedInfo] = useState<any>(null);
   const [editingField, setEditingField] = useState<string | null>(null);
+  const [selectedWidget, setSelectedWidget] = useState<any>(null);
+  const [isWidgetSettingsMode, setIsWidgetSettingsMode] = useState(false);
   const [widgetSettings, setWidgetSettings] = useState({
     visibility: true,
     layout: 'grid',
@@ -23,6 +77,31 @@ export function SimpleWidgetTab({ selectedElement }: SimpleWidgetTabProps) {
     itemsPerRow: '3'
   });
   const [propertiesExpanded, setPropertiesExpanded] = useState(false);
+  const [baseSectionExpanded, setBaseSectionExpanded] = useState(false);
+  const [mainWidgetExpanded, setMainWidgetExpanded] = useState(true);
+  const [customWidgetsExpanded, setCustomWidgetsExpanded] = useState(false);
+  
+  // Events content settings state
+  const [layout, setLayout] = useState(initialLayout);
+  const [showAuthor, setShowAuthor] = useState(true);
+  const [showDate, setShowDate] = useState(true);
+  const [showTags, setShowTags] = useState(true);
+  const [cardSize, setCardSize] = useState(initialCardSize);
+  const [cardStyle, setCardStyle] = useState(initialCardStyle);
+  const [openPageIn, setOpenPageIn] = useState('post_page');
+  const [cardCover, setCardCover] = useState(true);
+  const [fitCover, setFitCover] = useState(false);
+  const [showTitle, setShowTitle] = useState(true);
+  const [showExcerpt, setShowExcerpt] = useState(true);
+  const [showReactions, setShowReactions] = useState(true);
+  const [showComments, setShowComments] = useState(true);
+
+  // Sync local state with parent state when props change
+  useEffect(() => {
+    setLayout(initialLayout);
+    setCardSize(initialCardSize);
+    setCardStyle(initialCardStyle);
+  }, [initialLayout, initialCardSize, initialCardStyle]);
 
   // Listen for element selections - improved detection
   useEffect(() => {
@@ -67,6 +146,140 @@ export function SimpleWidgetTab({ selectedElement }: SimpleWidgetTabProps) {
     setPropertiesExpanded(prev => !prev);
   }, []);
 
+  const toggleBaseSectionExpanded = useCallback(() => {
+    setBaseSectionExpanded(prev => !prev);
+  }, []);
+
+  const toggleMainWidgetExpanded = useCallback(() => {
+    setMainWidgetExpanded(prev => !prev);
+  }, []);
+
+  const toggleCustomWidgetsExpanded = useCallback(() => {
+    setCustomWidgetsExpanded(prev => !prev);
+  }, []);
+
+  // Handle layout change with callback
+  const handleLayoutChange = useCallback((newLayout: string) => {
+    setLayout(newLayout);
+    onLayoutChange?.(newLayout);
+  }, [onLayoutChange]);
+
+  // Handle card size change with callback
+  const handleCardSizeChange = useCallback((newCardSize: string) => {
+    setCardSize(newCardSize);
+    onCardSizeChange?.(newCardSize);
+  }, [onCardSizeChange]);
+
+  // Handle card style change with callback
+  const handleCardStyleChange = useCallback((newCardStyle: string) => {
+    setCardStyle(newCardStyle);
+    onCardStyleChange?.(newCardStyle);
+  }, [onCardStyleChange]);
+
+  // Handle widget click - scroll to section and show settings
+  const handleWidgetClick = useCallback((widget: any) => {
+    // Set selected widget and enable settings mode
+    setSelectedWidget(widget);
+    setIsWidgetSettingsMode(true);
+    
+    // Notify parent about mode change
+    onWidgetSettingsModeChange?.(true);
+    
+    // Scroll to the target section in browser mockup
+    const getTargetSelector = (widgetId: string) => {
+      switch (widgetId) {
+        case 'events-container':
+          return '.events-container, .site-event-content, [data-section="events"], .event-controls-bar, .events-content, .events-list';
+        case 'featured-events':
+          return '.featured-events, .featured-event-widget, [data-section="featured-events"]';
+        case 'categories':
+          return '.categories, .event-categories, [data-section="categories"]';
+        case 'site-header':
+          return '.site-header, .header';
+        case 'site-sidebar':
+          return '.site-sidebar, .sidebar';
+        case 'site-footer':
+          return '.site-footer, .footer';
+        default:
+          return `.${widgetId}`;
+      }
+    };
+    
+    // Try to find the element in the browser mockup
+    setTimeout(() => {
+      const targetSelector = getTargetSelector(widget.id);
+      
+      // Remove previous selections first
+      document.querySelectorAll('.widget-selected, .selected-element').forEach(el => {
+        el.classList.remove('widget-selected', 'selected-element');
+      });
+      
+      // Look for the element in various contexts
+      let targetElement: HTMLElement | null = null;
+      
+      // Try multiple selector approaches
+      const selectors = targetSelector.split(', ');
+      for (const selector of selectors) {
+        targetElement = document.querySelector(selector.trim()) as HTMLElement;
+        if (targetElement) break;
+      }
+      
+      // If still not found, try in iframe
+      if (!targetElement) {
+        const browserFrame = document.querySelector('.browser-mockup iframe') as HTMLIFrameElement;
+        if (browserFrame && browserFrame.contentDocument) {
+          for (const selector of selectors) {
+            targetElement = browserFrame.contentDocument.querySelector(selector.trim()) as HTMLElement;
+            if (targetElement) break;
+          }
+        }
+      }
+      
+      if (targetElement) {
+        // Add highlight classes
+        targetElement.classList.add('widget-selected', 'selected-element');
+        targetElement.setAttribute('data-section-name', widget.name);
+        
+        // Add has-selection class to preview container for blur effect
+        const previewContainer = document.querySelector('.preview-container');
+        if (previewContainer) {
+          previewContainer.classList.add('has-selection');
+        }
+        
+        // Scroll to element
+        targetElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center' 
+        });
+        
+        console.log(`Selected widget: ${widget.name} (${widget.id})`);
+      } else {
+        console.warn(`Could not find element for widget: ${widget.name} (${widget.id})`);
+      }
+    }, 100);
+  }, [onWidgetSettingsModeChange]);
+
+  // Handle back button - return to widget list
+  const handleBackClick = useCallback(() => {
+    setSelectedWidget(null);
+    setIsWidgetSettingsMode(false);
+    
+    // Notify parent about mode change
+    onWidgetSettingsModeChange?.(false);
+    
+    // Remove selection from browser mockup
+    document.querySelectorAll('.widget-selected, .selected-element').forEach(el => {
+      el.classList.remove('widget-selected', 'selected-element');
+      el.removeAttribute('data-section-name');
+    });
+    
+    // Remove has-selection class from preview container
+    const previewContainer = document.querySelector('.preview-container');
+    if (previewContainer) {
+      previewContainer.classList.remove('has-selection');
+    }
+  }, [onWidgetSettingsModeChange]);
+
   // Handle setting changes
   const handleSettingChange = useCallback((key: string) => (value: any) => {
     setWidgetSettings(prev => ({
@@ -75,500 +288,678 @@ export function SimpleWidgetTab({ selectedElement }: SimpleWidgetTabProps) {
     }));
   }, []);
 
-  // Memoized active widgets data
-  const activeWidgets = useMemo(() => [
-    { 
-      id: 'site-header', 
-      name: 'Site Header', 
-      icon: Layout, 
-      description: 'Navigation and branding',
-      status: 'active',
-      type: 'system',
-      settings: { visibility: true, customizable: false }
-    },
-    { 
-      id: 'site-sidebar', 
-      name: 'Site Sidebar', 
-      icon: Eye, 
-      description: 'Navigation menu',
-      status: 'active',
-      type: 'system',
-      settings: { visibility: true, customizable: true }
-    },
-    { 
-      id: 'featured-events', 
-      name: 'Featured Events', 
-      icon: Zap, 
-      description: 'Event highlights with carousel',
-      status: 'active',
-      type: 'content',
-      settings: { visibility: true, customizable: true }
-    },
-    { 
-      id: 'categories', 
-      name: 'Event Categories', 
-      icon: Layers, 
-      description: 'Interactive category filters',
-      status: 'active',
-      type: 'content',
-      settings: { visibility: true, customizable: true }
-    },
-    { 
-      id: 'events-container', 
-      name: 'Events Controls & List', 
-      icon: Settings, 
-      description: 'Event listing with search and filters',
-      status: 'active',
-      type: 'content',
-      settings: { visibility: true, customizable: true }
-    },
-    { 
-      id: 'site-footer', 
-      name: 'Site Footer', 
-      icon: Layout, 
-      description: 'Footer information and links',
-      status: 'active',
-      type: 'system',
-      settings: { visibility: true, customizable: false }
-    },
-  ], []);
+  // Memoized active widgets data organized by sections
+  const widgetSections = useMemo(() => ({
+    base: [
+      { 
+        id: 'site-header', 
+        name: 'Site Header', 
+        icon: Layout, 
+        description: 'Navigation and branding',
+        status: 'active',
+        type: 'system',
+        settings: { visibility: true, customizable: false }
+      },
+      { 
+        id: 'site-sidebar', 
+        name: 'Site Sidebar', 
+        icon: Eye, 
+        description: 'Navigation menu',
+        status: 'active',
+        type: 'system',
+        settings: { visibility: true, customizable: true }
+      },
+      { 
+        id: 'site-footer', 
+        name: 'Site Footer', 
+        icon: Layout, 
+        description: 'Footer information and links',
+        status: 'active',
+        type: 'system',
+        settings: { visibility: true, customizable: false }
+      },
+    ],
+    main: [
+      { 
+        id: 'events-container', 
+        name: 'Events content', 
+        icon: Settings, 
+        description: 'Event listing with search and filters',
+        status: 'active',
+        type: 'content',
+        settings: { visibility: true, customizable: true }
+      },
+    ],
+    custom: [
+      { 
+        id: 'featured-events', 
+        name: 'Featured Events', 
+        icon: Zap, 
+        description: 'Event highlights with carousel',
+        status: 'active',
+        type: 'content',
+        settings: { visibility: true, customizable: true }
+      },
+      { 
+        id: 'categories', 
+        name: 'Event Categories', 
+        icon: Layers, 
+        description: 'Interactive category filters',
+        status: 'active',
+        type: 'content',
+        settings: { visibility: true, customizable: true }
+      },
+    ]
+  }), []);
 
   // Memoized options
   const layoutOptions = useMemo(() => [
-    { 
-      value: 'grid', 
-      label: 'Grid Layout',
-      description: 'Display items in a responsive grid',
-      icon: Grid3X3
-    },
-    { 
-      value: 'list', 
-      label: 'List Layout',
-      description: 'Display items in a vertical list',
-      icon: List
-    },
-    { 
-      value: 'card', 
-      label: 'Card Layout',
-      description: 'Display items as individual cards',
-      icon: Layout
-    },
-    { 
-      value: 'carousel', 
-      label: 'Carousel',
-      description: 'Display items in a horizontal carousel',
-      icon: Calendar
-    }
+    { value: 'card', label: 'Card', icon: LayoutGrid },
+    { value: 'list', label: 'List', icon: LayoutList },
+    { value: 'calendar', label: 'Calendar', icon: Calendar }
   ], []);
 
-  const spacingOptions = useMemo(() => [
+  const cardSizeOptions = useMemo(() => [
     { 
-      value: 'tight', 
-      label: 'Tight',
-      description: 'Minimal spacing between items',
+      value: 'small', 
+      label: 'Small',
+      description: 'Compact cards with minimal content preview (4 per row)',
       icon: LayoutGrid
     },
     { 
       value: 'medium', 
       label: 'Medium',
-      description: 'Balanced spacing between items',
-      icon: LayoutGrid
+      description: 'Balanced size with good content visibility (3 per row)',
+      icon: Grid3x3
     },
     { 
-      value: 'loose', 
-      label: 'Loose',
-      description: 'Generous spacing between items',
-      icon: LayoutGrid
+      value: 'large', 
+      label: 'Large',
+      description: 'Spacious cards with detailed content preview (2 per row)',
+      icon: Grid2X2
+    },
+    { 
+      value: 'extra_large', 
+      label: 'Extra Large',
+      description: 'Maximum size cards with full content display (1 per row)',
+      icon: RectangleHorizontal
     }
   ], []);
 
-  const itemsPerRowOptions = useMemo(() => [
+  const cardStyleOptions = useMemo(() => [
     { 
-      value: '1', 
-      label: '1 Column',
-      description: 'Single column layout',
-      icon: LayoutGrid
+      value: 'modern', 
+      label: 'Modern Style',
+      description: 'Text overlay on image with gradient background',
+      icon: Sparkles
     },
     { 
-      value: '2', 
-      label: '2 Columns',
-      description: 'Two column grid layout',
-      icon: LayoutGrid
-    },
-    { 
-      value: '3', 
-      label: '3 Columns',
-      description: 'Three column grid layout',
-      icon: LayoutGrid
-    },
-    { 
-      value: '4', 
-      label: '4 Columns',
-      description: 'Four column grid layout',
-      icon: LayoutGrid
+      value: 'simple', 
+      label: 'Simple Card',
+      description: 'Clean layout with text below image',
+      icon: FileText
     }
   ], []);
 
-  const animationOptions = useMemo(() => [
+  const openPageOptions = useMemo(() => [
     { 
-      value: 'none', 
-      label: 'No Animation',
-      description: 'No entry animation',
-      icon: Type
+      value: 'modal_content', 
+      label: 'Modal content',
+      description: 'Open posts in an overlay modal window',
+      icon: Square
     },
     { 
-      value: 'fade', 
-      label: 'Fade In',
-      description: 'Fade in animation effect',
-      icon: Type
-    },
-    { 
-      value: 'slide', 
-      label: 'Slide Up',
-      description: 'Slide up animation effect',
-      icon: Type
-    },
-    { 
-      value: 'scale', 
-      label: 'Scale In',
-      description: 'Scale in animation effect',
-      icon: Type
-    },
-    { 
-      value: 'bounce', 
-      label: 'Bounce In',
-      description: 'Bounce in animation effect',
-      icon: Type
+      value: 'post_page', 
+      label: 'Post page',
+      description: 'Navigate to a dedicated post page',
+      icon: ExternalLink
     }
   ], []);
 
-  // Memoized render function for advanced properties section
-  const renderAdvancedPropertiesSection = useCallback(() => (
+  // Memoized render function for properties section
+  const renderPropertiesSection = useCallback(() => (
     <div className="pt-1 border-t border-gray-50 dark:border-gray-800">
       <button
         onClick={togglePropertiesExpanded}
         className="w-full flex items-center justify-between px-3 py-2 text-xs text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
       >
-        <span>Advanced Properties</span>
-        <ChevronDown className={`w-3.5 h-3.5 transition-transform flex-shrink-0 ${propertiesExpanded ? 'rotate-180' : ''}`} />
+        <span>Properties</span>
+        <ChevronDown className={`w-3.5 h-3.5 transition-transform ${propertiesExpanded ? 'rotate-180' : ''}`} />
       </button>
       
       {propertiesExpanded && (
         <div className="space-y-0 [&>*:last-child>div:first-child]:border-b-0">
           <PropertyRow
-            label="Background Color"
-            value={widgetSettings.backgroundColor}
-            fieldName="backgroundColor"
-            type="text"
-            onValueChange={handleSettingChange('backgroundColor')}
-            placeholder="#ffffff"
-            icon={Palette}
+            label="Title"
+            value={showTitle}
+            fieldName="showTitle"
+            type="checkbox"
+            onValueChange={setShowTitle}
+            icon={Heading}
             editingField={editingField}
             onFieldClick={handleFieldClick}
             onFieldBlur={handleFieldBlur}
             onKeyDown={handleKeyDown}
-            description="Background color of the section"
+            disabled={true}
           />
 
           <PropertyRow
-            label="Text Color"
-            value={widgetSettings.textColor}
-            fieldName="textColor"
-            type="text"
-            onValueChange={handleSettingChange('textColor')}
-            placeholder="#000000"
-            icon={Palette}
+            label="Excerpt"
+            value={showExcerpt}
+            fieldName="showExcerpt"
+            type="checkbox"
+            onValueChange={setShowExcerpt}
+            icon={AlignLeft}
             editingField={editingField}
             onFieldClick={handleFieldClick}
             onFieldBlur={handleFieldBlur}
             onKeyDown={handleKeyDown}
-            description="Text color of the section"
+            disabled={true}
           />
 
           <PropertyRow
-            label="Border Radius"
-            value={widgetSettings.borderRadius}
-            fieldName="borderRadius"
-            type="text"
-            onValueChange={handleSettingChange('borderRadius')}
-            placeholder="8"
-            icon={Layout}
+            label="Author"
+            value={showAuthor}
+            fieldName="showAuthor"
+            type="checkbox"
+            onValueChange={setShowAuthor}
+            icon={User}
             editingField={editingField}
             onFieldClick={handleFieldClick}
             onFieldBlur={handleFieldBlur}
             onKeyDown={handleKeyDown}
-            description="Corner radius in pixels"
+            disabled={true}
           />
 
           <PropertyRow
-            label="Entry Animation"
-            value={widgetSettings.animation}
-            fieldName="animation"
-            type="select"
-            options={animationOptions}
-            onValueChange={handleSettingChange('animation')}
-            icon={Type}
+            label="Date"
+            value={showDate}
+            fieldName="showDate"
+            type="checkbox"
+            onValueChange={setShowDate}
+            icon={Calendar}
             editingField={editingField}
             onFieldClick={handleFieldClick}
             onFieldBlur={handleFieldBlur}
             onKeyDown={handleKeyDown}
-            description="Animation when section appears"
+          />
+
+          <PropertyRow
+            label="Tags"
+            value={showTags}
+            fieldName="showTags"
+            type="checkbox"
+            onValueChange={setShowTags}
+            icon={Hash}
+            editingField={editingField}
+            onFieldClick={handleFieldClick}
+            onFieldBlur={handleFieldBlur}
+            onKeyDown={handleKeyDown}
+          />
+
+          <PropertyRow
+            label="Reactions"
+            value={showReactions}
+            fieldName="showReactions"
+            type="checkbox"
+            onValueChange={setShowReactions}
+            icon={Heart}
+            editingField={editingField}
+            onFieldClick={handleFieldClick}
+            onFieldBlur={handleFieldBlur}
+            onKeyDown={handleKeyDown}
+          />
+
+          <PropertyRow
+            label="Comments"
+            value={showComments}
+            fieldName="showComments"
+            type="checkbox"
+            onValueChange={setShowComments}
+            icon={MessageSquare}
+            editingField={editingField}
+            onFieldClick={handleFieldClick}
+            onFieldBlur={handleFieldBlur}
+            onKeyDown={handleKeyDown}
           />
         </div>
       )}
     </div>
-  ), [propertiesExpanded, widgetSettings, editingField, handleFieldClick, handleFieldBlur, handleKeyDown, togglePropertiesExpanded, animationOptions, handleSettingChange]);
+  ), [propertiesExpanded, showTitle, showExcerpt, showAuthor, showDate, showTags, showReactions, showComments, editingField, handleFieldClick, handleFieldBlur, handleKeyDown, togglePropertiesExpanded]);
 
-  // Widget settings form using PropertyRow
-  const WidgetSettingsForm = () => (
-    <div className="space-y-0 [&>*:last-child>div:first-child]:border-b-0">
+  // Memoized card settings
+  const cardSettings = useMemo(() => (
+    <>
       <PropertyRow
-        label="Show Section"
-        value={widgetSettings.visibility}
-        fieldName="visibility"
-        type="checkbox"
-        onValueChange={handleSettingChange('visibility')}
-        icon={widgetSettings.visibility ? Eye : EyeOff}
-        editingField={editingField}
-        onFieldClick={handleFieldClick}
-        onFieldBlur={handleFieldBlur}
-        onKeyDown={handleKeyDown}
-        description="Toggle visibility of this section"
-      />
-
-      <PropertyRow
-        label="Show Title"
-        value={widgetSettings.showTitle}
-        fieldName="showTitle"
-        type="checkbox"
-        onValueChange={handleSettingChange('showTitle')}
-        icon={Type}
-        editingField={editingField}
-        onFieldClick={handleFieldClick}
-        onFieldBlur={handleFieldBlur}
-        onKeyDown={handleKeyDown}
-        description="Display the section title"
-      />
-
-      <PropertyRow
-        label="Show Description"
-        value={widgetSettings.showDescription}
-        fieldName="showDescription"
-        type="checkbox"
-        onValueChange={handleSettingChange('showDescription')}
-        icon={Type}
-        editingField={editingField}
-        onFieldClick={handleFieldClick}
-        onFieldBlur={handleFieldBlur}
-        onKeyDown={handleKeyDown}
-        description="Display the section description"
-      />
-
-      <PropertyRow
-        label="Layout Style"
-        value={widgetSettings.layout}
-        fieldName="layout"
+        key={`cardSize-${cardSize}`}
+        label="Card size"
+        value={cardSize}
+        fieldName="cardSize"
         type="select"
-        options={layoutOptions}
-        onValueChange={handleSettingChange('layout')}
-        icon={layoutOptions.find(opt => opt.value === widgetSettings.layout)?.icon || LayoutGrid}
+        options={cardSizeOptions}
+        onValueChange={handleCardSizeChange}
+        icon={cardSizeOptions.find(option => option.value === cardSize)?.icon || Grid3x3}
         editingField={editingField}
         onFieldClick={handleFieldClick}
         onFieldBlur={handleFieldBlur}
         onKeyDown={handleKeyDown}
-        description="Choose how content is displayed"
       />
 
       <PropertyRow
-        label="Items per Row"
-        value={widgetSettings.itemsPerRow}
-        fieldName="itemsPerRow"
+        key={`cardStyle-${cardStyle}`}
+        label="Card style"
+        value={cardStyle}
+        fieldName="cardStyle"
         type="select"
-        options={itemsPerRowOptions}
-        onValueChange={handleSettingChange('itemsPerRow')}
-        icon={LayoutGrid}
+        options={cardStyleOptions}
+        onValueChange={handleCardStyleChange}
+        icon={cardStyleOptions.find(option => option.value === cardStyle)?.icon || Sparkles}
         editingField={editingField}
         onFieldClick={handleFieldClick}
         onFieldBlur={handleFieldBlur}
         onKeyDown={handleKeyDown}
-        description="Number of columns in grid layout"
       />
 
       <PropertyRow
-        label="Spacing"
-        value={widgetSettings.spacing}
-        fieldName="spacing"
+        label="Open page in"
+        value={openPageIn}
+        fieldName="openPageIn"
         type="select"
-        options={spacingOptions}
-        onValueChange={handleSettingChange('spacing')}
-        icon={LayoutGrid}
+        options={openPageOptions}
+        onValueChange={setOpenPageIn}
+        icon={ExternalLink}
         editingField={editingField}
         onFieldClick={handleFieldClick}
         onFieldBlur={handleFieldBlur}
         onKeyDown={handleKeyDown}
-        description="Adjust spacing between items"
       />
 
-      {renderAdvancedPropertiesSection()}
-    </div>
-  );
+      <PropertyRow
+        label="Card Cover"
+        value={cardCover}
+        fieldName="cardCover"
+        type="checkbox"
+        onValueChange={setCardCover}
+        icon={Image}
+        editingField={editingField}
+        onFieldClick={handleFieldClick}
+        onFieldBlur={handleFieldBlur}
+        onKeyDown={handleKeyDown}
+      />
+
+      {cardCover && (
+        <PropertyRow
+          label="Fit cover"
+          value={fitCover}
+          fieldName="fitCover"
+          type="checkbox"
+          onValueChange={setFitCover}
+          icon={Crop}
+          editingField={editingField}
+          onFieldClick={handleFieldClick}
+          onFieldBlur={handleFieldBlur}
+          onKeyDown={handleKeyDown}
+          isChild={true}
+        />
+      )}
+
+      {renderPropertiesSection()}
+    </>
+  ), [cardSize, cardStyle, cardSizeOptions, cardStyleOptions, openPageIn, openPageOptions, cardCover, fitCover, editingField, handleFieldClick, handleFieldBlur, handleKeyDown, renderPropertiesSection, handleCardSizeChange, handleCardStyleChange]);
+
+  // Memoized list/calendar settings
+  const listCalendarSettings = useMemo(() => (
+    <>
+      <PropertyRow
+        label="Open page in"
+        value={openPageIn}
+        fieldName="openPageIn"
+        type="select"
+        options={openPageOptions}
+        onValueChange={setOpenPageIn}
+        icon={ExternalLink}
+        editingField={editingField}
+        onFieldClick={handleFieldClick}
+        onFieldBlur={handleFieldBlur}
+        onKeyDown={handleKeyDown}
+      />
+
+      {renderPropertiesSection()}
+    </>
+  ), [openPageIn, openPageOptions, editingField, handleFieldClick, handleFieldBlur, handleKeyDown, renderPropertiesSection]);
+
+  // Define tabs for the Vercel-style tabs component
+  const tabs = useMemo(() => [
+    { id: 'active-widgets', label: 'All events' },
+    { id: 'widget-settings', label: 'Single Event' }
+  ], []);
 
   return (
     <div className="w-full min-w-0 space-y-4">
-      {/* Tab Navigation */}
-      <div className="flex border-b border-gray-200 dark:border-gray-700">
-        <button
-          onClick={() => setActiveTab('active-widgets')}
-          className={`flex-1 px-3 py-2 text-sm font-medium rounded-t-md border-b-2 transition-colors min-w-0 ${
-            activeTab === 'active-widgets'
-              ? 'text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20'
-              : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
-          }`}
-        >
-          <span className="truncate">Active Widgets</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('widget-settings')}
-          className={`flex-1 px-3 py-2 text-sm font-medium rounded-t-md border-b-2 transition-colors min-w-0 ${
-            activeTab === 'widget-settings'
-              ? 'text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20'
-              : 'text-gray-500 dark:text-gray-400 border-transparent hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
-          }`}
-        >
-          <span className="truncate">Widget Settings</span>
-        </button>
-      </div>
-
-      {/* Active Widgets Tab Content */}
-      {activeTab === 'active-widgets' && (
+      {/* Widget Settings Mode */}
+      {isWidgetSettingsMode && selectedWidget ? (
         <div className="space-y-4 min-w-0">
-          {/* Active Widgets List */}
-          <div className="min-w-0">
-            <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-              <Layers className="w-4 h-4 flex-shrink-0" />
-              <span className="truncate">Page Widgets ({activeWidgets.length})</span>
-            </h4>
-            <div className="space-y-2">
-              {activeWidgets.map((widget) => (
-                <div
-                  key={widget.id}
-                  className="p-2.5 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors min-w-0"
+          {/* Back Button */}
+          <div className="flex items-center gap-3 mb-4">
+            <button
+              onClick={handleBackClick}
+              className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Widgets</span>
+            </button>
+          </div>
+
+          {/* Widget Header */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex-1 min-w-0">
+              <h4 className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                {selectedWidget.name} Settings
+              </h4>
+              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                {selectedWidget.description}
+              </p>
+            </div>
+          </div>
+
+          {/* Events Content Settings for selected widget */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 pb-2 border-b border-gray-200 dark:border-gray-700">
+              <Calendar className="w-4 h-4 text-gray-500" />
+              <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                Events Content Settings
+              </h3>
+            </div>
+
+            {/* Visual Layout Selector */}
+            <div>
+              <div className="grid grid-cols-3 gap-2 px-2">
+                              {layoutOptions.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => handleLayoutChange(option.value)}
+                  className={`flex flex-col items-center justify-center aspect-square p-2 rounded-lg border-2 transition-all ${
+                    layout === option.value
+                      ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                      : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                  }`}
                 >
-                  <div className="flex items-center justify-between gap-2 min-w-0">
-                    <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                      <div className={`p-1.5 rounded-lg flex-shrink-0 ${
-                        widget.type === 'system' 
-                          ? 'bg-gray-100 dark:bg-gray-700' 
-                          : 'bg-blue-100 dark:bg-blue-900/30'
-                      }`}>
-                        <widget.icon className={`w-3.5 h-3.5 ${
-                          widget.type === 'system'
-                            ? 'text-gray-600 dark:text-gray-400'
-                            : 'text-blue-600 dark:text-blue-400'
-                        }`} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 mb-1">
-                          <div className="text-sm font-medium text-gray-900 dark:text-white truncate min-w-0">
-                            {widget.name}
-                          </div>
-                          <div className={`px-1.5 py-0.5 text-xs rounded-full flex-shrink-0 ${
-                            widget.status === 'active'
-                              ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                              : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400'
-                          }`}>
-                            {widget.status}
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <div className={`px-1.5 py-0.5 text-xs rounded-full flex-shrink-0 ${
-                            widget.type === 'system'
-                              ? 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400'
-                              : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                          }`}>
-                            {widget.type}
-                          </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400 truncate min-w-0">
-                            {widget.description}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-0.5 flex-shrink-0">
-                      <button className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors">
-                        <Settings className="w-3 h-3 text-gray-400" />
-                      </button>
-                      <button 
-                        className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                        title={widget.settings.visibility ? 'Hide widget' : 'Show widget'}
-                      >
-                        {widget.settings.visibility ? (
-                          <Eye className="w-3 h-3 text-gray-400" />
-                        ) : (
-                          <EyeOff className="w-3 h-3 text-gray-400" />
-                        )}
-                      </button>
-                      <button className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors">
-                        <MoreHorizontal className="w-3 h-3 text-gray-400" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                    <option.icon className={`w-6 h-6 mb-1 ${
+                      layout === option.value 
+                        ? 'text-primary-600 dark:text-primary-400' 
+                        : 'text-gray-400 dark:text-gray-500'
+                    }`} />
+                    <span className={`text-xs ${
+                      layout === option.value 
+                        ? 'text-primary-600 dark:text-primary-400 font-medium' 
+                        : 'text-gray-600 dark:text-gray-400'
+                    }`}>
+                      {option.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            {/* Conditional Settings */}
+            <div className="space-y-0 [&>*:last-child>div:first-child]:border-b-0">
+              {layout === 'card' && cardSettings}
+              {(layout === 'list' || layout === 'calendar') && listCalendarSettings}
             </div>
           </div>
         </div>
-      )}
+      ) : (
+        <>
+          {/* Tab Navigation */}
+          <div className="flex justify-center py-2">
+            <Tabs
+              tabs={tabs}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+              className="w-full max-w-md"
+            />
+          </div>
 
-      {/* Widget Settings Tab Content */}
-      {activeTab === 'widget-settings' && (
-        <div className="space-y-4 min-w-0">
-          {/* Selected Element Settings */}
-          {selectedInfo ? (
-            <div className="min-w-0">
-              <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0" />
-                <span className="truncate">{selectedInfo.sectionName} Settings</span>
-              </h4>
-              <div className="p-3 border border-green-200 bg-green-50 dark:bg-green-950/20 dark:border-green-800 rounded-lg mb-4">
-                <div className="text-sm font-medium text-green-800 dark:text-green-300 mb-1 truncate">
-                  {selectedInfo.sectionName}
-                </div>
-                <div className="text-xs text-green-600 dark:text-green-400 leading-relaxed break-words">
-                  Element: {selectedInfo.tagName.toLowerCase()}.{selectedInfo.className.split(' ').find((c: string) => c.includes('site-')) || selectedInfo.className.split(' ')[0]}
-                </div>
+          {/* Active Widgets Tab Content */}
+          {activeTab === 'active-widgets' && (
+            <div className="space-y-4 min-w-0">
+              {/* Base Section */}
+              <div className="min-w-0">
+                <button
+                  onClick={toggleBaseSectionExpanded}
+                  className="w-full flex items-center justify-between text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors mb-2"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <Layout className="w-3 h-3 flex-shrink-0" />
+                    <span className="truncate">Base Section</span>
+                  </div>
+                  <ChevronDown className={`w-3 h-3 transition-transform flex-shrink-0 ${baseSectionExpanded ? 'rotate-180' : ''}`} />
+                </button>
+                
+                {baseSectionExpanded && (
+                  <div className="space-y-1 animate-in slide-in-from-top-2 duration-200">
+                    {widgetSections.base.map((widget) => (
+                      <div
+                        key={widget.id}
+                        className="px-3 py-2 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors min-w-0 cursor-pointer"
+                        onClick={() => handleWidgetClick(widget)}
+                      >
+                        <div className="flex items-center justify-between gap-2 min-w-0">
+                          <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                            <widget.icon className="w-4 h-4 text-gray-600 dark:text-gray-400 flex-shrink-0" />
+                            <div className="text-sm text-gray-900 dark:text-white truncate min-w-0">
+                              {widget.name}
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-1 flex-shrink-0">
+                            <button 
+                              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                              title={widget.settings.visibility ? 'Hide widget' : 'Show widget'}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {widget.settings.visibility ? (
+                                <Eye className="w-3 h-3 text-gray-400" />
+                              ) : (
+                                <EyeOff className="w-3 h-3 text-gray-400" />
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-              
-              <WidgetSettingsForm />
-            </div>
-          ) : (
-            <div className="p-6 text-center text-gray-500 dark:text-gray-400">
-              <MousePointer className="w-10 h-10 mx-auto mb-3 text-gray-300 dark:text-gray-600" />
-              <h3 className="text-base font-medium mb-2">Select a Widget</h3>
-              <p className="text-sm mb-4 leading-relaxed">Click on any major section in the preview to configure its settings here.</p>
-              
-              <div className="text-left max-w-full mx-auto space-y-2 text-xs">
-                <div className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded min-w-0">
-                  <Layout className="w-3 h-3 text-gray-400 flex-shrink-0" />
-                  <span className="truncate">Site Header - Navigation and branding</span>
-                </div>
-                <div className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded min-w-0">
-                  <Zap className="w-3 h-3 text-gray-400 flex-shrink-0" />
-                  <span className="truncate">Featured Events - Event highlights</span>
-                </div>
-                <div className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded min-w-0">
-                  <Layers className="w-3 h-3 text-gray-400 flex-shrink-0" />
-                  <span className="truncate">Categories - Interactive filters</span>
-                </div>
-                <div className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded min-w-0">
-                  <Settings className="w-3 h-3 text-gray-400 flex-shrink-0" />
-                  <span className="truncate">Events List - Search and listing</span>
-                </div>
+
+              {/* Main Widget */}
+              <div className="min-w-0">
+                <button
+                  onClick={toggleMainWidgetExpanded}
+                  className="w-full flex items-center justify-between text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors mb-2"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <Settings className="w-3 h-3 flex-shrink-0" />
+                    <span className="truncate">Main Widget</span>
+                  </div>
+                  <ChevronDown className={`w-3 h-3 transition-transform flex-shrink-0 ${mainWidgetExpanded ? 'rotate-180' : ''}`} />
+                </button>
+                
+                {mainWidgetExpanded && (
+                  <div className="space-y-1 animate-in slide-in-from-top-2 duration-200">
+                    {widgetSections.main.map((widget) => (
+                      <div
+                        key={widget.id}
+                        className="px-3 py-2 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors min-w-0 cursor-pointer"
+                        onClick={() => handleWidgetClick(widget)}
+                      >
+                        <div className="flex items-center justify-between gap-2 min-w-0">
+                          <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                            <widget.icon className="w-4 h-4 text-gray-600 dark:text-gray-400 flex-shrink-0" />
+                            <div className="text-sm text-gray-900 dark:text-white truncate min-w-0">
+                              {widget.name}
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-1 flex-shrink-0">
+                            <button 
+                              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                              title={widget.settings.visibility ? 'Hide widget' : 'Show widget'}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {widget.settings.visibility ? (
+                                <Eye className="w-3 h-3 text-gray-400" />
+                              ) : (
+                                <EyeOff className="w-3 h-3 text-gray-400" />
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Custom Widgets */}
+              <div className="min-w-0">
+                <button
+                  onClick={toggleCustomWidgetsExpanded}
+                  className="w-full flex items-center justify-between text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors mb-2"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <Zap className="w-3 h-3 flex-shrink-0" />
+                    <span className="truncate">Custom Widgets</span>
+                  </div>
+                  <ChevronDown className={`w-3 h-3 transition-transform flex-shrink-0 ${customWidgetsExpanded ? 'rotate-180' : ''}`} />
+                </button>
+                
+                {customWidgetsExpanded && (
+                  <div className="space-y-1 animate-in slide-in-from-top-2 duration-200">
+                    {widgetSections.custom.map((widget) => (
+                      <div
+                        key={widget.id}
+                        className="px-3 py-2 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors min-w-0 cursor-pointer"
+                        onClick={() => handleWidgetClick(widget)}
+                      >
+                        <div className="flex items-center justify-between gap-2 min-w-0">
+                          <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                            <widget.icon className="w-4 h-4 text-gray-600 dark:text-gray-400 flex-shrink-0" />
+                            <div className="text-sm text-gray-900 dark:text-white truncate min-w-0">
+                              {widget.name}
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-1 flex-shrink-0">
+                            <button 
+                              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                              title={widget.settings.visibility ? 'Hide widget' : 'Show widget'}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {widget.settings.visibility ? (
+                                <Eye className="w-3 h-3 text-gray-400" />
+                              ) : (
+                                <EyeOff className="w-3 h-3 text-gray-400" />
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}
-        </div>
+
+          {/* Widget Settings Tab Content - Single Event */}
+          {activeTab === 'widget-settings' && (
+            <div className="space-y-4 min-w-0">
+              {selectedInfo ? (
+                <div className="min-w-0">
+                  <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0" />
+                    <span className="truncate">{selectedInfo.sectionName} Settings</span>
+                  </h4>
+                  <div className="p-3 border border-green-200 bg-green-50 dark:bg-green-950/20 dark:border-green-800 rounded-lg mb-4">
+                    <div className="text-sm font-medium text-green-800 dark:text-green-300 mb-1 truncate">
+                      {selectedInfo.sectionName}
+                    </div>
+                    <div className="text-xs text-green-600 dark:text-green-400 leading-relaxed break-words">
+                      Element: {selectedInfo.tagName.toLowerCase()}.{selectedInfo.className.split(' ').find((c: string) => c.includes('site-')) || selectedInfo.className.split(' ')[0]}
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-0 [&>*:last-child>div:first-child]:border-b-0">
+                    <PropertyRow
+                      label="Show content details"
+                      value={true}
+                      fieldName="showContentDetails"
+                      type="checkbox"
+                      onValueChange={() => {}}
+                      icon={Calendar}
+                      editingField={editingField}
+                      onFieldClick={handleFieldClick}
+                      onFieldBlur={handleFieldBlur}
+                      onKeyDown={handleKeyDown}
+                    />
+                    
+                    <PropertyRow
+                      label="Show action button"
+                      value={true}
+                      fieldName="showActionButton"
+                      type="checkbox"
+                      onValueChange={() => {}}
+                      icon={User}
+                      editingField={editingField}
+                      onFieldClick={handleFieldClick}
+                      onFieldBlur={handleFieldBlur}
+                      onKeyDown={handleKeyDown}
+                    />
+                    
+                    <PropertyRow
+                      label="Show related users"
+                      value={true}
+                      fieldName="showRelatedUsers"
+                      type="checkbox"
+                      onValueChange={() => {}}
+                      icon={User}
+                      editingField={editingField}
+                      onFieldClick={handleFieldClick}
+                      onFieldBlur={handleFieldBlur}
+                      onKeyDown={handleKeyDown}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="p-6 text-center text-gray-500 dark:text-gray-400">
+                  <MousePointer className="w-10 h-10 mx-auto mb-3 text-gray-300 dark:text-gray-600" />
+                  <h3 className="text-base font-medium mb-2">Select a Widget</h3>
+                  <p className="text-sm mb-4 leading-relaxed">Click on any widget from the "All events" tab to configure its settings here.</p>
+                  
+                  <div className="text-left max-w-full mx-auto space-y-2 text-xs">
+                    <div className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded min-w-0">
+                      <Layout className="w-3 h-3 text-gray-400 flex-shrink-0" />
+                      <span className="truncate">Site Header - Navigation and branding</span>
+                    </div>
+                    <div className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded min-w-0">
+                      <Zap className="w-3 h-3 text-gray-400 flex-shrink-0" />
+                      <span className="truncate">Featured Events - Event highlights</span>
+                    </div>
+                    <div className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded min-w-0">
+                      <Layers className="w-3 h-3 text-gray-400 flex-shrink-0" />
+                      <span className="truncate">Categories - Interactive filters</span>
+                    </div>
+                    <div className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded min-w-0">
+                      <Settings className="w-3 h-3 text-gray-400 flex-shrink-0" />
+                      <span className="truncate">Events content - Search and listing</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

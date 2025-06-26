@@ -50,4 +50,7 @@ export interface EventContentProps {
   siteSD: string;
   space: Space;
   site: any;
+  eventsLayout?: string;
+  cardSize?: string;
+  cardStyle?: string;
 } 

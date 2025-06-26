@@ -39,11 +39,13 @@ export function PropertyRow({
 }: PropertyRowProps) {
   const [showDescription, setShowDescription] = useState(false);
   const [iconDialogOpen, setIconDialogOpen] = useState(false);
+  const [isChanging, setIsChanging] = useState(false);
   const isEditing = editingField === fieldName;
   const displayValue = value || "Empty";
   const isEmpty = !value;
   const isDescription = fieldName === 'description';
   const isSlug = fieldName === 'slug';
+  const isCardStyle = fieldName === 'cardStyle';
 
   // Handle icon selection from dialog
   const handleIconSelect = (iconData: { 
@@ -80,12 +82,23 @@ export function PropertyRow({
 
   const iconData = getIconData();
 
+  // Enhanced value change with visual feedback
+  const handleValueChange = (newValue: any) => {
+    setIsChanging(true);
+    onValueChange(newValue);
+    
+    // Reset animation after transition
+    setTimeout(() => {
+      setIsChanging(false);
+    }, 300);
+  };
+
   return (
     <div className={isChild ? "relative" : ""}>
       {isChild && (
         <div className="absolute left-[1.1rem] top-0 bottom-0 w-px bg-gray-100 dark:bg-gray-600"></div>
       )}
-      <div className={`flex rounded-md group transition-colors ${
+      <div className={`flex rounded-md group transition-all duration-300 ${
         isChild 
           ? 'px-2 pl-9 hover:bg-gray-50 dark:hover:bg-gray-800/50' 
           : 'px-2 hover:bg-gray-50 dark:hover:bg-gray-800/50'
@@ -93,6 +106,8 @@ export function PropertyRow({
         description && showDescription ? '' : 'border-b border-gray-100 dark:border-gray-800'
       } ${
         (isDescription || isSlug) && isEditing ? 'flex-col items-center py-2 space-y-2' : 'items-center justify-between min-h-[2.25rem] py-2'
+      } ${
+        isChanging && isCardStyle ? 'property-row-active scale-[1.02] bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20' : ''
       }`}>
         <div className={`text-xs text-gray-400 dark:text-gray-500 flex items-center gap-2 ${
           (isDescription || isSlug) && isEditing ? 'w-full' : 'w-1/2 pr-2'
@@ -205,9 +220,10 @@ export function PropertyRow({
           {type === 'select' && (
             <div className="w-full mt-0.5">
               <CustomDropdown
+                key={`${fieldName}-${value}`}
                 value={value}
                 options={options}
-                onChange={onValueChange}
+                onChange={handleValueChange}
                 placeholder="Select option"
                 enableSearch={enableDropdownSearch}
                 onAddNew={onAddNew}
