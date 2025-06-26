@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
   Heading,
   AlignLeft,
@@ -14,22 +14,20 @@ export function SEOSettingsTab() {
   const [ogImage, setOgImage] = useState('');
   const [indexable, setIndexable] = useState(true);
 
-  const handleFieldClick = (fieldName: string) => {
+  // Optimized event handlers
+  const handleFieldClick = useCallback((fieldName: string) => {
     setEditingField(fieldName);
-  };
+  }, []);
 
-  const handleFieldBlur = () => {
+  const handleFieldBlur = useCallback(() => {
     setEditingField(null);
-  };
+  }, []);
 
-  const handleKeyDown = (e: React.KeyboardEvent, fieldName: string) => {
-    if (e.key === 'Enter') {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent, fieldName: string) => {
+    if (e.key === 'Enter' || e.key === 'Escape') {
       setEditingField(null);
     }
-    if (e.key === 'Escape') {
-      setEditingField(null);
-    }
-  };
+  }, []);
 
   return (
     <div className="space-y-0 [&>*:last-child>div:first-child]:border-b-0">

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import {
   LayoutGrid,
   LayoutList,
@@ -40,33 +40,79 @@ export function DisplaySettingsTab() {
   const [showComments, setShowComments] = useState(true);
   const [propertiesExpanded, setPropertiesExpanded] = useState(false);
 
-  const handleFieldClick = (fieldName: string) => {
+  // Optimized event handlers
+  const handleFieldClick = useCallback((fieldName: string) => {
     setEditingField(fieldName);
-  };
+  }, []);
 
-  const handleFieldBlur = () => {
+  const handleFieldBlur = useCallback(() => {
     setEditingField(null);
-  };
+  }, []);
 
-  const handleKeyDown = (e: React.KeyboardEvent, fieldName: string) => {
-    if (e.key === 'Enter') {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent, fieldName: string) => {
+    if (e.key === 'Enter' || e.key === 'Escape') {
       setEditingField(null);
     }
-    if (e.key === 'Escape') {
-      setEditingField(null);
-    }
-  };
+  }, []);
 
-  const layoutOptions = [
+  const togglePropertiesExpanded = useCallback(() => {
+    setPropertiesExpanded(prev => !prev);
+  }, []);
+
+  // Memoized options
+  const layoutOptions = useMemo(() => [
     { value: 'grid', label: 'Grid', icon: LayoutGrid },
     { value: 'list', label: 'List', icon: LayoutList },
     { value: 'feed', label: 'Feed', icon: Rows3 }
-  ];
+  ], []);
 
-  const renderPropertiesSection = () => (
+  const cardSizeOptions = useMemo(() => [
+    { 
+      value: 'small', 
+      label: 'Small',
+      description: 'Compact cards with minimal content preview',
+      icon: Columns
+    },
+    { 
+      value: 'medium', 
+      label: 'Medium',
+      description: 'Balanced size with good content visibility',
+      icon: Columns
+    },
+    { 
+      value: 'large', 
+      label: 'Large',
+      description: 'Spacious cards with detailed content preview',
+      icon: Columns
+    },
+    { 
+      value: 'extra_large', 
+      label: 'Extra Large',
+      description: 'Maximum size cards with full content display',
+      icon: Columns
+    }
+  ], []);
+
+  const openPageOptions = useMemo(() => [
+    { 
+      value: 'modal_content', 
+      label: 'Modal content',
+      description: 'Open posts in an overlay modal window',
+      icon: Square
+    },
+    { 
+      value: 'post_page', 
+      label: 'Post page',
+      description: 'Navigate to a dedicated post page',
+      icon: ExternalLink
+    }
+  ], []);
+
+  // Memoized render function for properties section
+  const renderPropertiesSection = useCallback(() => (
     <div className="pt-1 border-t border-gray-50 dark:border-gray-800">
       <button
-        onClick={() => setPropertiesExpanded(!propertiesExpanded)}
+        onClick={togglePropertiesExpanded}
         className="w-full flex items-center justify-between px-3 py-2 text-xs text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
       >
         <span>Properties</span>
@@ -171,8 +217,93 @@ export function DisplaySettingsTab() {
         </div>
       )}
     </div>
-  );
-      
+  ), [propertiesExpanded, showTitle, showExcerpt, showAuthor, showDate, showTags, showReactions, showComments, editingField, handleFieldClick, handleFieldBlur, handleKeyDown, togglePropertiesExpanded]);
+
+  // Memoized grid settings
+  const gridSettings = useMemo(() => (
+    <>
+      <PropertyRow
+        label="Card size"
+        value={cardSize}
+        fieldName="cardSize"
+        type="select"
+        options={cardSizeOptions}
+        onValueChange={setCardSize}
+        icon={Columns}
+        editingField={editingField}
+        onFieldClick={handleFieldClick}
+        onFieldBlur={handleFieldBlur}
+        onKeyDown={handleKeyDown}
+      />
+
+      <PropertyRow
+        label="Open page in"
+        value={openPageIn}
+        fieldName="openPageIn"
+        type="select"
+        options={openPageOptions}
+        onValueChange={setOpenPageIn}
+        icon={ExternalLink}
+        editingField={editingField}
+        onFieldClick={handleFieldClick}
+        onFieldBlur={handleFieldBlur}
+        onKeyDown={handleKeyDown}
+      />
+
+      <PropertyRow
+        label="Card Cover"
+        value={cardCover}
+        fieldName="cardCover"
+        type="checkbox"
+        onValueChange={setCardCover}
+        icon={Image}
+        editingField={editingField}
+        onFieldClick={handleFieldClick}
+        onFieldBlur={handleFieldBlur}
+        onKeyDown={handleKeyDown}
+      />
+
+      {cardCover && (
+        <PropertyRow
+          label="Fit cover"
+          value={fitCover}
+          fieldName="fitCover"
+          type="checkbox"
+          onValueChange={setFitCover}
+          icon={Crop}
+          editingField={editingField}
+          onFieldClick={handleFieldClick}
+          onFieldBlur={handleFieldBlur}
+          onKeyDown={handleKeyDown}
+          isChild={true}
+        />
+      )}
+
+      {renderPropertiesSection()}
+    </>
+  ), [cardSize, cardSizeOptions, openPageIn, openPageOptions, cardCover, fitCover, editingField, handleFieldClick, handleFieldBlur, handleKeyDown, renderPropertiesSection]);
+
+  // Memoized list/feed settings
+  const listFeedSettings = useMemo(() => (
+    <>
+      <PropertyRow
+        label="Open page in"
+        value={openPageIn}
+        fieldName="openPageIn"
+        type="select"
+        options={openPageOptions}
+        onValueChange={setOpenPageIn}
+        icon={ExternalLink}
+        editingField={editingField}
+        onFieldClick={handleFieldClick}
+        onFieldBlur={handleFieldBlur}
+        onKeyDown={handleKeyDown}
+      />
+
+      {renderPropertiesSection()}
+    </>
+  ), [openPageIn, openPageOptions, editingField, handleFieldClick, handleFieldBlur, handleKeyDown, renderPropertiesSection]);
+
   return (
     <div className="space-y-4">
       {/* Tab Navigation */}
@@ -234,178 +365,8 @@ export function DisplaySettingsTab() {
           
           {/* Conditional Settings */}
           <div className="space-y-0 [&>*:last-child>div:first-child]:border-b-0">
-            {/* Grid specific settings */}
-            {layout === 'grid' && (
-              <>
-                <PropertyRow
-                  label="Card size"
-                  value={cardSize}
-                  fieldName="cardSize"
-                  type="select"
-                  options={[
-                    { 
-                      value: 'small', 
-                      label: 'Small',
-                      description: 'Compact cards with minimal content preview',
-                      icon: Columns
-                    },
-                    { 
-                      value: 'medium', 
-                      label: 'Medium',
-                      description: 'Balanced size with good content visibility',
-                      icon: Columns
-                    },
-                    { 
-                      value: 'large', 
-                      label: 'Large',
-                      description: 'Spacious cards with detailed content preview',
-                      icon: Columns
-                    },
-                    { 
-                      value: 'extra_large', 
-                      label: 'Extra Large',
-                      description: 'Maximum size cards with full content display',
-                      icon: Columns
-                    }
-                  ]}
-                  onValueChange={setCardSize}
-                  icon={Columns}
-                  editingField={editingField}
-                  onFieldClick={handleFieldClick}
-                  onFieldBlur={handleFieldBlur}
-                  onKeyDown={handleKeyDown}
-                />
-
-                <PropertyRow
-                  label="Open page in"
-                  value={openPageIn}
-                  fieldName="openPageIn"
-                  type="select"
-                  options={[
-                    { 
-                      value: 'modal_content', 
-                      label: 'Modal content',
-                      description: 'Open posts in an overlay modal window',
-                      icon: Square
-                    },
-                    { 
-                      value: 'post_page', 
-                      label: 'Post page',
-                      description: 'Navigate to a dedicated post page',
-                      icon: ExternalLink
-                    }
-                  ]}
-                  onValueChange={setOpenPageIn}
-                  icon={ExternalLink}
-                  editingField={editingField}
-                  onFieldClick={handleFieldClick}
-                  onFieldBlur={handleFieldBlur}
-                  onKeyDown={handleKeyDown}
-                />
-
-                <PropertyRow
-                  label="Card Cover"
-                  value={cardCover}
-                  fieldName="cardCover"
-                  type="checkbox"
-                  onValueChange={setCardCover}
-                  icon={Image}
-                  editingField={editingField}
-                  onFieldClick={handleFieldClick}
-                  onFieldBlur={handleFieldBlur}
-                  onKeyDown={handleKeyDown}
-                />
-
-                {cardCover && (
-                  <PropertyRow
-                    label="Fit cover"
-                    value={fitCover}
-                    fieldName="fitCover"
-                    type="checkbox"
-                    onValueChange={setFitCover}
-                    icon={Crop}
-                    editingField={editingField}
-                    onFieldClick={handleFieldClick}
-                    onFieldBlur={handleFieldBlur}
-                    onKeyDown={handleKeyDown}
-                    isChild={true}
-                  />
-                )}
-
-                {/* Properties Section for Grid */}
-                {renderPropertiesSection()}
-              </>
-            )}
-
-            {/* List specific settings */}
-            {layout === 'list' && (
-              <>
-                <PropertyRow
-                  label="Open page in"
-                  value={openPageIn}
-                  fieldName="openPageIn"
-                  type="select"
-                  options={[
-                    { 
-                      value: 'modal_content', 
-                      label: 'Modal content',
-                      description: 'Open posts in an overlay modal window',
-                      icon: Square
-                    },
-                    { 
-                      value: 'post_page', 
-                      label: 'Post page',
-                      description: 'Navigate to a dedicated post page',
-                      icon: ExternalLink
-                    }
-                  ]}
-                  onValueChange={setOpenPageIn}
-                  icon={ExternalLink}
-                  editingField={editingField}
-                  onFieldClick={handleFieldClick}
-                  onFieldBlur={handleFieldBlur}
-                  onKeyDown={handleKeyDown}
-                />
-
-                {/* Properties Section for List */}
-                {renderPropertiesSection()}
-              </>
-            )}
-
-            {/* Feed specific settings */}
-            {layout === 'feed' && (
-              <>
-                <PropertyRow
-                  label="Open page in"
-                  value={openPageIn}
-                  fieldName="openPageIn"
-                  type="select"
-                  options={[
-                    { 
-                      value: 'modal_content', 
-                      label: 'Modal content',
-                      description: 'Open posts in an overlay modal window',
-                      icon: Square
-                    },
-                    { 
-                      value: 'post_page', 
-                      label: 'Post page',
-                      description: 'Navigate to a dedicated post page',
-                      icon: ExternalLink
-                    }
-                  ]}
-                  onValueChange={setOpenPageIn}
-                  icon={ExternalLink}
-                  editingField={editingField}
-                  onFieldClick={handleFieldClick}
-                  onFieldBlur={handleFieldBlur}
-                  onKeyDown={handleKeyDown}
-                />
-
-                {/* Properties Section for Feed */}
-                {renderPropertiesSection()}
-              </>
-            )}
+            {layout === 'grid' && gridSettings}
+            {(layout === 'list' || layout === 'feed') && listFeedSettings}
           </div>
         </div>
       )}

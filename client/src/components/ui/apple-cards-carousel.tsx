@@ -14,6 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "motion/react";
 import { useOutsideClick } from "@/hooks/use-outside-click";
+import { ProgressiveBlur } from "@/components/ui/progressive-blur";
 
 interface CarouselProps {
   items: JSX.Element[];
@@ -24,7 +25,11 @@ type Card = {
   src: string;
   title: string;
   category: string;
-  content: React.ReactNode;
+  content?: React.ReactNode;
+  id?: string;
+  event_date?: string;
+  event_location?: string;
+  event_description?: string;
 };
 
 export const CarouselContext = createContext<{
@@ -91,7 +96,7 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
     >
       <div className="relative w-full">
         <div
-          className="flex w-full overflow-x-scroll overscroll-x-auto scroll-smooth [scrollbar-width:none] pb-4"
+          className="flex w-full overflow-x-scroll overscroll-x-auto scroll-smooth [scrollbar-width:none]"
           ref={carouselRef}
           onScroll={checkScrollability}
         >
@@ -103,8 +108,8 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
 
           <div
             className={cn(
-              "flex flex-row justify-start gap-3",
-              "mx-auto max-w-4xl", // کاهش عرض برای layout بهتر
+              "flex flex-row justify-start gap-4",
+              "mx-auto max-w-4xl", // محدود کردن عرض برای تطبیق با container اصلی
             )}
           >
             {items.map((item, index) => (
@@ -124,14 +129,14 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
                   },
                 }}
                 key={"card" + index}
-                className="rounded-xl last:pr-[5%] md:last:pr-[33%]"
+                className="w-64 flex-shrink-0 last:pr-[5%] md:last:pr-[33%]"
               >
                 {item}
               </motion.div>
             ))}
           </div>
         </div>
-        <div className=" flex justify-end gap-2">
+        <div className="mt-4 flex justify-end gap-2">
           <button
             className="relative z-40 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 disabled:opacity-50"
             onClick={scrollLeft}
@@ -161,107 +166,80 @@ export const Card = ({
   index: number;
   layout?: boolean;
 }) => {
-  const [open, setOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { onCardClose, currentIndex } = useContext(CarouselContext);
-
-  useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        handleClose();
-      }
-    }
-
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open]);
-
-  useOutsideClick(containerRef, () => handleClose());
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    onCardClose(index);
-  };
-
   return (
-    <>
-      <AnimatePresence>
-        {open && (
-          <div className="fixed inset-0 z-50 h-screen overflow-auto">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 h-full w-full bg-black/80 backdrop-blur-lg"
-            />
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              ref={containerRef}
-              layoutId={layout ? `card-${card.title}` : undefined}
-              className="relative z-[60] mx-auto my-10 h-fit max-w-5xl rounded-xl bg-white p-4 font-sans md:p-10 dark:bg-neutral-900"
-            >
-              <button
-                className="sticky top-4 right-0 ml-auto flex h-8 w-8 items-center justify-center rounded-full bg-black dark:bg-white"
-                onClick={handleClose}
-              >
-                <IconX className="h-6 w-6 text-neutral-100 dark:text-neutral-900" />
-              </button>
-              <motion.p
-                layoutId={layout ? `category-${card.title}` : undefined}
-                className="text-base font-medium text-black dark:text-white"
-              >
-                {card.category}
-              </motion.p>
-              <motion.p
-                layoutId={layout ? `title-${card.title}` : undefined}
-                className="mt-4 text-2xl font-semibold text-neutral-700 md:text-5xl dark:text-white"
-              >
-                {card.title}
-              </motion.p>
-              <div className="py-10">{card.content}</div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-      <motion.button
-        layoutId={layout ? `card-${card.title}` : undefined}
-        onClick={handleOpen}
-        className="relative z-10 flex h-72 w-48 flex-col items-start justify-start overflow-hidden rounded-xl bg-gray-100 md:h-80 md:w-64 dark:bg-neutral-900"
-      >
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-full bg-gradient-to-b from-black/50 via-transparent to-transparent" />
-        <div className="relative z-40 p-6">
-          <motion.p
-            layoutId={layout ? `category-${card.category}` : undefined}
-            className="text-left font-sans text-xs font-medium text-white"
-          >
-            {card.category}
-          </motion.p>
-          <motion.p
-            layoutId={layout ? `title-${card.title}` : undefined}
-            className="mt-2 max-w-xs text-left font-sans text-lg font-semibold [text-wrap:balance] text-white"
-          >
-            {card.title}
-          </motion.p>
-        </div>
+    <div className="group relative overflow-hidden bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-300 cursor-pointer rounded-lg aspect-[1/1] w-full">
+      {/* Image with All Content Overlay */}
+      <div className="relative overflow-hidden rounded-lg aspect-[1/1]">
         <BlurImage
           src={card.src}
           alt={card.title}
-          className="absolute inset-0 z-10 object-cover"
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-      </motion.button>
-    </>
+        
+        {/* Progressive Blur Effect */}
+        <ProgressiveBlur
+          className="pointer-events-none absolute bottom-0 left-0 h-[40%] w-full"
+          blurIntensity={8}
+          direction="bottom"
+        />
+        
+        {/* Overlay for better text contrast */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10" />
+        
+        {/* Category and Status Badges - Top Left */}
+        <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <div className="bg-black/50 backdrop-blur-sm text-white text-[0.65rem] px-1.5 py-0.5 font-medium shadow-sm border-0 rounded-md">
+              {card.category}
+            </div>
+          </div>
+        </div>
+        
+        {/* Date/Time Badge - Top Right */}
+        <div className="absolute top-3 right-3 z-10">
+          <div className="bg-black/50 backdrop-blur-sm text-white rounded-lg px-2 py-1.5">
+            {card.event_date ? (
+              <div className="text-center">
+                <div className="text-[0.6rem] font-medium uppercase tracking-wider opacity-90">
+                  {new Date(card.event_date).toLocaleDateString('en-US', { month: 'short' })}
+                </div>
+                <div className="text-[0.75rem] font-bold leading-none">
+                  {new Date(card.event_date).getDate()}
+                </div>
+              </div>
+            ) : (
+              <div className="text-center">
+                <div className="text-xs font-medium">TBA</div>
+              </div>
+            )}
+          </div>
+        </div>
+        
+        {/* Complete Event Content Overlay - Bottom */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
+          <div className="space-y-1">
+            {/* Title */}
+            <h3 className="font-bold text-sm text-white line-clamp-2 drop-shadow-lg">
+              {card.title}
+            </h3>
+            
+            {/* Location */}
+            <div className="flex items-center justify-between text-[0.75rem] text-white/80 mb-3">
+              <div className="flex items-center gap-1.5">
+                {card.event_location && (
+                  <>
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                    </svg>
+                    <span className="truncate max-w-[120px]">{card.event_location}</span>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

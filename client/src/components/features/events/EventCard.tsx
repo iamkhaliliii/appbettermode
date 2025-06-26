@@ -8,9 +8,10 @@ import { EnhancedEvent } from './types';
 interface EventCardProps {
   event: EnhancedEvent;
   onEventClick: (eventId: string) => void;
+  isDashboard?: boolean;
 }
 
-export const EventCard: React.FC<EventCardProps> = ({ event, onEventClick }) => {
+export const EventCard: React.FC<EventCardProps> = ({ event, onEventClick, isDashboard = false }) => {
   const isUpcoming = event.event_status === 'upcoming';
   const isOngoing = event.event_status === 'ongoing';
   const isPast = event.event_status === 'past';
@@ -30,11 +31,13 @@ export const EventCard: React.FC<EventCardProps> = ({ event, onEventClick }) => 
         />
         
         {/* Progressive Blur Effect */}
-        <ProgressiveBlur
-          className="pointer-events-none absolute bottom-0 left-0 h-[40%] w-full"
-          blurIntensity={8}
-          direction="bottom"
-        />
+        {isDashboard ? null : (
+          <ProgressiveBlur
+            className="pointer-events-none absolute bottom-0 left-0 h-[40%] w-full"
+            blurIntensity={8}
+            direction="bottom"
+          />
+        )}
         
         {/* Overlay for better text contrast */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/10" />

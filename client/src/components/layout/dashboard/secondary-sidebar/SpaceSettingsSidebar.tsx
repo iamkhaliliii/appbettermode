@@ -57,17 +57,17 @@ export const SpaceSettingsSidebar: React.FC<SpaceSettingsSidebarProps> = memo(({
   }, [siteSD]);
 
   // Memoize menu items to prevent recreation on each render
-  const menuItems = useMemo(() => [
-    { id: "general", label: "General" },
-    { id: "widget", label: "Customize Widgets" },
-    { id: "display", label: "Content Layout" },
-    { id: "member-management", label: "Member Management" },
+      const menuItems = useMemo(() => [
+      { id: "general", label: "General" },
+      { id: "widget", label: "Customize" },
+      { id: "display", label: "Content Layout" },
+      { id: "member-management", label: "Member Management" },
     { id: "seo", label: "SEO" },
     { id: "danger", label: "Danger Zone" },
   ], []);
 
   return (
-    <div className="p-3 h-full bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800">
+    <div className="secondary-sidebar p-3 h-full bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800" data-exclude-widget="true">
       <div className="flex items-center mb-4">
         <a 
           href={paths.siteConfigPath}

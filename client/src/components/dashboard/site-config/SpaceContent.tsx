@@ -5,9 +5,6 @@ import { SiteSidebar } from "@/components/layout/site/site-sidebar";
 import { SpaceCmsContent } from "@/components/layout/site/site-space-cms-content/index";
 import { SpaceBanner } from "@/components/layout/site/site-space-cms-content/SpaceBanner";
 import { ContentSkeleton } from "./ContentSkeleton";
-import { WidgetModeWrapper } from "./WidgetModeWrapper";
-import { WidgetDropTarget } from "./WidgetDropTarget";
-import { MainContentArea } from "./MainContentArea";
 import { useSiteData } from "@/lib/SiteDataContext";
 import { getApiBaseUrl } from "@/lib/utils";
 
@@ -26,25 +23,32 @@ interface Space {
 interface SpaceContentProps {
   siteSD: string;
   spaceSlug: string;
-  isWidgetMode?: boolean;
   spaceBanner?: boolean;
   spaceBannerUrl?: string;
+  isWidgetMode?: boolean;
 }
 
 /**
  * Component to embed space content with full layout
  */
-export function SpaceContent({ siteSD, spaceSlug, isWidgetMode = false, spaceBanner, spaceBannerUrl }: SpaceContentProps) {
+export function SpaceContent({ 
+  siteSD, 
+  spaceSlug, 
+  spaceBanner, 
+  spaceBannerUrl,
+  isWidgetMode = false
+}: SpaceContentProps) {
   // Get site data from context
   const { sites, cmsTypes } = useSiteData();
-  const [isDragging, setIsDragging] = useState(false);
   
+  // States - simplified
   const [site, setSite] = useState<any>(null);
   const [space, setSpace] = useState<Space | null>(null);
   const [isContentLoading, setIsContentLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedElement, setSelectedElement] = useState<HTMLElement | null>(null);
 
   // Set up site data from context
   useEffect(() => {
@@ -53,41 +57,202 @@ export function SpaceContent({ siteSD, spaceSlug, isWidgetMode = false, spaceBan
     }
   }, [siteSD, sites]);
 
+  // Optimized handlers
   const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     // In preview mode, just prevent default
   }, []);
 
-  // Create space from content type
-  useEffect(() => {
-    const createSpace = async () => {
-      if (!site || !spaceSlug) {
-        return;
-      }
+  // Widget mode hover tracking
+  const [hoveredElement, setHoveredElement] = useState<HTMLElement | null>(null);
 
+  // Widget mode mouse hover handler - only for major sections
+  const handleElementHover = useCallback((e: MouseEvent) => {
+    if (!isWidgetMode) return;
+    
+    const target = e.target as HTMLElement;
+    
+    // Don't capture hovers on sidebar, navigation, or control elements
+    const isExcludedElement = target.closest('.settings-sidebar') ||
+                             target.closest('.secondary-sidebar') ||
+                             target.closest('.dashboard-header') ||
+                             target.closest('[data-exclude-widget]');
+    
+    if (isExcludedElement) {
+      return;
+    }
+    
+    // Only apply hover for preview content
+    const isInPreview = target.closest('.preview-container');
+    if (!isInPreview) {
+      return;
+    }
+    
+    // Find the closest major section
+    const majorSection = target.closest('[data-widget-section]') ||
+                         target.closest('.site-header') ||
+                         target.closest('.site-sidebar') ||
+                         target.closest('.featured-events') ||
+                         target.closest('.categories') ||
+                         target.closest('.events-container') ||
+                         target.closest('.events-display') ||
+                         target.closest('.site-footer');
+    
+    if (!majorSection) {
+      return; // Not a major section, skip
+    }
+    
+    const sectionElement = majorSection as HTMLElement;
+    
+    // Remove previous hover
+    if (hoveredElement && hoveredElement !== sectionElement) {
+      hoveredElement.classList.remove('widget-hover');
+    }
+    
+    // Add hover to new section
+    if (sectionElement !== hoveredElement) {
+      sectionElement.classList.add('widget-hover');
+      setHoveredElement(sectionElement);
+    }
+  }, [isWidgetMode, hoveredElement]);
+
+  // Widget mode mouse leave handler
+  const handleElementLeave = useCallback((e: MouseEvent) => {
+    if (!isWidgetMode) return;
+    
+    const target = e.target as HTMLElement;
+    target.classList.remove('widget-hover');
+    
+    if (hoveredElement === target) {
+      setHoveredElement(null);
+    }
+  }, [isWidgetMode, hoveredElement]);
+
+  // Widget mode element selection handler - only for major sections
+  const handleElementClick = useCallback((e: MouseEvent) => {
+    if (!isWidgetMode) return;
+    
+    const target = e.target as HTMLElement;
+    
+    // Don't capture clicks on sidebar, navigation, or control elements
+    const isExcludedElement = target.closest('.settings-sidebar') ||
+                             target.closest('.secondary-sidebar') ||
+                             target.closest('.dashboard-header') ||
+                             target.closest('[data-exclude-widget]');
+    
+    if (isExcludedElement) {
+      return; // Allow normal interaction
+    }
+    
+    // Only prevent default for preview content
+    const isInPreview = target.closest('.preview-container');
+    if (!isInPreview) {
+      return; // Allow normal interaction outside preview
+    }
+    
+    // Find the closest major section
+    const majorSection = target.closest('[data-widget-section]') ||
+                         target.closest('.site-header') ||
+                         target.closest('.site-sidebar') ||
+                         target.closest('.featured-events') ||
+                         target.closest('.categories') ||
+                         target.closest('.events-container') ||
+                         target.closest('.events-display') ||
+                         target.closest('.site-footer');
+    
+    if (!majorSection) {
+      return; // Not a major section, skip
+    }
+    
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const sectionElement = majorSection as HTMLElement;
+    
+    // Check if this element is already selected (toggle behavior)
+    if (sectionElement.classList.contains('selected-element')) {
+      // If already selected, deselect it
+      sectionElement.classList.remove('selected-element');
+      setSelectedElement(null);
+      
+      // Remove has-selection class to remove blur effect
+      const previewContainer = document.querySelector('.preview-container');
+      if (previewContainer) {
+        previewContainer.classList.remove('has-selection');
+      }
+    } else {
+      // Remove previous selection
+      const previousSelected = document.querySelector('.selected-element');
+      if (previousSelected) {
+        previousSelected.classList.remove('selected-element');
+      }
+      
+      // Add selection to new section
+      sectionElement.classList.add('selected-element');
+      setSelectedElement(sectionElement);
+      
+      // Add has-selection class to preview container for blur effect
+      const previewContainer = document.querySelector('.preview-container');
+      if (previewContainer) {
+        previewContainer.classList.add('has-selection');
+      }
+    }
+  }, [isWidgetMode]);
+
+  // Add mouse event listeners for widget mode
+  useEffect(() => {
+    if (isWidgetMode) {
+      document.addEventListener('click', handleElementClick, true);
+      document.addEventListener('mouseover', handleElementHover, true);
+      document.addEventListener('mouseout', handleElementLeave, true);
+      
+      return () => {
+        document.removeEventListener('click', handleElementClick, true);
+        document.removeEventListener('mouseover', handleElementHover, true);
+        document.removeEventListener('mouseout', handleElementLeave, true);
+      };
+    } else {
+      // Clear all widget mode effects when exiting
+      const selectedElements = document.querySelectorAll('.selected-element');
+      const hoveredElements = document.querySelectorAll('.widget-hover');
+      
+      selectedElements.forEach(el => el.classList.remove('selected-element'));
+      hoveredElements.forEach(el => el.classList.remove('widget-hover'));
+      
+      // Remove has-selection class when exiting widget mode
+      const previewContainer = document.querySelector('.preview-container');
+      if (previewContainer) {
+        previewContainer.classList.remove('has-selection');
+      }
+      
+      setSelectedElement(null);
+      setHoveredElement(null);
+    }
+  }, [isWidgetMode, handleElementClick, handleElementHover, handleElementLeave]);
+
+  // Create space from content type - optimized
+  useEffect(() => {
+    if (!site || !spaceSlug) return;
+
+    const createSpace = async () => {
       setIsContentLoading(true);
       setError(null);
       
       try {
-        console.log(`🔍 SpaceContent (dashboard): Looking for space with slug "${spaceSlug}"`);
-        
-        // First, try to fetch real spaces from the site
+        // Try to fetch real spaces from the site
         try {
           const API_BASE = getApiBaseUrl();
           const spacesResponse = await fetch(`${API_BASE}/api/v1/sites/${site.id}/spaces`);
           
           if (spacesResponse.ok) {
             const realSpaces = await spacesResponse.json();
-            console.log(`📋 Found ${Array.isArray(realSpaces) ? realSpaces.length : 0} real spaces:`, realSpaces);
             
             if (Array.isArray(realSpaces)) {
-              // Try to find exact slug match
               const matchedSpace = realSpaces.find((s: any) => 
                 s.slug?.toLowerCase() === spaceSlug.toLowerCase()
               );
               
               if (matchedSpace) {
-                console.log('✅ Found real space with exact slug match:', matchedSpace);
                 setSpace({
                   id: matchedSpace.id,
                   name: matchedSpace.name,
@@ -103,27 +268,24 @@ export function SpaceContent({ siteSD, spaceSlug, isWidgetMode = false, spaceBan
             }
           }
         } catch (fetchError) {
-          console.log('⚠️ Could not fetch real spaces, falling back to content type matching:', fetchError);
+          // Fall back to content type matching
         }
         
-        // If no real space found, try to match with content types from site data
+        // Try to match with content types from site data
         if (site.content_types && Array.isArray(site.content_types)) {
-          console.log(`📝 Checking ${site.content_types.length} content types from site data`);
-          
           let normalizedSlug = spaceSlug.toLowerCase();
+          
           // Handle special mappings
-          if (normalizedSlug === 'qa' || normalizedSlug === 'q-a') {
-            normalizedSlug = 'qa';
-          }
-          if (normalizedSlug === 'job-board' || normalizedSlug === 'jobboard') {
-            normalizedSlug = 'jobs';
-          }
-          if (normalizedSlug === 'ideas-wishlist' || normalizedSlug === 'wishlist') {
-            normalizedSlug = 'wishlist';
-          }
-          if (normalizedSlug === 'knowledge-base' || normalizedSlug === 'knowledge') {
-            normalizedSlug = 'knowledge';
-          }
+          const mappings: Record<string, string> = {
+            'qa': 'qa',
+            'q-a': 'qa',
+            'job-board': 'jobs',
+            'jobboard': 'jobs',
+            'ideas-wishlist': 'wishlist',
+            'knowledge-base': 'knowledge'
+          };
+          
+          normalizedSlug = mappings[normalizedSlug] || normalizedSlug;
           
           const matchedType = site.content_types.find((type: any) => {
             const nameMatch = type.name?.toLowerCase() === normalizedSlug;
@@ -132,20 +294,16 @@ export function SpaceContent({ siteSD, spaceSlug, isWidgetMode = false, spaceBan
           });
           
           if (matchedType) {
-            console.log('📋 Found matching content type:', matchedType);
-            
-            // Create simulated space with content type data
             setSpace({
               id: `simulated-${matchedType.name}`,
               name: matchedType.label || matchedType.name.charAt(0).toUpperCase() + matchedType.name.slice(1),
               slug: spaceSlug,
               description: matchedType.description || `${matchedType.label || matchedType.name} space for the community`,
-              cms_type: matchedType.name, // Use the string name, not UUID
+              cms_type: matchedType.name,
               hidden: false,
               visibility: 'public',
               site_id: site.id
             });
-            console.log('🔧 Created simulated space from content type');
             return;
           }
         }
@@ -185,15 +343,13 @@ export function SpaceContent({ siteSD, spaceSlug, isWidgetMode = false, spaceBan
             visibility: 'public',
             site_id: site.id
           });
-          console.log('🔧 Created space from cmsTypes context');
           return;
         }
         
-        // Final fallback: create demo space (only as last resort)
-        console.log('⚠️ No content type match found, creating demo space as fallback');
+        // Final fallback: create demo space
         const defaultName = spaceSlug.charAt(0).toUpperCase() + spaceSlug.slice(1);
         
-        const nameMap: {[key: string]: string} = {
+        const nameMap: Record<string, string> = {
           'events': 'Events',
           'qa': 'Q&A',
           'blog': 'Blog',
@@ -214,10 +370,8 @@ export function SpaceContent({ siteSD, spaceSlug, isWidgetMode = false, spaceBan
           visibility: 'public',
           site_id: site.id
         });
-        console.log('🔧 Created demo space as last resort');
         
       } catch (err) {
-        console.error("💥 Error creating space:", err);
         setError('Failed to create space');
       } finally {
         setTimeout(() => {
@@ -226,14 +380,12 @@ export function SpaceContent({ siteSD, spaceSlug, isWidgetMode = false, spaceBan
       }
     };
 
-    if (site && spaceSlug) {
-      createSpace();
-    }
+    createSpace();
   }, [site, spaceSlug, cmsTypes]);
 
   // Performance optimization: Render the footer outside the AnimatePresence
   const renderFooter = useCallback(() => (
-    <footer className="bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 py-4 mt-auto">
+    <footer className="site-footer bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 py-4 mt-auto" data-section-name="Site Footer">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center space-x-2 mb-4 md:mb-0">
@@ -261,140 +413,122 @@ export function SpaceContent({ siteSD, spaceSlug, isWidgetMode = false, spaceBan
     </footer>
   ), [site]);
 
-  // If we don't have site data yet, just render a placeholder
+  // Early return if no site data
   if (!site) {
     return null;
   }
 
+  // Styles are now in index.css
+
+  // Layout with conditional widget mode
   return (
-    <WidgetModeWrapper isActive={isWidgetMode} isDragging={isDragging}>
-      <div className="pb-8 flex flex-col bg-gray-50 dark:bg-gray-900 preview-container">
-        {/* Site Header - sticky */}
-        <div className="sticky top-0 z-10 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800">
-          <WidgetDropTarget widgetType="Header" isWidgetMode={isWidgetMode}>
-            <SiteHeader 
-              siteSD={siteSD}
-              site={site}
-              isMenuOpen={isMenuOpen}
-              setIsMenuOpen={setIsMenuOpen}
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              handleSearch={handleSearch}
-            />
-          </WidgetDropTarget>
-        </div>
+    <div className={`pb-8 flex flex-col bg-gray-50 dark:bg-gray-900 preview-container ${isWidgetMode ? 'widget-mode' : ''}`}>
+      
 
-        {/* Main Content */}
-        <div className="flex-1 min-h-0">
-          <div className="container mx-auto px-4 h-full">
-            <div className="flex flex-col md:flex-row gap-6 h-full">
-              {/* Sidebar - sticky */}
-              <div className="md:sticky md:top-6 md:self-start">
-                <WidgetDropTarget widgetType="Sidebar" isWidgetMode={isWidgetMode}>
-                  <SiteSidebar siteSD={siteSD} activePage={spaceSlug} />
-                </WidgetDropTarget>
-              </div>
+      {/* Site Header - sticky */}
+      <div className="site-header sticky top-0 z-10 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800" data-section-name="Site Header">
+        <SiteHeader 
+          siteSD={siteSD}
+          site={site}
+          isMenuOpen={isMenuOpen}
+          setIsMenuOpen={setIsMenuOpen}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          handleSearch={handleSearch}
+        />
+      </div>
 
-              {/* Main content area */}
-              <div className="flex-1 p-4 md:p-6">
-                <AnimatePresence mode="wait">
-                  {isContentLoading ? (
-                    <motion.div
-                      key="skeleton"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="bg-white dark:bg-gray-800 rounded-lg shadow p-6"
-                    >
-                      <WidgetDropTarget widgetType="Content Loading" isWidgetMode={isWidgetMode}>
-                        <ContentSkeleton />
-                      </WidgetDropTarget>
-                    </motion.div>
-                  ) : error ? (
-                    <motion.div
-                      key="error"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.2 }}
-                      className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
-                    >
-                      <WidgetDropTarget widgetType="Error Message" isWidgetMode={isWidgetMode}>
-                        <p className="text-red-500">{error}</p>
-                      </WidgetDropTarget>
-                    </motion.div>
-                  ) : space ? (
-                    <motion.div
-                      key={`space-${spaceSlug}`}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="space-y-6"
-                    >
-                      {/* Space Header/Banner Section */}
-                      {spaceBanner ? (
-                        <WidgetDropTarget widgetType="Space Banner" isWidgetMode={isWidgetMode}>
-                          <AnimatePresence mode="wait">
-                            <SpaceBanner 
-                              key="space-banner"
-                              show={spaceBanner} 
-                              bannerUrl={spaceBannerUrl} 
-                              spaceName={space.name} 
-                            />
-                          </AnimatePresence>
-                        </WidgetDropTarget>
-                      ) : (
-                        <WidgetDropTarget widgetType="Space Header" isWidgetMode={isWidgetMode}>
-                          <div className="mb-6">
-                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                              {space.name}
-                            </h1>
-                            {space.description && (
-                              <p className="text-gray-600 dark:text-gray-400">{space.description}</p>
-                            )}
-                          </div>
-                        </WidgetDropTarget>
-                      )}
-                      
-                      {/* Main Content with Widget Drop Areas */}
-                      <MainContentArea isWidgetMode={isWidgetMode} onDragStateChange={setIsDragging}>
-                        <WidgetDropTarget widgetType={`${space.name} Content`} isWidgetMode={isWidgetMode}>
-                          <SpaceCmsContent 
-                            siteSD={siteSD}
-                            space={space}
-                            site={site}
-                            isWidgetMode={isWidgetMode}
-                          />
-                        </WidgetDropTarget>
-                      </MainContentArea>
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="no-content"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.2 }}
-                      className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
-                    >
-                      <WidgetDropTarget widgetType="Empty State" isWidgetMode={isWidgetMode}>
-                        <p className="text-gray-600 dark:text-gray-400">
-                          No content available for this space.
-                        </p>
-                      </WidgetDropTarget>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+      {/* Main Content */}
+      <div className="flex-1 min-h-0">
+        <div className="container mx-auto px-4 h-full">
+          <div className="flex flex-col md:flex-row gap-6 h-full">
+            {/* Sidebar - sticky */}
+            <div className="site-sidebar md:sticky md:top-6 md:self-start" data-section-name="Site Sidebar">
+              <SiteSidebar siteSD={siteSD} activePage={spaceSlug} />
+            </div>
+
+            {/* Main content area */}
+            <div className="flex-1 p-4 md:p-6">
+              <AnimatePresence mode="wait">
+                {isContentLoading ? (
+                  <motion.div
+                    key="skeleton"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="bg-white dark:bg-gray-800 rounded-lg shadow p-6"
+                  >
+                    <ContentSkeleton />
+                  </motion.div>
+                ) : error ? (
+                  <motion.div
+                    key="error"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.2 }}
+                    className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
+                  >
+                    <p className="text-red-500">{error}</p>
+                  </motion.div>
+                ) : space ? (
+                  <motion.div
+                    key={`space-${spaceSlug}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="space-y-6"
+                  >
+                    {/* Space Header/Banner Section */}
+                    {spaceBanner ? (
+                      <AnimatePresence mode="wait">
+                        <SpaceBanner 
+                          key="space-banner"
+                          show={spaceBanner} 
+                          bannerUrl={spaceBannerUrl} 
+                          spaceName={space.name} 
+                        />
+                      </AnimatePresence>
+                    ) : (
+                      <div className="mb-6">
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                          {space.name}
+                        </h1>
+                        {space.description && (
+                          <p className="text-gray-600 dark:text-gray-400">{space.description}</p>
+                        )}
+                      </div>
+                    )}
+                    
+                    {/* Main Content */}
+                    <SpaceCmsContent 
+                      siteSD={siteSD}
+                      space={space}
+                      site={site}
+                    />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="no-content"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.2 }}
+                    className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
+                  >
+                    <p className="text-gray-600 dark:text-gray-400">
+                      No content available for this space.
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
-
-        {/* Footer */}
-        <WidgetDropTarget widgetType="Footer" isWidgetMode={isWidgetMode}>
-          {renderFooter()}
-        </WidgetDropTarget>
       </div>
-    </WidgetModeWrapper>
+
+      {/* Footer */}
+      {renderFooter()}
+    </div>
   );
 } 

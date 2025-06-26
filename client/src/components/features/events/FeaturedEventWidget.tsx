@@ -59,7 +59,7 @@ const events = [
   }
 ];
 
-export const FeaturedEventWidget: React.FC = () => {
+export const FeaturedEventWidget: React.FC<{ isDashboard?: boolean }> = ({ isDashboard = false }) => {
   const [activeEventId, setActiveEventId] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -320,11 +320,13 @@ export const FeaturedEventWidget: React.FC = () => {
                   </div>
                   
                   {/* Progressive Blur Effect */}
-                  <ProgressiveBlur
-                    className="pointer-events-none absolute bottom-0 left-0 h-[35%] w-full rounded-b-xl"
-                    blurIntensity={9}
-                    direction="bottom"
-                  />
+                  {!isDashboard && (
+                    <ProgressiveBlur
+                      className="pointer-events-none absolute bottom-0 left-0 h-[35%] w-full rounded-b-xl"
+                      blurIntensity={9}
+                      direction="bottom"
+                    />
+                  )}
                   
                   {/* Meta Information Overlay */}
                   <div className="absolute bottom-0 rounded-b-lg left-0 right-0 bg-gradient-to-t from-gray-900/50 via-gray-900/10 to-transparent p-3">

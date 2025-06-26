@@ -159,3 +159,216 @@
   mask-image: linear-gradient(to right, black 85%, transparent 100%);
   -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
 }
+
+/* Clean, Minimal Widget Mode Styles */
+@layer components {
+  /* Base transition for preview container */
+  .preview-container {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  
+  .preview-container::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: -1 !important;
+    height: 100% !important;
+    width: 100% !important;
+    background-color: white !important;
+    background-image: radial-gradient(#d1d5db 1px, transparent 1px) !important;
+    background-size: 16px 16px !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  
+  /* Add padding to outermost container in widget mode */
+  .widget-mode.preview-container {
+    padding: 1rem !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    background-color: transparent !important;
+  }
+  
+  /* Add dot pattern background in widget mode */
+  .widget-mode.preview-container::before {
+    opacity: 1 !important;
+  }
+  
+  /* Base styling for selectable sections */
+  .site-header,
+  .site-sidebar,
+  .featured-events,
+  .categories,
+  .events-container,
+  .site-footer,
+  [data-widget-section] {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  
+  .widget-mode .site-header,
+  .widget-mode .site-sidebar,
+  .widget-mode .featured-events,
+  .widget-mode .categories,
+  .widget-mode .events-container,
+  .widget-mode .site-footer,
+  .widget-mode [data-widget-section] {
+    cursor: pointer !important;
+    position: relative !important;
+    border: 2px dashed rgba(59, 130, 246, 0.4) !important;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.05) !important;
+    border-image: none !important;
+    border-radius: 12px !important;
+    padding: 1rem !important;
+  }
+  
+  /* Clean hover state - subtle blue border */
+  .site-header.widget-hover,
+  .site-sidebar.widget-hover,
+  .featured-events.widget-hover,
+  .categories.widget-hover,
+  .events-container.widget-hover,
+  .site-footer.widget-hover,
+  [data-widget-section].widget-hover {
+    outline: 2px solid #3b82f6 !important;
+    outline-offset: 2px !important;
+    background-color: rgba(59, 130, 246, 0.02) !important;
+    border-radius: 8px !important;
+    z-index: 10 !important;
+  }
+  
+  /* Distinct selection state - solid blue border */
+  .site-header.selected-element,
+  .site-sidebar.selected-element,
+  .featured-events.selected-element,
+  .categories.selected-element,
+  .events-container.selected-element,
+  .site-footer.selected-element,
+  [data-widget-section].selected-element {
+    outline: 3px solid #1d4ed8 !important;
+    outline-offset: 2px !important;
+    background-color: rgba(29, 78, 216, 0.05) !important;
+    border-radius: 8px !important;
+    z-index: 20 !important;
+  }
+  
+  /* Clean section labels */
+  .widget-hover::after,
+  .selected-element::after {
+    content: attr(data-section-name);
+    position: absolute !important;
+    top: -8px !important;
+    left: 8px !important;
+    background: #3b82f6 !important;
+    color: white !important;
+    padding: 4px 8px !important;
+    border-radius: 4px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    z-index: 100 !important;
+    pointer-events: none !important;
+    opacity: 0 !important;
+    transform: translateY(4px) !important;
+    transition: all 0.15s ease !important;
+  }
+  
+  .widget-hover::after {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+  
+  .selected-element::after {
+    background: #1d4ed8 !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+  
+  /* Simple icons - gear for hover, check for selected */
+  .widget-hover::before {
+    content: "⚙️" !important;
+    position: absolute !important;
+    top: 4px !important;
+    right: 4px !important;
+    font-size: 14px !important;
+    z-index: 101 !important;
+    pointer-events: none !important;
+    opacity: 0.8 !important;
+  }
+  
+  .selected-element::before {
+    content: "✅" !important;
+    position: absolute !important;
+    top: 4px !important;
+    right: 4px !important;
+    font-size: 14px !important;
+    z-index: 101 !important;
+    pointer-events: none !important;
+  }
+  
+  /* Widget Mode Focus Effect - Blur everything except selected */
+  .widget-mode.has-selection .site-header:not(.selected-element),
+  .widget-mode.has-selection .site-sidebar:not(.selected-element),
+  .widget-mode.has-selection .featured-events:not(.selected-element),
+  .widget-mode.has-selection .categories:not(.selected-element),
+  .widget-mode.has-selection .events-container:not(.selected-element),
+  .widget-mode.has-selection .site-footer:not(.selected-element),
+  .widget-mode.has-selection [data-widget-section]:not(.selected-element) {
+    filter: blur(2px) !important;
+    opacity: 0.4 !important;
+    transition: all 0.3s ease !important;
+  }
+  
+  /* Selected element stays crisp and prominent */
+  .widget-mode.has-selection .selected-element {
+    filter: none !important;
+    opacity: 1 !important;
+    transform: scale(1.02) !important;
+    box-shadow: 0 10px 30px rgba(29, 78, 216, 0.2) !important;
+    z-index: 50 !important;
+  }
+  
+  /* Blur non-selectable content when selection is active */
+  .widget-mode.has-selection .preview-container > div:not(.site-header):not(.site-sidebar):not(.site-footer) > *:not(.featured-events):not(.categories):not(.events-container):not([data-widget-section]) {
+    filter: blur(1px) !important;
+    opacity: 0.6 !important;
+    transition: all 0.3s ease !important;
+  }
+  
+  /* Exclude sidebar elements */
+  .widget-mode .settings-sidebar *,
+  .widget-mode .secondary-sidebar *,
+  .widget-mode [data-exclude-widget] * {
+    cursor: default !important;
+    transition: none !important;
+  }
+  
+  /* Remove effects from excluded elements */
+  .settings-sidebar .widget-hover,
+  .secondary-sidebar .widget-hover,
+  [data-exclude-widget] .widget-hover,
+  .settings-sidebar .selected-element,
+  .secondary-sidebar .selected-element,
+  [data-exclude-widget] .selected-element {
+    outline: none !important;
+    background-color: transparent !important;
+    border-radius: 0 !important;
+    z-index: auto !important;
+  }
+  
+  .settings-sidebar .widget-hover::before,
+  .settings-sidebar .widget-hover::after,
+  .secondary-sidebar .widget-hover::before,
+  .secondary-sidebar .widget-hover::after,
+  [data-exclude-widget] .widget-hover::before,
+  [data-exclude-widget] .widget-hover::after,
+  .settings-sidebar .selected-element::before,
+  .settings-sidebar .selected-element::after,
+  .secondary-sidebar .selected-element::before,
+  .secondary-sidebar .selected-element::after,
+  [data-exclude-widget] .selected-element::before,
+  [data-exclude-widget] .selected-element::after {
+    display: none !important;
+  }
+}

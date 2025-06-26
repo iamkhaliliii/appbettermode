@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import {
   Users,
   UserPlus,
@@ -22,22 +22,88 @@ export function MemberManagementTab() {
   const [notifyNewMembers, setNotifyNewMembers] = useState(true);
   const [maxMembers, setMaxMembers] = useState('unlimited');
 
-  const handleFieldClick = (fieldName: string) => {
+  // Optimized event handlers
+  const handleFieldClick = useCallback((fieldName: string) => {
     setEditingField(fieldName);
-  };
+  }, []);
 
-  const handleFieldBlur = () => {
+  const handleFieldBlur = useCallback(() => {
     setEditingField(null);
-  };
+  }, []);
 
-  const handleKeyDown = (e: React.KeyboardEvent, fieldName: string) => {
-    if (e.key === 'Enter') {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent, fieldName: string) => {
+    if (e.key === 'Enter' || e.key === 'Escape') {
       setEditingField(null);
     }
-    if (e.key === 'Escape') {
-      setEditingField(null);
+  }, []);
+
+  // Memoized options
+  const memberVisibilityOptions = useMemo(() => [
+    { 
+      value: 'public', 
+      label: 'Public',
+      description: 'Member list is visible to everyone',
+      icon: Eye
+    },
+    { 
+      value: 'members_only', 
+      label: 'Members only',
+      description: 'Member list is only visible to space members',
+      icon: Users
+    },
+    { 
+      value: 'admins_only', 
+      label: 'Admins only',
+      description: 'Member list is only visible to space admins',
+      icon: Shield
+    },
+    { 
+      value: 'hidden', 
+      label: 'Hidden',
+      description: 'Member list is completely hidden',
+      icon: EyeOff
     }
-  };
+  ], []);
+
+  const maxMembersOptions = useMemo(() => [
+    { 
+      value: 'unlimited', 
+      label: 'Unlimited',
+      description: 'No limit on the number of members',
+      icon: Users
+    },
+    { 
+      value: '50', 
+      label: '50 members',
+      description: 'Limit space to 50 members',
+      icon: Users
+    },
+    { 
+      value: '100', 
+      label: '100 members',
+      description: 'Limit space to 100 members',
+      icon: Users
+    },
+    { 
+      value: '500', 
+      label: '500 members',
+      description: 'Limit space to 500 members',
+      icon: Users
+    },
+    { 
+      value: '1000', 
+      label: '1000 members',
+      description: 'Limit space to 1000 members',
+      icon: Users
+    }
+  ], []);
+
+  // Memoized sample members
+  const sampleMembers = useMemo(() => [
+    { name: 'John Doe', role: 'Admin', avatar: '👤' },
+    { name: 'Jane Smith', role: 'Member', avatar: '👤' },
+    { name: 'Mike Johnson', role: 'Member', avatar: '👤' }
+  ], []);
 
   return (
     <div className="space-y-4">
@@ -98,32 +164,7 @@ export function MemberManagementTab() {
           value={memberVisibility}
           fieldName="memberVisibility"
           type="select"
-          options={[
-            { 
-              value: 'public', 
-              label: 'Public',
-              description: 'Member list is visible to everyone',
-              icon: Eye
-            },
-            { 
-              value: 'members_only', 
-              label: 'Members only',
-              description: 'Member list is only visible to space members',
-              icon: Users
-            },
-            { 
-              value: 'admins_only', 
-              label: 'Admins only',
-              description: 'Member list is only visible to space admins',
-              icon: Shield
-            },
-            { 
-              value: 'hidden', 
-              label: 'Hidden',
-              description: 'Member list is completely hidden',
-              icon: EyeOff
-            }
-          ]}
+          options={memberVisibilityOptions}
           onValueChange={setMemberVisibility}
           icon={Eye}
           editingField={editingField}
@@ -138,38 +179,7 @@ export function MemberManagementTab() {
           value={maxMembers}
           fieldName="maxMembers"
           type="select"
-          options={[
-            { 
-              value: 'unlimited', 
-              label: 'Unlimited',
-              description: 'No limit on the number of members',
-              icon: Users
-            },
-            { 
-              value: '50', 
-              label: '50 members',
-              description: 'Limit space to 50 members',
-              icon: Users
-            },
-            { 
-              value: '100', 
-              label: '100 members',
-              description: 'Limit space to 100 members',
-              icon: Users
-            },
-            { 
-              value: '500', 
-              label: '500 members',
-              description: 'Limit space to 500 members',
-              icon: Users
-            },
-            { 
-              value: '1000', 
-              label: '1000 members',
-              description: 'Limit space to 1000 members',
-              icon: Users
-            }
-          ]}
+          options={maxMembersOptions}
           onValueChange={setMaxMembers}
           icon={Users}
           editingField={editingField}
@@ -204,12 +214,7 @@ export function MemberManagementTab() {
         </div>
         
         <div className="space-y-2">
-          {/* Sample member list */}
-          {[
-            { name: 'John Doe', role: 'Admin', avatar: '👤' },
-            { name: 'Jane Smith', role: 'Member', avatar: '👤' },
-            { name: 'Mike Johnson', role: 'Member', avatar: '👤' }
-          ].map((member, index) => (
+          {sampleMembers.map((member, index) => (
             <div key={index} className="flex items-center justify-between p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-sm">

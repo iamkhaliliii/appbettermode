@@ -1,19 +1,13 @@
 import { useRoute, useLocation } from "wouter";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { BrowserMockup } from "@/components/layout/dashboard/browser-mockup";
 import { AddContentDialog } from "@/components/features/content";
 import { SpaceSettingsSidebar } from "@/components/layout/dashboard/secondary-sidebar/SpaceSettingsSidebar";
 import { SpaceContent } from "@/components/dashboard/site-config/SpaceContent";
 import { SettingsSidebar } from "@/components/dashboard/site-config/SettingsSidebar";
 import { DashboardPageWrapper } from "@/components/dashboard/DashboardPageWrapper";
-import { getWidgetPreview } from "@/components/dashboard/site-config/WidgetSettingsTab";
 
-interface Widget {
-  id: string;
-  name: string;
-  icon: any;
-  description: string;
-}
+
 
 // CSS to disable all links in the preview and improve dark mode
 const disableLinksStyle = `
@@ -58,6 +52,7 @@ export default function SpaceSettingsPage() {
   const siteSD = params?.siteSD || '';
   const spacesSlug = params?.spacesSlug || '';
   
+  // Main states - simplified
   const [addContentDialogOpen, setAddContentDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('general');
   const [sidebarVisible, setSidebarVisible] = useState(true);
@@ -70,17 +65,17 @@ export default function SpaceSettingsPage() {
   const [hasChanges, setHasChanges] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
-  // Widget tooltip state
-  const [hoveredWidget, setHoveredWidget] = useState<Widget | null>(null);
-  const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
+
   
-  // Browser mockup state
-  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
-  const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
-  const [responsiveDropdownOpen, setResponsiveDropdownOpen] = useState(false);
-  
-  // Memoize the display space name to avoid recalculation on each render
+  // Browser mockup state - consolidated
+  const [browserState, setBrowserState] = useState({
+    userDropdownOpen: false,
+    languageDropdownOpen: false,
+    themeDropdownOpen: false,
+    responsiveDropdownOpen: false
+  });
+
+  // Memoized values
   const displaySpaceName = useMemo(() => {
     return spacesSlug
       .split('-')
@@ -88,42 +83,36 @@ export default function SpaceSettingsPage() {
       .join(' ');
   }, [spacesSlug]);
 
-  // Construct the URL for display in browser mockup - memoize to avoid recalculation
   const siteUrl = useMemo(() => `/site/${siteSD}/${spacesSlug}`, [siteSD, spacesSlug]);
 
-  // Handle tab change and show sidebar
-  const handleTabChange = (tabId: string) => {
+  // Event handlers - optimized with useCallback
+  const handleTabChange = useCallback((tabId: string) => {
     if (activeTab === tabId && sidebarVisible) {
-      // If clicking the same tab and sidebar is visible, close it
       setSidebarVisible(false);
     } else {
-      // Otherwise, set the new tab and show sidebar
       setActiveTab(tabId);
       setSidebarVisible(true);
     }
-  };
 
-  // Handle widget hover for tooltip
-  const handleWidgetHover = (widget: Widget | null, position: { x: number; y: number }) => {
-    setHoveredWidget(widget);
-    setHoverPosition(position);
-  };
+  }, [activeTab, sidebarVisible]);
 
-  // Handle save action
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     setIsLoading(true);
     // Simulate save process
     setTimeout(() => {
       setIsLoading(false);
       setHasChanges(false);
     }, 1000);
-  };
+  }, []);
 
-  // Handle discard changes
-  const handleDiscard = () => {
+  const handleDiscard = useCallback(() => {
     setHasChanges(false);
-    // Reset any changes - this would typically call a reset function
-  };
+  }, []);
+
+  // Browser state handlers
+  const updateBrowserState = useCallback((key: string, value: boolean) => {
+    setBrowserState(prev => ({ ...prev, [key]: value }));
+  }, []);
 
   return (
     <DashboardPageWrapper 
@@ -140,15 +129,14 @@ export default function SpaceSettingsPage() {
       }
     >
       {/* CSS to disable links in preview */}
-      <style>
-        {disableLinksStyle}
-      </style>
+      <style>{disableLinksStyle}</style>
       
       {/* Add Content Dialog */}
       <AddContentDialog
         open={addContentDialogOpen}
         onOpenChange={setAddContentDialogOpen}
       />
+
       <div className="flex relative bg-gray-50 dark:bg-gray-900 min-h-[calc(100vh-4rem)]">
         {/* Settings Sidebar - Sliding from left */}
         <div 
@@ -161,7 +149,6 @@ export default function SpaceSettingsPage() {
             spacesSlug={spacesSlug} 
             activeTab={activeTab}
             onClose={() => setSidebarVisible(false)}
-            onWidgetHover={handleWidgetHover}
             spaceBanner={spaceBanner}
             setSpaceBanner={setSpaceBanner}
             spaceBannerUrl={spaceBannerUrl}
@@ -180,17 +167,18 @@ export default function SpaceSettingsPage() {
         }`}>
           <div className="flex-1">
             <BrowserMockup
-              userDropdownOpen={userDropdownOpen}
-              setUserDropdownOpen={setUserDropdownOpen}
-              languageDropdownOpen={languageDropdownOpen}
-              setLanguageDropdownOpen={setLanguageDropdownOpen}
-              themeDropdownOpen={themeDropdownOpen}
-              setThemeDropdownOpen={setThemeDropdownOpen}
-              responsiveDropdownOpen={responsiveDropdownOpen}
-              setResponsiveDropdownOpen={setResponsiveDropdownOpen}
+              userDropdownOpen={browserState.userDropdownOpen}
+              setUserDropdownOpen={(value) => updateBrowserState('userDropdownOpen', value)}
+              languageDropdownOpen={browserState.languageDropdownOpen}
+              setLanguageDropdownOpen={(value) => updateBrowserState('languageDropdownOpen', value)}
+              themeDropdownOpen={browserState.themeDropdownOpen}
+              setThemeDropdownOpen={(value) => updateBrowserState('themeDropdownOpen', value)}
+              responsiveDropdownOpen={browserState.responsiveDropdownOpen}
+              setResponsiveDropdownOpen={(value) => updateBrowserState('responsiveDropdownOpen', value)}
               siteUrl={siteUrl}
               hasChanges={hasChanges}
               isLoading={isLoading}
+              isWidgetMode={activeTab === 'widget' && sidebarVisible}
               onSave={handleSave}
               onDiscard={handleDiscard}
             >
@@ -198,13 +186,12 @@ export default function SpaceSettingsPage() {
                 key={`space-content-${spacesSlug}`} 
                 className="w-full transition-opacity duration-300"
               >
-
                 <SpaceContent 
                   siteSD={siteSD} 
                   spaceSlug={spacesSlug} 
-                  isWidgetMode={activeTab === 'widget' && sidebarVisible}
                   spaceBanner={spaceBanner}
                   spaceBannerUrl={spaceBannerUrl}
+                  isWidgetMode={activeTab === 'widget' && sidebarVisible}
                 />
               </div>
             </BrowserMockup>
@@ -212,39 +199,7 @@ export default function SpaceSettingsPage() {
         </div>
       </div>
 
-      {/* Widget Hover Tooltip */}
-      {hoveredWidget && (
-        <div 
-          className="fixed pointer-events-none"
-          style={{
-            left: `${hoverPosition.x + 15}px`,
-            top: `${hoverPosition.y - 10}px`,
-            zIndex: 99999
-          }}
-        >
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl dark:shadow-black/20 p-4 w-80 h-60">
-            {/* Widget Preview */}
-            <div className="mb-4 border border-gray-100 dark:border-gray-700 rounded-lg p-3 bg-gray-50 dark:bg-gray-900 h-32 overflow-hidden">
-              <div className="h-full">
-                {getWidgetPreview(hoveredWidget)}
-              </div>
-            </div>
-            
-            {/* Widget Info */}
-            <div className="space-y-2 h-16">
-              <div className="flex items-center gap-2">
-                <hoveredWidget.icon className="w-4 h-4 text-gray-600 dark:text-gray-400 flex-shrink-0" />
-                <h4 className="font-medium text-sm text-gray-900 dark:text-white truncate">
-                  {hoveredWidget.name}
-                </h4>
-              </div>
-              <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-2 overflow-hidden">
-                {hoveredWidget.description}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+
     </DashboardPageWrapper>
   );
 } 

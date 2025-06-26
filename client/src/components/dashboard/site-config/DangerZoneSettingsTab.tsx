@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
   Trash2,
   AlertTriangle
@@ -7,12 +7,17 @@ import {
 export function DangerZoneSettingsTab() {
   const [deleteConfirmation, setDeleteConfirmation] = useState('');
 
-  const handleDeleteSpace = () => {
+  // Optimized event handler
+  const handleDeleteSpace = useCallback(() => {
     if (deleteConfirmation === 'DELETE') {
       // Handle space deletion logic here
-      console.log('Space deletion confirmed');
+      alert('Space deletion confirmed');
     }
-  };
+  }, [deleteConfirmation]);
+
+  const handleConfirmationChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setDeleteConfirmation(e.target.value);
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -33,7 +38,7 @@ export function DangerZoneSettingsTab() {
             <input
               type="text"
               value={deleteConfirmation}
-              onChange={(e) => setDeleteConfirmation(e.target.value)}
+              onChange={handleConfirmationChange}
               placeholder="DELETE"
               className="w-full text-sm bg-white dark:bg-gray-800 border border-red-300 dark:border-red-700 rounded-md px-3 py-2 outline-none text-gray-900 dark:text-gray-100"
             />
