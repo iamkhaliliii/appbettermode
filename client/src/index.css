@@ -182,6 +182,12 @@
     transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   }
   
+  /* Dark mode dot pattern background */
+  .dark .preview-container::before {
+    background-color: #1f2937 !important;
+    background-image: radial-gradient(#4b5563 1px, transparent 1px) !important;
+  }
+  
   /* Add padding to outermost container in widget mode */
   .widget-mode.preview-container {
     padding: 1rem !important;
