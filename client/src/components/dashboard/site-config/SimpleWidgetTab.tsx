@@ -13,8 +13,6 @@ import {
   ExternalLink,
   Square,
   Hash,
-  Image,
-  Crop,
   ChevronDown,
   Heading,
   AlignLeft,
@@ -89,12 +87,15 @@ export function SimpleWidgetTab({
   const [cardSize, setCardSize] = useState(initialCardSize);
   const [cardStyle, setCardStyle] = useState(initialCardStyle);
   const [openPageIn, setOpenPageIn] = useState('post_page');
-  const [cardCover, setCardCover] = useState(true);
-  const [fitCover, setFitCover] = useState(false);
   const [showTitle, setShowTitle] = useState(true);
   const [showExcerpt, setShowExcerpt] = useState(true);
   const [showReactions, setShowReactions] = useState(true);
   const [showComments, setShowComments] = useState(true);
+  
+  // New section settings
+  const [sectionTitle, setSectionTitle] = useState('Events');
+  const [sectionSubtitle, setSectionSubtitle] = useState('Discover upcoming events');
+  const [sortOption, setSortOption] = useState('date_desc');
 
   // Sync local state with parent state when props change
   useEffect(() => {
@@ -416,6 +417,45 @@ export function SimpleWidgetTab({
     }
   ], []);
 
+  const sortOptions = useMemo(() => [
+    { 
+      value: 'date_desc', 
+      label: 'Newest first',
+      description: 'Sort by event date (newest to oldest)',
+      icon: Calendar
+    },
+    { 
+      value: 'date_asc', 
+      label: 'Oldest first',
+      description: 'Sort by event date (oldest to newest)',
+      icon: Calendar
+    },
+    { 
+      value: 'title_asc', 
+      label: 'Title A-Z',
+      description: 'Sort alphabetically by title',
+      icon: Type
+    },
+    { 
+      value: 'title_desc', 
+      label: 'Title Z-A',
+      description: 'Sort reverse alphabetically by title',
+      icon: Type
+    },
+    { 
+      value: 'attendees_desc', 
+      label: 'Most popular',
+      description: 'Sort by attendees count (high to low)',
+      icon: Users
+    },
+    { 
+      value: 'attendees_asc', 
+      label: 'Least popular',
+      description: 'Sort by attendees count (low to high)',
+      icon: Users
+    }
+  ], []);
+
   // Memoized render function for properties section
   const renderPropertiesSection = useCallback(() => (
     <div className="pt-1 border-t border-gray-50 dark:border-gray-800">
@@ -574,38 +614,9 @@ export function SimpleWidgetTab({
         onKeyDown={handleKeyDown}
       />
 
-      <PropertyRow
-        label="Card Cover"
-        value={cardCover}
-        fieldName="cardCover"
-        type="checkbox"
-        onValueChange={setCardCover}
-        icon={Image}
-        editingField={editingField}
-        onFieldClick={handleFieldClick}
-        onFieldBlur={handleFieldBlur}
-        onKeyDown={handleKeyDown}
-      />
-
-      {cardCover && (
-        <PropertyRow
-          label="Fit cover"
-          value={fitCover}
-          fieldName="fitCover"
-          type="checkbox"
-          onValueChange={setFitCover}
-          icon={Crop}
-          editingField={editingField}
-          onFieldClick={handleFieldClick}
-          onFieldBlur={handleFieldBlur}
-          onKeyDown={handleKeyDown}
-          isChild={true}
-        />
-      )}
-
       {renderPropertiesSection()}
     </>
-  ), [cardSize, cardStyle, cardSizeOptions, cardStyleOptions, openPageIn, openPageOptions, cardCover, fitCover, editingField, handleFieldClick, handleFieldBlur, handleKeyDown, renderPropertiesSection, handleCardSizeChange, handleCardStyleChange]);
+  ), [cardSize, cardStyle, cardSizeOptions, cardStyleOptions, openPageIn, openPageOptions, editingField, handleFieldClick, handleFieldBlur, handleKeyDown, renderPropertiesSection, handleCardSizeChange, handleCardStyleChange]);
 
   // Memoized list/calendar settings
   const listCalendarSettings = useMemo(() => (
@@ -643,15 +654,15 @@ export function SimpleWidgetTab({
           <div className="flex items-center gap-3 mb-4">
             <button
               onClick={handleBackClick}
-              className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>Back to Widgets</span>
+              <span>Back to Customize</span>
             </button>
           </div>
 
           {/* Widget Header */}
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-4 ml-2 mt-3">
             <div className="flex-1 min-w-0">
               <h4 className="text-sm font-medium text-gray-900 dark:text-white truncate">
                 {selectedWidget.name} Settings
@@ -663,12 +674,50 @@ export function SimpleWidgetTab({
           </div>
 
           {/* Events Content Settings for selected widget */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 pb-2 border-b border-gray-200 dark:border-gray-700">
-              <Calendar className="w-4 h-4 text-gray-500" />
-              <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                Events Content Settings
-              </h3>
+          <div className="space-y-2">
+
+            {/* Section Settings */}
+            <div className="space-y-0 [&>*:last-child>div:first-child]:border-b-0">
+              <PropertyRow
+                label="Section title"
+                value={sectionTitle}
+                fieldName="sectionTitle"
+                type="text"
+                onValueChange={setSectionTitle}
+                icon={Heading}
+                editingField={editingField}
+                onFieldClick={handleFieldClick}
+                onFieldBlur={handleFieldBlur}
+                onKeyDown={handleKeyDown}
+              />
+
+              <PropertyRow
+                label="Section subtitle"
+                value={sectionSubtitle}
+                fieldName="sectionSubtitle"
+                type="textarea"
+                onValueChange={setSectionSubtitle}
+                placeholder="Enter section subtitle"
+                icon={AlignLeft}
+                editingField={editingField}
+                onFieldClick={handleFieldClick}
+                onFieldBlur={handleFieldBlur}
+                onKeyDown={handleKeyDown}
+              />
+
+              <PropertyRow
+                label="Sort"
+                value={sortOption}
+                fieldName="sortOption"
+                type="select"
+                options={sortOptions}
+                onValueChange={setSortOption}
+                icon={sortOptions.find(option => option.value === sortOption)?.icon || Calendar}
+                editingField={editingField}
+                onFieldClick={handleFieldClick}
+                onFieldBlur={handleFieldBlur}
+                onKeyDown={handleKeyDown}
+              />
             </div>
 
             {/* Visual Layout Selector */}
@@ -722,7 +771,7 @@ export function SimpleWidgetTab({
 
           {/* Active Widgets Tab Content */}
           {activeTab === 'active-widgets' && (
-            <div className="space-y-4 min-w-0">
+            <div className="space-y-5 min-w-0 px-2">
               {/* Base Section */}
               <div className="min-w-0">
                 <button
@@ -730,7 +779,6 @@ export function SimpleWidgetTab({
                   className="w-full flex items-center justify-between text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors mb-2"
                 >
                   <div className="flex items-center gap-1.5">
-                    <Layout className="w-3 h-3 flex-shrink-0" />
                     <span className="truncate">Base Section</span>
                   </div>
                   <ChevronDown className={`w-3 h-3 transition-transform flex-shrink-0 ${baseSectionExpanded ? 'rotate-180' : ''}`} />
@@ -741,7 +789,7 @@ export function SimpleWidgetTab({
                     {widgetSections.base.map((widget) => (
                       <div
                         key={widget.id}
-                        className="px-3 py-2 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors min-w-0 cursor-pointer"
+                        className="px-1 py-2 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors min-w-0 cursor-pointer"
                         onClick={() => handleWidgetClick(widget)}
                       >
                         <div className="flex items-center justify-between gap-2 min-w-0">
@@ -779,7 +827,6 @@ export function SimpleWidgetTab({
                   className="w-full flex items-center justify-between text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors mb-2"
                 >
                   <div className="flex items-center gap-1.5">
-                    <Settings className="w-3 h-3 flex-shrink-0" />
                     <span className="truncate">Main Widget</span>
                   </div>
                   <ChevronDown className={`w-3 h-3 transition-transform flex-shrink-0 ${mainWidgetExpanded ? 'rotate-180' : ''}`} />
@@ -790,7 +837,7 @@ export function SimpleWidgetTab({
                     {widgetSections.main.map((widget) => (
                       <div
                         key={widget.id}
-                        className="px-3 py-2 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors min-w-0 cursor-pointer"
+                        className="px-1 py-2 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors min-w-0 cursor-pointer"
                         onClick={() => handleWidgetClick(widget)}
                       >
                         <div className="flex items-center justify-between gap-2 min-w-0">
@@ -828,7 +875,6 @@ export function SimpleWidgetTab({
                   className="w-full flex items-center justify-between text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors mb-2"
                 >
                   <div className="flex items-center gap-1.5">
-                    <Zap className="w-3 h-3 flex-shrink-0" />
                     <span className="truncate">Custom Widgets</span>
                   </div>
                   <ChevronDown className={`w-3 h-3 transition-transform flex-shrink-0 ${customWidgetsExpanded ? 'rotate-180' : ''}`} />
@@ -839,7 +885,7 @@ export function SimpleWidgetTab({
                     {widgetSections.custom.map((widget) => (
                       <div
                         key={widget.id}
-                        className="px-3 py-2 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors min-w-0 cursor-pointer"
+                        className="px-1 py-2 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors min-w-0 cursor-pointer"
                         onClick={() => handleWidgetClick(widget)}
                       >
                         <div className="flex items-center justify-between gap-2 min-w-0">

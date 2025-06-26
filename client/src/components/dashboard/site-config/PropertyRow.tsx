@@ -43,7 +43,7 @@ export function PropertyRow({
   const isEditing = editingField === fieldName;
   const displayValue = value || "Empty";
   const isEmpty = !value;
-  const isDescription = fieldName === 'description';
+  const isDescription = fieldName === 'description' || fieldName === 'sectionSubtitle';
   const isSlug = fieldName === 'slug';
   const isCardStyle = fieldName === 'cardStyle';
 
@@ -199,7 +199,7 @@ export function PropertyRow({
                       : 'h-6 overflow-hidden border-none text-right'
                   }`}
                   autoFocus
-                  placeholder={isDescription ? "Enter description..." : ""}
+                  placeholder={fieldName === 'description' ? "Enter description..." : fieldName === 'sectionSubtitle' ? "Enter section subtitle..." : ""}
                 />
               ) : (
                 <div
