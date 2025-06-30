@@ -2,6 +2,7 @@ import React from 'react';
 import { Plus, Lock } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/primitives/tooltip";
 import { WidgetCardProps, AvailableWidget, Widget } from './types';
+import { FeaturedEventWidget } from '@/components/features/events/FeaturedEventWidget';
 
 // Type guards
 const isAvailableWidget = (widget: AvailableWidget | Widget): widget is AvailableWidget => {
@@ -111,7 +112,7 @@ const WidgetPreviewTooltip: React.FC<WidgetPreviewTooltipProps> = ({ widget, chi
           avoidCollisions={true}
           collisionPadding={8}
           
-          className="max-w-xs p-3 border-0 shadow-lg rounded-lg"
+          className="w-60 p-3 border-0 shadow-lg rounded-lg"
           style={{ 
             background: 'rgba(0, 0, 0, 0.9)',
             backdropFilter: 'blur(12px)',
@@ -119,38 +120,92 @@ const WidgetPreviewTooltip: React.FC<WidgetPreviewTooltipProps> = ({ widget, chi
             position: 'fixed'
           }}
         >
-          <div className="flex flex-col items-center gap-2 text-center">
-            {/* Visual Preview */}
+          <div className="flex flex-col items-start gap-3 text-left">
+            {/* Widget Banner Preview */}
             <div 
-              className="w-12 h-8 rounded-md flex items-center justify-center"
+              className="w-full h-20 rounded-md relative overflow-hidden"
               style={{ 
                 background: categoryStyles.background,
-                border: `1px solid ${categoryStyles.iconColor}30`
+                border: `1px solid ${categoryStyles.iconColor}30`,
+                boxShadow: categoryStyles.boxShadow
               }}
             >
-              <widget.icon 
-                className="w-4 h-4" 
-                style={{ color: categoryStyles.iconColor }} 
-              />
-            </div>
-            
-            {/* Widget Icon */}
-            <div className="flex items-center gap-1">
-              <widget.icon 
-                className="w-3 h-3" 
-                style={{ color: categoryStyles.iconColor }} 
-              />
+              {/* Real FeaturedEventWidget Preview */}
+              {(widget.id.includes('upcoming-events') || 
+                widget.name.toLowerCase().includes('upcoming events') ||
+                widget.id.includes('featured-events') || 
+                widget.name.toLowerCase().includes('featured events')) && (
+                <div className="absolute inset-0 overflow-hidden rounded-md">
+                  <div 
+                    className="pointer-events-none"
+                    style={{ 
+                      transform: 'scale(0.2)',
+                      transformOrigin: 'top left',
+                      width: '500%', // 100 / 0.2 = 500%
+                      height: '500%'
+                    }}
+                  >
+                    <FeaturedEventWidget isDashboard={true} />
+                  </div>
+                </div>
+              )}
+              
+              {/* Event Categories Preview */}
+              {(widget.id.includes('categories') || widget.name.toLowerCase().includes('categor')) && (
+                <div className="absolute inset-0 p-1 overflow-hidden">
+                  <div className="w-full h-full bg-gray-50 dark:bg-gray-800 rounded-sm relative overflow-hidden">
+                    {/* Mini category chips */}
+                    <div className="absolute inset-1 flex flex-wrap gap-0.5">
+                      <div className="px-1 py-0.5 bg-blue-500/80 rounded-sm">
+                        <div className="w-2 h-0.5 bg-white/80 rounded"></div>
+                      </div>
+                      <div className="px-1 py-0.5 bg-green-500/80 rounded-sm">
+                        <div className="w-2 h-0.5 bg-white/80 rounded"></div>
+                      </div>
+                      <div className="px-1 py-0.5 bg-purple-500/80 rounded-sm">
+                        <div className="w-2 h-0.5 bg-white/80 rounded"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Default preview for other widgets */}
+              {!(widget.id.includes('upcoming-events') || 
+                 widget.name.toLowerCase().includes('upcoming events') ||
+                 widget.id.includes('featured-events') || 
+                 widget.name.toLowerCase().includes('featured events') ||
+                 widget.id.includes('categories') || 
+                 widget.name.toLowerCase().includes('categor')) && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-md flex items-center justify-center" 
+                       style={{ backgroundColor: `${categoryStyles.iconColor}20` }}>
+                    <div className="w-4 h-4 rounded-sm" 
+                         style={{ backgroundColor: categoryStyles.iconColor }}></div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Lock indicator on banner */}
               {widgetLocked && (
-                <Lock className="w-3 h-3 text-gray-400" />
+                <div className="absolute top-1 right-1 w-3 h-3 bg-black/50 rounded-full flex items-center justify-center z-10">
+                  <Lock className="w-2 h-2 text-white" />
+                </div>
               )}
             </div>
             
-            {/* Label + Description in one line */}
+            {/* Description */}
             <div className="space-y-0.5">
-              <h3 className="font-medium text-xs text-white leading-tight">
-                {widget.name}
-              </h3>
-              <p className="text-[10px] text-gray-300 leading-tight">
+              <div className="flex items-center gap-2">
+                <widget.icon 
+                  className="w-4 h-4" 
+                  style={{ color: categoryStyles.iconColor }} 
+                />
+                <h3 className="font-medium text-[0.8rem] text-white text-left">
+                  {widget.name}
+                </h3>
+              </div>
+              <p className="text-[0.7rem] text-gray-300 text-left leading-tight">
                 {widget.description}
               </p>
             </div>
