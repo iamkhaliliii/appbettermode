@@ -7,10 +7,12 @@ import {
   CustomDropdown, 
   DateTimePicker, 
   UserSelector, 
+  EventSelector,
   TagInput,
   TimezoneSelector,
   NumberInput,
-  RepeatSelector
+  RepeatSelector,
+  MultiSelect
 } from "./property-design-system-components";
 
 export function PropertyRow({ 
@@ -334,6 +336,16 @@ export function PropertyRow({
             </div>
           )}
 
+          {type === 'events' && (
+            <div className="w-full mt-0.5">
+              <EventSelector
+                value={value || []}
+                onChange={onValueChange}
+                placeholder="Select events"
+              />
+            </div>
+          )}
+
           {type === 'tags' && (
             <div className="w-full mt-0.5">
               <TagInput
@@ -373,6 +385,18 @@ export function PropertyRow({
                 value={value}
                 onChange={onValueChange}
                 startDate={startDate}
+              />
+            </div>
+          )}
+
+          {type === 'multiselect' && (
+            <div className="w-full mt-0.5">
+              <MultiSelect
+                value={value || []}
+                onChange={onValueChange}
+                options={options}
+                placeholder="Select options"
+                enableSearch={enableDropdownSearch}
               />
             </div>
           )}

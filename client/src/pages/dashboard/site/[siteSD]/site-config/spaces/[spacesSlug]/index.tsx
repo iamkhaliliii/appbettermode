@@ -79,7 +79,7 @@ export default function SpaceSettingsPage() {
     themeDropdownOpen: false,
     responsiveDropdownOpen: false
   });
-
+  
   // Memoized values
   const displaySpaceName = useMemo(() => {
     return spacesSlug

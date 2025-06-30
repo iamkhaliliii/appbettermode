@@ -145,10 +145,10 @@ export const EventCard: React.FC<EventCardProps> = ({ event, onEventClick, isDas
       }}
       layout
     >
-      <Card 
+    <Card 
         className={`group event-card relative overflow-hidden bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700 cursor-pointer shadow-sm hover:shadow-md ${isPast ? 'opacity-70 grayscale' : ''}`}
-        onClick={() => onEventClick(event.id)}
-      >
+      onClick={() => onEventClick(event.id)}
+    >
       {/* Image with All Content Overlay */}
       <div className="relative overflow-hidden rounded-lg aspect-[1/1]">
         <img 
@@ -159,11 +159,11 @@ export const EventCard: React.FC<EventCardProps> = ({ event, onEventClick, isDas
         
         {/* Progressive Blur Effect */}
         {isDashboard ? null : (
-          <ProgressiveBlur
-            className="pointer-events-none absolute bottom-0 left-0 h-[40%] w-full"
-            blurIntensity={8}
-            direction="bottom"
-          />
+        <ProgressiveBlur
+          className="pointer-events-none absolute bottom-0 left-0 h-[40%] w-full"
+          blurIntensity={8}
+          direction="bottom"
+        />
         )}
         
         {/* Overlay for better text contrast */}

@@ -386,7 +386,7 @@ export function SpaceContent({
       }
     };
 
-    createSpace();
+      createSpace();
   }, [site, spaceSlug, cmsTypes]);
 
   // Performance optimization: Render the footer outside the AnimatePresence
@@ -431,113 +431,113 @@ export function SpaceContent({
     <div className={`pb-8 flex flex-col bg-gray-50 dark:bg-gray-900 preview-container ${isWidgetMode ? 'widget-mode' : ''}`}>
       
 
-      {/* Site Header - sticky */}
+        {/* Site Header - sticky */}
       <div className="site-header sticky top-0 z-10 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800" data-section-name="Site Header">
-        <SiteHeader 
-          siteSD={siteSD}
-          site={site}
-          isMenuOpen={isMenuOpen}
-          setIsMenuOpen={setIsMenuOpen}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          handleSearch={handleSearch}
-        />
-      </div>
+            <SiteHeader 
+              siteSD={siteSD}
+              site={site}
+              isMenuOpen={isMenuOpen}
+              setIsMenuOpen={setIsMenuOpen}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              handleSearch={handleSearch}
+            />
+        </div>
 
-      {/* Main Content */}
-      <div className="flex-1 min-h-0">
-        <div className="container mx-auto px-4 h-full">
-          <div className="flex flex-col md:flex-row gap-6 h-full">
-            {/* Sidebar - sticky */}
+        {/* Main Content */}
+        <div className="flex-1 min-h-0">
+          <div className="container mx-auto px-4 h-full">
+            <div className="flex flex-col md:flex-row gap-6 h-full">
+              {/* Sidebar - sticky */}
             <div className="site-sidebar md:sticky md:top-6 md:self-start" data-section-name="Site Sidebar">
-              <SiteSidebar siteSD={siteSD} activePage={spaceSlug} />
-            </div>
+                  <SiteSidebar siteSD={siteSD} activePage={spaceSlug} />
+              </div>
 
-            {/* Main content area */}
-            <div className="flex-1 p-4 md:p-6">
-              <AnimatePresence mode="wait">
-                {isContentLoading ? (
-                  <motion.div
-                    key="skeleton"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="bg-white dark:bg-gray-800 rounded-lg shadow p-6"
-                  >
-                    <ContentSkeleton />
-                  </motion.div>
-                ) : error ? (
-                  <motion.div
-                    key="error"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.2 }}
-                    className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
-                  >
-                    <p className="text-red-500">{error}</p>
-                  </motion.div>
-                ) : space ? (
-                  <motion.div
-                    key={`space-${spaceSlug}`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="space-y-6"
-                  >
-                    {/* Space Header/Banner Section */}
-                    {spaceBanner ? (
-                      <AnimatePresence mode="wait">
-                        <SpaceBanner 
-                          key="space-banner"
-                          show={spaceBanner} 
-                          bannerUrl={spaceBannerUrl} 
-                          spaceName={space.name} 
-                        />
-                      </AnimatePresence>
-                    ) : (
-                      <div className="mb-6">
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                          {space.name}
-                        </h1>
-                        {space.description && (
-                          <p className="text-gray-600 dark:text-gray-400">{space.description}</p>
-                        )}
-                      </div>
-                    )}
-                    
+              {/* Main content area */}
+              <div className="flex-1 p-4 md:p-6">
+                <AnimatePresence mode="wait">
+                  {isContentLoading ? (
+                    <motion.div
+                      key="skeleton"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="bg-white dark:bg-gray-800 rounded-lg shadow p-6"
+                    >
+                        <ContentSkeleton />
+                    </motion.div>
+                  ) : error ? (
+                    <motion.div
+                      key="error"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.2 }}
+                      className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
+                    >
+                        <p className="text-red-500">{error}</p>
+                    </motion.div>
+                  ) : space ? (
+                    <motion.div
+                      key={`space-${spaceSlug}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="space-y-6"
+                    >
+                      {/* Space Header/Banner Section */}
+                      {spaceBanner ? (
+                          <AnimatePresence mode="wait">
+                            <SpaceBanner 
+                              key="space-banner"
+                              show={spaceBanner} 
+                              bannerUrl={spaceBannerUrl} 
+                              spaceName={space.name} 
+                            />
+                          </AnimatePresence>
+                      ) : (
+                          <div className="mb-6">
+                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                              {space.name}
+                            </h1>
+                            {space.description && (
+                              <p className="text-gray-600 dark:text-gray-400">{space.description}</p>
+                            )}
+                          </div>
+                      )}
+                      
                     {/* Main Content */}
-                    <SpaceCmsContent 
-                      siteSD={siteSD}
-                      space={space}
-                      site={site}
+                        <SpaceCmsContent 
+                          siteSD={siteSD}
+                          space={space}
+                          site={site}
                       eventsLayout={eventsLayout}
                       cardSize={cardSize}
                       cardStyle={cardStyle}
-                    />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="no-content"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.2 }}
-                    className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
-                  >
-                    <p className="text-gray-600 dark:text-gray-400">
-                      No content available for this space.
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                        />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="no-content"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.2 }}
+                      className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
+                    >
+                        <p className="text-gray-600 dark:text-gray-400">
+                          No content available for this space.
+                        </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Footer */}
-      {renderFooter()}
-    </div>
+        {/* Footer */}
+          {renderFooter()}
+      </div>
   );
 } 

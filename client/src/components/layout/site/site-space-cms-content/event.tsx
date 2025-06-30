@@ -513,29 +513,7 @@ export function EventContent({ siteSD, space, site, eventsLayout, cardSize, card
         </section>
       )}
 
-      {/* Categories Section */}
-      <section className="categories" data-section-name="Event Categories">
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
-            Browse by Category
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 text-sm">
-            Find events that match your interests
-          </p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {CATEGORIES.map((category, index) => (
-            <CategoryCard
-              key={index}
-              icon={category.icon}
-              title={category.title}
-              count={category.count}
-              colorScheme={category.colorScheme}
-              onClick={() => handleCategoryClick(category.title)}
-            />
-          ))}
-        </div>
-      </section>
+
 
             {/* Events Controls & Display */}
       <section className="events-container" data-section-name="Events content">
@@ -629,6 +607,30 @@ export function EventContent({ siteSD, space, site, eventsLayout, cardSize, card
             )}
         </div>
       )}
+      </section>
+
+            {/* Categories Section */}
+            <section className="categories" data-section-name="Event Categories">
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
+            Browse by Category
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
+            Find events that match your interests
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {CATEGORIES.map((category, index) => (
+            <CategoryCard
+              key={index}
+              icon={category.icon}
+              title={category.title}
+              count={category.count}
+              colorScheme={category.colorScheme}
+              onClick={() => handleCategoryClick(category.title)}
+            />
+          ))}
+        </div>
       </section>
     </div>
   );

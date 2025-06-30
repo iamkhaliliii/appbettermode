@@ -522,7 +522,7 @@ export const getWidgetPreview = (widget: Widget & { categoryColor?: string }) =>
       <div className="text-center">
         <widget.icon className="w-8 h-8 mx-auto mb-2 text-gray-600 dark:text-gray-400" />
         <div className="text-xs text-gray-500">Widget Preview</div>
-      </div>
+        </div>
       </div>
     );
   }; 

@@ -56,12 +56,12 @@ const SizeIcon = ({ size, className = "w-3.5 h-3.5" }: { size: WidgetSize; class
           y="1" 
           width="6" 
           height="6" 
-          rx="1" 
+        rx="1" 
           fill={fillLevel >= level ? "currentColor" : "none"}
-          stroke="currentColor" 
-          strokeWidth="1"
+        stroke="currentColor" 
+        strokeWidth="1"
           opacity={fillLevel >= level ? 1 : 0.3}
-        />
+      />
       ))}
     </svg>
   );
@@ -311,124 +311,124 @@ export function MainContentArea({ children, isWidgetMode, onDragStateChange, onW
     const isDragged = draggedWidget === widget.id;
     
     return (
-      <div
-        onDragOver={(e) => {
-          if (draggedWidget && draggedWidget !== widget.id) {
-            e.preventDefault();
-            e.stopPropagation();
-            const rect = e.currentTarget.getBoundingClientRect();
-            const dropPosition = e.clientX < rect.left + rect.width / 2 ? 'left' : 'right';
-            setDropIndicator({ widgetId: widget.id, position: dropPosition });
-          }
-        }}
-        onDragLeave={() => setDropIndicator(null)}
-        onDrop={(e) => {
+    <div
+      onDragOver={(e) => {
+        if (draggedWidget && draggedWidget !== widget.id) {
           e.preventDefault();
-          e.stopPropagation();
-          setDropIndicator(null);
+            e.stopPropagation();
           const rect = e.currentTarget.getBoundingClientRect();
           const dropPosition = e.clientX < rect.left + rect.width / 2 ? 'left' : 'right';
-          handleWidgetDrop(e, widget, dropPosition);
-        }}
+          setDropIndicator({ widgetId: widget.id, position: dropPosition });
+        }
+      }}
+        onDragLeave={() => setDropIndicator(null)}
+      onDrop={(e) => {
+        e.preventDefault();
+          e.stopPropagation();
+        setDropIndicator(null);
+        const rect = e.currentTarget.getBoundingClientRect();
+        const dropPosition = e.clientX < rect.left + rect.width / 2 ? 'left' : 'right';
+        handleWidgetDrop(e, widget, dropPosition);
+      }}
         className="relative w-full h-full flex"
-      >
-        {/* Drop Indicator */}
-        {dropIndicator?.widgetId === widget.id && (
+    >
+      {/* Drop Indicator */}
+      {dropIndicator?.widgetId === widget.id && (
           <div className={`absolute top-0 bottom-0 w-2 bg-green-500 z-20 rounded-full shadow-lg ${
             dropIndicator.position === 'left' ? '-left-2' : '-right-2'
           }`} />
-        )}
-        
-        <motion.div
-          layout
+      )}
+      
+      <motion.div
+        layout
           initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ 
+        animate={{ 
             opacity: isDragged ? 0.5 : 1, 
             scale: isDragged ? 0.95 : 1
-          }}
+        }}
           transition={{ type: "spring", stiffness: 300, damping: 25 }}
-          className={`bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 relative group w-full flex-1 transition-all duration-200 hover:shadow-md ${
+        className={`bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 relative group w-full flex-1 transition-all duration-200 hover:shadow-md ${
             isDragged ? 'ring-2 ring-blue-500 ring-opacity-50' : ''
           } ${dropIndicator?.widgetId === widget.id ? 'ring-2 ring-green-500 ring-opacity-60' : ''}`}
           style={{ '--category-color': widget.categoryColor || '#6B7280' } as React.CSSProperties}
         >
           {/* Action Buttons */}
-          {isWidgetMode && (
+        {isWidgetMode && (
             <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-lg border border-gray-200/50 dark:border-gray-600/50 shadow-lg p-1">
-              {/* Settings */}
-              <button
+            {/* Settings */}
+            <button
                 onClick={() => onWidgetSettingsClick?.(widget)}
-                className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
-                title="Settings"
-              >
-                <Settings className="w-3.5 h-3.5" />
-              </button>
-              
-              {/* Size Toggle */}
+              className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
+              title="Settings"
+            >
+              <Settings className="w-3.5 h-3.5" />
+            </button>
+            
+            {/* Size Toggle */}
               <button
-                onClick={() => {
-                  const sizes: WidgetSize[] = ['small', 'medium', 'large'];
-                  const currentIndex = sizes.indexOf(widget.size);
-                  const nextSize = sizes[(currentIndex + 1) % sizes.length];
-                  changeWidgetSize(widget.id, nextSize);
-                }}
-                className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded transition-colors"
-                title={`Resize (${getSizeLabel(widget.size)})`}
-              >
+              onClick={() => {
+                const sizes: WidgetSize[] = ['small', 'medium', 'large'];
+                const currentIndex = sizes.indexOf(widget.size);
+                const nextSize = sizes[(currentIndex + 1) % sizes.length];
+                changeWidgetSize(widget.id, nextSize);
+              }}
+              className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30 rounded transition-colors"
+              title={`Resize (${getSizeLabel(widget.size)})`}
+            >
                 <SizeIcon size={widget.size} />
               </button>
-              
-              {/* Drag Handle */}
-              <div
+            
+            {/* Drag Handle */}
+            <div
                 className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 cursor-grab active:cursor-grabbing rounded"
-                title="Drag to reorder"
+              title="Drag to reorder"
                 draggable
                 onDragStart={(e) => handleWidgetDragStart(e, widget.id)}
-                onDragEnd={handleWidgetDragEnd}
-              >
-                <GripVertical className="w-3.5 h-3.5" />
-              </div>
-              
-              {/* Remove */}
-              <button
-                onClick={() => removeWidget(widget.id)}
-                className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
-                title="Remove widget"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
+              onDragEnd={handleWidgetDragEnd}
+            >
+              <GripVertical className="w-3.5 h-3.5" />
             </div>
-          )}
+            
+            {/* Remove */}
+            <button
+              onClick={() => removeWidget(widget.id)}
+              className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
+              title="Remove widget"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
 
           {/* Widget Content */}
-          <div className="flex flex-col items-center justify-center flex-1 text-center p-4">
-            <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center justify-center flex-1 text-center p-4">
+          <div className="flex flex-col items-center gap-3">
               <IconComponent 
-                className="w-8 h-8 transition-colors duration-200" 
+                  className="w-8 h-8 transition-colors duration-200" 
                 style={{ color: widget.categoryColor || '#6B7280' }}
               />
-              <div>
+            <div>
                 <h3 
-                  className="text-lg font-semibold transition-colors duration-200"
+                className="text-lg font-semibold transition-colors duration-200"
                   style={{ color: widget.categoryColor || '#374151' }}
-                >
-                  {widget.type}
+              >
+                {widget.type}
                 </h3>
                 <span 
-                  className="px-2 py-1 text-xs rounded-full font-medium"
-                  style={{
+                className="px-2 py-1 text-xs rounded-full font-medium"
+                style={{
                     backgroundColor: `${widget.categoryColor || '#6B7280'}20`,
-                    color: widget.categoryColor || '#6B7280'
-                  }}
-                >
-                  {getSizeLabel(widget.size)}
+                  color: widget.categoryColor || '#6B7280'
+                }}
+              >
+                {getSizeLabel(widget.size)}
                 </span>
-              </div>
             </div>
           </div>
-        </motion.div>
-      </div>
-    );
+        </div>
+      </motion.div>
+    </div>
+  );
   }, [draggedWidget, dropIndicator, isWidgetMode, onWidgetSettingsClick, changeWidgetSize, handleWidgetDragStart, handleWidgetDragEnd, removeWidget]);
 
   // Arrange widgets into rows - simplified
@@ -490,13 +490,13 @@ export function MainContentArea({ children, isWidgetMode, onDragStateChange, onW
               <div className="flex flex-col items-center gap-3 mb-4">
                 {isActive ? (
                   <div className="flex items-center gap-3 text-blue-600 dark:text-blue-400 font-medium">
-                    <Plus className="w-5 h-5" />
+                      <Plus className="w-5 h-5" />
                     <span className="text-base">Drop widget {zone} content</span>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center gap-2 text-gray-500 dark:text-gray-400">
                     <div className="flex items-center gap-2 mb-1">
-                      <Plus className="w-4 h-4" />
+                        <Plus className="w-4 h-4" />
                       <span className="text-sm font-medium">Drop widgets {zone} content</span>
                     </div>
                     <p className="text-xs text-center opacity-70">
@@ -517,8 +517,8 @@ export function MainContentArea({ children, isWidgetMode, onDragStateChange, onW
                   style={{
                     gridTemplateColumns: 'repeat(3, 1fr)',
                     gridAutoRows: '200px'
-                  }}
-                >
+                }}
+              >
                   {row.map((widget) => (
                     <motion.div 
                       key={widget.id} 
@@ -529,9 +529,9 @@ export function MainContentArea({ children, isWidgetMode, onDragStateChange, onW
                       {renderWidget(widget)}
                     </motion.div>
                   ))}
-                </motion.div>
-              ))}
-            </AnimatePresence>
+              </motion.div>
+            ))}
+          </AnimatePresence>
           </motion.div>
         )}
       </div>

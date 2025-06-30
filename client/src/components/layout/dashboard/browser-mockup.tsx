@@ -105,49 +105,49 @@ export function BrowserMockup({
           {/* Undo/Redo buttons */}
           {/* Action Controls */}
           <div className="flex space-x-1">
-            {/* Save Controls */}
-            {hasChanges && (
+          {/* Save Controls */}
+          {hasChanges && (
               <div className="flex items-center space-x-1">
-                <button
-                  onClick={onDiscard}
+              <button
+                onClick={onDiscard}
                   className={cn(
                     "text-xs px-2 rounded-md transition-all duration-300 ease-in-out",
                     isWidgetMode
                       ? "text-blue-100 hover:text-white hover:bg-blue-500"
                       : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
                   )}
-                  disabled={isLoading}
-                >
-                  Discard
-                </button>
-                <button
-                  onClick={onSave}
-                  disabled={!hasChanges || isLoading}
-                  className={cn(
+                disabled={isLoading}
+              >
+                Discard
+              </button>
+              <button
+                onClick={onSave}
+                disabled={!hasChanges || isLoading}
+                className={cn(
                     "flex items-center space-x-1 text-xs px-2  rounded-md transition-all duration-300 ease-in-out",
-                    !hasChanges || isLoading 
+                  !hasChanges || isLoading 
                       ? (isWidgetMode 
                           ? 'text-blue-300 cursor-not-allowed' 
                           : 'text-gray-400 dark:text-gray-600 cursor-not-allowed')
                       : (isWidgetMode 
                           ? 'text-blue-600 bg-white hover:bg-blue-50'
                           : 'text-white bg-blue-600 hover:bg-blue-700')
-                  )}
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="w-3 h-3 animate-spin" />
-                      <span>Saving...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Save className="w-3 h-3" />
-                      <span>Save</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            )}
+                )}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-3 h-3" />
+                    <span>Save</span>
+                  </>
+                )}
+              </button>
+            </div>
+          )}
 
             {/* User View Button */}
             <button

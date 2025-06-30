@@ -303,7 +303,7 @@ export function DisplaySettingsTab() {
       {renderPropertiesSection()}
     </>
   ), [openPageIn, openPageOptions, editingField, handleFieldClick, handleFieldBlur, handleKeyDown, renderPropertiesSection]);
-
+      
   return (
     <div className="space-y-4">
       {/* Tab Navigation */}

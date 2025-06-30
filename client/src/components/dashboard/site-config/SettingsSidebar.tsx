@@ -68,7 +68,7 @@ export function SettingsSidebar({
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
   }, [spacesSlug]);
-
+  
   // Internal states - simplified
   const [internalState, setInternalState] = useState({
     name: displaySpaceName,
@@ -91,6 +91,7 @@ export function SettingsSidebar({
   const [isLoading, setIsLoading] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [isWidgetSettingsMode, setIsWidgetSettingsMode] = useState(false);
+  const [isAddWidgetMode, setIsAddWidgetMode] = useState(false);
 
   // Initial values for change detection
   const initialValues = useMemo(() => ({
@@ -186,10 +187,10 @@ export function SettingsSidebar({
             setSlug={(value) => updateInternalState('slug', value)}
             spaceIconUrl={internalState.spaceIconUrl}
             setSpaceIconUrl={(value) => updateInternalState('spaceIconUrl', value)}
-            spaceBanner={currentSpaceBanner}
-            setSpaceBanner={currentSetSpaceBanner}
-            spaceBannerUrl={currentSpaceBannerUrl}
-            setSpaceBannerUrl={currentSetSpaceBannerUrl}
+          spaceBanner={currentSpaceBanner}
+          setSpaceBanner={currentSetSpaceBanner}
+          spaceBannerUrl={currentSpaceBannerUrl}
+          setSpaceBannerUrl={currentSetSpaceBannerUrl}
             visibility={internalState.visibility}
             setVisibility={(value) => updateInternalState('visibility', value)}
             inviteOnly={internalState.inviteOnly}
@@ -208,13 +209,14 @@ export function SettingsSidebar({
             setWhoCanReact={(value) => updateInternalState('whoCanReact', value)}
             selectedFolder={internalState.selectedFolder}
             setSelectedFolder={(value) => updateInternalState('selectedFolder', value)}
-            isLoading={currentIsLoading}
+          isLoading={currentIsLoading}
           />
         );
 
       case 'widget':
         return <SimpleWidgetTab 
-          onWidgetSettingsModeChange={setIsWidgetSettingsMode} 
+          onWidgetSettingsModeChange={setIsWidgetSettingsMode}
+          onAddWidgetModeChange={setIsAddWidgetMode}
           onLayoutChange={onLayoutChange} 
           onCardSizeChange={onCardSizeChange} 
           onCardStyleChange={onCardStyleChange}
@@ -303,16 +305,16 @@ export function SettingsSidebar({
         
         <div className="border-t border-gray-100 dark:border-gray-700 mb-3"></div>
         
-        {/* Title and Description - only show when not in widget settings mode */}
-        {!isWidgetSettingsMode && (
-          <div>
+        {/* Title and Description - only show when not in widget settings mode or add widget mode */}
+        {!isWidgetSettingsMode && !isAddWidgetMode && (
+        <div>
             <h2 className="px-2 text-lg font-medium text-gray-900 dark:text-white">{tabInfo.title}</h2>
             <p className="px-2 text-xs text-gray-500 dark:text-gray-400 mt-1">{tabInfo.description}</p>
-          </div>
+        </div>
         )}
       </div>
 
-      <div className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent ${!isWidgetSettingsMode ? 'mt-4' : ''}`}>
+      <div className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent ${!isWidgetSettingsMode && !isAddWidgetMode ? 'mt-4' : ''}`}>
         <div className="px-2">
           {renderTabContent()}
         </div>

@@ -60,7 +60,6 @@ export const SpaceSettingsSidebar: React.FC<SpaceSettingsSidebarProps> = memo(({
       const menuItems = useMemo(() => [
       { id: "general", label: "General" },
       { id: "widget", label: "Customize" },
-      { id: "display", label: "Content Layout" },
       { id: "member-management", label: "Member Management" },
     { id: "seo", label: "SEO" },
     { id: "danger", label: "Danger Zone" },
@@ -99,7 +98,6 @@ export const SpaceSettingsSidebar: React.FC<SpaceSettingsSidebarProps> = memo(({
           >
             {item.id === "general" && <Settings className="w-4 h-4 mr-2" />}
             {item.id === "widget" && <Palette className="w-4 h-4 mr-2" />}
-            {item.id === "display" && <Layout className="w-4 h-4 mr-2" />}
             {item.id === "member-management" && <Users className="w-4 h-4 mr-2" />}
             {item.id === "seo" && <Search className="w-4 h-4 mr-2" />}
             {item.id === "danger" && <AlertTriangle className="w-4 h-4 mr-2" />}
