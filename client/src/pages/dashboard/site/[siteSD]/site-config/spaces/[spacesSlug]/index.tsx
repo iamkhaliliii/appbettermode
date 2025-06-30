@@ -70,7 +70,8 @@ export default function SpaceSettingsPage() {
   const [cardSize, setCardSize] = useState('medium');
   const [cardStyle, setCardStyle] = useState('modern');
   
-
+  // Widget mode state
+  const [isAddWidgetMode, setIsAddWidgetMode] = useState(false);
   
   // Browser mockup state - consolidated
   const [browserState, setBrowserState] = useState({
@@ -132,6 +133,12 @@ export default function SpaceSettingsPage() {
     console.log('Card style changed to:', style);
   }, []);
 
+  // Add widget mode handler
+  const handleAddWidgetModeChange = useCallback((isAddWidgetMode: boolean) => {
+    setIsAddWidgetMode(isAddWidgetMode);
+    console.log('Add widget mode:', isAddWidgetMode);
+  }, []);
+
   // Browser state handlers
   const updateBrowserState = useCallback((key: string, value: boolean) => {
     setBrowserState(prev => ({ ...prev, [key]: value }));
@@ -184,6 +191,7 @@ export default function SpaceSettingsPage() {
             onLayoutChange={handleLayoutChange}
             onCardSizeChange={handleCardSizeChange}
             onCardStyleChange={handleCardStyleChange}
+            onAddWidgetModeChange={handleAddWidgetModeChange}
             currentLayout={eventsLayout}
             currentCardSize={cardSize}
             currentCardStyle={cardStyle}
@@ -221,6 +229,7 @@ export default function SpaceSettingsPage() {
                   spaceBanner={spaceBanner}
                   spaceBannerUrl={spaceBannerUrl}
                   isWidgetMode={activeTab === 'widget' && sidebarVisible}
+                  isAddWidgetMode={isAddWidgetMode}
                   eventsLayout={eventsLayout}
                   cardSize={cardSize}
                   cardStyle={cardStyle}

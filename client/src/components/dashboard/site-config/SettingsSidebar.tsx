@@ -27,6 +27,7 @@ interface SettingsSidebarProps {
   onLayoutChange?: (layout: string) => void;
   onCardSizeChange?: (cardSize: string) => void;
   onCardStyleChange?: (cardStyle: string) => void;
+  onAddWidgetModeChange?: (isAddWidgetMode: boolean) => void;
   // Current values for widget tab
   currentLayout?: string;
   currentCardSize?: string;
@@ -53,6 +54,7 @@ export function SettingsSidebar({
   onLayoutChange,
   onCardSizeChange,
   onCardStyleChange,
+  onAddWidgetModeChange,
   currentLayout = 'card',
   currentCardSize = 'medium',
   currentCardStyle = 'modern'
@@ -132,6 +134,13 @@ export function SettingsSidebar({
     const hasChanges = JSON.stringify(currentValues) !== JSON.stringify(initialValues);
     currentSetHasChanges(hasChanges);
   }, [internalState, currentSpaceBanner, currentSpaceBannerUrl, initialValues, currentSetHasChanges]);
+
+  // Notify parent about add widget mode changes
+  useEffect(() => {
+    if (onAddWidgetModeChange) {
+      onAddWidgetModeChange(isAddWidgetMode);
+    }
+  }, [isAddWidgetMode, onAddWidgetModeChange]);
 
   // Optimized change handlers
   const updateInternalState = useCallback((field: string, value: any) => {

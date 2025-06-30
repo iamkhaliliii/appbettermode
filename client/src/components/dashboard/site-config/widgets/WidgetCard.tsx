@@ -112,7 +112,7 @@ const WidgetPreviewTooltip: React.FC<WidgetPreviewTooltipProps> = ({ widget, chi
           avoidCollisions={true}
           collisionPadding={8}
           
-          className="w-60 p-3 border-0 shadow-lg rounded-lg"
+          className="w-60 p-0 border-0 shadow-lg rounded-lg overflow-hidden"
           style={{ 
             background: 'rgba(0, 0, 0, 0.9)',
             backdropFilter: 'blur(12px)',
@@ -120,7 +120,27 @@ const WidgetPreviewTooltip: React.FC<WidgetPreviewTooltipProps> = ({ widget, chi
             position: 'fixed'
           }}
         >
-          <div className="flex flex-col items-start gap-3 text-left">
+          {/* Enterprise Header for locked widgets */}
+          {widgetLocked && (
+            <div 
+              className="w-full px-3 py-2"
+              style={{
+                background: `linear-gradient(135deg, ${categoryStyles.iconColor}90, ${categoryStyles.iconColor}B0)`
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Lock className="w-3 h-3 text-white" />
+                  <span className="text-xs font-medium text-white">Enterprise Only</span>
+                </div>
+                <button className="text-[10px] font-medium text-white/90 hover:text-white bg-white/20 hover:bg-white/30 px-2 py-0.5 rounded-md transition-colors">
+                  Upgrade Plan
+                </button>
+              </div>
+            </div>
+          )}
+          
+          <div className="flex flex-col items-start gap-3 text-left p-3">
             {/* Widget Banner Preview */}
             <div 
               className="w-full h-20 rounded-md relative overflow-hidden"
@@ -235,6 +255,34 @@ export default function WidgetCard({
     }
   };
 
+  // Drag handlers for Add Widget mode
+  const handleDragStart = (e: React.DragEvent) => {
+    if (!showAddButton || widgetLocked) {
+      e.preventDefault();
+      return;
+    }
+    
+    e.dataTransfer.setData('application/json', JSON.stringify(widget));
+    e.dataTransfer.effectAllowed = 'copy';
+    
+    // Set drag image to be the card itself
+    const dragImage = e.currentTarget.cloneNode(true) as HTMLElement;
+    dragImage.style.transform = 'rotate(3deg)';
+    dragImage.style.opacity = '0.8';
+    document.body.appendChild(dragImage);
+    e.dataTransfer.setDragImage(dragImage, 50, 50);
+    
+    // Clean up drag image after drag starts
+    setTimeout(() => {
+      document.body.removeChild(dragImage);
+    }, 0);
+  };
+
+  const handleDragEnd = (e: React.DragEvent) => {
+    // Reset any drag-related styling
+    e.currentTarget.classList.remove('dragging');
+  };
+
   const categoryStyles = getUnifiedCategoryStyles(widget);
 
   return (
@@ -247,6 +295,7 @@ export default function WidgetCard({
             : 'hover:scale-105'
           }
           ${widgetLocked ? 'opacity-60' : 'hover:shadow-lg'}
+          ${showAddButton && !widgetLocked ? 'cursor-grab active:cursor-grabbing' : ''}
         `}
         style={{ 
           borderRadius: widgetLocked ? '8px' : categoryStyles.borderRadius,
@@ -261,7 +310,19 @@ export default function WidgetCard({
             : categoryStyles.boxShadow
         }}
         onClick={handleClick}
+        draggable={showAddButton && !widgetLocked}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
       >
+        {/* Drag indicator overlay */}
+        {showAddButton && !widgetLocked && (
+          <div className="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
+            <div className="bg-blue-500/90 text-white px-2 py-1 rounded text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-200 delay-300">
+              Drag to add
+            </div>
+          </div>
+        )}
+
         {/* Card Content Layout */}
         <div className="relative w-full h-full flex flex-col items-start justify-center p-3">
           

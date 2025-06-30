@@ -7,6 +7,10 @@ import { SpaceBanner } from "@/components/layout/site/site-space-cms-content/Spa
 import { ContentSkeleton } from "./ContentSkeleton";
 import { useSiteData } from "@/lib/SiteDataContext";
 import { getApiBaseUrl } from "@/lib/utils";
+import { WidgetDropZone } from './widgets/WidgetDropZone';
+import { AvailableWidget } from './widgets/types';
+import { FeaturedEventWidget } from '@/components/features/events/FeaturedEventWidget';
+import { GeneralWidgetPopover } from './widgets/GeneralWidgetPopover';
 
 // Interface for space data
 interface Space {
@@ -26,9 +30,17 @@ interface SpaceContentProps {
   spaceBanner?: boolean;
   spaceBannerUrl?: string;
   isWidgetMode?: boolean;
+  isAddWidgetMode?: boolean;
   eventsLayout?: string;
   cardSize?: string;
   cardStyle?: string;
+}
+
+interface DroppedWidget {
+  id: string;
+  widget: AvailableWidget;
+  position: { x: number; y: number };
+  timestamp: number;
 }
 
 /**
@@ -40,6 +52,7 @@ export function SpaceContent({
   spaceBanner, 
   spaceBannerUrl,
   isWidgetMode = false,
+  isAddWidgetMode = false,
   eventsLayout = 'card',
   cardSize = 'medium',
   cardStyle = 'modern'
@@ -55,6 +68,9 @@ export function SpaceContent({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedElement, setSelectedElement] = useState<HTMLElement | null>(null);
+
+  // State for dropped widgets
+  const [droppedWidgets, setDroppedWidgets] = useState<DroppedWidget[]>([]);
 
   // Set up site data from context
   useEffect(() => {
@@ -390,34 +406,190 @@ export function SpaceContent({
   }, [site, spaceSlug, cmsTypes]);
 
   // Performance optimization: Render the footer outside the AnimatePresence
-  const renderFooter = useCallback(() => (
-    <footer className="site-footer bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 py-4 mt-auto" data-section-name="Site Footer">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center space-x-2 mb-4 md:mb-0">
-            {site?.logo_url ? (
-              <img src={site.logo_url} alt={site.name} className="h-6 w-6 object-contain" />
-            ) : (
-              <div 
-                className="h-6 w-6 rounded-md flex items-center justify-center font-bold text-white"
-                style={{ 
-                  backgroundColor: site?.brand_color || '#6366f1',
-                }}
-              >
-                {site?.name?.substring(0, 1) || 'S'}
-              </div>
-            )}
-            <span className="text-sm font-semibold text-gray-900 dark:text-white">
-              {site?.name || 'Community'}
-            </span>
-          </div>
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            © {new Date().getFullYear()} {site?.name || 'Community'} - Powered by BetterMode
+  const renderFooter = useCallback(() => {
+    const footerContent = (
+      <footer className="site-footer bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 py-4 mt-auto" 
+              data-section-name="Site Footer">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center space-x-2 mb-4 md:mb-0">
+              {site?.logo_url ? (
+                <img src={site.logo_url} alt={site.name} className="h-6 w-6 object-contain" />
+              ) : (
+                <div 
+                  className="h-6 w-6 rounded-md flex items-center justify-center font-bold text-white"
+                  style={{ 
+                    backgroundColor: site?.brand_color || '#6366f1',
+                  }}
+                >
+                  {site?.name?.substring(0, 1) || 'S'}
+                </div>
+              )}
+              <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                {site?.name || 'Community'}
+              </span>
+            </div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              © {new Date().getFullYear()} {site?.name || 'Community'} - Powered by BetterMode
+            </div>
           </div>
         </div>
-      </div>
-    </footer>
-  ), [site]);
+      </footer>
+    );
+
+    return isWidgetMode ? (
+      <GeneralWidgetPopover widgetName="Site Footer">
+        {footerContent}
+      </GeneralWidgetPopover>
+    ) : (
+      footerContent
+    );
+  }, [site, isWidgetMode]);
+
+  // Widget drop handler
+  const handleWidgetDrop = useCallback((widget: AvailableWidget, position: { x: number; y: number }) => {
+    console.log('Widget dropped:', widget, 'at position:', position);
+    
+    // Create new dropped widget
+    const newWidget: DroppedWidget = {
+      id: `dropped-${widget.id}-${Date.now()}`,
+      widget,
+      position,
+      timestamp: Date.now()
+    };
+    
+    // Add to dropped widgets state
+    setDroppedWidgets(prev => [...prev, newWidget]);
+    
+    // Show success notification
+    console.log(`Added ${widget.name} widget to the page!`);
+  }, []);
+
+  // Render dropped widget component
+  const renderDroppedWidget = useCallback((droppedWidget: DroppedWidget) => {
+    const { widget, position } = droppedWidget;
+    
+    switch (widget.id) {
+      case 'upcoming-events':
+      case 'upcoming-events-trending':
+        return (
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              {widget.name}
+            </h3>
+            <FeaturedEventWidget isDashboard={false} />
+          </div>
+        );
+      
+      case 'featured-events':
+        return (
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Featured Events
+            </h3>
+            <FeaturedEventWidget isDashboard={false} />
+          </div>
+        );
+      
+      case 'hero-banner':
+      case 'hero-banner-trending':
+        return (
+          <div className="mb-6">
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8 rounded-lg">
+              <h2 className="text-3xl font-bold mb-4">Welcome to Our Community</h2>
+              <p className="text-lg opacity-90 mb-6">Discover amazing events and connect with like-minded people.</p>
+              <button className="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                Get Started
+              </button>
+            </div>
+          </div>
+        );
+      
+      case 'calendar':
+        return (
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Event Calendar
+            </h3>
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700">
+              <div className="grid grid-cols-7 gap-2 text-center">
+                <div className="font-semibold text-gray-500 dark:text-gray-400 p-2">Sun</div>
+                <div className="font-semibold text-gray-500 dark:text-gray-400 p-2">Mon</div>
+                <div className="font-semibold text-gray-500 dark:text-gray-400 p-2">Tue</div>
+                <div className="font-semibold text-gray-500 dark:text-gray-400 p-2">Wed</div>
+                <div className="font-semibold text-gray-500 dark:text-gray-400 p-2">Thu</div>
+                <div className="font-semibold text-gray-500 dark:text-gray-400 p-2">Fri</div>
+                <div className="font-semibold text-gray-500 dark:text-gray-400 p-2">Sat</div>
+                {Array.from({ length: 35 }, (_, i) => (
+                  <div key={i} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded cursor-pointer">
+                    {i + 1 <= 31 ? i + 1 : ''}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      
+      case 'title':
+        return (
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Your Custom Title
+            </h2>
+          </div>
+        );
+      
+      case 'image':
+        return (
+          <div className="mb-6">
+            <img 
+              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=400&fit=crop&auto=format&q=80"
+              alt="Sample Image"
+              className="w-full h-48 object-cover rounded-lg"
+            />
+          </div>
+        );
+      
+      case 'video':
+        return (
+          <div className="mb-6">
+            <div className="bg-gray-900 rounded-lg overflow-hidden">
+              <div className="aspect-video bg-gray-800 flex items-center justify-center">
+                <div className="text-white text-center">
+                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z"/>
+                    </svg>
+                  </div>
+                  <p className="text-lg font-semibold">Sample Video</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      
+      case 'button':
+        return (
+          <div className="mb-6">
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+              Click Me
+            </button>
+          </div>
+        );
+
+      default:
+        return (
+          <div className="mb-6 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
+            <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+              {widget.name}
+            </h4>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              {widget.description || 'This widget will be implemented soon.'}
+            </p>
+          </div>
+        );
+    }
+  }, []);
 
   // Early return if no site data
   if (!site) {
@@ -428,11 +600,32 @@ export function SpaceContent({
 
   // Layout with conditional widget mode
   return (
-    <div className={`pb-8 flex flex-col bg-gray-50 dark:bg-gray-900 preview-container ${isWidgetMode ? 'widget-mode' : ''}`}>
+    <WidgetDropZone 
+      onDrop={handleWidgetDrop} 
+      isAddWidgetMode={isAddWidgetMode}
+      className={`pb-8 flex flex-col bg-gray-50 dark:bg-gray-900 preview-container ${isWidgetMode ? 'widget-mode' : ''}`}
+    >
       
 
         {/* Site Header - sticky */}
-      <div className="site-header sticky top-0 z-10 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800" data-section-name="Site Header">
+        {isWidgetMode ? (
+          <GeneralWidgetPopover widgetName="Site Header">
+            <div className="site-header sticky top-0 z-10 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800" 
+                 data-section-name="Site Header">
+              <SiteHeader 
+                siteSD={siteSD}
+                site={site}
+                isMenuOpen={isMenuOpen}
+                setIsMenuOpen={setIsMenuOpen}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                handleSearch={handleSearch}
+              />
+            </div>
+          </GeneralWidgetPopover>
+        ) : (
+          <div className="site-header sticky top-0 z-10 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800" 
+               data-section-name="Site Header">
             <SiteHeader 
               siteSD={siteSD}
               site={site}
@@ -442,19 +635,65 @@ export function SpaceContent({
               setSearchQuery={setSearchQuery}
               handleSearch={handleSearch}
             />
-        </div>
+          </div>
+        )}
 
         {/* Main Content */}
         <div className="flex-1 min-h-0">
           <div className="container mx-auto px-4 h-full">
             <div className="flex flex-col md:flex-row gap-6 h-full">
               {/* Sidebar - sticky */}
-            <div className="site-sidebar md:sticky md:top-6 md:self-start" data-section-name="Site Sidebar">
+              {isWidgetMode ? (
+                <GeneralWidgetPopover widgetName="Site Sidebar">
+                  <div className="site-sidebar md:sticky md:top-6 md:self-start" 
+                       data-section-name="Site Sidebar">
+                    <SiteSidebar siteSD={siteSD} activePage={spaceSlug} />
+                  </div>
+                </GeneralWidgetPopover>
+              ) : (
+                <div className="site-sidebar md:sticky md:top-6 md:self-start" 
+                     data-section-name="Site Sidebar">
                   <SiteSidebar siteSD={siteSD} activePage={spaceSlug} />
-              </div>
+                </div>
+              )}
 
               {/* Main content area */}
               <div className="flex-1 p-4 md:p-6">
+                {/* Dropped Widgets - Show above main content */}
+                {droppedWidgets.length > 0 && (
+                  <div className="mb-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                        Added Widgets ({droppedWidgets.length})
+                      </h3>
+                      <button 
+                        onClick={() => setDroppedWidgets([])}
+                        className="text-xs text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                      >
+                        Clear All
+                      </button>
+                    </div>
+                    <div className="space-y-4">
+                      {droppedWidgets.map((droppedWidget) => (
+                        <div 
+                          key={droppedWidget.id}
+                          className="relative group border border-blue-200 dark:border-blue-800 rounded-lg p-4 bg-blue-50/50 dark:bg-blue-900/20"
+                        >
+                          {/* Remove button */}
+                          <button
+                            onClick={() => setDroppedWidgets(prev => prev.filter(w => w.id !== droppedWidget.id))}
+                            className="absolute top-2 right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            ×
+                          </button>
+                          
+                          {renderDroppedWidget(droppedWidget)}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <AnimatePresence mode="wait">
                   {isContentLoading ? (
                     <motion.div
@@ -538,6 +777,6 @@ export function SpaceContent({
 
         {/* Footer */}
           {renderFooter()}
-      </div>
+      </WidgetDropZone>
   );
 } 

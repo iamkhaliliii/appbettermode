@@ -11,6 +11,8 @@ export {
 export { default as WidgetCard } from './WidgetCard';
 export { WidgetGallery } from './WidgetGallery';
 export { WidgetSection } from './WidgetSection';
+export { WidgetDropZone } from './WidgetDropZone';
+export { GeneralWidgetPopover } from './GeneralWidgetPopover';
 
 // Data
 export { widgetSections, availableWidgets } from './widgetData';

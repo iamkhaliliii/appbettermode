@@ -44,6 +44,7 @@ export function WidgetGallery({ availableWidgets, onAddWidget, onBack }: WidgetG
                       key={widget.id}
                       widget={widget}
                       onAdd={(w) => onAddWidget(w as AvailableWidget)}
+                      showAddButton={true}
                     />
                   ))}
                 </div>

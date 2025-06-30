@@ -281,6 +281,24 @@ export function WidgetModeWrapper({ isActive, children, isDragging = false }: Wi
               background-color: rgba(59, 130, 246, 0.05) !important;
               box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15) !important;
             }
+
+            /* Base Sections - Purple Theme */
+            .widget-mode-active .site-header,
+            .widget-mode-active .site-sidebar, 
+            .widget-mode-active .site-footer {
+              border: 1px solid rgba(147, 51, 234, 0.3) !important;
+              filter: none !important;
+              opacity: 1 !important;
+              pointer-events: auto !important;
+            }
+
+            .widget-mode-active .site-header:hover,
+            .widget-mode-active .site-sidebar:hover,
+            .widget-mode-active .site-footer:hover {
+              border-color: rgba(147, 51, 234, 0.5) !important;
+              background-color: rgba(147, 51, 234, 0.05) !important;
+              box-shadow: 0 2px 8px rgba(147, 51, 234, 0.15) !important;
+            }
             
             .widget-mode-active [data-widget-type]::after {
               content: attr(data-widget-type) !important;
@@ -297,6 +315,13 @@ export function WidgetModeWrapper({ isActive, children, isDragging = false }: Wi
               transition: opacity 0.2s ease !important;
               pointer-events: none !important;
               z-index: 10 !important;
+            }
+
+            /* Base Sections Widget Type Labels - Purple */
+            .widget-mode-active .site-header[data-widget-type]::after,
+            .widget-mode-active .site-sidebar[data-widget-type]::after,
+            .widget-mode-active .site-footer[data-widget-type]::after {
+              background: rgba(147, 51, 234, 0.9) !important;
             }
             
             .widget-mode-active [data-widget-type]:hover::after {

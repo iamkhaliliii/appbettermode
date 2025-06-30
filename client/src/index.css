@@ -228,40 +228,52 @@
     padding: 1rem !important;
   }
   
-  /* Clean hover state - subtle blue border */
+  /* Base Sections - Purple Default Dashed Border */
+  .widget-mode .site-header,
+  .widget-mode .site-sidebar,
+  .widget-mode .site-footer {
+    border: 2px dashed rgba(147, 51, 234, 0.4) !important; /* Purple dashed border */
+    box-shadow: 0 2px 8px rgba(147, 51, 234, 0.05) !important; /* Purple shadow */
+  }
+  
+  /* Widget Mode Hover Effects */
+  .widget-hover {
+    border: 2px solid rgba(59, 130, 246, 0.5) !important;
+    background-color: rgba(59, 130, 246, 0.05) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15) !important;
+    position: relative !important;
+    transition: all 0.2s ease !important;
+  }
+  
+  /* Base Sections - Purple Theme */
   .site-header.widget-hover,
   .site-sidebar.widget-hover,
-  .featured-events.widget-hover,
-  .categories.widget-hover,
-  .events-container.widget-hover,
-  .site-footer.widget-hover,
-  [data-widget-section].widget-hover {
-    outline: 2px solid #3b82f6 !important;
-    outline-offset: 2px !important;
-    background-color: rgba(59, 130, 246, 0.02) !important;
+  .site-footer.widget-hover {
+    border: 2px solid rgba(147, 51, 234, 0.5) !important; /* Purple border */
+    background-color: rgba(147, 51, 234, 0.05) !important; /* Purple background */
+    box-shadow: 0 4px 12px rgba(147, 51, 234, 0.15) !important; /* Purple shadow */
+  }
+  
+  .widget-selected {
+    border: 2px solid #3b82f6 !important;
+    background-color: rgba(59, 130, 246, 0.08) !important;
     border-radius: 8px !important;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2) !important;
+    position: relative !important;
     z-index: 10 !important;
   }
   
-  /* Distinct selection state - solid blue border */
+  /* Base Sections Selected - Purple Theme */
   .site-header.selected-element,
   .site-sidebar.selected-element,
-  .featured-events.selected-element,
-  .categories.selected-element,
-  .events-container.selected-element,
-  .site-footer.selected-element,
-  [data-widget-section].selected-element,
-  .widget-selected {
-    outline: 3px solid #1d4ed8 !important;
-    outline-offset: 2px !important;
-    background-color: rgba(29, 78, 216, 0.05) !important;
-    border-radius: 8px !important;
-    z-index: 20 !important;
+  .site-footer.selected-element {
+    border: 2px solid #9333ea !important; /* Purple border */
+    background-color: rgba(147, 51, 234, 0.08) !important; /* Purple background */
+    box-shadow: 0 4px 16px rgba(147, 51, 234, 0.2) !important; /* Purple shadow */
   }
   
-  /* Clean section labels */
   .widget-hover::after,
-  .selected-element::after,
   .widget-selected::after {
     content: attr(data-section-name);
     position: absolute !important;
@@ -282,6 +294,64 @@
     transition: all 0.15s ease !important;
   }
   
+  /* Base Sections Labels - Purple Theme with General Widget Badge */
+  .site-header.widget-hover::after,
+  .site-sidebar.widget-hover::after,
+  .site-footer.widget-hover::after,
+  .site-header.selected-element::after,
+  .site-sidebar.selected-element::after,
+  .site-footer.selected-element::after {
+    background: #9333ea !important; /* Purple background for labels */
+    content: attr(data-section-name) " • General Widget" !important;
+    min-width: max-content !important;
+    white-space: nowrap !important;
+  }
+  
+  /* General Widget Info Badge - Info Icon */
+  .site-header.widget-hover::before,
+  .site-sidebar.widget-hover::before,
+  .site-footer.widget-hover::before {
+    content: "ℹ️" !important; /* Info icon for base sections */
+    position: absolute !important;
+    top: -6px !important;
+    right: 8px !important;
+    font-size: 12px !important;
+    z-index: 102 !important;
+    pointer-events: auto !important;
+    opacity: 0.9 !important;
+    cursor: help !important;
+  }
+  
+  /* Override the default gear icon for base sections hover */
+  .site-header.widget-hover::before,
+  .site-sidebar.widget-hover::before,
+  .site-footer.widget-hover::before {
+    content: "ℹ️" !important; /* Info icon instead of gear */
+    background: rgba(147, 51, 234, 0.1) !important; /* Purple background for base sections */
+    border-radius: 50% !important;
+    width: 20px !important;
+    height: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 10px !important;
+    position: absolute !important;
+    top: 4px !important;
+    right: 4px !important;
+    z-index: 101 !important;
+    pointer-events: auto !important;
+    opacity: 0.8 !important;
+    cursor: help !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .site-header.widget-hover::before:hover,
+  .site-sidebar.widget-hover::before:hover,
+  .site-footer.widget-hover::before:hover {
+    background: rgba(147, 51, 234, 0.2) !important; /* Purple background for base sections */
+    transform: scale(1.1) !important;
+  }
+  
   .widget-hover::after {
     opacity: 1 !important;
     transform: translateY(0) !important;
@@ -292,6 +362,13 @@
     background: #1d4ed8 !important;
     opacity: 1 !important;
     transform: translateY(0) !important;
+  }
+  
+  /* Base Sections Selected Labels - Purple Theme */
+  .site-header.selected-element::after,
+  .site-sidebar.selected-element::after,
+  .site-footer.selected-element::after {
+    background: #7c3aed !important; /* Darker purple for selected state */
   }
   
   /* Simple icons - gear for hover, check for selected */
@@ -306,6 +383,13 @@
     opacity: 0.8 !important;
   }
   
+  /* Base Sections Icons - Purple Theme */
+  .site-header.widget-hover::before,
+  .site-sidebar.widget-hover::before,
+  .site-footer.widget-hover::before {
+    content: "🔧" !important; /* Different icon for base sections */
+  }
+  
   .selected-element::before,
   .widget-selected::before {
     content: "✅" !important;
@@ -315,6 +399,13 @@
     font-size: 14px !important;
     z-index: 101 !important;
     pointer-events: none !important;
+  }
+  
+  /* Base Sections Selected Icons - Purple Theme */
+  .site-header.selected-element::before,
+  .site-sidebar.selected-element::before,
+  .site-footer.selected-element::before {
+    content: "🟣" !important; /* Purple circle for base sections */
   }
   
   /* Widget Mode Focus Effect - Blur everything except selected */
@@ -338,6 +429,23 @@
     transform: scale(1.02) !important;
     box-shadow: 0 10px 30px rgba(29, 78, 216, 0.2) !important;
     z-index: 50 !important;
+  }
+  
+  /* Base Sections Selected in Widget Mode - Purple Box Shadow */
+  .widget-mode.has-selection .site-header.selected-element,
+  .widget-mode.has-selection .site-sidebar.selected-element,
+  .widget-mode.has-selection .site-footer.selected-element {
+    box-shadow: 0 10px 30px rgba(147, 51, 234, 0.2) !important; /* Purple shadow for base sections */
+    border: 2px solid #9333ea !important; /* Purple border for base sections */
+    background-color: rgba(147, 51, 234, 0.08) !important; /* Purple background for base sections */
+  }
+  
+  /* Override widget mode default border for base sections */
+  .widget-mode .site-header.selected-element,
+  .widget-mode .site-sidebar.selected-element,
+  .widget-mode .site-footer.selected-element {
+    border: 2px solid #9333ea !important; /* Purple border instead of blue dashed */
+    background-color: rgba(147, 51, 234, 0.08) !important; /* Purple background */
   }
   
   /* Blur non-selectable content when selection is active */
@@ -431,4 +539,148 @@
     border-radius: 8px;
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
+}
+
+.dark .widget-mode.has-selection .events-container:not(.selected-element),
+.dark .widget-mode.has-selection .site-footer:not(.selected-element) {
+  filter: blur(1px) !important;
+  opacity: 0.3 !important;
+}
+
+/* Drag and Drop Styles */
+.widget-drop-zone-active {
+  position: relative !important;
+}
+
+.widget-drop-zone-active .site-header,
+.widget-drop-zone-active .site-sidebar,
+.widget-drop-zone-active .site-footer,
+.widget-drop-zone-active nav,
+.widget-drop-zone-active aside {
+  filter: blur(2px) !important;
+  opacity: 0.6 !important;
+  pointer-events: none !important;
+  position: relative !important;
+}
+
+.widget-drop-zone-active .site-header::before,
+.widget-drop-zone-active .site-sidebar::before,
+.widget-drop-zone-active .site-footer::before,
+.widget-drop-zone-active nav::before,
+.widget-drop-zone-active aside::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.3) !important;
+  z-index: 1 !important;
+  border-radius: inherit !important;
+}
+
+.dark .widget-drop-zone-active .site-header::before,
+.dark .widget-drop-zone-active .site-sidebar::before,
+.dark .widget-drop-zone-active .site-footer::before,
+.dark .widget-drop-zone-active nav::before,
+.dark .widget-drop-zone-active aside::before {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Dragging state */
+.cursor-grab {
+  cursor: grab !important;
+}
+
+.cursor-grabbing,
+.active\:cursor-grabbing:active {
+  cursor: grabbing !important;
+}
+
+/* Drag preview */
+.dragging {
+  transform: rotate(3deg) !important;
+  opacity: 0.8 !important;
+  z-index: 1000 !important;
+}
+
+/* Drop indicator animation */
+@keyframes dropPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}
+
+.drop-indicator {
+  animation: dropPulse 1s infinite;
+}
+
+/* Widget gallery drag state */
+.widget-card.draggable:hover {
+  transform: scale(1.02) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.widget-card.dragging {
+  transform: rotate(3deg) scale(0.9) !important;
+  opacity: 0.7 !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* General Widget Popover Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.fade-in-0 {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.zoom-in-95 {
+  animation: zoomIn 0.2s ease-out;
+}
+
+.duration-200 {
+  animation-duration: 0.2s;
+}
+
+/* General Widget Popover Styles */
+.general-widget-popover {
+  backdrop-filter: blur(8px);
+  box-shadow: 
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+.dark .general-widget-popover {
+  box-shadow: 
+    0 20px 25px -5px rgba(0, 0, 0, 0.25),
+    0 10px 10px -5px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
 }
