@@ -7,6 +7,8 @@ export interface Widget {
   description: string;
   status?: 'active' | 'hidden';
   type?: 'system' | 'content';
+  locked?: boolean;
+  category?: string;
   settings?: {
     visibility: boolean;
     customizable: boolean;

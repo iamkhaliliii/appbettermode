@@ -37,6 +37,8 @@ export const widgetSections: WidgetSections = {
       description: 'Navigation and branding',
       status: 'active',
       type: 'system',
+      locked: true,
+      category: 'Enterprise Widgets',
       settings: { visibility: true, customizable: false }
     },
     { 
@@ -46,6 +48,8 @@ export const widgetSections: WidgetSections = {
       description: 'Navigation menu',
       status: 'active',
       type: 'system',
+      locked: false,
+      category: 'Basic Widgets',
       settings: { visibility: true, customizable: true }
     },
     { 
@@ -55,6 +59,8 @@ export const widgetSections: WidgetSections = {
       description: 'Footer information and links',
       status: 'active',
       type: 'system',
+      locked: true,
+      category: 'Enterprise Widgets',
       settings: { visibility: true, customizable: false }
     },
   ],
@@ -66,6 +72,8 @@ export const widgetSections: WidgetSections = {
       description: 'Event listing with search and filters',
       status: 'active',
       type: 'content',
+      locked: false,
+      category: 'Content Widgets',
       settings: { visibility: true, customizable: true }
     },
   ],
@@ -77,6 +85,8 @@ export const widgetSections: WidgetSections = {
       description: 'Event highlights with carousel',
       status: 'active',
       type: 'content',
+      locked: false,
+      category: 'Content Widgets',
       settings: { visibility: true, customizable: true }
     },
     { 
@@ -86,6 +96,8 @@ export const widgetSections: WidgetSections = {
       description: 'Interactive category filters',
       status: 'active',
       type: 'content',
+      locked: false,
+      category: 'Content Widgets',
       settings: { visibility: true, customizable: true }
     },
   ]

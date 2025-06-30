@@ -8,7 +8,7 @@ export {
 } from './WidgetSystem';
 
 // Components
-export { WidgetCard } from './WidgetCard';
+export { default as WidgetCard } from './WidgetCard';
 export { WidgetGallery } from './WidgetGallery';
 export { WidgetSection } from './WidgetSection';
 

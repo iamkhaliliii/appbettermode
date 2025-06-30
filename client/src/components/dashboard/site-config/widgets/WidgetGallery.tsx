@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { WidgetGalleryProps } from './types';
-import { WidgetCard } from './WidgetCard';
+import { WidgetGalleryProps, AvailableWidget } from './types';
+import WidgetCard from './WidgetCard';
 
 export function WidgetGallery({ availableWidgets, onAddWidget, onBack }: WidgetGalleryProps) {
   // Group widgets by category
@@ -43,7 +43,7 @@ export function WidgetGallery({ availableWidgets, onAddWidget, onBack }: WidgetG
                     <WidgetCard
                       key={widget.id}
                       widget={widget}
-                      onAddWidget={onAddWidget}
+                      onAdd={(w) => onAddWidget(w as AvailableWidget)}
                     />
                   ))}
                 </div>
