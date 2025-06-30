@@ -22,7 +22,6 @@ export interface AvailableWidget {
   gridSize: string;
   size: string;
   locked: boolean;
-  color: string;
 }
 
 export interface WidgetSections {
@@ -57,8 +56,13 @@ export interface WidgetTabProps {
 }
 
 export interface WidgetCardProps {
-  widget: AvailableWidget;
-  onAddWidget: (widget: AvailableWidget) => void;
+  widget: AvailableWidget | Widget;
+  onAddWidget?: (widget: AvailableWidget | Widget) => void;
+  onClick?: (widget: AvailableWidget | Widget) => void;
+  isSelected?: boolean;
+  showAddButton?: boolean;
+  onAdd?: (widget: AvailableWidget | Widget) => void;
+  actions?: React.ReactNode;
 }
 
 export interface WidgetSectionProps {

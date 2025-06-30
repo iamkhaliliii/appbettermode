@@ -9,7 +9,22 @@ import {
   Grid2X2,
   MessageSquare,
   Zap,
-  Layers
+  Layers,
+  TrendingUp,
+  Navigation,
+  FileText,
+  Image,
+  Video,
+  MousePointer,
+  ChevronDown,
+  Menu,
+  Megaphone,
+  Code,
+  Monitor,
+  Type,
+  Crown,
+  Trophy,
+  PanelLeft
 } from "lucide-react";
 import { WidgetSections, AvailableWidget } from './types';
 
@@ -77,92 +92,253 @@ export const widgetSections: WidgetSections = {
 };
 
 export const availableWidgets: AvailableWidget[] = [
+  // Trending Widgets
   {
-    id: 'event-countdown',
-    name: 'Event Countdown',
+    id: 'advance-content-block-trending',
+    name: 'Advance Content Block',
+    icon: Layers,
+    description: 'Advanced content management and display',
+    category: 'Trending',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: true
+  },
+  {
+    id: 'upcoming-events-trending',
+    name: 'Upcoming Events',
     icon: Calendar,
-    description: 'Display countdown timer for upcoming events',
-    category: 'Events',
-    gridSize: 'col-span-2 row-span-1',
-    size: '2×1',
-    locked: false,
-    color: 'from-blue-400 via-blue-500 to-indigo-500 dark:from-blue-900/40 dark:via-blue-800/30 dark:to-indigo-800/40'
-  },
-  {
-    id: 'event-gallery',
-    name: 'Event Gallery',
-    icon: LayoutGrid,
-    description: 'Photo gallery for event highlights',
-    category: 'Events',
-    gridSize: 'col-span-2 row-span-1',
-    size: '2×1',
-    locked: false,
-    color: 'from-pink-400 via-rose-500 to-red-500 dark:from-pink-900/40 dark:via-rose-800/30 dark:to-red-800/40'
-  },
-  {
-    id: 'event-speakers',
-    name: 'Event Speakers',
-    icon: Users,
-    description: 'Showcase event speakers and hosts',
-    category: 'Events',
+    description: 'Display upcoming events and schedules',
+    category: 'Trending',
     gridSize: 'col-span-1 row-span-1',
     size: '1×1',
-    locked: true,
-    color: 'from-emerald-400 via-green-500 to-teal-500 dark:from-emerald-900/40 dark:via-green-800/30 dark:to-teal-800/40'
+    locked: false
   },
   {
-    id: 'recent-activities',
-    name: 'Recent Activities',
-    icon: Eye,
-    description: 'Display latest community activities',
-    category: 'Community',
+    id: 'hero-banner-trending',
+    name: 'Hero Banner',
+    icon: Image,
+    description: 'Large promotional banner with call-to-action',
+    category: 'Trending',
     gridSize: 'col-span-1 row-span-1',
     size: '1×1',
-    locked: false,
-    color: 'from-cyan-400 via-sky-500 to-blue-500 dark:from-cyan-900/40 dark:via-sky-800/30 dark:to-blue-800/40'
+    locked: false
   },
   {
-    id: 'popular-posts',
-    name: 'Popular Posts',
-    icon: Heart,
-    description: 'Show most liked and commented posts',
-    category: 'Content',
+    id: 'advance-top-navigation-trending',
+    name: 'Advance Top Navigation',
+    icon: Navigation,
+    description: 'Advanced navigation with dropdown menus',
+    category: 'Trending',
     gridSize: 'col-span-1 row-span-1',
     size: '1×1',
-    locked: false,
-    color: 'from-purple-400 via-violet-500 to-purple-500 dark:from-purple-900/40 dark:via-violet-800/30 dark:to-purple-800/40'
+    locked: true
+  },
+
+  // Content Widgets
+  {
+    id: 'upcoming-events-content',
+    name: 'Upcoming Events',
+    icon: Calendar,
+    description: 'Display upcoming events and schedules',
+    category: 'Content Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: false
   },
   {
-    id: 'user-leaderboard',
-    name: 'User Leaderboard',
-    icon: Users,
-    description: 'Top contributors and active members',
-    category: 'Community',
-    gridSize: 'col-span-4 row-span-1',
-    size: '4×1',
-    locked: true,
-    color: 'from-amber-400 via-yellow-500 to-orange-500 dark:from-amber-900/40 dark:via-yellow-800/30 dark:to-orange-800/40'
-  },
-  {
-    id: 'event-stats',
-    name: 'Event Statistics',
+    id: 'calendar',
+    name: 'Calendar',
     icon: Grid2X2,
-    description: 'Analytics and metrics for events',
-    category: 'Analytics',
-    gridSize: 'col-span-3 row-span-1',
-    size: '3×1',
-    locked: false,
-    color: 'from-slate-400 via-gray-500 to-zinc-500 dark:from-slate-900/40 dark:via-gray-800/30 dark:to-zinc-800/40'
-  },
-  {
-    id: 'newsletter-signup',
-    name: 'Newsletter Signup',
-    icon: MessageSquare,
-    description: 'Email subscription form',
-    category: 'Engagement',
+    description: 'Interactive calendar view for events',
+    category: 'Content Widgets',
     gridSize: 'col-span-1 row-span-1',
     size: '1×1',
-    locked: false,
-    color: 'from-teal-400 via-cyan-500 to-blue-500 dark:from-teal-900/40 dark:via-cyan-800/30 dark:to-blue-800/40'
+    locked: false
+  },
+
+  // Basic Widgets
+  {
+    id: 'title',
+    name: 'Title',
+    icon: Type,
+    description: 'Simple text title or heading',
+    category: 'Basic Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: false
+  },
+  {
+    id: 'logo',
+    name: 'Logo',
+    icon: Crown,
+    description: 'Brand logo or image display',
+    category: 'Basic Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: false
+  },
+  {
+    id: 'image',
+    name: 'Image',
+    icon: Image,
+    description: 'Single image display widget',
+    category: 'Basic Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: false
+  },
+  {
+    id: 'video',
+    name: 'Video',
+    icon: Video,
+    description: 'Embedded video player',
+    category: 'Basic Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: false
+  },
+  {
+    id: 'button',
+    name: 'Button',
+    icon: MousePointer,
+    description: 'Interactive button with custom action',
+    category: 'Basic Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: false
+  },
+  {
+    id: 'accordions',
+    name: 'Accordions',
+    icon: ChevronDown,
+    description: 'Collapsible content sections',
+    category: 'Basic Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: false
+  },
+
+  // Advance Widgets
+  {
+    id: 'menu',
+    name: 'Menu',
+    icon: Menu,
+    description: 'Custom navigation menu',
+    category: 'Advance Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: false
+  },
+  {
+    id: 'hero-banner-advance',
+    name: 'Hero Banner',
+    icon: Image,
+    description: 'Large promotional banner with call-to-action',
+    category: 'Advance Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: false
+  },
+  {
+    id: 'announcement-banner',
+    name: 'Announcement Banner',
+    icon: Megaphone,
+    description: 'Site-wide announcement or notification banner',
+    category: 'Advance Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: false
+  },
+  {
+    id: 'html-script',
+    name: 'HTML Script',
+    icon: Code,
+    description: 'Custom HTML and JavaScript code',
+    category: 'Advance Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: false
+  },
+  {
+    id: 'iframe',
+    name: 'iFrame',
+    icon: Monitor,
+    description: 'Embed external content via iframe',
+    category: 'Advance Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: false
+  },
+
+  // Enterprise Widgets (all locked)
+  {
+    id: 'advance-content-block-enterprise',
+    name: 'Advance Content Block',
+    icon: Layers,
+    description: 'Advanced content management and display',
+    category: 'Enterprise Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: true
+  },
+  {
+    id: 'advance-space-header',
+    name: 'Advance Space Header',
+    icon: LayoutGrid,
+    description: 'Advanced header with multiple features',
+    category: 'Enterprise Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: true
+  },
+  {
+    id: 'advance-leaderboard',
+    name: 'Advance Leaderboard',
+    icon: Trophy,
+    description: 'Advanced ranking and gamification',
+    category: 'Enterprise Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: true
+  },
+  {
+    id: 'advance-footer',
+    name: 'Advance Footer',
+    icon: Layers,
+    description: 'Feature-rich footer with multiple sections',
+    category: 'Enterprise Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: true
+  },
+  {
+    id: 'advance-top-navigation-enterprise',
+    name: 'Advance Top Navigation',
+    icon: Navigation,
+    description: 'Advanced navigation with dropdown menus',
+    category: 'Enterprise Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: true
+  },
+  {
+    id: 'advance-sidebar',
+    name: 'Advance Sidebar',
+    icon: PanelLeft,
+    description: 'Advanced sidebar with multiple widgets',
+    category: 'Enterprise Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: true
+  },
+  {
+    id: 'advance-layout-section',
+    name: 'Advance Layout Section',
+    icon: LayoutGrid,
+    description: 'Complex layout with multiple content areas',
+    category: 'Enterprise Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: true
   }
 ]; 

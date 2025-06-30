@@ -38,7 +38,7 @@ export function WidgetGallery({ availableWidgets, onAddWidget, onBack }: WidgetG
                 <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide px-1">
                   {category}
                 </h4>
-                <div className="grid grid-cols-4 gap-2 w-full">
+                <div className="grid grid-cols-3 gap-3 w-full">
                   {widgets.map((widget) => (
                     <WidgetCard
                       key={widget.id}
