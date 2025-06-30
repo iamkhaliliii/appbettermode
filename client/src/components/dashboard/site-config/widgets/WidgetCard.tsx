@@ -18,12 +18,14 @@ export function WidgetCard({ widget, onAddWidget }: WidgetCardProps) {
           widget.gridSize === 'col-span-1 row-span-1' ? 'aspect-square' : 'h-16'
         } ${
           widget.locked 
-            ? 'cursor-not-allowed opacity-60' 
+            ? 'cursor-not-allowed opacity-50' 
             : 'hover:shadow-md hover:scale-[1.02] cursor-pointer'
         }`}
       >
         {/* Minimal UI Design */}
-        <div className={`relative w-full h-full bg-gradient-to-br ${widget.color} flex items-center justify-center backdrop-blur-sm`}>
+        <div className={`relative w-full h-full bg-gradient-to-br ${widget.color} flex items-center justify-center backdrop-blur-sm ${
+          widget.locked ? 'opacity-30' : ''
+        }`}>
           {/* Background pattern */}
           <div className="absolute inset-0 bg-white/5 dark:bg-black/10">
             <div className="w-full h-full bg-gradient-to-r from-white/10 via-transparent to-white/5 dark:from-white/5 dark:via-transparent dark:to-black/5"></div>
@@ -36,10 +38,8 @@ export function WidgetCard({ widget, onAddWidget }: WidgetCardProps) {
           
           {/* Lock overlay for locked widgets */}
           {widget.locked && (
-            <div className="absolute inset-0 bg-black/50 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center">
-              <div className="w-6 h-6 rounded-full bg-white/95 dark:bg-gray-800/95 flex items-center justify-center shadow-lg">
-                <Lock className="w-3 h-3 text-gray-600 dark:text-gray-300" />
-              </div>
+            <div className="absolute top-1 right-1 w-5 h-5 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg z-20">
+              <Lock className="w-3 h-3 text-gray-700 dark:text-gray-300" />
             </div>
           )}
           
@@ -59,7 +59,11 @@ export function WidgetCard({ widget, onAddWidget }: WidgetCardProps) {
       
       {/* Widget Name Below Card */}
       <div className="pt-1">
-        <h3 className="text-[9px] font-medium text-gray-900 dark:text-white text-left leading-tight break-words">
+        <h3 className={`text-[9px] font-medium text-left leading-tight break-words ${
+          widget.locked 
+            ? 'text-gray-500 dark:text-gray-500' 
+            : 'text-gray-900 dark:text-white'
+        }`}>
           {widget.name}
         </h3>
       </div>

@@ -258,61 +258,63 @@ export function SettingsSidebar({
 
   return (
     <div className="settings-sidebar w-80 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex flex-col" data-exclude-widget="true">
-      {/* Header with buttons - always show */}
-      <div className="p-2 flex flex-col flex-shrink-0">
-        <div className="flex items-center justify-between mb-2">
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-          >
-            <ArrowLeftToLine className="h-3.5 w-3.5" />
-          </button>
-          
-          <div className="flex items-center">
-            {currentHasChanges && activeTab !== 'danger' && !isWidgetSettingsMode && (
-              <button
-                type="button"
-                onClick={externalOnDiscard || handleDiscardChanges}
-                className="px-1 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-              >
-                Discard
-              </button>
-            )}
-            {activeTab !== 'danger' && !isWidgetSettingsMode && (
-              <button
-                type="button"
-                onClick={externalOnSave || (() => {})}
-                className={`px-1 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                  !currentHasChanges || currentIsLoading 
-                    ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed' 
-                    : 'text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20'
-                } ${currentHasChanges ? 'ml-2' : ''}`}
-                disabled={!currentHasChanges || currentIsLoading}
-              >
-                {currentIsLoading ? (
-                  <>
-                    <Loader2 className="mr-1 h-3 w-3 animate-spin inline" />
-                    Saving...
-                  </>
-                ) : (
-                  "Save Changes"
-                )}
-              </button>
-            )}
+      {/* Header with buttons - hide when in add widget mode */}
+      {!isAddWidgetMode && (
+        <div className="p-2 flex flex-col flex-shrink-0">
+          <div className="flex items-center justify-between mb-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
+              <ArrowLeftToLine className="h-3.5 w-3.5" />
+            </button>
+            
+            <div className="flex items-center">
+              {currentHasChanges && activeTab !== 'danger' && !isWidgetSettingsMode && (
+                <button
+                  type="button"
+                  onClick={externalOnDiscard || handleDiscardChanges}
+                  className="px-1 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                >
+                  Discard
+                </button>
+              )}
+              {activeTab !== 'danger' && !isWidgetSettingsMode && (
+                <button
+                  type="button"
+                  onClick={externalOnSave || (() => {})}
+                  className={`px-1 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                    !currentHasChanges || currentIsLoading 
+                      ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed' 
+                      : 'text-primary-600 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20'
+                  } ${currentHasChanges ? 'ml-2' : ''}`}
+                  disabled={!currentHasChanges || currentIsLoading}
+                >
+                  {currentIsLoading ? (
+                    <>
+                      <Loader2 className="mr-1 h-3 w-3 animate-spin inline" />
+                      Saving...
+                    </>
+                  ) : (
+                    "Save Changes"
+                  )}
+                </button>
+              )}
+            </div>
           </div>
+          
+          <div className="border-t border-gray-100 dark:border-gray-700 mb-3"></div>
+          
+          {/* Title and Description - only show when not in widget settings mode */}
+          {!isWidgetSettingsMode && (
+          <div>
+              <h2 className="px-2 text-lg font-medium text-gray-900 dark:text-white">{tabInfo.title}</h2>
+              <p className="px-2 text-xs text-gray-500 dark:text-gray-400 mt-1">{tabInfo.description}</p>
+          </div>
+          )}
         </div>
-        
-        <div className="border-t border-gray-100 dark:border-gray-700 mb-3"></div>
-        
-        {/* Title and Description - only show when not in widget settings mode or add widget mode */}
-        {!isWidgetSettingsMode && !isAddWidgetMode && (
-        <div>
-            <h2 className="px-2 text-lg font-medium text-gray-900 dark:text-white">{tabInfo.title}</h2>
-            <p className="px-2 text-xs text-gray-500 dark:text-gray-400 mt-1">{tabInfo.description}</p>
-        </div>
-        )}
-      </div>
+      )}
 
       <div className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent ${!isWidgetSettingsMode && !isAddWidgetMode ? 'mt-4' : ''}`}>
         <div className="px-2">
