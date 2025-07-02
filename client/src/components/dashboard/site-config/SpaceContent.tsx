@@ -94,10 +94,11 @@ export function SpaceContent({
     
     const target = e.target as HTMLElement;
     
-    // Don't capture hovers on sidebar, navigation, or control elements
+    // Don't capture hovers on sidebar, navigation, control elements, or popover
     const isExcludedElement = target.closest('.settings-sidebar') ||
                              target.closest('.secondary-sidebar') ||
                              target.closest('.dashboard-header') ||
+                             target.closest('.general-widget-popover') ||
                              target.closest('[data-exclude-widget]');
     
     if (isExcludedElement) {
@@ -156,10 +157,11 @@ export function SpaceContent({
     
     const target = e.target as HTMLElement;
     
-    // Don't capture clicks on sidebar, navigation, or control elements
+    // Don't capture clicks on sidebar, navigation, control elements, or popover
     const isExcludedElement = target.closest('.settings-sidebar') ||
                              target.closest('.secondary-sidebar') ||
                              target.closest('.dashboard-header') ||
+                             target.closest('.general-widget-popover') ||
                              target.closest('[data-exclude-widget]');
     
     if (isExcludedElement) {
@@ -438,13 +440,16 @@ export function SpaceContent({
     );
 
     return isWidgetMode ? (
-      <GeneralWidgetPopover widgetName="Site Footer">
+      <GeneralWidgetPopover 
+        widgetName="Site Footer"
+        isSelected={!!selectedElement && selectedElement.closest('.site-footer') !== null}
+      >
         {footerContent}
       </GeneralWidgetPopover>
     ) : (
       footerContent
     );
-  }, [site, isWidgetMode]);
+  }, [site, isWidgetMode, selectedElement]);
 
   // Widget drop handler
   const handleWidgetDrop = useCallback((widget: AvailableWidget, position: { x: number; y: number }) => {
@@ -609,8 +614,12 @@ export function SpaceContent({
 
         {/* Site Header - sticky */}
         {isWidgetMode ? (
-          <GeneralWidgetPopover widgetName="Site Header">
-            <div className="site-header sticky top-0 z-10 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800" 
+          <GeneralWidgetPopover 
+            widgetName="Site Header"
+            isSelected={!!selectedElement && selectedElement.closest('.site-header') !== null}
+            position="bottom"
+          >
+            <div className="site-header sticky top-0 z-[100] bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800" 
                  data-section-name="Site Header">
               <SiteHeader 
                 siteSD={siteSD}
@@ -624,7 +633,7 @@ export function SpaceContent({
             </div>
           </GeneralWidgetPopover>
         ) : (
-          <div className="site-header sticky top-0 z-10 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800" 
+          <div className="site-header sticky top-0 z-[100] bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800" 
                data-section-name="Site Header">
             <SiteHeader 
               siteSD={siteSD}
@@ -644,7 +653,10 @@ export function SpaceContent({
             <div className="flex flex-col md:flex-row gap-6 h-full">
               {/* Sidebar - sticky */}
               {isWidgetMode ? (
-                <GeneralWidgetPopover widgetName="Site Sidebar">
+                <GeneralWidgetPopover 
+                  widgetName="Site Sidebar"
+                  isSelected={!!selectedElement && selectedElement.closest('.site-sidebar') !== null}
+                >
                   <div className="site-sidebar md:sticky md:top-6 md:self-start" 
                        data-section-name="Site Sidebar">
                     <SiteSidebar siteSD={siteSD} activePage={spaceSlug} />
