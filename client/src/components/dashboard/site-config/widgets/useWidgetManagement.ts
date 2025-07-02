@@ -258,6 +258,24 @@ export function useWidgetManagement(
     }));
   }, []);
 
+  // Reset function to clear internal managed state when external props take precedence
+  const resetManagedState = useCallback(() => {
+    console.log('🧹 Resetting internal managed state');
+    setSelectedWidget(null);
+    setIsWidgetSettingsMode(false);
+    
+    // Remove selections
+    document.querySelectorAll('.widget-selected, .selected-element').forEach(el => {
+      el.classList.remove('widget-selected', 'selected-element');
+      el.removeAttribute('data-section-name');
+    });
+    
+    const previewContainer = document.querySelector('.preview-container');
+    if (previewContainer) {
+      previewContainer.classList.remove('has-selection');
+    }
+  }, []);
+
   return {
     // State
     activeTab,
@@ -300,6 +318,7 @@ export function useWidgetManagement(
     handleAddWidgetClick,
     handleBackFromAddWidget,
     handleAddWidget,
-    handleSettingChange
+    handleSettingChange,
+    resetManagedState
   };
 } 

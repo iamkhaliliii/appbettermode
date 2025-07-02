@@ -54,4 +54,5 @@ export interface EventContentProps {
   cardSize?: string;
   cardStyle?: string;
   isWidgetMode?: boolean;
+  onSectionSettings?: (sectionName: string) => void;
 } 

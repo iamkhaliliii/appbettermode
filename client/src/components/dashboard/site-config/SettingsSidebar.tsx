@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { ArrowLeftToLine, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Site } from "@/lib/api";
 import { useSiteData } from "@/lib/SiteDataContext";
 import { GeneralSettingsTab } from "./GeneralSettingsTab";
@@ -28,6 +28,9 @@ interface SettingsSidebarProps {
   onCardSizeChange?: (cardSize: string) => void;
   onCardStyleChange?: (cardStyle: string) => void;
   onAddWidgetModeChange?: (isAddWidgetMode: boolean) => void;
+  onWidgetSettingsModeChange?: (isWidgetSettingsMode: boolean) => void;
+  selectedWidget?: any;
+  isWidgetSettingsMode?: boolean;
   // Current values for widget tab
   currentLayout?: string;
   currentCardSize?: string;
@@ -55,6 +58,9 @@ export function SettingsSidebar({
   onCardSizeChange,
   onCardStyleChange,
   onAddWidgetModeChange,
+  onWidgetSettingsModeChange,
+  selectedWidget,
+  isWidgetSettingsMode,
   currentLayout = 'card',
   currentCardSize = 'medium',
   currentCardStyle = 'modern'
@@ -92,8 +98,10 @@ export function SettingsSidebar({
 
   const [isLoading, setIsLoading] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
-  const [isWidgetSettingsMode, setIsWidgetSettingsMode] = useState(false);
   const [isAddWidgetMode, setIsAddWidgetMode] = useState(false);
+
+  // Use external widget settings mode if provided, otherwise use internal state
+  const currentIsWidgetSettingsMode = isWidgetSettingsMode !== undefined ? isWidgetSettingsMode : false;
 
   // Initial values for change detection
   const initialValues = useMemo(() => ({
@@ -158,7 +166,7 @@ export function SettingsSidebar({
   const tabInfo = useMemo(() => {
     const tabMap = {
       general: { title: 'General settings', description: 'Configure basic space information, visibility and permissions' },
-      widget: isWidgetSettingsMode 
+      widget: currentIsWidgetSettingsMode 
         ? { title: 'Widget Settings', description: 'Configure the selected widget properties and behavior' }
         : { title: 'Customize', description: 'Select and configure which elements are interactive in your space preview' },
       seo: { title: 'SEO Settings', description: 'Optimize your space for search engines and social media' },
@@ -168,7 +176,7 @@ export function SettingsSidebar({
     };
     
     return tabMap[activeTab as keyof typeof tabMap] || { title: 'Settings', description: 'Select a category to configure space settings' };
-  }, [activeTab, isWidgetSettingsMode]);
+  }, [activeTab, currentIsWidgetSettingsMode]);
 
   // Content type detection - memoized
   const contentType = useMemo((): 'blog' | 'event' | 'general' => {
@@ -224,11 +232,13 @@ export function SettingsSidebar({
 
       case 'widget':
         return <SimpleWidgetTab 
-          onWidgetSettingsModeChange={setIsWidgetSettingsMode}
+          onWidgetSettingsModeChange={onWidgetSettingsModeChange}
           onAddWidgetModeChange={setIsAddWidgetMode}
           onLayoutChange={onLayoutChange} 
           onCardSizeChange={onCardSizeChange} 
           onCardStyleChange={onCardStyleChange}
+          selectedWidget={selectedWidget}
+          isWidgetSettingsMode={currentIsWidgetSettingsMode}
           initialLayout={currentLayout}
           initialCardSize={currentCardSize}
           initialCardStyle={currentCardStyle}
@@ -262,7 +272,8 @@ export function SettingsSidebar({
     currentSpaceBannerUrl, 
     currentSetSpaceBannerUrl, 
     currentIsLoading, 
-    contentType
+    contentType,
+    currentIsWidgetSettingsMode
   ]);
 
   return (
@@ -270,17 +281,9 @@ export function SettingsSidebar({
       {/* Header with buttons - hide when in add widget mode */}
       {!isAddWidgetMode && (
         <div className="p-2 flex flex-col flex-shrink-0">
-          <div className="flex items-center justify-between mb-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="p-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-            >
-              <ArrowLeftToLine className="h-3.5 w-3.5" />
-            </button>
-            
+          <div className="flex items-center justify-end mb-2">
             <div className="flex items-center">
-              {currentHasChanges && activeTab !== 'danger' && !isWidgetSettingsMode && (
+              {currentHasChanges && activeTab !== 'danger' && !currentIsWidgetSettingsMode && (
                 <button
                   type="button"
                   onClick={externalOnDiscard || handleDiscardChanges}
@@ -289,7 +292,7 @@ export function SettingsSidebar({
                   Discard
                 </button>
               )}
-              {activeTab !== 'danger' && !isWidgetSettingsMode && (
+              {activeTab !== 'danger' && !currentIsWidgetSettingsMode && (
                 <button
                   type="button"
                   onClick={externalOnSave || (() => {})}
@@ -316,7 +319,7 @@ export function SettingsSidebar({
           <div className="border-t border-gray-100 dark:border-gray-700 mb-3"></div>
           
           {/* Title and Description - only show when not in widget settings mode */}
-          {!isWidgetSettingsMode && (
+          {!currentIsWidgetSettingsMode && (
           <div>
               <h2 className="px-2 text-lg font-medium text-gray-900 dark:text-white">{tabInfo.title}</h2>
               <p className="px-2 text-xs text-gray-500 dark:text-gray-400 mt-1">{tabInfo.description}</p>
@@ -325,7 +328,7 @@ export function SettingsSidebar({
         </div>
       )}
 
-      <div className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent ${!isWidgetSettingsMode && !isAddWidgetMode ? 'mt-4' : ''}`}>
+      <div className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent ${!currentIsWidgetSettingsMode && !isAddWidgetMode ? 'mt-4' : ''}`}>
         <div className="px-2">
           {renderTabContent()}
         </div>

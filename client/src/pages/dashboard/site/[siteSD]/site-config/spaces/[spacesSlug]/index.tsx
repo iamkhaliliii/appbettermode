@@ -6,6 +6,7 @@ import { SpaceSettingsSidebar } from "@/components/layout/dashboard/secondary-si
 import { SpaceContent } from "@/components/dashboard/site-config/SpaceContent";
 import { SettingsSidebar } from "@/components/dashboard/site-config/SettingsSidebar";
 import { DashboardPageWrapper } from "@/components/dashboard/DashboardPageWrapper";
+import { widgetSections } from "@/components/dashboard/site-config/widgets";
 
 
 
@@ -72,6 +73,8 @@ export default function SpaceSettingsPage() {
   
   // Widget mode state
   const [isAddWidgetMode, setIsAddWidgetMode] = useState(false);
+  const [selectedWidget, setSelectedWidget] = useState<any>(null);
+  const [isWidgetSettingsMode, setIsWidgetSettingsMode] = useState(false);
   
   // Browser mockup state - consolidated
   const [browserState, setBrowserState] = useState({
@@ -93,14 +96,11 @@ export default function SpaceSettingsPage() {
 
   // Event handlers - optimized with useCallback
   const handleTabChange = useCallback((tabId: string) => {
-    if (activeTab === tabId && sidebarVisible) {
-      setSidebarVisible(false);
-    } else {
-      setActiveTab(tabId);
+    setActiveTab(tabId);
+    if (!sidebarVisible) {
       setSidebarVisible(true);
     }
-
-  }, [activeTab, sidebarVisible]);
+  }, [sidebarVisible]);
 
   const handleSave = useCallback(() => {
     setIsLoading(true);
@@ -143,6 +143,71 @@ export default function SpaceSettingsPage() {
   const updateBrowserState = useCallback((key: string, value: boolean) => {
     setBrowserState(prev => ({ ...prev, [key]: value }));
   }, []);
+
+  // Widget click handler to open settings
+  const handleWidgetClick = useCallback((widget: any) => {
+    console.log('🔧 handleWidgetClick called with widget:', widget?.name);
+    console.log('🔧 Current state before update:', {
+      selectedWidget: selectedWidget?.name,
+      isWidgetSettingsMode,
+      activeTab
+    });
+    
+    // Always set the new widget state - React will handle the transition
+    setSelectedWidget(widget);
+    setIsWidgetSettingsMode(true);
+    console.log('✅ Widget state set to:', widget?.name);
+    
+    // Switch to widget tab if not already there
+    if (activeTab !== 'widget') {
+      setActiveTab('widget');
+    }
+    
+    // Ensure sidebar is visible
+    if (!sidebarVisible) {
+      setSidebarVisible(true);
+    }
+  }, [activeTab, sidebarVisible, selectedWidget, isWidgetSettingsMode]);
+
+  // Handle widget settings mode change
+  const handleWidgetSettingsModeChange = useCallback((isWidgetSettingsMode: boolean) => {
+    setIsWidgetSettingsMode(isWidgetSettingsMode);
+    if (!isWidgetSettingsMode) {
+      setSelectedWidget(null);
+    }
+  }, []);
+
+  // Create widget mapping for sections
+  const getWidgetForSection = useCallback((sectionName: string) => {
+    const sectionMap: Record<string, any> = {
+      // From SpaceContent.tsx GeneralWidgetPopover components
+      'header': widgetSections.base.find(w => w.id === 'site-header'),
+      'sidebar': widgetSections.base.find(w => w.id === 'site-sidebar'), 
+      'footer': widgetSections.base.find(w => w.id === 'site-footer'),
+      // From EventContent GeneralWidgetPopover components
+      'featuredEvents': widgetSections.custom.find(w => w.id === 'featured-events'),
+      'eventsContainer': widgetSections.main.find(w => w.id === 'events-container'),
+      'categories': widgetSections.custom.find(w => w.id === 'categories'),
+      // From dropped widgets
+      'featured-events': widgetSections.custom.find(w => w.id === 'featured-events'),
+      'hero-banner': { id: 'hero-banner', name: 'Hero Banner', icon: () => null },
+      'calendar': { id: 'calendar', name: 'Calendar', icon: () => null }
+    };
+    
+    return sectionMap[sectionName] || null;
+  }, []);
+
+  // Handle section settings click from mockup
+  const handleSectionSettings = useCallback((sectionName: string) => {
+    console.log('handleSectionSettings called with:', sectionName);
+    const widget = getWidgetForSection(sectionName);
+    console.log('Mapped widget:', widget);
+    if (widget) {
+      handleWidgetClick(widget);
+    } else {
+      console.error('No widget found for section:', sectionName);
+    }
+  }, [getWidgetForSection, handleWidgetClick]);
 
   return (
     <DashboardPageWrapper 
@@ -192,9 +257,12 @@ export default function SpaceSettingsPage() {
             onCardSizeChange={handleCardSizeChange}
             onCardStyleChange={handleCardStyleChange}
             onAddWidgetModeChange={handleAddWidgetModeChange}
+            onWidgetSettingsModeChange={handleWidgetSettingsModeChange}
             currentLayout={eventsLayout}
             currentCardSize={cardSize}
             currentCardStyle={cardStyle}
+            selectedWidget={selectedWidget}
+            isWidgetSettingsMode={isWidgetSettingsMode}
           />
         </div>
         
@@ -212,7 +280,6 @@ export default function SpaceSettingsPage() {
               setThemeDropdownOpen={(value) => updateBrowserState('themeDropdownOpen', value)}
               responsiveDropdownOpen={browserState.responsiveDropdownOpen}
               setResponsiveDropdownOpen={(value) => updateBrowserState('responsiveDropdownOpen', value)}
-              siteUrl={siteUrl}
               hasChanges={hasChanges}
               isLoading={isLoading}
               isWidgetMode={activeTab === 'widget' && sidebarVisible}
@@ -233,6 +300,7 @@ export default function SpaceSettingsPage() {
                   eventsLayout={eventsLayout}
                   cardSize={cardSize}
                   cardStyle={cardStyle}
+                  onSectionSettings={handleSectionSettings}
                 />
               </div>
             </BrowserMockup>

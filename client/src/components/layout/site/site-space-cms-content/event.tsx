@@ -227,7 +227,7 @@ const MOCK_ENHANCED_EVENTS: EnhancedEvent[] = [
   }
 ];
 
-export function EventContent({ siteSD, space, site, eventsLayout, cardSize, cardStyle, isWidgetMode = false }: EventContentProps) {
+export function EventContent({ siteSD, space, site, eventsLayout, cardSize, cardStyle, isWidgetMode = false, onSectionSettings }: EventContentProps) {
   const [, setLocation] = useLocation();
   const [events, setEvents] = useState<EnhancedEvent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -378,9 +378,12 @@ export function EventContent({ siteSD, space, site, eventsLayout, cardSize, card
 
   // Widget action handlers
   const handleWidgetSettings = useCallback((widgetName: string) => {
-    console.log(`Opening settings for ${widgetName} widget`);
-    // TODO: Open widget settings modal/panel
-  }, []);
+    if (onSectionSettings) {
+      onSectionSettings(widgetName);
+    } else {
+      console.log(`Opening settings for ${widgetName} widget`);
+    }
+  }, [onSectionSettings]);
 
   const toggleWidgetVisibility = useCallback((widgetName: string) => {
     setWidgetVisibility(prev => ({

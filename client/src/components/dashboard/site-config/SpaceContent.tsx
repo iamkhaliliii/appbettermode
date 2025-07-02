@@ -35,6 +35,7 @@ interface SpaceContentProps {
   eventsLayout?: string;
   cardSize?: string;
   cardStyle?: string;
+  onSectionSettings?: (sectionName: string) => void;
 }
 
 interface DroppedWidget {
@@ -57,7 +58,8 @@ export function SpaceContent({
   isAddWidgetMode = false,
   eventsLayout = 'card',
   cardSize = 'medium',
-  cardStyle = 'modern'
+  cardStyle = 'modern',
+  onSectionSettings
 }: SpaceContentProps) {
   // Get site data from context
   const { sites, cmsTypes } = useSiteData();
@@ -517,9 +519,14 @@ export function SpaceContent({
 
   // Section action callbacks
   const handleSectionSettings = useCallback((sectionName: string) => {
-    console.log(`Opening settings for ${sectionName}`);
-    // TODO: Open settings modal/panel
-  }, []);
+    console.log('SpaceContent handleSectionSettings called with:', sectionName);
+    console.log('onSectionSettings prop:', onSectionSettings);
+    if (onSectionSettings) {
+      onSectionSettings(sectionName);
+    } else {
+      console.log(`Opening settings for ${sectionName}`);
+    }
+  }, [onSectionSettings]);
 
   const handleSectionDelete = useCallback((sectionName: string) => {
     console.log(`Removing ${sectionName} section`);
@@ -844,7 +851,18 @@ export function SpaceContent({
                           widgetName={droppedWidget.widget.name}
                           widgetType="widget"
                           isHidden={droppedWidget.isHidden}
-                          onSettings={() => console.log(`Settings for ${droppedWidget.widget.name}`)}
+                          onSettings={() => {
+                            // Map widget names to section names for settings
+                            const widgetToSectionMap: Record<string, string> = {
+                              'Upcoming Events': 'featured-events',
+                              'Featured Events': 'featured-events', 
+                              'Hero Banner': 'hero-banner',
+                              'Event Calendar': 'calendar',
+                              'Calendar': 'calendar'
+                            };
+                            const sectionName = widgetToSectionMap[droppedWidget.widget.name] || droppedWidget.widget.name.toLowerCase().replace(/\s+/g, '-');
+                            handleSectionSettings(sectionName);
+                          }}
                           onToggleVisibility={() => toggleWidgetVisibility(droppedWidget.id)}
                           onDelete={() => setDroppedWidgets(prev => prev.filter(w => w.id !== droppedWidget.id))}
                           isWidgetMode={isWidgetMode}
@@ -941,6 +959,7 @@ export function SpaceContent({
                           cardSize={cardSize}
                           cardStyle={cardStyle}
                           isWidgetMode={isWidgetMode}
+                          onSectionSettings={onSectionSettings}
                         />
                       </div>
                     </motion.div>

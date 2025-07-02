@@ -52,6 +52,8 @@ export interface WidgetTabProps {
   onLayoutChange?: (layout: string) => void;
   onCardSizeChange?: (cardSize: string) => void;
   onCardStyleChange?: (cardStyle: string) => void;
+  selectedWidget?: any;
+  isWidgetSettingsMode?: boolean;
   initialLayout?: string;
   initialCardSize?: string;
   initialCardStyle?: string;
