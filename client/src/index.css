@@ -236,6 +236,19 @@
     box-shadow: 0 2px 8px rgba(147, 51, 234, 0.05) !important; /* Purple shadow */
   }
   
+  /* Custom Widgets - Orange Default Dashed Border */
+  .widget-mode .featured-events,
+  .widget-mode .categories {
+    border: 2px dashed rgba(249, 115, 22, 0.4) !important; /* Orange dashed border */
+    box-shadow: 0 2px 8px rgba(249, 115, 22, 0.05) !important; /* Orange shadow */
+  }
+  
+  /* Dropped Widgets - Orange styling to match custom widgets */
+  .widget-mode [data-section-id^="widget-"] {
+    border: 2px dashed rgba(249, 115, 22, 0.4) !important; /* Orange dashed border */
+    box-shadow: 0 2px 8px rgba(249, 115, 22, 0.05) !important; /* Orange shadow */
+  }
+  
   /* Widget Mode Hover Effects */
   .widget-hover {
     border: 2px solid rgba(59, 130, 246, 0.5) !important;
@@ -255,8 +268,20 @@
     box-shadow: 0 4px 12px rgba(147, 51, 234, 0.15) !important; /* Purple shadow */
   }
   
-
+  /* Custom Widgets - Orange Hover Theme */
+  .featured-events.widget-hover,
+  .categories.widget-hover {
+    border: 2px solid rgba(249, 115, 22, 0.5) !important; /* Orange border */
+    background-color: rgba(249, 115, 22, 0.05) !important; /* Orange background */
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15) !important; /* Orange shadow */
+  }
   
+  /* Dropped Widgets - Orange Hover Theme */
+  [data-section-id^="widget-"].widget-hover {
+    border: 2px solid rgba(249, 115, 22, 0.5) !important; /* Orange border */
+    background-color: rgba(249, 115, 22, 0.05) !important; /* Orange background */
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15) !important; /* Orange shadow */
+  }
   
   /* Base Sections Selected - Purple Theme */
   .site-header.selected-element,
@@ -267,7 +292,27 @@
     box-shadow: 0 4px 16px rgba(147, 51, 234, 0.2) !important; /* Purple shadow */
   }
   
-
+  /* Custom Widgets Selected - Orange Theme */
+  .featured-events.selected-element,
+  .categories.selected-element {
+    border: 2px solid #f97316 !important; /* Orange border */
+    background-color: rgba(249, 115, 22, 0.08) !important; /* Orange background */
+    box-shadow: 0 4px 16px rgba(249, 115, 22, 0.2) !important; /* Orange shadow */
+  }
+  
+  /* Dropped Widgets Selected - Orange Theme */
+  [data-section-id^="widget-"].selected-element {
+    border: 2px solid #f97316 !important; /* Orange border */
+    background-color: rgba(249, 115, 22, 0.08) !important; /* Orange background */
+    box-shadow: 0 4px 16px rgba(249, 115, 22, 0.2) !important; /* Orange shadow */
+  }
+  
+  /* Blur non-selectable content when selection is active */
+  .widget-mode.has-selection .preview-container > div:not(.site-header):not(.site-sidebar):not(.site-footer) > *:not(.featured-events):not(.categories):not(.events-container):not([data-widget-section]) {
+    filter: blur(1px) !important;
+    opacity: 0.6 !important;
+    transition: all 0.3s ease !important;
+  }
   
   /* Widget hover and selected label styles */
   .widget-hover::after,
@@ -295,7 +340,8 @@
   .widget-mode.has-selection .categories:not(.selected-element),
   .widget-mode.has-selection .events-container:not(.selected-element),
   .widget-mode.has-selection .site-footer:not(.selected-element),
-  .widget-mode.has-selection [data-widget-section]:not(.selected-element) {
+  .widget-mode.has-selection [data-widget-section]:not(.selected-element),
+  .widget-mode.has-selection [data-section-id^="widget-"]:not(.selected-element) {
     filter: blur(2px) !important;
     opacity: 0.4 !important;
     transition: all 0.3s ease !important;
@@ -320,11 +366,23 @@
     background-color: rgba(147, 51, 234, 0.08) !important; /* Purple background for base sections */
   }
   
-  /* Blur non-selectable content when selection is active */
-  .widget-mode.has-selection .preview-container > div:not(.site-header):not(.site-sidebar):not(.site-footer) > *:not(.featured-events):not(.categories):not(.events-container):not([data-widget-section]) {
-    filter: blur(1px) !important;
-    opacity: 0.6 !important;
-    transition: all 0.3s ease !important;
+  /* Custom Widgets Selected in Widget Mode - Orange Box Shadow */
+  .widget-mode.has-selection .featured-events.selected-element,
+  .widget-mode.has-selection .categories.selected-element {
+    box-shadow: 0 10px 30px rgba(249, 115, 22, 0.2) !important; /* Orange shadow for custom widgets */
+    border: 2px solid #f97316 !important; /* Orange border for custom widgets */
+    background-color: rgba(249, 115, 22, 0.08) !important; /* Orange background for custom widgets */
+  }
+  
+  /* Dropped Widgets Selected in Widget Mode - Orange Box Shadow */
+  .widget-mode.has-selection [data-section-id^="widget-"].selected-element {
+    filter: none !important;
+    opacity: 1 !important;
+    transform: scale(1.02) !important;
+    box-shadow: 0 10px 30px rgba(249, 115, 22, 0.2) !important;
+    border: 2px solid #f97316 !important;
+    background-color: rgba(249, 115, 22, 0.08) !important;
+    z-index: 50 !important;
   }
   
   /* Exclude sidebar elements */
@@ -743,4 +801,21 @@
     0 20px 25px -5px rgba(0, 0, 0, 0.25),
     0 10px 10px -5px rgba(0, 0, 0, 0.1),
     0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Enhanced Shadow for Action Groups */
+.shadow-3xl {
+  box-shadow: 
+    0 35px 60px -12px rgba(0, 0, 0, 0.25),
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.dark .shadow-3xl {
+  box-shadow: 
+    0 35px 60px -12px rgba(0, 0, 0, 0.4),
+    0 20px 25px -5px rgba(0, 0, 0, 0.2),
+    0 10px 15px -3px rgba(0, 0, 0, 0.15),
+    0 4px 6px -2px rgba(0, 0, 0, 0.1);
 }

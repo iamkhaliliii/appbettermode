@@ -37,7 +37,10 @@ import {
   Heart,
   MessageSquare,
   Eye,
-  Users
+  EyeOff,
+  Users,
+  Plus,
+  Trash2
 } from "lucide-react";
 
 export function SimpleWidgetTab(props: WidgetTabProps) {
@@ -48,6 +51,22 @@ export function SimpleWidgetTab(props: WidgetTabProps) {
     onCardSizeChange,
     onCardStyleChange,
   } = props;
+
+  // State for widget visibility
+  const [hiddenWidgets, setHiddenWidgets] = React.useState<Set<string>>(new Set());
+
+  // Toggle widget visibility
+  const toggleWidgetVisibility = React.useCallback((widgetId: string) => {
+    setHiddenWidgets(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(widgetId)) {
+        newSet.delete(widgetId);
+      } else {
+        newSet.add(widgetId);
+      }
+      return newSet;
+    });
+  }, []);
 
   const {
     activeTab,
@@ -94,8 +113,8 @@ export function SimpleWidgetTab(props: WidgetTabProps) {
   );
 
   const tabs = [
-    { id: 'active-widgets', label: 'Widgets' },
-    { id: 'widget-settings', label: 'Layout Settings' }
+    { id: 'active-widgets', label: 'All events page' },
+    { id: 'widget-settings', label: 'Event details page' }
   ];
 
   return (
@@ -674,32 +693,158 @@ export function SimpleWidgetTab(props: WidgetTabProps) {
 
           {/* Active Widgets Tab Content */}
           {activeTab === 'active-widgets' && (
-            <div className="space-y-5 min-w-0 px-2">
-              <WidgetSection
-                title="Base Section"
-                widgets={widgetSections.base}
-                expanded={baseSectionExpanded}
-                onToggleExpanded={toggleBaseSectionExpanded}
-                onWidgetClick={handleWidgetClick}
-                isBaseSection={true}
-              />
+            <div className="space-y-5 min-w-0 px-2 mt-6">
+              {/* General Widgets List */}
+              <div className="space-y-3">
+                <div>
+                  <h3 className="text-xs font-medium text-gray-500 dark:text-gray-300">
+                    General widgets
+                  </h3>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                    Header, sidebar, and footer sections
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  {widgetSections.base.map((widget) => (
+                    <div
+                      key={widget.id}
+                      onClick={() => handleWidgetClick(widget)}
+                      className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors rounded-md group border border-gray-100 dark:border-gray-800"
+                    >
+                      <widget.icon className="w-4 h-4 text-purple-600 dark:text-purple-400 flex-shrink-0" />
+                      <span className="text-sm text-gray-900 dark:text-white flex-1 truncate">
+                        {widget.name}
+                      </span>
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // Settings action
+                          }}
+                          className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
+                          title="Settings"
+                        >
+                          <Settings className="w-3 h-3 text-gray-500" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-              <WidgetSection
-                title="Main Widget"
-                widgets={widgetSections.main}
-                expanded={mainWidgetExpanded}
-                onToggleExpanded={toggleMainWidgetExpanded}
-                onWidgetClick={handleWidgetClick}
-              />
+              {/* Main Widget List */}
+              <div className="space-y-3">
+                <div>
+                  <h3 className="text-xs font-medium text-gray-500 dark:text-gray-300">
+                    Main Widget
+                  </h3>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                    Primary content container with events list
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  {widgetSections.main.map((widget) => (
+                    <div
+                      key={widget.id}
+                      onClick={() => handleWidgetClick(widget)}
+                      className="flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors rounded-md group border border-gray-100 dark:border-gray-800"
+                    >
+                      <widget.icon className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                      <span className="text-sm text-gray-900 dark:text-white flex-1 truncate">
+                        {widget.name}
+                      </span>
+                      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // Settings action
+                          }}
+                          className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
+                          title="Settings"
+                        >
+                          <Settings className="w-3 h-3 text-gray-500" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-              <WidgetSection
-                title="Custom Widgets"
-                widgets={widgetSections.custom}
-                expanded={customWidgetsExpanded}
-                onToggleExpanded={toggleCustomWidgetsExpanded}
-                onWidgetClick={handleWidgetClick}
-                onAddWidget={handleAddWidgetClick}
-              />
+              {/* Custom Widgets List */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-medium text-gray-500 dark:text-gray-300">
+                    Custom Widgets
+                  </h3>
+                  <button
+                    onClick={handleAddWidgetClick}
+                    className="flex items-center gap-1 px-2 py-1 bg-orange-50/50 dark:bg-orange-950/10 border border-orange-200/40 dark:border-orange-800/40 text-orange-600 dark:text-orange-400 hover:bg-orange-100/50 dark:hover:bg-orange-950/20 hover:border-orange-300/60 dark:hover:border-orange-700/60 rounded text-xs font-medium transition-colors"
+                    title="Add new widget"
+                  >
+                    <Plus className="w-3 h-3" />
+                    Add
+                  </button>
+                </div>
+                <div className="space-y-1">
+                  {widgetSections.custom.map((widget) => {
+                    const isHidden = hiddenWidgets.has(widget.id);
+                    return (
+                      <div
+                        key={widget.id}
+                        onClick={() => handleWidgetClick(widget)}
+                        className={`flex items-center gap-3 px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors rounded-md group border border-gray-100 dark:border-gray-800 ${
+                          isHidden ? 'opacity-50' : ''
+                        }`}
+                      >
+                        <widget.icon className={`w-4 h-4 text-orange-600 dark:text-orange-400 flex-shrink-0 ${
+                          isHidden ? 'opacity-50' : ''
+                        }`} />
+                        <span className={`text-sm text-gray-900 dark:text-white flex-1 truncate ${
+                          isHidden ? 'line-through opacity-60' : ''
+                        }`}>
+                          {widget.name}
+                        </span>
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleWidgetVisibility(widget.id);
+                            }}
+                            className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
+                            title={isHidden ? "Show widget" : "Hide widget"}
+                          >
+                            {isHidden ? (
+                              <EyeOff className="w-3 h-3 text-gray-500" />
+                            ) : (
+                              <Eye className="w-3 h-3 text-gray-500" />
+                            )}
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // Settings action
+                            }}
+                            className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
+                            title="Settings"
+                          >
+                            <Settings className="w-3 h-3 text-gray-500" />
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // Delete action
+                            }}
+                            className="p-1 hover:bg-red-50 dark:hover:bg-red-950/20 hover:text-red-600 dark:hover:text-red-400 rounded"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-3 h-3 text-gray-500" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           )}
 

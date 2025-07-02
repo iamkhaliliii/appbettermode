@@ -24,7 +24,17 @@ import {
   Type,
   Crown,
   Trophy,
-  PanelLeft
+  PanelLeft,
+  Database,
+  Dock,
+  PanelTop,
+  PanelLeftDashed,
+  CalendarHeart,
+  CalendarDays,
+  DatabaseZap,
+  LayoutTemplate,
+  PanelBottom,
+  LayoutDashboard
 } from "lucide-react";
 import { WidgetSections, AvailableWidget } from './types';
 
@@ -33,7 +43,7 @@ export const widgetSections: WidgetSections = {
     { 
       id: 'site-header', 
       name: 'Site Header', 
-      icon: Layout, 
+      icon: PanelTop, 
       description: 'Navigation and branding',
       status: 'active',
       type: 'system',
@@ -44,7 +54,7 @@ export const widgetSections: WidgetSections = {
     { 
       id: 'site-sidebar', 
       name: 'Site Sidebar', 
-      icon: Eye, 
+      icon: PanelLeftDashed, 
       description: 'Navigation menu',
       status: 'active',
       type: 'system',
@@ -55,7 +65,7 @@ export const widgetSections: WidgetSections = {
     { 
       id: 'site-footer', 
       name: 'Site Footer', 
-      icon: Layout, 
+      icon: Dock, 
       description: 'Footer information and links',
       status: 'active',
       type: 'system',
@@ -68,7 +78,7 @@ export const widgetSections: WidgetSections = {
     { 
       id: 'events-container', 
       name: 'Events content', 
-      icon: Settings, 
+      icon: Database, 
       description: 'Event listing with search and filters',
       status: 'active',
       type: 'content',
@@ -80,8 +90,8 @@ export const widgetSections: WidgetSections = {
   custom: [
     { 
       id: 'featured-events', 
-      name: 'Featured Events', 
-      icon: Zap, 
+      name: 'Upcoming Events', 
+      icon: CalendarHeart, 
       description: 'Event highlights with carousel',
       status: 'active',
       type: 'content',
@@ -91,8 +101,8 @@ export const widgetSections: WidgetSections = {
     },
     { 
       id: 'categories', 
-      name: 'Event Categories', 
-      icon: Layers, 
+      name: 'Event Calendar', 
+      icon: CalendarDays, 
       description: 'Interactive category filters',
       status: 'active',
       type: 'content',
@@ -118,7 +128,7 @@ export const availableWidgets: AvailableWidget[] = [
   {
     id: 'upcoming-events-trending',
     name: 'Upcoming Events',
-    icon: Calendar,
+    icon: CalendarHeart,
     description: 'Display upcoming events and schedules',
     category: 'Trending',
     gridSize: 'col-span-1 row-span-1',
@@ -150,7 +160,7 @@ export const availableWidgets: AvailableWidget[] = [
   {
     id: 'upcoming-events-content',
     name: 'Upcoming Events',
-    icon: Calendar,
+    icon: CalendarHeart,
     description: 'Display upcoming events and schedules',
     category: 'Content Widgets',
     gridSize: 'col-span-1 row-span-1',
@@ -160,7 +170,7 @@ export const availableWidgets: AvailableWidget[] = [
   {
     id: 'calendar',
     name: 'Calendar',
-    icon: Grid2X2,
+    icon: CalendarDays,
     description: 'Interactive calendar view for events',
     category: 'Content Widgets',
     gridSize: 'col-span-1 row-span-1',
@@ -286,7 +296,7 @@ export const availableWidgets: AvailableWidget[] = [
   {
     id: 'advance-content-block-enterprise',
     name: 'Advance Content Block',
-    icon: Layers,
+    icon: DatabaseZap,
     description: 'Advanced content management and display',
     category: 'Enterprise Widgets',
     gridSize: 'col-span-1 row-span-1',
@@ -296,7 +306,7 @@ export const availableWidgets: AvailableWidget[] = [
   {
     id: 'advance-space-header',
     name: 'Advance Space Header',
-    icon: LayoutGrid,
+    icon: LayoutTemplate,
     description: 'Advanced header with multiple features',
     category: 'Enterprise Widgets',
     gridSize: 'col-span-1 row-span-1',
@@ -316,7 +326,7 @@ export const availableWidgets: AvailableWidget[] = [
   {
     id: 'advance-footer',
     name: 'Advance Footer',
-    icon: Layers,
+    icon: PanelBottom,
     description: 'Feature-rich footer with multiple sections',
     category: 'Enterprise Widgets',
     gridSize: 'col-span-1 row-span-1',
@@ -326,7 +336,7 @@ export const availableWidgets: AvailableWidget[] = [
   {
     id: 'advance-top-navigation-enterprise',
     name: 'Advance Top Navigation',
-    icon: Navigation,
+    icon: PanelTop,
     description: 'Advanced navigation with dropdown menus',
     category: 'Enterprise Widgets',
     gridSize: 'col-span-1 row-span-1',
@@ -346,7 +356,7 @@ export const availableWidgets: AvailableWidget[] = [
   {
     id: 'advance-layout-section',
     name: 'Advance Layout Section',
-    icon: LayoutGrid,
+    icon: LayoutDashboard,
     description: 'Complex layout with multiple content areas',
     category: 'Enterprise Widgets',
     gridSize: 'col-span-1 row-span-1',
