@@ -255,14 +255,8 @@
     box-shadow: 0 4px 12px rgba(147, 51, 234, 0.15) !important; /* Purple shadow */
   }
   
-  .widget-selected {
-    border: 2px solid #3b82f6 !important;
-    background-color: rgba(59, 130, 246, 0.08) !important;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2) !important;
-    position: relative !important;
-    z-index: 10 !important;
-  }
+
+  
   
   /* Base Sections Selected - Purple Theme */
   .site-header.selected-element,
@@ -273,140 +267,26 @@
     box-shadow: 0 4px 16px rgba(147, 51, 234, 0.2) !important; /* Purple shadow */
   }
   
-  .widget-hover::after,
-  .widget-selected::after {
-    content: attr(data-section-name);
-    position: absolute !important;
-    top: -8px !important;
-    left: 8px !important;
-    background: #3b82f6 !important;
-    color: white !important;
-    padding: 4px 8px !important;
-    border-radius: 4px !important;
-    font-size: 11px !important;
-    font-weight: 600 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
-    z-index: 100 !important;
-    pointer-events: none !important;
-    opacity: 0 !important;
-    transform: translateY(4px) !important;
-    transition: all 0.15s ease !important;
-  }
-  
-  /* Base Sections Labels - Purple Theme with General Widget Badge */
-  .site-header.widget-hover::after,
-  .site-sidebar.widget-hover::after,
-  .site-footer.widget-hover::after,
-  .site-header.selected-element::after,
-  .site-sidebar.selected-element::after,
-  .site-footer.selected-element::after {
-    background: #9333ea !important; /* Purple background for labels */
-    content: attr(data-section-name) " • General Widget" !important;
-    min-width: max-content !important;
-    white-space: nowrap !important;
-  }
-  
-  /* General Widget Info Badge - Info Icon */
-  .site-header.widget-hover::before,
-  .site-sidebar.widget-hover::before,
-  .site-footer.widget-hover::before {
-    content: "ℹ️" !important; /* Info icon for base sections */
-    position: absolute !important;
-    top: -6px !important;
-    right: 8px !important;
-    font-size: 12px !important;
-    z-index: 102 !important;
-    pointer-events: auto !important;
-    opacity: 0.9 !important;
-    cursor: help !important;
-  }
-  
-  /* Override the default gear icon for base sections hover */
-  .site-header.widget-hover::before,
-  .site-sidebar.widget-hover::before,
-  .site-footer.widget-hover::before {
-    content: "ℹ️" !important; /* Info icon instead of gear */
-    background: rgba(147, 51, 234, 0.1) !important; /* Purple background for base sections */
-    border-radius: 50% !important;
-    width: 20px !important;
-    height: 20px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 10px !important;
-    position: absolute !important;
-    top: 4px !important;
-    right: 4px !important;
-    z-index: 101 !important;
-    pointer-events: auto !important;
-    opacity: 0.8 !important;
-    cursor: help !important;
-    transition: all 0.2s ease !important;
-  }
 
-  .site-header.widget-hover::before:hover,
-  .site-sidebar.widget-hover::before:hover,
-  .site-footer.widget-hover::before:hover {
-    background: rgba(147, 51, 234, 0.2) !important; /* Purple background for base sections */
-    transform: scale(1.1) !important;
-  }
+  
+  /* Widget hover and selected label styles */
+  .widget-hover::after,
+  .widget-selected::after,
+  .selected-element::after 
+
   
   .widget-hover::after {
     opacity: 1 !important;
-    transform: translateY(0) !important;
+    transform: translateX(-50%) translateY(0) !important;
   }
   
   .selected-element::after,
-  .widget-selected::after {
-    background: #1d4ed8 !important;
-    opacity: 1 !important;
-    transform: translateY(0) !important;
-  }
+  .widget-selected::after
+
   
-  /* Base Sections Selected Labels - Purple Theme */
-  .site-header.selected-element::after,
-  .site-sidebar.selected-element::after,
-  .site-footer.selected-element::after {
-    background: #7c3aed !important; /* Darker purple for selected state */
-  }
+
   
-  /* Simple icons - gear for hover, check for selected */
-  .widget-hover::before {
-    content: "⚙️" !important;
-    position: absolute !important;
-    top: 4px !important;
-    right: 4px !important;
-    font-size: 14px !important;
-    z-index: 101 !important;
-    pointer-events: none !important;
-    opacity: 0.8 !important;
-  }
-  
-  /* Base Sections Icons - Purple Theme */
-  .site-header.widget-hover::before,
-  .site-sidebar.widget-hover::before,
-  .site-footer.widget-hover::before {
-    content: "🔧" !important; /* Different icon for base sections */
-  }
-  
-  .selected-element::before,
-  .widget-selected::before {
-    content: "✅" !important;
-    position: absolute !important;
-    top: 4px !important;
-    right: 4px !important;
-    font-size: 14px !important;
-    z-index: 101 !important;
-    pointer-events: none !important;
-  }
-  
-  /* Base Sections Selected Icons - Purple Theme */
-  .site-header.selected-element::before,
-  .site-sidebar.selected-element::before,
-  .site-footer.selected-element::before {
-    content: "🟣" !important; /* Purple circle for base sections */
-  }
+
   
   /* Widget Mode Focus Effect - Blur everything except selected */
   .widget-mode.has-selection .site-header:not(.selected-element),
@@ -440,14 +320,6 @@
     background-color: rgba(147, 51, 234, 0.08) !important; /* Purple background for base sections */
   }
   
-  /* Override widget mode default border for base sections */
-  .widget-mode .site-header.selected-element,
-  .widget-mode .site-sidebar.selected-element,
-  .widget-mode .site-footer.selected-element {
-    border: 2px solid #9333ea !important; /* Purple border instead of blue dashed */
-    background-color: rgba(147, 51, 234, 0.08) !important; /* Purple background */
-  }
-  
   /* Blur non-selectable content when selection is active */
   .widget-mode.has-selection .preview-container > div:not(.site-header):not(.site-sidebar):not(.site-footer) > *:not(.featured-events):not(.categories):not(.events-container):not([data-widget-section]) {
     filter: blur(1px) !important;
@@ -476,17 +348,11 @@
     z-index: auto !important;
   }
   
-  .settings-sidebar .widget-hover::before,
   .settings-sidebar .widget-hover::after,
-  .secondary-sidebar .widget-hover::before,
   .secondary-sidebar .widget-hover::after,
-  [data-exclude-widget] .widget-hover::before,
   [data-exclude-widget] .widget-hover::after,
-  .settings-sidebar .selected-element::before,
   .settings-sidebar .selected-element::after,
-  .secondary-sidebar .selected-element::before,
   .secondary-sidebar .selected-element::after,
-  [data-exclude-widget] .selected-element::before,
   [data-exclude-widget] .selected-element::after {
     display: none !important;
   }
@@ -547,45 +413,210 @@
   opacity: 0.3 !important;
 }
 
-/* Drag and Drop Styles */
-.widget-drop-zone-active {
-  position: relative !important;
-}
-
-.widget-drop-zone-active .site-header,
-.widget-drop-zone-active .site-sidebar,
-.widget-drop-zone-active .site-footer,
-.widget-drop-zone-active nav,
-.widget-drop-zone-active aside {
-  filter: blur(2px) !important;
-  opacity: 0.6 !important;
+/* Add Widget Mode - Only affect non-editable sections */
+.add-widget-mode .site-header,
+.add-widget-mode .site-sidebar,
+.add-widget-mode .site-footer,
+.add-widget-mode nav,
+.add-widget-mode aside {
+  filter: blur(1.5px) !important; /* More noticeable blur */
+  opacity: 0.75 !important; /* More visible opacity reduction */
   pointer-events: none !important;
   position: relative !important;
+  transition: all 0.3s ease !important;
 }
 
-.widget-drop-zone-active .site-header::before,
-.widget-drop-zone-active .site-sidebar::before,
-.widget-drop-zone-active .site-footer::before,
-.widget-drop-zone-active nav::before,
-.widget-drop-zone-active aside::before {
+/* Main Content Drop Zone - Base state with transition */
+.widget-drop-zone-container {
+  transition: all 0.1s linear !important;
+}
+
+/* Add Widget Mode - Add 8px to existing padding */
+.widget-drop-zone-active {
+  position: relative !important;
+  /* Gray overlay by default in add widget mode */
+  background: rgba(156, 163, 175, 0.1) !important;
+  border: 2px dashed rgba(156, 163, 175, 0.3) !important;
+  border-radius: 12px !important;
+  /* Add 8px to existing padding */
+  padding: calc(1rem + 8px) !important; /* p-4 + 8px = 24px */
+  transition: all 0.1s linear !important;
+}
+
+/* Medium screens and up - add 8px to existing md:p-6 */
+@media (min-width: 768px) {
+  .widget-drop-zone-active {
+    padding: calc(1.5rem + 8px) !important; /* md:p-6 + 8px = 32px */
+  }
+}
+
+/* Blue overlay when actively dragging over */
+.widget-drop-zone-active.drag-over {
+  background: rgba(59, 130, 246, 0.1) !important;
+  border-color: rgba(59, 130, 246, 0.5) !important;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15) !important;
+}
+
+/* Dark mode support */
+.dark .widget-drop-zone-active {
+  background: rgba(75, 85, 99, 0.15) !important;
+  border-color: rgba(75, 85, 99, 0.4) !important;
+}
+
+.dark .widget-drop-zone-active.drag-over {
+  background: rgba(59, 130, 246, 0.15) !important;
+  border-color: rgba(59, 130, 246, 0.6) !important;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2) !important;
+}
+
+/* Widget Drag Interaction - Sections make space */
+.add-widget-mode.widget-dragging * {
+  transition: transform 0.2s ease, margin 0.2s ease !important;
+}
+
+/* Space creation animation for sections */
+.add-widget-mode .drag-over-section {
+  transform: translateY(60px) !important;
+  margin-top: 60px !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+/* Insertion indicator */
+.add-widget-mode .widget-insertion-indicator {
+  height: 60px !important;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1)) !important;
+  border: 2px dashed rgba(59, 130, 246, 0.4) !important;
+  border-radius: 8px !important;
+  margin: 8px 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  animation: insertionPulse 1.5s ease-in-out infinite !important;
+}
+
+.add-widget-mode .widget-insertion-indicator::after {
+  content: "Drop widget here" !important;
+  color: rgba(59, 130, 246, 0.8) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+.add-widget-mode .widget-insertion-indicator::before {
+  content: "⬇️" !important;
+  margin-right: 4px !important;
+}
+
+/* Insertion pulse animation */
+@keyframes insertionPulse {
+  0%, 100% {
+    opacity: 0.6;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(147, 51, 234, 0.08));
+  }
+  50% {
+    opacity: 1;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(147, 51, 234, 0.15));
+  }
+}
+
+/* Dark mode for insertion indicator */
+.dark .add-widget-mode .widget-insertion-indicator {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(147, 51, 234, 0.15)) !important;
+  border-color: rgba(59, 130, 246, 0.6) !important;
+}
+
+.dark .add-widget-mode .widget-insertion-indicator::after {
+  color: rgba(59, 130, 246, 1) !important;
+}
+
+/* Make header background transparent in add widget mode */
+.add-widget-mode .site-header,
+.add-widget-mode .site-header > *,
+.add-widget-mode .site-header > * > *,
+.add-widget-mode .site-header [class*="bg-white"],
+.add-widget-mode .site-header [class*="bg-gray-950"] {
+  background: transparent !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+.add-widget-mode .site-header {
+  border-bottom: 1px solid rgba(229, 231, 235, 0.3) !important;
+}
+
+.dark .add-widget-mode .site-header,
+.dark .add-widget-mode .site-header > *,
+.dark .add-widget-mode .site-header > * > *,
+.dark .add-widget-mode .site-header [class*="bg-white"],
+.dark .add-widget-mode .site-header [class*="bg-gray-950"] {
+  background: transparent !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+.dark .add-widget-mode .site-header {
+  border-bottom: 1px solid rgba(55, 65, 81, 0.3) !important;
+}
+
+/* Lock Icon Overlay - Centered, No Blur */
+.add-widget-mode .site-header::after,
+.add-widget-mode .site-sidebar::after,
+.add-widget-mode .site-footer::after,
+.add-widget-mode nav::after,
+.add-widget-mode aside::after {
   content: "" !important;
   position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  background: rgba(0, 0, 0, 0.3) !important;
-  z-index: 1 !important;
-  border-radius: inherit !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 48px !important;
+  height: 48px !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 2px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 12px !important;
+  z-index: 50 !important;
+  pointer-events: none !important;
+  opacity: 0.95 !important;
+  filter: none !important; /* Prevent blur inheritance */
+  transition: all 0.3s ease !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+  /* Lock icon using SVG background */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='11' x='3' y='11' rx='2' ry='2'/%3E%3Cpath d='m7 11V7a5 5 0 0 1 10 0v4'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 24px 24px !important;
 }
 
-.dark .widget-drop-zone-active .site-header::before,
-.dark .widget-drop-zone-active .site-sidebar::before,
-.dark .widget-drop-zone-active .site-footer::before,
-.dark .widget-drop-zone-active nav::before,
-.dark .widget-drop-zone-active aside::before {
-  background: rgba(255, 255, 255, 0.1) !important;
+/* Enhanced hover effect */
+.add-widget-mode .site-header:hover::after,
+.add-widget-mode .site-sidebar:hover::after,
+.add-widget-mode .site-footer:hover::after,
+.add-widget-mode nav:hover::after,
+.add-widget-mode aside:hover::after {
+  opacity: 1 !important;
+  transform: translate(-50%, -50%) scale(1.1) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2) !important;
 }
+
+/* Dark mode lock icon */
+.dark .add-widget-mode .site-header::after,
+.dark .add-widget-mode .site-sidebar::after,
+.dark .add-widget-mode .site-footer::after,
+.dark .add-widget-mode nav::after,
+.dark .add-widget-mode aside::after {
+  background: rgba(31, 41, 55, 0.95) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='11' x='3' y='11' rx='2' ry='2'/%3E%3Cpath d='m7 11V7a5 5 0 0 1 10 0v4'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 24px 24px !important;
+}
+
+
 
 /* Dragging state */
 .cursor-grab {
@@ -597,11 +628,39 @@
   cursor: grabbing !important;
 }
 
-/* Drag preview */
-.dragging {
-  transform: rotate(3deg) !important;
-  opacity: 0.8 !important;
+/* Enhanced Widget Drag States */
+.widget-dragging {
+  transform: scale(0.95) !important;
+  opacity: 0.7 !important;
   z-index: 1000 !important;
+  filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.25)) !important;
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+/* Subtle drag hover enhancement */
+.widget-card.draggable:hover:not(.widget-dragging) {
+  transform: scale(1.02) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+/* Smooth drag start animation */
+@keyframes dragStart {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+}
+
+.widget-dragging {
+  animation: dragStart 0.2s ease-out forwards !important;
 }
 
 /* Drop indicator animation */
@@ -620,14 +679,15 @@
   animation: dropPulse 1s infinite;
 }
 
-/* Widget gallery drag state */
-.widget-card.draggable:hover {
-  transform: scale(1.02) !important;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+/* Legacy support for older implementations */
+.dragging {
+  transform: scale(0.9) !important;
+  opacity: 0.8 !important;
+  z-index: 1000 !important;
 }
 
 .widget-card.dragging {
-  transform: rotate(3deg) scale(0.9) !important;
+  transform: scale(0.9) !important;
   opacity: 0.7 !important;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25) !important;
 }

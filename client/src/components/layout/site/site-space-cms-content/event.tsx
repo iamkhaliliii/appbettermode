@@ -17,6 +17,7 @@ import { EnhancedEvent, EventContentProps } from '@/components/features/events/t
 import { Filter } from '@/components/ui/event-filters';
 import { Sort, SortField } from '@/components/ui/event-sort';
 import InteractiveCalendar from '@/components/ui/calendar-layout';
+import { GeneralWidgetPopover } from '../../../dashboard/site-config/widgets/GeneralWidgetPopover';
 
 // Mock enhanced events data - optimized and comprehensive
 const MOCK_ENHANCED_EVENTS: EnhancedEvent[] = [
@@ -226,12 +227,19 @@ const MOCK_ENHANCED_EVENTS: EnhancedEvent[] = [
   }
 ];
 
-export function EventContent({ siteSD, space, site, eventsLayout, cardSize, cardStyle }: EventContentProps) {
+export function EventContent({ siteSD, space, site, eventsLayout, cardSize, cardStyle, isWidgetMode = false }: EventContentProps) {
   const [, setLocation] = useLocation();
   const [events, setEvents] = useState<EnhancedEvent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [useMockData, setUseMockData] = useState(false);
+  
+  // Widget visibility state
+  const [widgetVisibility, setWidgetVisibility] = useState<Record<string, boolean>>({
+    featuredEvents: true,
+    eventsContainer: true,
+    categories: true
+  });
   
   // Controls state
   const [advancedSorts, setAdvancedSorts] = useState<Sort[]>([]);
@@ -255,14 +263,6 @@ export function EventContent({ siteSD, space, site, eventsLayout, cardSize, card
 
   // Get space info for debugging
   const spaceInfo = useMemo(() => getSpaceInfo(space), [space]);
-  
-  // Detect if we're in dashboard mode
-  const isDashboard = useMemo(() => {
-    if (typeof window !== 'undefined') {
-      return window.location.pathname.includes('/dashboard/');
-    }
-    return false;
-  }, []);
   
   // Fetch events data - optimized
   const fetchEventsData = useCallback(async () => {
@@ -374,6 +374,27 @@ export function EventContent({ siteSD, space, site, eventsLayout, cardSize, card
       value: [categoryTitle]
     };
     setAdvancedFilters(prev => [...prev, newFilter]);
+  }, []);
+
+  // Widget action handlers
+  const handleWidgetSettings = useCallback((widgetName: string) => {
+    console.log(`Opening settings for ${widgetName} widget`);
+    // TODO: Open widget settings modal/panel
+  }, []);
+
+  const toggleWidgetVisibility = useCallback((widgetName: string) => {
+    setWidgetVisibility(prev => ({
+      ...prev,
+      [widgetName]: !prev[widgetName]
+    }));
+  }, []);
+
+  const handleWidgetDelete = useCallback((widgetName: string) => {
+    console.log(`Removing ${widgetName} widget`);
+    setWidgetVisibility(prev => ({
+      ...prev,
+      [widgetName]: false
+    }));
   }, []);
 
   // Filter and sort events - optimized with useMemo
@@ -500,138 +521,166 @@ export function EventContent({ siteSD, space, site, eventsLayout, cardSize, card
 
       {/* Featured Events Section */}
       {featuredEvents.length > 0 && (
-        <section className="featured-events" data-section-name="Featured Events">
+        <GeneralWidgetPopover
+          widgetName="Featured Events"
+          widgetType="widget"
+          isHidden={!widgetVisibility.featuredEvents}
+          onSettings={() => handleWidgetSettings('featuredEvents')}
+          onToggleVisibility={() => toggleWidgetVisibility('featuredEvents')}
+          onDelete={() => handleWidgetDelete('featuredEvents')}
+          isWidgetMode={isWidgetMode}
+        >
+          <section className="featured-events" data-section-name="Featured Events">
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                Featured Events
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">
+                Don't miss these highlighted events from our community
+              </p>
+            </div>
+            <FeaturedEventWidget isDashboard={isWidgetMode} />
+          </section>
+        </GeneralWidgetPopover>
+      )}
+
+      {/* Events Controls & Display */}
+      <GeneralWidgetPopover
+        widgetName="Events Container"
+        widgetType="main"
+        isHidden={!widgetVisibility.eventsContainer}
+        onSettings={() => handleWidgetSettings('eventsContainer')}
+        onToggleVisibility={() => toggleWidgetVisibility('eventsContainer')}
+        onDelete={() => handleWidgetDelete('eventsContainer')}
+        isWidgetMode={isWidgetMode}
+      >
+        <section className="events-container" data-section-name="Events content">
+          <EventControlsBar
+            advancedSorts={advancedSorts}
+            setAdvancedSorts={setAdvancedSorts}
+            advancedFilters={advancedFilters}
+            setAdvancedFilters={setAdvancedFilters}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            isSearchOpen={isSearchOpen}
+            setIsSearchOpen={setIsSearchOpen}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+            isViewModeOpen={isViewModeOpen}
+            setIsViewModeOpen={setIsViewModeOpen}
+            onNewEvent={handleNewEvent}
+          />
+          
+          {/* Events Display */}
+          {filteredAndSortedEvents.length === 0 ? (
+            <Card className="text-center p-8">
+              <CardContent className="pt-6">
+                <Calendar className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                <h3 className="text-lg font-medium mb-2">No Events Found</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  {searchQuery || advancedFilters.length > 0 
+                    ? "Try adjusting your search or filters" 
+                    : "Create your first event to get started"}
+                </p>
+                <Button onClick={handleNewEvent}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Event
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="events-display mt-6">
+              {viewMode === 'calendar' ? (
+                <InteractiveCalendar events={filteredAndSortedEvents} siteSD={siteSD} spaceSlug={space.slug} />
+              ) : viewMode === 'list' ? (
+                <div className="relative">
+                  {filteredAndSortedEvents.map((event, index) => (
+                    <EventListItem 
+                      key={event.id}
+                      event={event}
+                      index={index}
+                      filteredEvents={filteredAndSortedEvents}
+                      onEventClick={handleViewEvent}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <LayoutGroup>
+                  <motion.div 
+                    key={cardSize} // Force re-render on cardSize change
+                    className={gridClasses}
+                    layout
+                    initial={{ opacity: 0.8 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ 
+                      layout: { duration: 0.4, ease: "easeInOut" },
+                      opacity: { duration: 0.3 }
+                    }}
+                  >
+                    <AnimatePresence mode="wait">
+                      {filteredAndSortedEvents.map(event => (
+                        <motion.div
+                          key={`${event.id}-${cardStyle}`}
+                          layout
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -20 }}
+                          transition={{
+                            layout: { duration: 0.4, ease: "easeInOut" },
+                            opacity: { duration: 0.3, delay: 0.1 },
+                            y: { duration: 0.3, delay: 0.1 }
+                          }}
+                        >
+                          <EventCard
+                            event={event}
+                            onEventClick={handleViewEvent}
+                            isDashboard={isWidgetMode}
+                            cardStyle={cardStyle}
+                          />
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                  </motion.div>
+                </LayoutGroup>
+              )}
+            </div>
+          )}
+        </section>
+      </GeneralWidgetPopover>
+
+      {/* Categories Section */}
+      <GeneralWidgetPopover
+        widgetName="Event Categories"
+        widgetType="widget"
+        isHidden={!widgetVisibility.categories}
+        onSettings={() => handleWidgetSettings('categories')}
+        onToggleVisibility={() => toggleWidgetVisibility('categories')}
+        onDelete={() => handleWidgetDelete('categories')}
+        isWidgetMode={isWidgetMode}
+      >
+        <section className="categories" data-section-name="Event Categories">
           <div className="mb-6">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
-              Featured Events
+              Browse by Category
             </h2>
             <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Don't miss these highlighted events from our community
+              Find events that match your interests
             </p>
           </div>
-          <FeaturedEventWidget isDashboard={isDashboard} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {CATEGORIES.map((category, index) => (
+              <CategoryCard
+                key={index}
+                icon={category.icon}
+                title={category.title}
+                count={category.count}
+                colorScheme={category.colorScheme}
+                onClick={() => handleCategoryClick(category.title)}
+              />
+            ))}
+          </div>
         </section>
-      )}
-
-
-
-            {/* Events Controls & Display */}
-      <section className="events-container" data-section-name="Events content">
-      <EventControlsBar
-        advancedSorts={advancedSorts}
-        setAdvancedSorts={setAdvancedSorts}
-        advancedFilters={advancedFilters}
-        setAdvancedFilters={setAdvancedFilters}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        isSearchOpen={isSearchOpen}
-        setIsSearchOpen={setIsSearchOpen}
-        viewMode={viewMode}
-        setViewMode={setViewMode}
-        isViewModeOpen={isViewModeOpen}
-        setIsViewModeOpen={setIsViewModeOpen}
-        onNewEvent={handleNewEvent}
-      />
-      
-        {/* Events Display */}
-        {filteredAndSortedEvents.length === 0 ? (
-          <Card className="text-center p-8">
-            <CardContent className="pt-6">
-              <Calendar className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-              <h3 className="text-lg font-medium mb-2">No Events Found</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
-                {searchQuery || advancedFilters.length > 0 
-                  ? "Try adjusting your search or filters" 
-                  : "Create your first event to get started"}
-              </p>
-              <Button onClick={handleNewEvent}>
-                <Plus className="h-4 w-4 mr-2" />
-                Create Event
-              </Button>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="events-display mt-6">
-            {viewMode === 'calendar' ? (
-              <InteractiveCalendar events={filteredAndSortedEvents} siteSD={siteSD} spaceSlug={space.slug} />
-      ) : viewMode === 'list' ? (
-              <div className="relative">
-                {filteredAndSortedEvents.map((event, index) => (
-            <EventListItem 
-              key={event.id}
-              event={event}
-              index={index}
-                    filteredEvents={filteredAndSortedEvents}
-              onEventClick={handleViewEvent}
-            />
-                ))}
-        </div>
-      ) : (
-              <LayoutGroup>
-                <motion.div 
-                  key={cardSize} // Force re-render on cardSize change
-                  className={gridClasses}
-                  layout
-                  initial={{ opacity: 0.8 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ 
-                    layout: { duration: 0.4, ease: "easeInOut" },
-                    opacity: { duration: 0.3 }
-                  }}
-                >
-                  <AnimatePresence mode="wait">
-                    {filteredAndSortedEvents.map(event => (
-                      <motion.div
-                        key={`${event.id}-${cardStyle}`}
-                        layout
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{
-                          layout: { duration: 0.4, ease: "easeInOut" },
-                          opacity: { duration: 0.3, delay: 0.1 },
-                          y: { duration: 0.3, delay: 0.1 }
-                        }}
-                      >
-                        <EventCard
-                          event={event}
-                          onEventClick={handleViewEvent}
-                          isDashboard={isDashboard}
-                          cardStyle={cardStyle}
-                        />
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                </motion.div>
-              </LayoutGroup>
-            )}
-        </div>
-      )}
-      </section>
-
-            {/* Categories Section */}
-            <section className="categories" data-section-name="Event Categories">
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
-            Browse by Category
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 text-sm">
-            Find events that match your interests
-          </p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {CATEGORIES.map((category, index) => (
-            <CategoryCard
-              key={index}
-              icon={category.icon}
-              title={category.title}
-              count={category.count}
-              colorScheme={category.colorScheme}
-              onClick={() => handleCategoryClick(category.title)}
-            />
-          ))}
-        </div>
-      </section>
+      </GeneralWidgetPopover>
     </div>
   );
 }

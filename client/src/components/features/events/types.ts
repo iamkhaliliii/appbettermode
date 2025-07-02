@@ -53,4 +53,5 @@ export interface EventContentProps {
   eventsLayout?: string;
   cardSize?: string;
   cardStyle?: string;
+  isWidgetMode?: boolean;
 } 

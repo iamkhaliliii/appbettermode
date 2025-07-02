@@ -1,5 +1,5 @@
-import React from 'react';
-import { Plus, Lock } from 'lucide-react';
+import React, { useState } from 'react';
+import { Plus, Lock, GripVertical } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/primitives/tooltip";
 import { WidgetCardProps, AvailableWidget, Widget } from './types';
 import { FeaturedEventWidget } from '@/components/features/events/FeaturedEventWidget';
@@ -246,6 +246,7 @@ export default function WidgetCard({
   actions
 }: WidgetCardProps) {
   const widgetLocked = isLocked(widget);
+  const [isDragging, setIsDragging] = useState(false);
 
   const handleClick = () => {
     if (!widgetLocked) {
@@ -262,25 +263,43 @@ export default function WidgetCard({
       return;
     }
     
+    setIsDragging(true);
     e.dataTransfer.setData('application/json', JSON.stringify(widget));
     e.dataTransfer.effectAllowed = 'copy';
     
-    // Set drag image to be the card itself
-    const dragImage = e.currentTarget.cloneNode(true) as HTMLElement;
-    dragImage.style.transform = 'rotate(3deg)';
-    dragImage.style.opacity = '0.8';
+    // Create enhanced drag image
+    const originalElement = e.currentTarget as HTMLElement;
+    const dragImage = originalElement.cloneNode(true) as HTMLElement;
+    
+    // Enhanced drag image styling
+    dragImage.style.width = originalElement.offsetWidth + 'px';
+    dragImage.style.height = originalElement.offsetHeight + 'px';
+    dragImage.style.transform = 'scale(1.05)';
+    dragImage.style.opacity = '0.9';
+    dragImage.style.filter = 'drop-shadow(0 10px 25px rgba(0, 0, 0, 0.25))';
+    dragImage.style.borderRadius = '12px';
+    dragImage.style.zIndex = '9999';
+    dragImage.style.position = 'absolute';
+    dragImage.style.top = '-1000px';
+    dragImage.style.pointerEvents = 'none';
+    
     document.body.appendChild(dragImage);
-    e.dataTransfer.setDragImage(dragImage, 50, 50);
+    e.dataTransfer.setDragImage(dragImage, originalElement.offsetWidth / 2, originalElement.offsetHeight / 2);
     
     // Clean up drag image after drag starts
     setTimeout(() => {
-      document.body.removeChild(dragImage);
+      if (document.body.contains(dragImage)) {
+        document.body.removeChild(dragImage);
+      }
     }, 0);
+    
+    // Add dragging class to original element
+    originalElement.classList.add('widget-dragging');
   };
 
   const handleDragEnd = (e: React.DragEvent) => {
-    // Reset any drag-related styling
-    e.currentTarget.classList.remove('dragging');
+    setIsDragging(false);
+    e.currentTarget.classList.remove('widget-dragging');
   };
 
   const categoryStyles = getUnifiedCategoryStyles(widget);
@@ -296,6 +315,7 @@ export default function WidgetCard({
           }
           ${widgetLocked ? 'opacity-60' : 'hover:shadow-lg'}
           ${showAddButton && !widgetLocked ? 'cursor-grab active:cursor-grabbing' : ''}
+          ${isDragging ? 'widget-dragging' : ''}
         `}
         style={{ 
           borderRadius: widgetLocked ? '8px' : categoryStyles.borderRadius,
@@ -314,13 +334,41 @@ export default function WidgetCard({
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        {/* Drag indicator overlay */}
+        {/* Minimal Grab Indicator for drag mode */}
         {showAddButton && !widgetLocked && (
-          <div className="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
-            <div className="bg-blue-500/90 text-white px-2 py-1 rounded text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-200 delay-300">
-              Drag to add
+          <>
+            {/* Subtle pulsing border when hoverable */}
+            <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+              <div 
+                className="absolute inset-0 rounded-lg animate-pulse"
+                style={{
+                  boxShadow: `0 0 0 1px ${categoryStyles.iconColor}40, 0 0 15px ${categoryStyles.iconColor}20`
+                }}
+              />
             </div>
-          </div>
+            
+            {/* Minimal grab dots indicator */}
+            <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-70 transition-all duration-200 pointer-events-none z-10">
+              <GripVertical 
+                className="w-3 h-3 drop-shadow-sm" 
+                style={{ color: categoryStyles.iconColor }}
+              />
+            </div>
+            
+            {/* Clean drag instruction */}
+            <div className="absolute bottom-1 left-1 right-1 opacity-0 group-hover:opacity-100 transition-all duration-300 delay-200 pointer-events-none z-10">
+              <div 
+                className="text-[8px] font-medium text-center py-0.5 px-1 rounded backdrop-blur-sm"
+                style={{ 
+                  color: categoryStyles.iconColor,
+                  backgroundColor: `${categoryStyles.iconColor}15`,
+                  border: `0.5px solid ${categoryStyles.iconColor}30`
+                }}
+              >
+                Drag
+              </div>
+            </div>
+          </>
         )}
 
         {/* Card Content Layout */}
@@ -347,8 +395,8 @@ export default function WidgetCard({
             </div>
           )}
           
-          {/* Add button for unlocked widgets */}
-          {!widgetLocked && (
+          {/* Add button for unlocked widgets (only when not in drag mode) */}
+          {!widgetLocked && !showAddButton && (
             <div className="absolute top-1 right-1 w-4 h-4 bg-gray-800/80 dark:bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-sm">
               <Plus className="w-2.5 h-2.5 text-white dark:text-gray-800" />
             </div>

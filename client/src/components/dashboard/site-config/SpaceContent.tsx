@@ -11,6 +11,7 @@ import { WidgetDropZone } from './widgets/WidgetDropZone';
 import { AvailableWidget } from './widgets/types';
 import { FeaturedEventWidget } from '@/components/features/events/FeaturedEventWidget';
 import { GeneralWidgetPopover } from './widgets/GeneralWidgetPopover';
+import { EventContent } from '@/components/layout/site/site-space-cms-content/event';
 
 // Interface for space data
 interface Space {
@@ -41,6 +42,7 @@ interface DroppedWidget {
   widget: AvailableWidget;
   position: { x: number; y: number };
   timestamp: number;
+  isHidden?: boolean;
 }
 
 /**
@@ -71,6 +73,21 @@ export function SpaceContent({
 
   // State for dropped widgets
   const [droppedWidgets, setDroppedWidgets] = useState<DroppedWidget[]>([]);
+
+  // New drag state management
+  const [isDraggingWidget, setIsDraggingWidget] = useState(false);
+  const [dragOverSection, setDragOverSection] = useState<string | null>(null);
+  const [insertionPoint, setInsertionPoint] = useState<{ sectionId: string; position: 'before' | 'after' } | null>(null);
+
+  // Section visibility state
+  const [sectionVisibility, setSectionVisibility] = useState<Record<string, boolean>>({
+    header: true,
+    sidebar: true,
+    footer: true,
+    spaceBanner: true,
+    spaceHeader: true,
+    mainContent: true
+  });
 
   // Set up site data from context
   useEffect(() => {
@@ -254,6 +271,89 @@ export function SpaceContent({
     }
   }, [isWidgetMode, handleElementClick, handleElementHover, handleElementLeave]);
 
+  // Global drag state detection
+  useEffect(() => {
+    const handleDragStart = (e: DragEvent) => {
+      // Check if we're dragging a widget
+      const dragData = e.dataTransfer?.types.includes('application/json');
+      if (dragData && isAddWidgetMode) {
+        setIsDraggingWidget(true);
+      }
+    };
+
+    const handleDragEnd = () => {
+      setIsDraggingWidget(false);
+      setDragOverSection(null);
+      setInsertionPoint(null);
+      // Remove all drag classes
+      document.querySelectorAll('.drag-over-section').forEach(el => {
+        el.classList.remove('drag-over-section');
+      });
+      document.querySelectorAll('.widget-insertion-indicator').forEach(el => {
+        el.remove();
+      });
+    };
+
+    if (isAddWidgetMode) {
+      document.addEventListener('dragstart', handleDragStart);
+      document.addEventListener('dragend', handleDragEnd);
+      document.addEventListener('drop', handleDragEnd);
+    }
+
+    return () => {
+      document.removeEventListener('dragstart', handleDragStart);
+      document.removeEventListener('dragend', handleDragEnd);
+      document.removeEventListener('drop', handleDragEnd);
+    };
+  }, [isAddWidgetMode]);
+
+  // Handle section drag over
+  const handleSectionDragOver = useCallback((e: DragEvent, sectionId: string) => {
+    if (!isDraggingWidget || !isAddWidgetMode) return;
+
+    e.preventDefault();
+    
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const y = e.clientY - rect.top;
+    const isTopHalf = y < rect.height / 2;
+    
+    // Determine insertion point
+    const insertPoint = isTopHalf ? `before-${sectionId}` : `after-${sectionId}`;
+    const newInsertionPoint = { sectionId, position: isTopHalf ? 'before' : 'after' as 'before' | 'after' };
+    
+    if (!insertionPoint || 
+        insertionPoint.sectionId !== sectionId || 
+        insertionPoint.position !== (isTopHalf ? 'before' : 'after')) {
+      setInsertionPoint(newInsertionPoint);
+      
+      // Remove previous indicators
+      document.querySelectorAll('.widget-insertion-indicator').forEach(el => el.remove());
+      
+      // Add insertion indicator
+      const section = e.currentTarget as HTMLElement;
+      const indicator = document.createElement('div');
+      indicator.className = 'widget-insertion-indicator';
+      
+      if (isTopHalf) {
+        section.parentNode?.insertBefore(indicator, section);
+      } else {
+        section.parentNode?.insertBefore(indicator, section.nextSibling);
+      }
+      
+      // Move section down if hovering over it
+      if (dragOverSection !== sectionId) {
+        // Remove previous drag over class
+        document.querySelectorAll('.drag-over-section').forEach(el => {
+          el.classList.remove('drag-over-section');
+        });
+        
+        // Add to current section
+        section.classList.add('drag-over-section');
+        setDragOverSection(sectionId);
+      }
+    }
+  }, [isDraggingWidget, isAddWidgetMode, insertionPoint, dragOverSection]);
+
   // Create space from content type - optimized
   useEffect(() => {
     if (!site || !spaceSlug) return;
@@ -407,6 +507,28 @@ export function SpaceContent({
       createSpace();
   }, [site, spaceSlug, cmsTypes]);
 
+  // Toggle section visibility
+  const toggleSectionVisibility = useCallback((sectionName: string) => {
+    setSectionVisibility(prev => ({
+      ...prev,
+      [sectionName]: !prev[sectionName]
+    }));
+  }, []);
+
+  // Section action callbacks
+  const handleSectionSettings = useCallback((sectionName: string) => {
+    console.log(`Opening settings for ${sectionName}`);
+    // TODO: Open settings modal/panel
+  }, []);
+
+  const handleSectionDelete = useCallback((sectionName: string) => {
+    console.log(`Removing ${sectionName} section`);
+    setSectionVisibility(prev => ({
+      ...prev,
+      [sectionName]: false
+    }));
+  }, []);
+
   // Performance optimization: Render the footer outside the AnimatePresence
   const renderFooter = useCallback(() => {
     const footerContent = (
@@ -442,16 +564,22 @@ export function SpaceContent({
     return isWidgetMode ? (
       <GeneralWidgetPopover 
         widgetName="Site Footer"
+        widgetType="section"
         isSelected={!!selectedElement && selectedElement.closest('.site-footer') !== null}
+        isHidden={!sectionVisibility.footer}
+        onSettings={() => handleSectionSettings('footer')}
+        onToggleVisibility={() => toggleSectionVisibility('footer')}
+        onDelete={() => handleSectionDelete('footer')}
+        isWidgetMode={isWidgetMode}
       >
         {footerContent}
       </GeneralWidgetPopover>
     ) : (
       footerContent
     );
-  }, [site, isWidgetMode, selectedElement]);
+  }, [site, isWidgetMode, selectedElement, sectionVisibility, handleSectionSettings, toggleSectionVisibility, handleSectionDelete]);
 
-  // Widget drop handler
+  // Widget drop handler - simple version
   const handleWidgetDrop = useCallback((widget: AvailableWidget, position: { x: number; y: number }) => {
     console.log('Widget dropped:', widget, 'at position:', position);
     
@@ -466,11 +594,32 @@ export function SpaceContent({
     // Add to dropped widgets state
     setDroppedWidgets(prev => [...prev, newWidget]);
     
+    // Clear any drag states
+    setInsertionPoint(null);
+    setDragOverSection(null);
+    
+    // Clean up any insertion indicators
+    document.querySelectorAll('.widget-insertion-indicator').forEach(el => el.remove());
+    document.querySelectorAll('.drag-over-section').forEach(el => {
+      el.classList.remove('drag-over-section');
+    });
+    
     // Show success notification
     console.log(`Added ${widget.name} widget to the page!`);
   }, []);
 
-  // Render dropped widget component
+  // Toggle widget visibility
+  const toggleWidgetVisibility = useCallback((widgetId: string) => {
+    setDroppedWidgets(prev => 
+      prev.map(widget => 
+        widget.id === widgetId 
+          ? { ...widget, isHidden: !widget.isHidden }
+          : widget
+      )
+    );
+  }, []);
+
+  // Render dropped widget component - simple version
   const renderDroppedWidget = useCallback((droppedWidget: DroppedWidget) => {
     const { widget, position } = droppedWidget;
     
@@ -603,21 +752,21 @@ export function SpaceContent({
 
   // Styles are now in index.css
 
-  // Layout with conditional widget mode
+  // Layout with conditional widget mode  
   return (
-    <WidgetDropZone 
-      onDrop={handleWidgetDrop} 
-      isAddWidgetMode={isAddWidgetMode}
-      className={`pb-8 flex flex-col bg-gray-50 dark:bg-gray-900 preview-container ${isWidgetMode ? 'widget-mode' : ''}`}
-    >
-      
-
+    <div className={`pb-8 flex flex-col bg-gray-50 dark:bg-gray-900 preview-container ${isWidgetMode ? 'widget-mode' : ''} ${isAddWidgetMode ? 'add-widget-mode' : ''} ${isDraggingWidget ? 'widget-dragging' : ''}`}>
         {/* Site Header - sticky */}
         {isWidgetMode ? (
           <GeneralWidgetPopover 
             widgetName="Site Header"
+            widgetType="section"
             isSelected={!!selectedElement && selectedElement.closest('.site-header') !== null}
             position="bottom"
+            isHidden={!sectionVisibility.header}
+            onSettings={() => handleSectionSettings('header')}
+            onToggleVisibility={() => toggleSectionVisibility('header')}
+            onDelete={() => handleSectionDelete('header')}
+            isWidgetMode={isWidgetMode}
           >
             <div className="site-header sticky top-0 z-[100] bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800" 
                  data-section-name="Site Header">
@@ -655,7 +804,13 @@ export function SpaceContent({
               {isWidgetMode ? (
                 <GeneralWidgetPopover 
                   widgetName="Site Sidebar"
+                  widgetType="section"
                   isSelected={!!selectedElement && selectedElement.closest('.site-sidebar') !== null}
+                  isHidden={!sectionVisibility.sidebar}
+                  onSettings={() => handleSectionSettings('sidebar')}
+                  onToggleVisibility={() => toggleSectionVisibility('sidebar')}
+                  onDelete={() => handleSectionDelete('sidebar')}
+                  isWidgetMode={isWidgetMode}
                 >
                   <div className="site-sidebar md:sticky md:top-6 md:self-start" 
                        data-section-name="Site Sidebar">
@@ -669,37 +824,90 @@ export function SpaceContent({
                 </div>
               )}
 
-              {/* Main content area */}
-              <div className="flex-1 p-4 md:p-6">
+              {/* Main content area - Only this part should be the drop zone */}
+              <WidgetDropZone 
+                onDrop={handleWidgetDrop} 
+                isAddWidgetMode={isAddWidgetMode}
+                className="flex-1 p-4 md:p-6"
+              >
                 {/* Dropped Widgets - Show above main content */}
                 {droppedWidgets.length > 0 && (
-                  <div className="mb-6 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                        Added Widgets ({droppedWidgets.length})
-                      </h3>
-                      <button 
-                        onClick={() => setDroppedWidgets([])}
-                        className="text-xs text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-                      >
-                        Clear All
-                      </button>
-                    </div>
+                  <div 
+                    className="mb-6 space-y-4"
+                    data-section-id="dropped-widgets"
+                    onDragOver={isDraggingWidget ? (e) => handleSectionDragOver(e as any, 'dropped-widgets') : undefined}
+                  >
                     <div className="space-y-4">
-                      {droppedWidgets.map((droppedWidget) => (
+                      {droppedWidgets.map((droppedWidget, index) => (
                         <div 
                           key={droppedWidget.id}
-                          className="relative group border border-blue-200 dark:border-blue-800 rounded-lg p-4 bg-blue-50/50 dark:bg-blue-900/20"
+                          className="relative group border border-blue-200 dark:border-blue-800 rounded-lg p-4 transition-all bg-blue-50/50 dark:bg-blue-900/20"
+                          data-section-id={`widget-${index}`}
+                          onDragOver={isDraggingWidget ? (e) => handleSectionDragOver(e as any, `widget-${index}`) : undefined}
                         >
-                          {/* Remove button */}
-                          <button
-                            onClick={() => setDroppedWidgets(prev => prev.filter(w => w.id !== droppedWidget.id))}
-                            className="absolute top-2 right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            ×
-                          </button>
+                          {/* Action Group Dropdown - Always full opacity */}
+                          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                            <div className="flex items-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg overflow-hidden">
+                              {/* Settings Button */}
+                              <button
+                                className="p-2 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors border-r border-gray-200 dark:border-gray-600"
+                                title="Widget Settings"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                              </button>
+                              
+                              {/* Hide/Unhide Button */}
+                              <button
+                                onClick={() => toggleWidgetVisibility(droppedWidget.id)}
+                                className={`p-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-r border-gray-200 dark:border-gray-600 ${
+                                  droppedWidget.isHidden 
+                                    ? 'text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300' 
+                                    : 'text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400'
+                                }`}
+                                title={droppedWidget.isHidden ? "Show Widget" : "Hide Widget"}
+                              >
+                                {droppedWidget.isHidden ? (
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                  </svg>
+                                ) : (
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                                  </svg>
+                                )}
+                              </button>
+                              
+                              {/* Drag Handle */}
+                              <button
+                                className="p-2 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors border-r border-gray-200 dark:border-gray-600 cursor-grab active:cursor-grabbing"
+                                title="Drag to Reorder"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+                                </svg>
+                              </button>
+                              
+                              {/* Delete Button */}
+                              <button
+                                onClick={() => setDroppedWidgets(prev => prev.filter(w => w.id !== droppedWidget.id))}
+                                className="p-2 hover:bg-red-50 dark:hover:bg-red-900/30 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                                title="Remove Widget"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
                           
-                          {renderDroppedWidget(droppedWidget)}
+                          {/* Widget Content */}
+                          <div className={`transition-opacity ${droppedWidget.isHidden ? 'opacity-30' : 'opacity-100'}`}>
+                            {renderDroppedWidget(droppedWidget)}
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -715,8 +923,10 @@ export function SpaceContent({
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.2 }}
                       className="bg-white dark:bg-gray-800 rounded-lg shadow p-6"
+                      data-section-id="loading"
+                      onDragOver={isDraggingWidget ? (e) => handleSectionDragOver(e as any, 'loading') : undefined}
                     >
-                        <ContentSkeleton />
+                      <ContentSkeleton />
                     </motion.div>
                   ) : error ? (
                     <motion.div
@@ -725,8 +935,10 @@ export function SpaceContent({
                       animate={{ opacity: 1 }}
                       transition={{ duration: 0.2 }}
                       className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
+                      data-section-id="error"
+                      onDragOver={isDraggingWidget ? (e) => handleSectionDragOver(e as any, 'error') : undefined}
                     >
-                        <p className="text-red-500">{error}</p>
+                      <p className="text-red-500">{error}</p>
                     </motion.div>
                   ) : space ? (
                     <motion.div
@@ -739,34 +951,49 @@ export function SpaceContent({
                     >
                       {/* Space Header/Banner Section */}
                       {spaceBanner ? (
-                          <AnimatePresence mode="wait">
+                        <AnimatePresence mode="wait">
+                          <div 
+                            data-section-id="space-banner"
+                            onDragOver={isDraggingWidget ? (e) => handleSectionDragOver(e as any, 'space-banner') : undefined}
+                          >
                             <SpaceBanner 
                               key="space-banner"
                               show={spaceBanner} 
                               bannerUrl={spaceBannerUrl} 
                               spaceName={space.name} 
                             />
-                          </AnimatePresence>
-                      ) : (
-                          <div className="mb-6">
-                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                              {space.name}
-                            </h1>
-                            {space.description && (
-                              <p className="text-gray-600 dark:text-gray-400">{space.description}</p>
-                            )}
                           </div>
+                        </AnimatePresence>
+                      ) : (
+                        <div 
+                          className="mb-6"
+                          data-section-id="space-header"
+                          onDragOver={isDraggingWidget ? (e) => handleSectionDragOver(e as any, 'space-header') : undefined}
+                        >
+                          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                            {space.name}
+                          </h1>
+                          {space.description && (
+                            <p className="text-gray-600 dark:text-gray-400">{space.description}</p>
+                          )}
+                        </div>
                       )}
                       
-                    {/* Main Content */}
-                        <SpaceCmsContent 
+                      {/* Main Content */}
+                      <div 
+                        data-section-id="main-content"
+                        onDragOver={isDraggingWidget ? (e) => handleSectionDragOver(e as any, 'main-content') : undefined}
+                      >
+                        <EventContent 
                           siteSD={siteSD}
                           space={space}
                           site={site}
-                      eventsLayout={eventsLayout}
-                      cardSize={cardSize}
-                      cardStyle={cardStyle}
+                          eventsLayout={eventsLayout}
+                          cardSize={cardSize}
+                          cardStyle={cardStyle}
+                          isWidgetMode={isWidgetMode}
                         />
+                      </div>
                     </motion.div>
                   ) : (
                     <motion.div
@@ -775,20 +1002,22 @@ export function SpaceContent({
                       animate={{ opacity: 1 }}
                       transition={{ duration: 0.2 }}
                       className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
+                      data-section-id="no-content"
+                      onDragOver={isDraggingWidget ? (e) => handleSectionDragOver(e as any, 'no-content') : undefined}
                     >
-                        <p className="text-gray-600 dark:text-gray-400">
-                          No content available for this space.
-                        </p>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        No content available for this space.
+                      </p>
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </div>
+              </WidgetDropZone>
             </div>
           </div>
         </div>
 
         {/* Footer */}
           {renderFooter()}
-      </WidgetDropZone>
+      </div>
   );
-} 
+}
