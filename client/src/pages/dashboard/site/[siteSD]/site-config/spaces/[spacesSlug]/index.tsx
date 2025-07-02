@@ -146,17 +146,18 @@ export default function SpaceSettingsPage() {
 
   // Widget click handler to open settings
   const handleWidgetClick = useCallback((widget: any) => {
-    console.log('🔧 handleWidgetClick called with widget:', widget?.name);
-    console.log('🔧 Current state before update:', {
-      selectedWidget: selectedWidget?.name,
-      isWidgetSettingsMode,
-      activeTab
-    });
+    // Reduced debug logging to prevent spam
+    // console.log('🔧 handleWidgetClick called with widget:', widget?.name);
+    // console.log('🔧 Current state before update:', {
+    //   selectedWidget: selectedWidget?.name,
+    //   isWidgetSettingsMode,
+    //   activeTab
+    // });
     
     // Always set the new widget state - React will handle the transition
     setSelectedWidget(widget);
     setIsWidgetSettingsMode(true);
-    console.log('✅ Widget state set to:', widget?.name);
+    // console.log('✅ Widget state set to:', widget?.name);
     
     // Switch to widget tab if not already there
     if (activeTab !== 'widget') {
@@ -199,9 +200,10 @@ export default function SpaceSettingsPage() {
 
   // Handle section settings click from mockup
   const handleSectionSettings = useCallback((sectionName: string) => {
-    console.log('handleSectionSettings called with:', sectionName);
+    // Reduced debug logging to prevent spam
+    // console.log('handleSectionSettings called with:', sectionName);
     const widget = getWidgetForSection(sectionName);
-    console.log('Mapped widget:', widget);
+    // console.log('Mapped widget:', widget);
     if (widget) {
       handleWidgetClick(widget);
     } else {

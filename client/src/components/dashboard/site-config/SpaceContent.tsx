@@ -519,12 +519,13 @@ export function SpaceContent({
 
   // Section action callbacks
   const handleSectionSettings = useCallback((sectionName: string) => {
-    console.log('SpaceContent handleSectionSettings called with:', sectionName);
-    console.log('onSectionSettings prop:', onSectionSettings);
+    // Reduced debug logging to prevent spam
+    // console.log('SpaceContent handleSectionSettings called with:', sectionName);
+    // console.log('onSectionSettings prop:', onSectionSettings);
     if (onSectionSettings) {
       onSectionSettings(sectionName);
     } else {
-      console.log(`Opening settings for ${sectionName}`);
+      // console.log(`Opening settings for ${sectionName}`);
     }
   }, [onSectionSettings]);
 
@@ -882,7 +883,7 @@ export function SpaceContent({
                 )}
 
                 <AnimatePresence mode="wait">
-                  {isContentLoading ? (
+                  {isContentLoading && (
                     <motion.div
                       key="skeleton"
                       initial={{ opacity: 0 }}
@@ -895,11 +896,13 @@ export function SpaceContent({
                     >
                       <ContentSkeleton />
                     </motion.div>
-                  ) : error ? (
+                  )}
+                  {!isContentLoading && error && (
                     <motion.div
                       key="error"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
                       transition={{ duration: 0.2 }}
                       className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
                       data-section-id="error"
@@ -907,7 +910,8 @@ export function SpaceContent({
                     >
                       <p className="text-red-500">{error}</p>
                     </motion.div>
-                  ) : space ? (
+                  )}
+                  {!isContentLoading && !error && space && (
                     <motion.div
                       key={`space-${spaceSlug}`}
                       initial={{ opacity: 0 }}
@@ -918,19 +922,16 @@ export function SpaceContent({
                     >
                       {/* Space Header/Banner Section */}
                       {spaceBanner ? (
-                        <AnimatePresence mode="wait">
-                          <div 
-                            data-section-id="space-banner"
-                            onDragOver={isDraggingWidget ? (e) => handleSectionDragOver(e as any, 'space-banner') : undefined}
-                          >
-                            <SpaceBanner 
-                              key="space-banner"
-                              show={spaceBanner} 
-                              bannerUrl={spaceBannerUrl} 
-                              spaceName={space.name} 
-                            />
-                          </div>
-                        </AnimatePresence>
+                        <div 
+                          data-section-id="space-banner"
+                          onDragOver={isDraggingWidget ? (e) => handleSectionDragOver(e as any, 'space-banner') : undefined}
+                        >
+                          <SpaceBanner 
+                            show={spaceBanner} 
+                            bannerUrl={spaceBannerUrl} 
+                            spaceName={space.name} 
+                          />
+                        </div>
                       ) : (
                         <div 
                           className="mb-6"
@@ -963,11 +964,13 @@ export function SpaceContent({
                         />
                       </div>
                     </motion.div>
-                  ) : (
+                  )}
+                  {!isContentLoading && !error && !space && (
                     <motion.div
                       key="no-content"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
                       transition={{ duration: 0.2 }}
                       className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 text-center"
                       data-section-id="no-content"

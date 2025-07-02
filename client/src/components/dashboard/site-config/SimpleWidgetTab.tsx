@@ -63,12 +63,12 @@ export function SimpleWidgetTab(props: WidgetTabProps) {
     initialCardStyle = 'modern'
   } = props;
 
-  // Debug logs
-  console.log('SimpleWidgetTab props:', {
-    selectedWidget,
-    isWidgetSettingsMode,
-    hasOnWidgetSettingsModeChange: !!onWidgetSettingsModeChange
-  });
+  // Debug logs - reduced to prevent spam
+  // console.log('SimpleWidgetTab props:', {
+  //   selectedWidget,
+  //   isWidgetSettingsMode,
+  //   hasOnWidgetSettingsModeChange: !!onWidgetSettingsModeChange
+  // });
 
   // State for widget visibility
   const [hiddenWidgets, setHiddenWidgets] = React.useState<Set<string>>(new Set());
@@ -139,43 +139,91 @@ export function SimpleWidgetTab(props: WidgetTabProps) {
     const currentWidgetId = selectedWidget?.id;
     const previousWidgetId = prevSelectedWidgetRef.current;
     
-    console.log('📊 SimpleWidgetTab useEffect - selectedWidget prop changed:', {
-      newWidget: selectedWidget?.name,
-      newWidgetId: currentWidgetId,
-      prevWidgetId: previousWidgetId,
-      isWidgetSettingsMode,
-      managedWidget: managedSelectedWidget?.name,
-      timestamp: Date.now()
-    });
+    // Reduced debug logging to prevent spam
+    // console.log('📊 SimpleWidgetTab useEffect - selectedWidget prop changed:', {
+    //   newWidget: selectedWidget?.name,
+    //   newWidgetId: currentWidgetId,
+    //   prevWidgetId: previousWidgetId,
+    //   isWidgetSettingsMode,
+    //   managedWidget: managedSelectedWidget?.name,
+    //   timestamp: Date.now()
+    // });
 
     // If we receive a selectedWidget via props and it's different from previous
     if (selectedWidget && isWidgetSettingsMode && currentWidgetId !== previousWidgetId) {
-      console.log('🔄 Setting managed state from props:', selectedWidget?.name);
+      // console.log('🔄 Setting managed state from props:', selectedWidget?.name);
       prevSelectedWidgetRef.current = currentWidgetId;
+      // Call handleWidgetClick without including it in dependencies to avoid infinite loop
       handleWidgetClick(selectedWidget);
     }
-  }, [selectedWidget, isWidgetSettingsMode, managedSelectedWidget, handleWidgetClick]);
+  }, [selectedWidget, isWidgetSettingsMode]); // Removed handleWidgetClick and managedSelectedWidget from deps
 
   // Always use managed state for consistency
   const currentWidget = managedSelectedWidget;
   const currentIsWidgetSettingsMode = managedIsWidgetSettingsMode;
 
-  // Debug logs for widget state
-  console.log('Widget states:', {
-    'props.selectedWidget': selectedWidget?.name,
-    'props.isWidgetSettingsMode': isWidgetSettingsMode,
-    'managed.selectedWidget': managedSelectedWidget?.name,
-    'managed.isWidgetSettingsMode': managedIsWidgetSettingsMode,
-    'currentWidget': currentWidget?.name,
-    'currentIsWidgetSettingsMode': currentIsWidgetSettingsMode,
-    'shouldShowSettings': currentIsWidgetSettingsMode && currentWidget
-  });
+  // Debug logs for widget state - reduced to prevent spam
+  // console.log('Widget states:', {
+  //   'props.selectedWidget': selectedWidget?.name,
+  //   'props.isWidgetSettingsMode': isWidgetSettingsMode,
+  //   'managed.selectedWidget': managedSelectedWidget?.name,
+  //   'managed.isWidgetSettingsMode': managedIsWidgetSettingsMode,
+  //   'currentWidget': currentWidget?.name,
+  //   'currentIsWidgetSettingsMode': currentIsWidgetSettingsMode,
+  //   'shouldShowSettings': currentIsWidgetSettingsMode && currentWidget
+  // });
 
   // Simple widget click handler for sidebar
   const handleSidebarWidgetClick = React.useCallback((widget: any) => {
     console.log('🔄 Sidebar widget click:', widget?.name);
     handleWidgetClick(widget);
   }, [handleWidgetClick]);
+
+  // Get widget icon and color based on widget type
+  const getWidgetIconAndColor = React.useCallback((widget: any) => {
+    if (!widget) return { icon: Settings, color: 'blue' };
+
+    // Check if it's a base widget (General widgets)
+    const baseWidget = widgetSections.base.find(w => w.id === widget.id);
+    if (baseWidget) {
+      return {
+        icon: baseWidget.icon,
+        color: 'purple',
+        bgColor: 'bg-purple-100 dark:bg-purple-900/30',
+        textColor: 'text-purple-600 dark:text-purple-400'
+      };
+    }
+
+    // Check if it's a main widget
+    const mainWidget = widgetSections.main.find(w => w.id === widget.id);
+    if (mainWidget) {
+      return {
+        icon: mainWidget.icon,
+        color: 'blue',
+        bgColor: 'bg-blue-100 dark:bg-blue-900/30',
+        textColor: 'text-blue-600 dark:text-blue-400'
+      };
+    }
+
+    // Check if it's a custom widget
+    const customWidget = widgetSections.custom.find(w => w.id === widget.id);
+    if (customWidget) {
+      return {
+        icon: customWidget.icon,
+        color: 'orange',
+        bgColor: 'bg-orange-100 dark:bg-orange-900/30',
+        textColor: 'text-orange-600 dark:text-orange-400'
+      };
+    }
+
+    // Default fallback
+    return {
+      icon: Settings,
+      color: 'blue',
+      bgColor: 'bg-blue-100 dark:bg-blue-900/30',
+      textColor: 'text-blue-600 dark:text-blue-400'
+    };
+  }, []);
 
   const tabs = [
     { id: 'active-widgets', label: 'All events page' },
@@ -207,9 +255,14 @@ export function SimpleWidgetTab(props: WidgetTabProps) {
               <ArrowLeft className="w-4 h-4" />
             </button>
             <div className="flex items-center gap-3 flex-1 min-w-0">
-              <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                <Settings className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              </div>
+              {(() => {
+                const { icon: WidgetIcon, bgColor, textColor } = getWidgetIconAndColor(currentWidget);
+                return (
+                  <div className={`w-8 h-8 rounded-lg ${bgColor} flex items-center justify-center flex-shrink-0`}>
+                    <WidgetIcon className={`w-4 h-4 ${textColor}`} />
+                  </div>
+                );
+              })()}
               <div className="flex-1 min-w-0">
                 <h4 className="text-sm font-medium text-gray-900 dark:text-white truncate">
                   {currentWidget?.name} Settings
