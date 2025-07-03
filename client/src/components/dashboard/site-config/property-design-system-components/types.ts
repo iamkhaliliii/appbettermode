@@ -2,7 +2,7 @@ export interface PropertyRowProps {
   label: string;
   value: any;
   fieldName: string;
-  type?: 'text' | 'textarea' | 'select' | 'upload' | 'checkbox' | 'datetime' | 'users' | 'events' | 'tags' | 'timezone' | 'number' | 'repeat' | 'multiselect';
+  type?: 'text' | 'textarea' | 'select' | 'upload' | 'checkbox' | 'datetime' | 'users' | 'events' | 'tags' | 'timezone' | 'number' | 'repeat' | 'multiselect' | 'menu';
   options?: { 
     value: string; 
     label: string; 
@@ -129,6 +129,18 @@ export interface MultiSelectProps {
   }[];
   placeholder?: string;
   enableSearch?: boolean;
+}
+
+export interface MenuItem {
+  id: string;
+  label: string;
+  url: string;
+}
+
+export interface MenuEditorProps {
+  value: MenuItem[];
+  onChange: (value: MenuItem[]) => void;
+  placeholder?: string;
 }
 
 // Mock user data

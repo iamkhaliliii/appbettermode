@@ -12,7 +12,8 @@ import {
   TimezoneSelector,
   NumberInput,
   RepeatSelector,
-  MultiSelect
+  MultiSelect,
+  MenuEditor
 } from "./property-design-system-components";
 
 export function PropertyRow({ 
@@ -397,6 +398,17 @@ export function PropertyRow({
                 options={options}
                 placeholder="Select options"
                 enableSearch={enableDropdownSearch}
+              />
+            </div>
+          )}
+
+          {type === 'menu' && (
+            <div className="w-full mt-0.5">
+              <MenuEditor
+                value={value || []}
+                onChange={onValueChange}
+                placeholder="Manage menu items"
+                defaultView="spaces"
               />
             </div>
           )}

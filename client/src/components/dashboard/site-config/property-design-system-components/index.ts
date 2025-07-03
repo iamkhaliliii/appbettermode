@@ -10,4 +10,5 @@ export { TagInput } from './TagInput';
 export { TimezoneSelector } from './TimezoneSelector';
 export { NumberInput } from './NumberInput';
 export { RepeatSelector } from './RepeatSelector';
-export { MultiSelect } from './MultiSelect'; 
+export { MultiSelect } from './MultiSelect';
+export { MenuEditor } from './MenuEditor'; 
