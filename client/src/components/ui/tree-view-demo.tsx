@@ -22,10 +22,22 @@ import {
   Trash2,
   FileText
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/primitives/dialog";
+import { Button } from "@/components/ui/primitives/button";
+import { Input } from "@/components/ui/primitives/input";
+import { Label } from "@/components/ui/primitives/label";
 
 const DemoOne = () => {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(["pages", "my-spaces"]));
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
 
   // Function to get dynamic icon for expandable folders
   const getDynamicIcon = (nodeId: string, defaultIcon: React.ReactNode, expandedIcon: React.ReactNode) => {
@@ -92,7 +104,7 @@ const DemoOne = () => {
     },
     {
       id: "menu",
-      label: "Menu",
+      label: "Menu Management",
       icon: <SquareMenu className="h-4 w-4" />,
       children: [
         { id: "global-menu", label: "Global menu", icon: <Menu className="h-4 w-4" /> },
@@ -155,7 +167,23 @@ const DemoOne = () => {
                 </button>
               </div>
             );
-                     } else if (["job-board", "events", "qa", "ideas-wishlist", "knowledge-base", "blog", "discussions", "changelog"].includes(nodeId)) {
+          } else if (nodeId === "menu") {
+            return (
+              <div className="bg-background border border-border rounded-md shadow-lg py-1 min-w-[160px]">
+                <button
+                  className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
+                  onClick={() => {
+                    console.log("New Menu Item clicked");
+                    setIsMenuModalOpen(true);
+                    setActiveDropdown(null);
+                  }}
+                >
+                  <Plus className="h-4 w-4" />
+                  New Menu Item
+                </button>
+              </div>
+            );
+          } else if (["job-board", "events", "qa", "ideas-wishlist", "knowledge-base", "blog", "discussions", "changelog"].includes(nodeId)) {
              return (
                <div className="bg-background border border-border rounded-md shadow-lg py-1 min-w-[180px]">
                  <button
@@ -215,6 +243,51 @@ const DemoOne = () => {
         }}
         defaultExpandedIds={["pages", "my-spaces"]}
       />
+      
+      {/* Menu Modal */}
+      <Dialog open={isMenuModalOpen} onOpenChange={setIsMenuModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Add New Menu Item</DialogTitle>
+            <DialogDescription>
+              Create a new menu item for your navigation.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Name
+              </Label>
+              <Input
+                id="name"
+                placeholder="Menu item name"
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="url" className="text-right">
+                URL
+              </Label>
+              <Input
+                id="url"
+                placeholder="/path/to/page"
+                className="col-span-3"
+              />
+            </div>
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setIsMenuModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={() => {
+              console.log("Menu item created");
+              setIsMenuModalOpen(false);
+            }}>
+              Create
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

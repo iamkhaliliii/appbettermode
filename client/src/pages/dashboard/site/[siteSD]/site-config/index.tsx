@@ -37,6 +37,18 @@ import {
   Shield,
   Bell
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/primitives/dialog";
+import { Button } from "@/components/ui/primitives/button";
+import { Input } from "@/components/ui/primitives/input";
+import { Label } from "@/components/ui/primitives/label";
+import MenuManagement from "@/components/dashboard/site-config/MenuManagement";
 
 // CSS to disable all links in the preview
 const disableLinksStyle = `
@@ -62,6 +74,7 @@ export default function SiteSpecificConfigPage() {
   const [selectedSpace, setSelectedSpace] = useState<string | null>(null);
   const [selectedConfigNode, setSelectedConfigNode] = useState<string | null>(null);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
   const isFeed = location.includes('/spaces/feed');
 
   // Function to get dynamic icon for expandable folders
@@ -119,7 +132,7 @@ export default function SiteSpecificConfigPage() {
     },
     {
       id: "menu",
-      label: "Menu",
+      label: "Menu Management",
       icon: <SquareMenu className="h-4 w-4" />,
       children: [
         { id: "global-menu", label: "Global menu", icon: <Menu className="h-4 w-4" /> },
@@ -161,6 +174,8 @@ export default function SiteSpecificConfigPage() {
     };
   }, [activeDropdown]);
 
+
+
   return (
     <DashboardPageWrapper 
       siteSD={siteSD}
@@ -189,7 +204,6 @@ export default function SiteSpecificConfigPage() {
                 <TreeView
                   data={configTreeData}
                   onNodeClick={(node) => {
-                    console.log("Configuration section clicked:", node.label);
                     setSelectedConfigNode(node.id);
                   }}
                   onNodeExpand={(nodeId, expanded) => {
@@ -204,8 +218,11 @@ export default function SiteSpecificConfigPage() {
                     });
                   }}
                   onActionClick={(nodeId) => {
-                    console.log("Action clicked for:", nodeId);
-                    setActiveDropdown(activeDropdown === nodeId ? null : nodeId);
+                    if (nodeId === "menu") {
+                      setIsMenuModalOpen(true);
+                    } else {
+                      setActiveDropdown(activeDropdown === nodeId ? null : nodeId);
+                    }
                   }}
                   actionableNodes={["pages", "menu", "job-board", "events", "qa", "ideas-wishlist", "knowledge-base", "blog", "discussions", "changelog"]}
                   activeDropdown={activeDropdown}
@@ -223,7 +240,6 @@ export default function SiteSpecificConfigPage() {
                           <button
                             className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
                             onClick={() => {
-                              console.log("New Folder clicked");
                               setActiveDropdown(null);
                             }}
                           >
@@ -233,7 +249,6 @@ export default function SiteSpecificConfigPage() {
                           <button
                             className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
                             onClick={() => {
-                              console.log("New Page clicked");
                               setActiveDropdown(null);
                             }}
                           >
@@ -248,7 +263,6 @@ export default function SiteSpecificConfigPage() {
                           <button
                             className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
                             onClick={() => {
-                              console.log("Hide clicked for:", nodeId);
                               setActiveDropdown(null);
                             }}
                           >
@@ -258,7 +272,6 @@ export default function SiteSpecificConfigPage() {
                           <button
                             className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
                             onClick={() => {
-                              console.log("Rename clicked for:", nodeId);
                               setActiveDropdown(null);
                             }}
                           >
@@ -268,7 +281,6 @@ export default function SiteSpecificConfigPage() {
                           <button
                             className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
                             onClick={() => {
-                              console.log("Config clicked for:", nodeId);
                               setActiveDropdown(null);
                             }}
                           >
@@ -278,7 +290,6 @@ export default function SiteSpecificConfigPage() {
                           <button
                             className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
                             onClick={() => {
-                              console.log("Set as home page clicked for:", nodeId);
                               setActiveDropdown(null);
                             }}
                           >
@@ -288,7 +299,6 @@ export default function SiteSpecificConfigPage() {
                           <button
                             className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2 text-destructive"
                             onClick={() => {
-                              console.log("Delete clicked for:", nodeId);
                               setActiveDropdown(null);
                             }}
                           >
@@ -335,6 +345,69 @@ export default function SiteSpecificConfigPage() {
           </div>
         </div>
       </div>
+      
+            {/* Menu Management Modal */}
+      <Dialog open={isMenuModalOpen} onOpenChange={setIsMenuModalOpen}>
+        <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-hidden">
+          <MenuManagement
+            onSave={(menuStructure) => {
+              console.log('Menu saved:', menuStructure);
+              // TODO: Save menu structure to backend
+              setIsMenuModalOpen(false);
+            }}
+            onCancel={() => setIsMenuModalOpen(false)}
+            initialMenu={[
+              // Sample menu for demo
+              {
+                id: 'home',
+                type: 'page',
+                label: 'Home',
+                pageId: 'feed',
+                url: '/feed'
+              },
+              {
+                id: 'community',
+                type: 'folder',
+                label: 'Community',
+                isExpanded: true,
+                children: [
+                  {
+                    id: 'discussions',
+                    type: 'page',
+                    label: 'Discussions',
+                    pageId: 'discussions',
+                    url: '/discussions'
+                  },
+                  {
+                    id: 'events',
+                    type: 'page',
+                    label: 'Events',
+                    pageId: 'events',
+                    url: '/events'
+                  }
+                ]
+              },
+              {
+                id: 'external',
+                type: 'link',
+                label: 'Documentation',
+                url: 'https://docs.example.com'
+              }
+            ]}
+            availablePages={[
+              { id: 'feed', name: 'Feed', url: '/feed' },
+              { id: 'job-board', name: 'Job Board', url: '/jobs' },
+              { id: 'events', name: 'Events', url: '/events' },
+              { id: 'qa', name: 'Q&A', url: '/qa' },
+              { id: 'ideas-wishlist', name: 'Ideas & Wishlist', url: '/ideas' },
+              { id: 'knowledge-base', name: 'Knowledge Base', url: '/kb' },
+              { id: 'blog', name: 'Blog', url: '/blog' },
+              { id: 'discussions', name: 'Discussions', url: '/discussions' },
+              { id: 'changelog', name: 'Changelog', url: '/changelog' },
+            ]}
+          />
+        </DialogContent>
+      </Dialog>
     </DashboardPageWrapper>
   );
 } 
