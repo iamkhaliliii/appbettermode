@@ -16,7 +16,8 @@ import {
   Moon,
   Sun,
   Info,
-  Shield
+  Shield,
+  Bookmark
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/primitives';
@@ -149,6 +150,10 @@ export function SiteHeader({
             {/* Right Side Actions */}
             <div className="flex items-center space-x-1">
               <ThemeToggle />
+              
+              <Button variant="ghost" size="icon" className="text-gray-600 dark:text-gray-300 hidden sm:flex">
+                <Bookmark size={18} />
+              </Button>
               
               <Button variant="ghost" size="icon" className="text-gray-600 dark:text-gray-300 hidden sm:flex">
                 <Bell size={18} />

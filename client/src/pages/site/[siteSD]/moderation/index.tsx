@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { useRoute, Link } from 'wouter';
-import { SiteLayout } from '@/components/layout/site';
 import { withSiteContext, WithSiteContextProps } from '@/lib/with-site-context';
 import { Card } from '@/components/ui/primitives';
 import { Badge } from '@/components/ui/primitives';
@@ -529,8 +528,7 @@ function SiteModerationPage({ siteId, siteDetails }: WithSiteContextProps) {
   const currentItem = ALL_SIDEBAR_ITEMS.find(item => item.key === section);
 
   return (
-    <SiteLayout siteSD={siteSD} site={siteDetails}>
-      <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto">
         {/* 3-Column Layout */}
         <div className="flex relative">
           {/* Left Sidebar */}
@@ -732,8 +730,7 @@ function SiteModerationPage({ siteId, siteDetails }: WithSiteContextProps) {
           </div>
         </div>
       </div>
-    </SiteLayout>
-  );
+    );
 }
 
 export default withSiteContext(SiteModerationPage); 

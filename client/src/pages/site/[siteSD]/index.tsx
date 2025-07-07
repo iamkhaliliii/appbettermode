@@ -3,6 +3,7 @@ import { useParams, useLocation, Switch, Route } from 'wouter';
 import { SiteLayout } from '@/components/layout/site/site-layout';
 import { SiteSidebar } from '@/components/layout/site/site-sidebar';
 import { Button, Card, CardContent, CardHeader, CardTitle, Badge, Avatar, AvatarFallback, AvatarImage } from '@/components/ui/primitives';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/forms/dropdown-menu';
 import { 
   MessageSquare, 
   HelpCircle, 
@@ -10,7 +11,16 @@ import {
   Calendar, 
   Users,
   Link as LinkIcon,
-  Loader2
+  Loader2,
+  Music,
+  Video,
+  Image as ImageIcon,
+  ArrowUpDown,
+  Check,
+  ChevronDown,
+  Clock,
+  MapPin,
+  ArrowRight
 } from 'lucide-react';
 import { sitesApi, Site } from '@/lib/api';
 import { Link } from 'wouter';
@@ -18,6 +28,7 @@ import { useSiteData } from '@/lib/SiteDataContext';
 import { LayoutProvider, useLayout } from '@/lib/LayoutContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Skeleton } from '@/components/ui/primitives';
+import { SocialCard } from '@/components/ui/social-card';
 import SpacePage from './/[spaceSlug]';
 import PollsPage from './polls';
 import SearchPage from './search';
@@ -132,19 +143,331 @@ const ContentSkeleton = () => (
   </div>
 );
 
-// Home page content component
-const SiteHomeContent = () => {
+// Social Feed content component
+const SocialFeedContent = () => {
   const { site, isLoading } = React.useContext(SiteContext);
   const { siteSD } = useParams();
   
-  // Get layout context - since we're inside LayoutProvider this should work
-  const isAdminHeaderVisible = true; // Fallback for now
+  // Sort state
+  const [sortBy, setSortBy] = useState<'latest' | 'popular' | 'trending'>('latest');
   
-  // Memoize content types to avoid recalculating on each render
-  const contentTypes = useMemo(() => 
-    Array.isArray(site?.content_types) ? site.content_types : [],
-    [site?.content_types]
-  );
+  // Pinned posts data
+  const pinnedData: Array<{
+    id: number;
+    author: any;
+    content: any;
+    engagement: any;
+    engagementStyle: "default" | "reactions" | "upvote" | "event";
+  }> = [
+    {
+      id: 101,
+      author: {
+        name: "Community Team",
+        username: "bettermode_team",
+        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+        timeAgo: "Pinned",
+        postCategory: "wishlist",
+        badge: {
+          text: "Admin",
+          emoji: "⭐"
+        },
+        emoji: "📌"
+      },
+      content: {
+        text: "🎯 Help us shape the future of music! What features would you love to see in our platform? Your ideas matter and directly influence our roadmap. Vote for your favorites below! 🚀",
+        poll: {
+          question: "Which feature should we prioritize next?",
+          options: [
+            { id: "ai_recommendations", text: "AI-powered music recommendations", votes: 1247 },
+            { id: "live_collaboration", text: "Real-time collaboration tools", votes: 892 },
+            { id: "advanced_analytics", text: "Advanced analytics dashboard", votes: 756 },
+            { id: "mobile_app", text: "Native mobile application", votes: 1523 },
+            { id: "playlist_sharing", text: "Enhanced playlist sharing", votes: 634 }
+          ],
+          totalVotes: 5052,
+          hasVoted: false,
+          timeLeft: "5 days left"
+        },
+      },
+      engagement: {
+        likes: 847,
+        comments: 234,
+        shares: 89,
+        isLiked: false,
+        isBookmarked: true,
+        upvotes: 1429,
+        downvotes: 67,
+        isUpvoted: false,
+        isDownvoted: false,
+      },
+      engagementStyle: "upvote",
+    },
+  ];
+
+  // Sample feed data with Unsplash images
+  const feedData: Array<{
+    id: number;
+    author: any;
+    content: any;
+    engagement: any;
+    engagementStyle: "default" | "reactions" | "upvote" | "event";
+  }> = [
+    {
+      id: 1,
+      author: {
+        name: "Sarah Chen",
+        username: "sarahmusic",
+        avatar: "https://mighty.tools/mockmind-api/content/human/129.jpg",
+        timeAgo: "2h ago",
+        postCategory: "discussion",
+        badge: {
+          text: "New member",
+          emoji: "👋"
+        },
+        emoji: "🥉"
+      },
+      content: {
+        text: "Just discovered this amazing playlist for coding sessions! The mix of lo-fi and ambient sounds really helps with focus. What do you all use for background music while working? 🎵",
+        link: {
+          title: "Focus Flow - Deep Work Playlist",
+          description: "3 hours of carefully curated ambient and lo-fi tracks",
+          icon: <Music className="w-5 h-5 text-blue-500" />,
+        },
+      },
+      engagement: {
+        likes: 42,
+        comments: 18,
+        shares: 7,
+        isLiked: false,
+        isBookmarked: true,
+      },
+      engagementStyle: "default",
+    },
+    {
+      id: 2,
+      author: {
+        name: "Alex Rodriguez",
+        username: "audiotech",
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+        timeAgo: "4h ago",
+        postCategory: "general",
+        badge: {
+          text: "Expert",
+          emoji: "🎧"
+        },
+      },
+      content: {
+        text: "PSA: Remember to take listening breaks every hour! Your ears will thank you later. I've been using the 60/60 rule - 60% volume for max 60 minutes, then a 10-minute break. Game changer for long mixing sessions! 🎧",
+        images: [
+          {
+            src: "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=800&h=600&fit=crop",
+            alt: "Professional studio headphones on mixing desk"
+          },
+          {
+            src: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=300&fit=crop",
+            alt: "Audio mixing console with sliders"
+          },
+          {
+            src: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=300&fit=crop",
+            alt: "Studio monitor speakers setup"
+          }
+        ]
+      },
+      engagement: {
+        likes: 156,
+        comments: 23,
+        shares: 31,
+        isLiked: true,
+        isBookmarked: false,
+        reactions: {
+          heart: 119,
+          clap: 87,
+          fire: 87,
+        },
+        userReaction: "❤️",
+      },
+      engagementStyle: "reactions",
+    },
+    {
+      id: 3,
+      author: {
+        name: "Maya Patel",
+        username: "vinylcollector",
+        avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+        timeAgo: "6h ago",
+        postCategory: "wishlist",
+        badge: {
+          text: "Vinyl Collector",
+          emoji: "💿"
+        },
+        emoji: "🥇"
+      },
+      content: {
+        text: "Found this gem at a local record store today! 1975 pressing of Pink Floyd's 'Wish You Were Here' in pristine condition. The sound quality is just incredible compared to digital. Sometimes analog really is magic ✨",
+        poll: {
+          question: "Vinyl vs Digital: The Great Debate",
+          options: [
+            { id: "vinyl", text: "Vinyl - Nothing beats that warm analog sound", votes: 234 },
+            { id: "digital", text: "Digital - Convenience and quality combined", votes: 145 },
+            { id: "both", text: "Both have their place in my collection", votes: 189 },
+            { id: "streaming", text: "Streaming is the future", votes: 67 }
+          ],
+          totalVotes: 635,
+          hasVoted: false,
+          timeLeft: "2 days left"
+        },
+      },
+      engagement: {
+        likes: 89,
+        comments: 34,
+        shares: 12,
+        isLiked: false,
+        isBookmarked: false,
+        upvotes: 52,
+        downvotes: 7,
+        isUpvoted: false,
+        isDownvoted: false,
+      },
+      engagementStyle: "upvote",
+    },
+    {
+      id: 4,
+      author: {
+        name: "Jordan Kim",
+        username: "eventhost",
+        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+        timeAgo: "8h ago",
+        postCategory: "events",
+        badge: {
+          text: "Event Host",
+          emoji: "🎪"
+        },
+        emoji: "🥉"
+      },
+      content: {
+        text: "Join us for our Monthly Music Meetup! 🎵 We'll be showcasing new artists, discussing latest trends, and networking with fellow music enthusiasts. Free snacks and drinks provided!",
+        event: {
+          title: "Monthly Music Meetup - March 2024",
+          date: "Saturday, March 23rd",
+          time: "7:00 PM",
+          location: "Community Center",
+          attendees: 67,
+          category: "Networking",
+          status: "upcoming",
+          host: {
+            name: "Jordan Kim",
+            avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+          }
+        },
+      },
+      engagement: {
+        comments: 23,
+        shares: 8,
+        isBookmarked: false,
+        rsvp: {
+          yes: 42,
+          no: 3,
+          maybe: 15,
+        },
+        userRSVP: null,
+      },
+      engagementStyle: "event",
+    },
+    {
+      id: 5,
+      author: {
+        name: "Chris Thompson",
+        username: "basshunter",
+        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
+        timeAgo: "12h ago",
+        postCategory: "qa",
+        badge: {
+          text: "Musician",
+          emoji: "🎸"
+        },
+      },
+      content: {
+        text: "Working on a new bass line that's been stuck in my head all week. Sometimes the best melodies come when you're not even trying! Anyone else get those random musical moments? 🎸",
+      },
+      engagement: {
+        likes: 73,
+        comments: 19,
+        shares: 8,
+        isLiked: false,
+        isBookmarked: false,
+        upvotes: 68,
+        downvotes: 5,
+        isUpvoted: true,
+        isDownvoted: false,
+      },
+      engagementStyle: "upvote",
+    },
+    {
+      id: 6,
+      author: {
+        name: "Emma Wilson",
+        username: "musicproducer",
+        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b7cf?w=150&h=150&fit=crop&crop=face",
+        timeAgo: "1d ago",
+        postCategory: "discussion",
+        badge: {
+          text: "Producer",
+          emoji: "🎹"
+        },
+      },
+      content: {
+        text: "Just finished mastering my latest track! The process took 3 weeks but I'm so happy with how it turned out. Sometimes patience really pays off in music production.",
+      },
+      engagement: {
+        likes: 91,
+        comments: 25,
+        shares: 12,
+        isLiked: false,
+        isBookmarked: false,
+        reactions: {
+          heart: 91,
+          clap: 45,
+          fire: 67,
+        },
+        userReaction: "",
+      },
+      engagementStyle: "reactions",
+    },
+  ];
+
+  // Leaderboard data
+  const leaderboardData = [
+    {
+      rank: 1,
+      name: "David Williams",
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+      points: 981
+    },
+    {
+      rank: 2,
+      name: "Emma Johnson",
+      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b7cf?w=150&h=150&fit=crop&crop=face",
+      points: 562
+    },
+    {
+      rank: 3,
+      name: "Noah Reynolds",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+      points: 485
+    },
+    {
+      rank: 4,
+      name: "Isabella Garcia",
+      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+      points: 370
+    },
+    {
+      rank: 5,
+      name: "Lisa White",
+      avatar: "https://mighty.tools/mockmind-api/content/human/129.jpg",
+      points: 245
+    }
+  ];
   
   // Define animations
   const containerVariants = {
@@ -152,227 +475,257 @@ const SiteHomeContent = () => {
     visible: { 
       opacity: 1,
       transition: { 
-        staggerChildren: 0.05,
-        duration: 0.2
+        staggerChildren: 0.1,
+        duration: 0.3
       } 
     }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.2 } }
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+  };
+  
+  const handleAction = (id: number, action: string) => {
+    console.log(`Post ${id}: ${action}`);
   };
   
   if (isLoading) {
     return <ContentSkeleton />;
   }
   
-  return (
-    <motion.div 
-      className="space-y-6"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
-      {/* Featured Content Header */}
-      <motion.div variants={itemVariants}>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Featured Content</h2>
-      </motion.div>
-
-      {/* Display content based on site's content types */}
-      {contentTypes.some(ct => ct.type === 'discussion') && (
-        <motion.div variants={itemVariants}>
-          <Card>
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <MessageSquare className="h-5 w-5 text-indigo-500" />
-                  <CardTitle>Latest Discussions</CardTitle>
-                </div>
-                <Link href={`/site/${siteSD}/discussion`}>
-                  <Button variant="ghost" size="sm">View All</Button>
-                </Link>
-              </div>
-            </CardHeader>
-            <CardContent className="pb-3">
-              <div className="space-y-4">
-                <div className="group">
-                  <h3 className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                    <a href={`/site/${siteSD}/discussion/1`}>What are your favorite workout playlists?</a>
-                  </h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    32 replies • Posted by FitnessFan • 1 week ago
-                  </p>
-                </div>
-                
-                <div className="group">
-                  <h3 className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                    <a href={`/site/${siteSD}/discussion/2`}>Feature request: Add ability to see lyrics automatically</a>
-                  </h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    25 replies • Posted by MusicLover42 • 5 days ago
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
-
-      {contentTypes.some(ct => ct.type === 'qa') && (
-        <motion.div variants={itemVariants}>
-          <Card>
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <HelpCircle className="h-5 w-5 text-blue-500" />
-                  <CardTitle>Popular Questions</CardTitle>
-                </div>
-                <Link href={`/site/${siteSD}/qa`}>
-                  <Button variant="ghost" size="sm">View All</Button>
-                </Link>
-              </div>
-            </CardHeader>
-            <CardContent className="pb-3">
-              <div className="space-y-4">
-                <div className="group">
-                  <div className="flex items-center gap-1 mb-1">
-                    <Badge className="bg-green-100 text-green-700 text-xs dark:bg-green-900/30 dark:text-green-400">Solved</Badge>
-                    <h3 className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                      <a href={`/site/${siteSD}/qa/1`}>How can I share my playlists with friends who don't have accounts?</a>
-                    </h3>
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    4 answers • Asked by PlaylistMaker • 3 days ago
-                  </p>
-                </div>
-                
-                <div className="group">
-                  <div className="flex items-center gap-1 mb-1">
-                    <Badge className="bg-green-100 text-green-700 text-xs dark:bg-green-900/30 dark:text-green-400">Solved</Badge>
-                    <h3 className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                      <a href={`/site/${siteSD}/qa/2`}>How to transfer my playlists from another music service?</a>
-                    </h3>
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    6 answers • Asked by NewUser42 • 1 week ago
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
-
-      {contentTypes.some(ct => ct.type === 'wishlist') && (
-        <motion.div variants={itemVariants}>
-          <Card>
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Star className="h-5 w-5 text-amber-500" />
-                  <CardTitle>Top-Voted Ideas</CardTitle>
-                </div>
-                <Link href={`/site/${siteSD}/wishlist`}>
-                  <Button variant="ghost" size="sm">View All</Button>
-                </Link>
-              </div>
-            </CardHeader>
-            <CardContent className="pb-3">
-              <div className="space-y-4">
-                <div className="group">
-                  <div className="flex items-center gap-1 mb-1">
-                    <Badge className="bg-blue-100 text-blue-700 text-xs dark:bg-blue-900/30 dark:text-blue-400">Under review</Badge>
-                    <h3 className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
-                      <a href={`/site/${siteSD}/wishlist/1`}>Add lyrics sync for karaoke mode</a>
-                    </h3>
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    285 votes • Submitted by KaraokeFan • 2 months ago
-                  </p>
-                </div>
-                
-                <div className="group">
-                  <div className="flex items-center gap-1 mb-1">
-                    <Badge className="bg-purple-100 text-purple-700 text-xs dark:bg-purple-900/30 dark:text-purple-400">Planned</Badge>
-                    <h3 className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
-                      <a href={`/site/${siteSD}/wishlist/2`}>Sleep timer with gradual volume decrease</a>
-                    </h3>
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    217 votes • Submitted by NightOwl • 3 months ago
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
-
-      {/* Upcoming Events Section */}
-      <motion.div variants={itemVariants}>
-        <Card>
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-emerald-500" />
-                <CardTitle>Upcoming Events</CardTitle>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="pb-3">
+      return (
+      <div className="flex gap-6">
+        {/* Left Side - Social Cards */}
+        <div className="flex-1 space-y-8">
+          {/* Pinned Posts Section */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-3">
+              Pinned posts
+            </h2>
             <div className="space-y-4">
-              <div className="group">
-                <h3 className="text-sm font-medium text-gray-900 dark:text-white transition-colors">
-                  New Feature Showcase
-                </h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 mb-2">
-                  Jun 15, 2025 • 3:00 PM • 87 Attendees
-                </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Join us for a live showcase of our newest features. We'll demo the updated equalizer and answer your questions.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Active Members Section */}
-      <motion.div variants={itemVariants}>
-        <Card>
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-violet-500" />
-                <CardTitle>Active Members</CardTitle>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-3">
-              {[1, 2, 3, 4, 5].map((id) => (
-                <div key={id} className="flex flex-col items-center text-center">
-                  <Avatar className="h-12 w-12 mb-1">
-                    <AvatarImage src={`https://i.pravatar.cc/150?img=${id + 10}`} />
-                    <AvatarFallback>U{id}</AvatarFallback>
-                  </Avatar>
-                  <h3 className="text-xs font-medium text-gray-900 dark:text-white">
-                    {['JaneDoe', 'MusicLover42', 'FitnessFan', 'AudiophileMax', 'TeamPlayer'][id - 1]}
-                  </h3>
-                </div>
+              {pinnedData.map((post) => (
+                <motion.div key={post.id} variants={itemVariants}>
+                  <SocialCard
+                    author={post.author}
+                    content={post.content}
+                    engagement={post.engagement}
+                    engagementStyle={post.engagementStyle}
+                    onLike={() => handleAction(post.id, 'liked')}
+                    onComment={() => handleAction(post.id, 'commented')}
+                    onShare={() => handleAction(post.id, 'shared')}
+                    onBookmark={() => handleAction(post.id, 'bookmarked')}
+                    onMore={() => handleAction(post.id, 'more')}
+                    onUpvote={() => handleAction(post.id, 'upvoted')}
+                    onDownvote={() => handleAction(post.id, 'downvoted')}
+                    onReaction={(reaction) => handleAction(post.id, `reacted with ${reaction}`)}
+                    onRSVP={(response) => handleAction(post.id, `RSVP ${response}`)}
+                    onPollVote={(optionId) => handleAction(post.id, `voted for ${optionId}`)}
+                    className="h-fit"
+                  />
+                </motion.div>
               ))}
             </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-    </motion.div>
+          </motion.div>
+
+          {/* Feed Section */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                Feed
+              </h2>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="flex items-center gap-2 px-3 py-2 text-sm text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg"
+                  >
+                    <ArrowUpDown className="w-4 h-4" />
+                    <span className="capitalize">{sortBy}</span>
+                    <ChevronDown className="w-3 h-3 ml-1 opacity-60" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-40">
+                  <DropdownMenuItem
+                    onClick={() => setSortBy('latest')}
+                    className="flex items-center justify-between cursor-pointer"
+                  >
+                    <span>Latest</span>
+                    {sortBy === 'latest' && <Check className="w-4 h-4" />}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setSortBy('popular')}
+                    className="flex items-center justify-between cursor-pointer"
+                  >
+                    <span>Popular</span>
+                    {sortBy === 'popular' && <Check className="w-4 h-4" />}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setSortBy('trending')}
+                    className="flex items-center justify-between cursor-pointer"
+                  >
+                    <span>Trending</span>
+                    {sortBy === 'trending' && <Check className="w-4 h-4" />}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            <div className="space-y-4">
+              {feedData.map((post) => (
+                <motion.div key={post.id} variants={itemVariants}>
+                  <SocialCard
+                    author={post.author}
+                    content={post.content}
+                    engagement={post.engagement}
+                    engagementStyle={post.engagementStyle}
+                    onLike={() => handleAction(post.id, 'liked')}
+                    onComment={() => handleAction(post.id, 'commented')}
+                    onShare={() => handleAction(post.id, 'shared')}
+                    onBookmark={() => handleAction(post.id, 'bookmarked')}
+                    onMore={() => handleAction(post.id, 'more')}
+                    onUpvote={() => handleAction(post.id, 'upvoted')}
+                    onDownvote={() => handleAction(post.id, 'downvoted')}
+                    onReaction={(reaction) => handleAction(post.id, `reacted with ${reaction}`)}
+                    onRSVP={(response) => handleAction(post.id, `RSVP ${response}`)}
+                    onPollVote={(optionId) => handleAction(post.id, `voted for ${optionId}`)}
+                    className="h-fit"
+                  />
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+
+      {/* Right Sidebar */}
+      <div className="w-80 space-y-6">
+        {/* Leaderboard */}
+        <div>
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-3">
+            Leaderboard
+          </h2>
+          <Card className="bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
+            <CardContent className="space-y-3 p-4">
+              <div className="flex gap-1 mb-4">
+                <Button size="sm" variant="default" className="text-xs px-3 py-1 rounded-full bg-zinc-900 text-white dark:bg-white dark:text-zinc-900">
+                  All time
+                </Button>
+                <Button size="sm" variant="ghost" className="text-xs px-3 py-1 rounded-full text-zinc-500 hover:text-zinc-700">
+                  Month
+                </Button>
+                <Button size="sm" variant="ghost" className="text-xs px-3 py-1 rounded-full text-zinc-500 hover:text-zinc-700">
+                  Week
+                </Button>
+              </div>
+              {leaderboardData.map((user) => (
+                <div key={user.rank} className="flex items-center gap-3">
+                  <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400 w-4">
+                    {user.rank}
+                  </span>
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage src={user.avatar} alt={user.name} />
+                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate">
+                      {user.name}
+                    </p>
+                  </div>
+                  <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+                    {user.points}
+                  </span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Next Event */}
+        <div>
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-3">
+            Next event
+          </h2>
+          <Card className="bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 rounded-xl shadow-sm">
+            <CardContent className="p-6">
+              <div className="space-y-4">
+                {/* Date and Time */}
+                <div className="flex items-start justify-between mb-8">
+                  <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400">
+                    <Clock className="w-4 h-4" />
+                    <span className="text-sm">Today</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xl font-bold text-zinc-900 dark:text-zinc-100">6:30</div>
+                    <div className="text-xs text-zinc-500 dark:text-zinc-400">PM</div>
+                  </div>
+                </div>
+
+                {/* Event Title */}
+                <div>
+                  <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+                    Let's talk about future of AI
+                  </h3>
+                  <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                    <div className="w-5 h-5 bg-zinc-900 dark:bg-zinc-100 rounded-lg flex items-center justify-center">
+                      <Video className="w-3 h-3 text-white dark:text-zinc-900" />
+                    </div>
+                    <span>BetterHub</span>
+                    <span className="text-zinc-400">•</span>
+                    <div className="flex items-center gap-1">
+                      <Users className="w-3 h-3" />
+                      <span className="text-xs">247 attending</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Location */}
+                <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
+                  <MapPin className="w-4 h-4" />
+                  <span>20 Grand Ave, San Francisco</span>
+                </div>
+
+                {/* Join Button */}
+                <div className="flex items-center justify-between pt-4 border-t border-zinc-100 dark:border-zinc-800">
+                  <div className="text-xs text-zinc-500 dark:text-zinc-400">
+                    Starts in 2h 30m
+                  </div>
+                  <button
+                    type="button"
+                    className="flex items-center gap-1 px-2 py-1 text-sm bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 rounded-full transition-colors font-medium"
+                  >
+                    View Event
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
   );
 };
 
 // Main Site Page
 export default function SitePage() {
   const { siteSD } = useParams();
+  const [location] = useLocation();
+  
+  // Determine active page based on current route
+  const getActivePage = () => {
+    if (location.includes('/polls')) return 'polls';
+    if (location.includes('/search')) return 'search';
+    if (location.includes('/moderation')) return 'moderation';
+    return 'home';
+  };
   
   if (!siteSD) return null;
   
@@ -381,30 +734,11 @@ export default function SitePage() {
       <SiteDataProvider siteSD={siteSD}>
         <SiteLayout siteSD={siteSD}>
         <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
-          {/* Hero Section */}
-          <motion.section 
-            className="w-full bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950 border-b border-gray-200 dark:border-gray-800"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.2 }}
-          >
-            <div className="container mx-auto px-4 py-8">
-              <div className="max-w-5xl mx-auto">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                  Welcome to <SiteContext.Consumer>{(ctx) => ctx.site?.name || 'our Community'}</SiteContext.Consumer>
-                </h1>
-                <p className="text-xl text-gray-600 dark:text-gray-400 mb-4">
-                  Join the conversation, get answers to your questions, and share your ideas with other members.
-                </p>
-              </div>
-            </div>
-          </motion.section>
-
           {/* Main Content with Sidebar */}
           <div className="container mx-auto px-4 py-6 flex-grow">
             <div className="flex flex-col md:flex-row gap-6">
               {/* Sidebar */}
-              <SiteSidebar siteSD={siteSD} activePage="home" isAdminHeaderVisible={true} />
+              <SiteSidebar siteSD={siteSD} activePage={getActivePage()} isAdminHeaderVisible={true} />
 
               {/* Main Content Feed with loading state */}
               <div className="flex-1">
@@ -416,14 +750,14 @@ export default function SitePage() {
                     <Route path="/site/:siteSD/search">
                       <SearchPage />
                     </Route>
-                    <Route path="/site/:siteSD/moderation">
+                    <Route path="/site/:siteSD/moderation/:section?">
                       <ModerationPage />
                     </Route>
                     <Route path="/site/:siteSD/:spaceSlug">
                       {(params) => <SpacePage />}
                     </Route>
                     <Route path="/site/:siteSD">
-                      <SiteHomeContent />
+                      <SocialFeedContent />
                     </Route>
                   </Switch>
                 </AnimatePresence>
