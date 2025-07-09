@@ -28,7 +28,7 @@ import { useSiteData } from '@/lib/SiteDataContext';
 import { LayoutProvider, useLayout } from '@/lib/LayoutContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Skeleton } from '@/components/ui/primitives';
-import { SocialCard } from '@/components/ui/social-card';
+import { SocialCard } from '@/components/ui/social-card/social-card';
 import SpacePage from './/[spaceSlug]';
 import PollsPage from './polls';
 import SearchPage from './search';
@@ -388,6 +388,42 @@ const SocialFeedContent = () => {
       },
       content: {
         text: "Working on a new bass line that's been stuck in my head all week. Sometimes the best melodies come when you're not even trying! Anyone else get those random musical moments? 🎸",
+        form: {
+          title: "Share Your Musical Moment",
+          description: "Tell us about your latest musical inspiration or creative breakthrough!",
+          fields: [
+            {
+              id: "instrument",
+              label: "What instrument?",
+              type: "select",
+              options: ["Guitar", "Bass", "Piano", "Drums", "Vocals", "Other"],
+              required: true
+            },
+            {
+              id: "moment_type",
+              label: "Type of moment",
+              type: "radio",
+              options: ["Spontaneous melody", "Rhythmic pattern", "Chord progression", "Lyrical idea"],
+              required: true
+            },
+            {
+              id: "description",
+              label: "Describe your moment",
+              type: "textarea",
+              placeholder: "Share the details of your musical inspiration...",
+              required: true
+            },
+            {
+              id: "inspiration_source",
+              label: "What inspired you?",
+              type: "text",
+              placeholder: "Walking in nature, listening to music, etc.",
+              required: false
+            }
+          ],
+          submitText: "Share My Moment",
+          responses: 23
+        }
       },
       engagement: {
         likes: 73,
@@ -417,6 +453,13 @@ const SocialFeedContent = () => {
       },
       content: {
         text: "Just finished mastering my latest track! The process took 3 weeks but I'm so happy with how it turned out. Sometimes patience really pays off in music production.",
+        video: {
+          embedUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+          title: "Music Production: The Art of Mastering",
+          description: "A deep dive into the mastering process that brings your tracks to life. Learn the techniques and patience required for professional results.",
+          platform: "YouTube",
+          duration: "12:34"
+        }
       },
       engagement: {
         likes: 91,
@@ -494,16 +537,16 @@ const SocialFeedContent = () => {
     return <ContentSkeleton />;
   }
   
-      return (
+  return (
       <div className="flex gap-6">
         {/* Left Side - Social Cards */}
         <div className="flex-1 space-y-8">
           {/* Pinned Posts Section */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
             <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-3">
               Pinned posts
             </h2>
@@ -522,15 +565,15 @@ const SocialFeedContent = () => {
                     onMore={() => handleAction(post.id, 'more')}
                     onUpvote={() => handleAction(post.id, 'upvoted')}
                     onDownvote={() => handleAction(post.id, 'downvoted')}
-                    onReaction={(reaction) => handleAction(post.id, `reacted with ${reaction}`)}
-                    onRSVP={(response) => handleAction(post.id, `RSVP ${response}`)}
-                    onPollVote={(optionId) => handleAction(post.id, `voted for ${optionId}`)}
+                    onReaction={(reaction: string) => handleAction(post.id, `reacted with ${reaction}`)}
+                    onRSVP={(response: string) => handleAction(post.id, `RSVP ${response}`)}
+                    onPollVote={(optionId: string) => handleAction(post.id, `voted for ${optionId}`)}
                     className="h-fit"
                   />
                 </motion.div>
               ))}
             </div>
-          </motion.div>
+      </motion.div>
 
           {/* Feed Section */}
           <motion.div
@@ -594,16 +637,16 @@ const SocialFeedContent = () => {
                     onMore={() => handleAction(post.id, 'more')}
                     onUpvote={() => handleAction(post.id, 'upvoted')}
                     onDownvote={() => handleAction(post.id, 'downvoted')}
-                    onReaction={(reaction) => handleAction(post.id, `reacted with ${reaction}`)}
-                    onRSVP={(response) => handleAction(post.id, `RSVP ${response}`)}
-                    onPollVote={(optionId) => handleAction(post.id, `voted for ${optionId}`)}
+                    onReaction={(reaction: string) => handleAction(post.id, `reacted with ${reaction}`)}
+                    onRSVP={(response: string) => handleAction(post.id, `RSVP ${response}`)}
+                    onPollVote={(optionId: string) => handleAction(post.id, `voted for ${optionId}`)}
                     className="h-fit"
                   />
                 </motion.div>
               ))}
             </div>
           </motion.div>
-        </div>
+                </div>
 
       {/* Right Sidebar */}
       <div className="w-80 space-y-6">
@@ -637,8 +680,8 @@ const SocialFeedContent = () => {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate">
                       {user.name}
-                    </p>
-                  </div>
+                  </p>
+                </div>
                   <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
                     {user.points}
                   </span>
@@ -646,7 +689,7 @@ const SocialFeedContent = () => {
               ))}
             </CardContent>
           </Card>
-        </div>
+                </div>
 
         {/* Next Event */}
         <div>
@@ -667,12 +710,12 @@ const SocialFeedContent = () => {
                     <div className="text-xs text-zinc-500 dark:text-zinc-400">PM</div>
                   </div>
                 </div>
-
+                
                 {/* Event Title */}
                 <div>
                   <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
                     Let's talk about future of AI
-                  </h3>
+                    </h3>
                   <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
                     <div className="w-5 h-5 bg-zinc-900 dark:bg-zinc-100 rounded-lg flex items-center justify-center">
                       <Video className="w-3 h-3 text-white dark:text-zinc-900" />
@@ -691,7 +734,7 @@ const SocialFeedContent = () => {
                   <MapPin className="w-4 h-4" />
                   <span>20 Grand Ave, San Francisco</span>
                 </div>
-
+                
                 {/* Join Button */}
                 <div className="flex items-center justify-between pt-4 border-t border-zinc-100 dark:border-zinc-800">
                   <div className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -708,9 +751,9 @@ const SocialFeedContent = () => {
               </div>
             </CardContent>
           </Card>
-        </div>
-      </div>
-    </div>
+              </div>
+            </div>
+            </div>
   );
 };
 

@@ -25,24 +25,24 @@ export default function PollsPage() {
   }, [filter]);
 
   return (
-    <div className="space-y-6">
-      {filteredPosts.length > 0 ? (
-        filteredPosts.map((post) => (
-          <PostCard key={post.id} post={post} />
-        ))
-      ) : (
-        <Card>
-          <CardContent className="p-8 text-center">
-            <Vote className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-              No polls found
-            </h3>
-            <p className="text-gray-500 dark:text-gray-400">
-              No polls match your current filter. Try selecting a different filter.
-            </p>
-          </CardContent>
-        </Card>
-      )}
-    </div>
+              <div className="space-y-6">
+                {filteredPosts.length > 0 ? (
+                  filteredPosts.map((post) => (
+                    <PostCard key={post.id} post={post} />
+                  ))
+                ) : (
+                  <Card>
+                    <CardContent className="p-8 text-center">
+                      <Vote className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                        No polls found
+                      </h3>
+                      <p className="text-gray-500 dark:text-gray-400">
+                        No polls match your current filter. Try selecting a different filter.
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
   );
 } 

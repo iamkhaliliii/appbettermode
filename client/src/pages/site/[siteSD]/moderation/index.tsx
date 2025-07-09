@@ -528,7 +528,7 @@ function SiteModerationPage({ siteId, siteDetails }: WithSiteContextProps) {
   const currentItem = ALL_SIDEBAR_ITEMS.find(item => item.key === section);
 
   return (
-    <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* 3-Column Layout */}
         <div className="flex relative">
           {/* Left Sidebar */}
@@ -730,7 +730,7 @@ function SiteModerationPage({ siteId, siteDetails }: WithSiteContextProps) {
           </div>
         </div>
       </div>
-    );
+  );
 }
 
 export default withSiteContext(SiteModerationPage); 
