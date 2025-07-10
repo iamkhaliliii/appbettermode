@@ -29,6 +29,7 @@ export function EngagementSection({
   onDownvote,
   onReaction,
   onRSVP,
+  isCommentsOpen = true,
 }: EngagementSectionProps) {
   const [isLiked, setIsLiked] = useState(engagement?.isLiked ?? false);
   const [isBookmarked, setIsBookmarked] = useState(engagement?.isBookmarked ?? false);
@@ -123,57 +124,62 @@ export function EngagementSection({
     case "upvote":
       return (
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {/* Upvote/Downvote */}
-            <div className="flex items-center gap-1">
-              <button
-                type="button"
-                onClick={handleUpvote}
-                className={cn(
-                  "flex items-center gap-1 px-2 py-1 text-sm rounded-full transition-all border border-zinc-100 dark:border-zinc-700",
-                  isUpvoted
-                    ? "bg-green-50 text-green-500 border border-green-100"
-                    : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-100 dark:border-zinc-700"
-                )}
-              >
-                <ArrowUp className="w-4 h-4" />
-                {isUpvoted && (
-                  <span className="text-[0.7rem] font-medium text-green-500">{upvotes}</span>
-                )}  
-                {!isUpvoted && (
-                  <span className="text-[0.7rem] font-medium text-zinc-500 dark:text-zinc-400">{upvotes}</span>
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={handleDownvote}
-                className={cn(
-                  "flex items-center gap-1 px-2 py-1 text-sm rounded-full transition-all border border-zinc-100 dark:border-zinc-700",
-                  isDownvoted
-                    ? "bg-red-50 text-red-500 border border-red-100"
-                    : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-100 dark:border-zinc-700"
-                )}
-              >
-                <ArrowDown className="w-4 h-4" />
-                {isDownvoted && (
-                  <span className="text-[0.7rem] font-medium text-red-500">{downvotes}</span>
-                )}  
-                {!isDownvoted && (
-                  <span className="text-[0.7rem] font-medium text-zinc-500 dark:text-zinc-400">{downvotes}</span>
-                )}
-              </button>
-            </div>
-            
-            {/* Comments */}
+                  <div className="flex items-center gap-3">
+          {/* Upvote/Downvote */}
+          <div className="flex items-center gap-1">
             <button
               type="button"
-              onClick={onComment}
-              className="flex items-center gap-1 px-2 py-1 text-sm text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+              onClick={handleUpvote}
+              className={cn(
+                "flex items-center gap-1 px-2 py-1 text-sm rounded-full transition-all border border-zinc-100 dark:border-zinc-700",
+                isUpvoted
+                  ? "bg-green-50 text-green-500 border border-green-100"
+                  : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-100 dark:border-zinc-700"
+              )}
             >
-              <MessageCircle className="w-4 h-4" />
-              <span className="text-[0.7rem] font-medium text-zinc-500 dark:text-zinc-400">{engagement?.comments || 0}</span>
+              <ArrowUp className="w-4 h-4" />
+              {isUpvoted && (
+                <span className="text-[0.7rem] font-medium text-green-500">{upvotes}</span>
+              )}  
+              {!isUpvoted && (
+                <span className="text-[0.7rem] font-medium text-zinc-500 dark:text-zinc-400">{upvotes}</span>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={handleDownvote}
+              className={cn(
+                "flex items-center gap-1 px-2 py-1 text-sm rounded-full transition-all border border-zinc-100 dark:border-zinc-700",
+                isDownvoted
+                  ? "bg-red-50 text-red-500 border border-red-100"
+                  : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-100 dark:border-zinc-700"
+              )}
+            >
+              <ArrowDown className="w-4 h-4" />
+              {isDownvoted && (
+                <span className="text-[0.7rem] font-medium text-red-500">{downvotes}</span>
+              )}  
+              {!isDownvoted && (
+                <span className="text-[0.7rem] font-medium text-zinc-500 dark:text-zinc-400">{downvotes}</span>
+              )}
             </button>
           </div>
+          
+          {/* Comments */}
+          <button
+            type="button"
+            onClick={onComment}
+            className={cn(
+              "flex items-center gap-1 px-2 py-1 text-sm rounded-full transition-colors",
+              isCommentsOpen
+                ? "bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800"
+                : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            )}
+          >
+            <MessageCircle className="w-4 h-4" />
+            <span className="text-[0.7rem] font-medium">{engagement?.comments || 0}</span>
+          </button>
+        </div>
           
           <div className="flex items-center gap-1">
             <button
@@ -269,10 +275,15 @@ export function EngagementSection({
             <button
               type="button"
               onClick={onComment}
-              className="flex items-center gap-1 px-2 py-1 text-sm text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+              className={cn(
+                "flex items-center gap-1 px-2 py-1 text-sm rounded-full transition-colors",
+                isCommentsOpen
+                  ? "bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800"
+                  : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              )}
             >
               <MessageCircle className="w-4 h-4" />
-              <span className="text-[0.7rem] font-medium text-zinc-600 dark:text-zinc-400">{engagement?.comments || 11}K</span>
+              <span className="text-[0.7rem] font-medium">{engagement?.comments || 11}K</span>
             </button>
           </div>
           
@@ -353,10 +364,15 @@ export function EngagementSection({
             <button
               type="button"
               onClick={onComment}
-              className="flex items-center gap-1 px-2 py-1 text-sm text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+              className={cn(
+                "flex items-center gap-1 px-2 py-1 text-sm rounded-full transition-colors",
+                isCommentsOpen
+                  ? "bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800"
+                  : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              )}
             >
               <MessageCircle className="w-4 h-4" />
-              <span className="text-[0.7rem] font-medium text-zinc-500 dark:text-zinc-400">{engagement?.comments || 0}</span>
+              <span className="text-[0.7rem] font-medium">{engagement?.comments || 0}</span>
             </button>
           </div>
           
@@ -416,10 +432,15 @@ export function EngagementSection({
             <button
               type="button"
               onClick={onComment}
-              className="flex items-center gap-1 px-2 py-1 text-sm text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+              className={cn(
+                "flex items-center gap-1 px-2 py-1 text-sm rounded-full transition-colors",
+                isCommentsOpen
+                  ? "bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800"
+                  : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              )}
             >
               <MessageCircle className="w-4 h-4" />
-              <span className="text-[0.7rem] font-medium text-zinc-500 dark:text-zinc-400">{engagement?.comments || 11}K</span>
+              <span className="text-[0.7rem] font-medium">{engagement?.comments || 11}K</span>
             </button>
           </div>
           

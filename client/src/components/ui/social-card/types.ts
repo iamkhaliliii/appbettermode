@@ -118,11 +118,17 @@ export interface PollCardProps {
 export interface EventCardProps {
   event: NonNullable<SocialCardProps['content']>['event'];
   isPreview?: boolean;
+  onEventClick?: () => void;
+  isEventOpen?: boolean;
+  isInModal?: boolean;
 }
 
 export interface FormCardProps {
   form: NonNullable<SocialCardProps['content']>['form'];
   isPreview?: boolean;
+  onFormClick?: () => void;
+  isFormOpen?: boolean;
+  isInModal?: boolean;
 }
 
 export interface VideoCardProps {
@@ -151,6 +157,7 @@ export interface EngagementSectionProps {
   onDownvote?: () => void;
   onReaction?: (reaction: string) => void;
   onRSVP?: (response: "yes" | "no" | "maybe") => void;
+  isCommentsOpen?: boolean;
 }
 
 export interface CommentsSectionProps {
@@ -189,6 +196,7 @@ export interface SocialCardModalProps {
   onDownvote?: () => void;
   onReaction?: (reaction: string) => void;
   onRSVP?: (response: "yes" | "no" | "maybe") => void;
+  onAddToCalendar?: () => void;
   onPollVote?: (optionId: string) => void;
 }
 
