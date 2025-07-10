@@ -2,16 +2,33 @@
 
 import React, { useState } from "react";
 import { CommentsSectionProps, Comment } from "./types";
-import { Pin, Heart, Eye, EyeOff, ArrowLeftFromLine } from "lucide-react";
+import { Pin, Heart, Eye, EyeOff, ArrowLeftFromLine, SmilePlus, Smile, ThumbsUp, ThumbsDown, HeartCrack } from "lucide-react";
 
 export function CommentsSection({ 
   postId, 
   comments = [], 
   onAddComment,
   onToggle,
-  isCollapsed = false
+  isCollapsed = false,
+  onReaction
 }: CommentsSectionProps) {
   const [newComment, setNewComment] = useState("");
+  const [showReactionPopover, setShowReactionPopover] = useState<string | null>(null);
+  const [commentsState, setCommentsState] = useState<Comment[]>([]);
+
+  // Close popover when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showReactionPopover) {
+        setShowReactionPopover(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showReactionPopover]);
 
   const handleAddComment = () => {
     if (newComment.trim()) {
@@ -20,8 +37,111 @@ export function CommentsSection({
     }
   };
 
+  const reactionTypes = ['smile', 'heart', 'thumbsUp', 'thumbsDown', 'heartCrack'];
+
+  const handleReaction = (commentId: string, reactionType: string) => {
+    console.log(`Reaction ${reactionType} for comment ${commentId}`);
+    setShowReactionPopover(null);
+    
+    setCommentsState(prevComments => 
+      prevComments.map(comment => {
+        if (comment.id === commentId) {
+          const updatedReactions = { ...comment.reactions };
+          
+          if (updatedReactions[reactionType]) {
+            // Reaction exists - toggle it
+            if (updatedReactions[reactionType].hasUserReacted) {
+              // Remove user reaction
+              updatedReactions[reactionType] = {
+                count: Math.max(0, updatedReactions[reactionType].count - 1),
+                hasUserReacted: false
+              };
+              // Remove reaction if count is 0
+              if (updatedReactions[reactionType].count === 0) {
+                delete updatedReactions[reactionType];
+              }
+            } else {
+              // Add user reaction
+              updatedReactions[reactionType] = {
+                count: updatedReactions[reactionType].count + 1,
+                hasUserReacted: true
+              };
+            }
+          } else {
+            // New reaction
+            updatedReactions[reactionType] = {
+              count: 1,
+              hasUserReacted: true
+            };
+          }
+          
+          return { ...comment, reactions: updatedReactions };
+        }
+        
+        // Handle replies recursively
+        if (comment.replies) {
+          const updatedReplies = comment.replies.map(reply => {
+            if (reply.id === commentId) {
+              const updatedReactions = { ...reply.reactions };
+              
+              if (updatedReactions[reactionType]) {
+                if (updatedReactions[reactionType].hasUserReacted) {
+                  updatedReactions[reactionType] = {
+                    count: Math.max(0, updatedReactions[reactionType].count - 1),
+                    hasUserReacted: false
+                  };
+                  if (updatedReactions[reactionType].count === 0) {
+                    delete updatedReactions[reactionType];
+                  }
+                } else {
+                  updatedReactions[reactionType] = {
+                    count: updatedReactions[reactionType].count + 1,
+                    hasUserReacted: true
+                  };
+                }
+              } else {
+                updatedReactions[reactionType] = {
+                  count: 1,
+                  hasUserReacted: true
+                };
+              }
+              
+              return { ...reply, reactions: updatedReactions };
+            }
+            return reply;
+          });
+          
+          return { ...comment, replies: updatedReplies };
+        }
+        
+        return comment;
+      })
+    );
+    
+    onReaction?.(commentId, reactionType);
+  };
+
+  const getReactionIcon = (reactionType: string, size: 'small' | 'large' = 'small') => {
+    const iconSize = size === 'small' ? 'w-3 h-3' : 'w-4 h-4';
+    
+    switch (reactionType) {
+      case 'smile':
+        return <Smile className={iconSize} />;
+      case 'heart':
+        return <Heart className={iconSize} />;
+      case 'thumbsUp':
+        return <ThumbsUp className={iconSize} />;
+      case 'thumbsDown':
+        return <ThumbsDown className={iconSize} />;
+      case 'heartCrack':
+        return <HeartCrack className={iconSize} />;
+      default:
+        return null;
+    }
+  };
+
   // Sample comments data if none provided
-  const sampleComments = [
+  const sampleComments: Comment[] = [
     {
       id: "pinned-1",
       author: {
@@ -32,6 +152,11 @@ export function CommentsSection({
       timeAgo: "Pinned",
       likes: 24,
       isLiked: false,
+      reactions: {
+        thumbsUp: { count: 12, hasUserReacted: false },
+        heart: { count: 8, hasUserReacted: false },
+        smile: { count: 4, hasUserReacted: false }
+      },
       isPinned: true
     },
     {
@@ -44,6 +169,11 @@ export function CommentsSection({
       timeAgo: "2h",
       likes: 12,
       isLiked: false,
+      reactions: {
+        heart: { count: 5, hasUserReacted: true },
+        thumbsUp: { count: 4, hasUserReacted: false },
+        smile: { count: 3, hasUserReacted: false }
+      },
       replies: [
         {
           id: "1-1",
@@ -54,7 +184,10 @@ export function CommentsSection({
           content: "Completely agree! This saved me hours of research. Really appreciate the detailed examples.",
           timeAgo: "1h",
           likes: 4,
-          isLiked: false
+          isLiked: false,
+          reactions: {
+            thumbsUp: { count: 4, hasUserReacted: false }
+          }
         }
       ]
     },
@@ -68,6 +201,10 @@ export function CommentsSection({
       timeAgo: "4h",
       likes: 8,
       isLiked: true,
+      reactions: {
+        thumbsUp: { count: 6, hasUserReacted: true },
+        heart: { count: 2, hasUserReacted: false }
+      },
       replies: [
         {
           id: "2-1",
@@ -78,7 +215,10 @@ export function CommentsSection({
           content: "Great question! I'd also love to know more about performance considerations.",
           timeAgo: "3h",
           likes: 2,
-          isLiked: false
+          isLiked: false,
+          reactions: {
+            smile: { count: 2, hasUserReacted: false }
+          }
         },
         {
           id: "2-2",
@@ -89,7 +229,11 @@ export function CommentsSection({
           content: "We're planning a follow-up post on scaling patterns! Stay tuned 📚",
           timeAgo: "2h",
           likes: 6,
-          isLiked: false
+          isLiked: false,
+          reactions: {
+            heart: { count: 4, hasUserReacted: false },
+            thumbsUp: { count: 2, hasUserReacted: false }
+          }
         }
       ]
     },
@@ -102,7 +246,11 @@ export function CommentsSection({
       content: "This is exactly what I needed! I've been working on a similar project and was stuck on the implementation details. Your explanation of the core concepts and the step-by-step breakdown made everything click for me. 👍",
       timeAgo: "6h",
       likes: 5,
-      isLiked: false
+      isLiked: false,
+      reactions: {
+        smile: { count: 3, hasUserReacted: true },
+        thumbsUp: { count: 2, hasUserReacted: false }
+      }
     },
     {
       id: "4",
@@ -113,7 +261,10 @@ export function CommentsSection({
       content: "Awesome work! Can't wait to try this out in my next project. The code examples are really clean and well-documented.",
       timeAgo: "8h",
       likes: 3,
-      isLiked: false
+      isLiked: false,
+      reactions: {
+        heart: { count: 3, hasUserReacted: false }
+      }
     },
     {
       id: "5",
@@ -124,7 +275,11 @@ export function CommentsSection({
       content: "I've been following your content for a while now, and this is definitely one of your best posts! The practical examples and real-world applications make it so much easier to understand and implement. Keep up the fantastic work! 🔥",
       timeAgo: "10h",
       likes: 9,
-      isLiked: false
+      isLiked: false,
+      reactions: {
+        biceps: { count: 6, hasUserReacted: true },
+        heart: { count: 3, hasUserReacted: false }
+      }
     },
     {
       id: "6",
@@ -136,6 +291,9 @@ export function CommentsSection({
       timeAgo: "12h",
       likes: 2,
       isLiked: false,
+      reactions: {
+        thumbsUp: { count: 2, hasUserReacted: false }
+      },
       replies: [
         {
           id: "6-1",
@@ -146,7 +304,11 @@ export function CommentsSection({
           content: "Good point! We tested with datasets up to 10M records and saw great performance. Will share benchmarks soon!",
           timeAgo: "11h",
           likes: 5,
-          isLiked: false
+          isLiked: false,
+          reactions: {
+            heart: { count: 3, hasUserReacted: false },
+            thumbsUp: { count: 2, hasUserReacted: false }
+          }
         }
       ]
     },
@@ -160,10 +322,16 @@ export function CommentsSection({
       timeAgo: "14h",
       likes: 7,
       isLiked: false
-    }
-  ];
+          }
+    ];
 
-  const displayComments = comments.length > 0 ? comments : sampleComments;
+  // Initialize commentsState with sample data or provided comments
+  React.useEffect(() => {
+    const initialComments = comments.length > 0 ? comments : sampleComments;
+    setCommentsState(initialComments);
+  }, [comments]);
+
+  const displayComments = commentsState;
   
   // Sort comments to show pinned first
   const sortedComments = [...displayComments].sort((a, b) => {
@@ -209,10 +377,51 @@ export function CommentsSection({
           <p className={`${isReply ? 'text-xs' : 'text-xs'} text-zinc-600 dark:text-zinc-400 leading-relaxed mb-2`}>
             {comment.content}
           </p>
-          <div className="flex items-center gap-4">
-            <button className="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
-              Like {(comment.likes || 0) > 0 && `(${comment.likes})`}
-            </button>
+                      <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1 relative">
+                {/* Show all reactions with counts */}
+                {comment.reactions && Object.entries(comment.reactions).map(([reactionType, reactionData]) => (
+                  <button 
+                    key={reactionType}
+                    onClick={() => handleReaction(comment.id, reactionType)}
+                    className={`flex items-center gap-0.5 px-1.5 py-0.5 text-xs border rounded-full transition-colors ${
+                      reactionData.hasUserReacted 
+                        ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30' 
+                        : 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                    }`}
+                  >
+                    {getReactionIcon(reactionType)}
+                    {reactionData.count}
+                  </button>
+                ))}
+                
+                {/* Add reaction button (always last, no count) */}
+                <button 
+                  onClick={() => {
+                    setShowReactionPopover(showReactionPopover === comment.id ? null : comment.id);
+                  }}
+                  className="flex items-center p-1 text-xs border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/50 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+                >
+                  <SmilePlus className="w-3 h-3" />
+                </button>
+                
+                {/* Reaction Popover */}
+                {showReactionPopover === comment.id && (
+                  <div className="absolute bottom-full left-0 mb-2 bg-white rounded-full dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 p-0 shadow-lg z-50">
+                    <div className="flex items-center p-1 gap-0.5">
+                      {reactionTypes.map((reactionType) => (
+                        <button
+                          key={reactionType}
+                          onClick={() => handleReaction(comment.id, reactionType)}
+                          className="p-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
+                        >
+                          {getReactionIcon(reactionType, 'large')}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             {!isReply && !comment.isPinned && (
               <button className="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
                 Reply

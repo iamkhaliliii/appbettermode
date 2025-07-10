@@ -325,6 +325,7 @@ export function SocialCardModal({
               <CommentsSection 
                 onToggle={() => setIsCommentsOpen(!isCommentsOpen)}
                 isCollapsed={!isCommentsOpen}
+                onReaction={(commentId, reactionType) => console.log('Reaction:', reactionType, 'for comment:', commentId)}
               />
             </div>
           </div>

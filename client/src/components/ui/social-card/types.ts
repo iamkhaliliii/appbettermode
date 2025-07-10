@@ -166,6 +166,7 @@ export interface CommentsSectionProps {
   onAddComment?: (comment: string) => void;
   onToggle?: () => void;
   isCollapsed?: boolean;
+  onReaction?: (commentId: string, reactionType: string) => void;
 }
 
 export interface Comment {
@@ -178,6 +179,10 @@ export interface Comment {
   timeAgo: string;
   likes?: number;
   isLiked?: boolean;
+  reactions?: Record<string, {
+    count: number;
+    hasUserReacted: boolean;
+  }>;
   replies?: Comment[];
   isPinned?: boolean;
 }
