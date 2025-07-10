@@ -164,6 +164,8 @@ export interface CommentsSectionProps {
   postId?: string;
   comments?: Comment[];
   onAddComment?: (comment: string) => void;
+  onToggle?: () => void;
+  isCollapsed?: boolean;
 }
 
 export interface Comment {

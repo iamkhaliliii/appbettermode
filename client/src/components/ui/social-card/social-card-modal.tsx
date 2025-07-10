@@ -3,7 +3,23 @@
 import React from "react";
 import { Badge } from "@/components/ui/primitives";
 import { Button } from "@/components/ui/primitives/button";
-import { ExternalLink, Calendar } from "lucide-react";
+import { 
+  ExternalLink, 
+  Calendar, 
+  EllipsisVertical, 
+  Maximize2, 
+  FileChartColumn,
+  Edit,
+  CornerUpRight,
+  BarChart3,
+  Shield,
+  EyeOff,
+  Trash2,
+  Flag,
+  Pin,
+  Ellipsis,
+} from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/forms/dropdown-menu";
 import { SocialCardModalProps } from "./types";
 import { PollCard } from "./poll-card";
 import { VideoCard } from "./video-card";
@@ -55,15 +71,78 @@ export function SocialCardModal({
           ? 'max-w-[90vw] sm:max-w-[85vw] lg:max-w-[70vw]' 
           : 'max-w-[60vw] sm:max-w-[55vw] lg:max-w-[45vw]'
       }`}>
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+        {/* Header Actions */}
+        <div className="absolute top-2.5 right-2.5 z-10 flex items-center gap-0.5">
+          {/* Chart/Analytics Icon */}
+          <button className="p-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
+            <FileChartColumn className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
+          </button>
+          
+          {/* Maximize Button */}
+          <button className="p-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
+            <ExternalLink className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
+          </button>
+          
+          {/* More Actions Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="p-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
+                <Ellipsis className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem className="flex items-center gap-2">
+                <Edit className="w-4 h-4" />
+                <span>Edit post</span>
+                <span className="ml-auto text-xs text-zinc-400">E</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="flex items-center gap-2">
+                <CornerUpRight className="w-3 h-3" />
+                <span>Move post</span>
+                <span className="ml-auto text-xs text-zinc-400">M</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="flex items-center gap-2">
+                <BarChart3 className="w-3 h-3" />
+                <span>Post analytics</span>
+                <span className="ml-auto text-xs text-zinc-400">⌘ A</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="flex items-center gap-2">
+                <Shield className="w-3 h-3" />
+                <span>Audit logs</span>
+                <span className="ml-auto text-xs text-zinc-400">⌘ L</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="flex items-center gap-2">
+                <Pin className="w-3 h-3" />
+                <span>Pin post</span>
+                <span className="ml-auto text-xs text-zinc-400">P</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="flex items-center gap-2">
+                <EyeOff className="w-3 h-3" />
+                <span>Hide post</span>
+                <span className="ml-auto text-xs text-zinc-400">H</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="flex items-center gap-2 text-red-600 dark:text-red-400">
+                <Trash2 className="w-3 h-3" />
+                <span>Delete post</span>
+                <span className="ml-auto text-xs text-zinc-400">⌘ ⌫</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="flex items-center gap-2">
+                <Flag className="w-3 h-3" />
+                <span>Report post</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          
+          {/* Close Button */}
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
+          >
+            <svg className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
 
         <div className="flex h-full">
           {/* Left Column - Content */}
@@ -243,7 +322,10 @@ export function SocialCardModal({
               : 'w-0 opacity-0'
           }`}>
             <div className="w-64 sm:w-72 lg:w-96 h-full">
-              <CommentsSection />
+              <CommentsSection 
+                onToggle={() => setIsCommentsOpen(!isCommentsOpen)}
+                isCollapsed={!isCommentsOpen}
+              />
             </div>
           </div>
         </div>

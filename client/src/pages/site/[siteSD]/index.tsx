@@ -421,7 +421,7 @@ const SocialFeedContent = () => {
               required: false
             }
           ],
-          submitText: "Share My Moment",
+          submitText: "Submit My Form",
           responses: 23
         }
       },
