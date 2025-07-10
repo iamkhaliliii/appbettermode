@@ -71,7 +71,7 @@ export function SocialCardModal({
       />
       
       {/* Modal Content */}
-      <div className={`relative bg-white dark:bg-zinc-900 rounded-lg shadow-xl w-full max-h-[70vh] h-[70vh] overflow-hidden border border-zinc-200 dark:border-zinc-800 transition-all duration-500 ease-in-out ${
+      <div className={`relative bg-white dark:bg-zinc-900 rounded-lg shadow-xl w-full max-h-[80vh] h-[80vh] overflow-hidden border border-zinc-200 dark:border-zinc-800 transition-all duration-500 ease-in-out ${
         isCommentsOpen 
           ? 'max-w-[90vw] sm:max-w-[85vw] lg:max-w-[70vw]' 
           : 'max-w-[60vw] sm:max-w-[55vw] lg:max-w-[45vw]'
@@ -354,14 +354,30 @@ export function SocialCardModal({
         </div>
 
         {/* Insights Sheet */}
-        <InsightsSheet
-          isOpen={isAnalyticsOpen}
-          onClose={() => setIsAnalyticsOpen(false)}
-          content={content}
-          engagement={engagement}
-          engagementStyle={engagementStyle}
-          author={author}
-        />
+        <AnimatePresence>
+          {isAnalyticsOpen && (
+            <motion.div 
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 300, 
+                damping: 30
+              }}
+              className="absolute inset-y-0 right-0 w-[50%] min-w-[500px] bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-800 shadow-xl z-20"
+            >
+              <InsightsSheet
+                isOpen={isAnalyticsOpen}
+                onClose={() => setIsAnalyticsOpen(false)}
+                content={content}
+                engagement={engagement}
+                engagementStyle={engagementStyle}
+                author={author}
+              />
+          </motion.div>
+        )}
+      </AnimatePresence>
       </div>
     </div>
   );
