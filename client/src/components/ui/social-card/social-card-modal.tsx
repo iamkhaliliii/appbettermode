@@ -31,6 +31,8 @@ export function SocialCardModal({
   onReaction,
   onRSVP,
   onAddToCalendar,
+  onSubmitForm,
+  onResetForm,
   onPollVote,
 }: SocialCardModalProps) {
   const [isCommentsOpen, setIsCommentsOpen] = React.useState(true);
@@ -165,26 +167,56 @@ export function SocialCardModal({
               {/* Event Actions - Only show when content is Event type */}
               {content?.event && (
                 <>
-                  <div className="flex justify-end gap-2 mb-3">
-                    <Button 
-                      onClick={onRSVP ? () => onRSVP('yes') : undefined}
-                      size="sm"
-                      className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1.5 text-xs px-3 py-1.5 h-auto"
-                    >
-                      <ExternalLink className="w-3 h-3" />
-                      RSVP
-                    </Button>
-                    <Button 
-                      onClick={onAddToCalendar}
-                      variant="outline" 
-                      size="sm"
-                      className="flex items-center gap-1.5 text-xs px-3 py-1.5 h-auto"
-                    >
-                      <Calendar className="w-3 h-3" />
-                      Add to Calendar
-                    </Button>
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                      You can reserve this event
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <Button 
+                        onClick={onRSVP ? () => onRSVP('yes') : undefined}
+                        size="sm"
+                        className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1.5 text-xs px-3 py-1.5 h-auto"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        RSVP
+                      </Button>
+                      <button 
+                        onClick={onAddToCalendar}
+                        className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 hover:underline transition-colors flex items-center gap-1"
+                      >
+                        <Calendar className="w-3 h-3" />
+                        Add to Calendar
+                      </button>
+                    </div>
                   </div>
-                  <div className="border-t border-zinc-200 dark:border-zinc-700 mb-3"></div>
+                  <div className="border-t border-zinc-100 dark:border-zinc-800 mb-3"></div>
+                </>
+              )}
+
+              {/* Form Actions - Only show when content is Form type */}
+              {content?.form && (
+                <>
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                      Submit your response
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <button 
+                        onClick={onResetForm}
+                        className="text-xs text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 hover:underline transition-colors"
+                      >
+                        Reset Form
+                      </button>
+                      <Button 
+                        onClick={onSubmitForm}
+                        size="sm"
+                        className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1.5 text-xs px-3 py-1.5 h-auto"
+                      >
+                        {content.form.submitText}
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="border-t border-zinc-100 dark:border-zinc-800 mb-3"></div>
                 </>
               )}
 

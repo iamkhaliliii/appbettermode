@@ -197,6 +197,8 @@ export interface SocialCardModalProps {
   onReaction?: (reaction: string) => void;
   onRSVP?: (response: "yes" | "no" | "maybe") => void;
   onAddToCalendar?: () => void;
+  onSubmitForm?: () => void;
+  onResetForm?: () => void;
   onPollVote?: (optionId: string) => void;
 }
 

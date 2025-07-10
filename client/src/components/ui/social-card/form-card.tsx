@@ -111,15 +111,6 @@ export function FormCard({ form, isPreview = false, onFormClick, isFormOpen = fa
                 </div>
               ))}
             </div>
-            
-            {/* Submit Button */}
-            <div className="mt-6 pt-4 border-t border-zinc-200 dark:border-zinc-700">
-              <Button 
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white" 
-              >
-                {form.submitText}
-              </Button>
-            </div>
           </div>
         </div>
       )}
