@@ -18,6 +18,7 @@ import {
   Flag,
   Pin,
   Ellipsis,
+  MessageCircle,
 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/forms/dropdown-menu";
 import { SocialCardModalProps } from "./types";
@@ -73,15 +74,27 @@ export function SocialCardModal({
       }`}>
         {/* Header Actions */}
         <div className="absolute top-2.5 right-2.5 z-10 flex items-center gap-0.5">
+          
           {/* Chart/Analytics Icon */}
-          <button className="p-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
-            <FileChartColumn className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
-          </button>
+          <button className="flex items-center gap-1 p-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
+            <FileChartColumn className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />          </button>
+                    {/* Comments Toggle - Only show when comments are closed */}
+                    {!isCommentsOpen && (
+            <button 
+              onClick={() => setIsCommentsOpen(true)}
+              className="flex items-center gap-1 px-2 py-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
+              title="Show comments"
+            >
+              <MessageCircle className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
+            </button>
+          )}
           
           {/* Maximize Button */}
           <button className="p-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors">
             <ExternalLink className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
           </button>
+          
+
           
           {/* More Actions Dropdown */}
           <DropdownMenu>
@@ -310,7 +323,7 @@ export function SocialCardModal({
                 onDownvote={onDownvote}
                 onReaction={onReaction}
                 onRSVP={onRSVP}
-                isCommentsOpen={isCommentsOpen}
+                isCommentsOpen={false}
               />
             </div>
           </div>

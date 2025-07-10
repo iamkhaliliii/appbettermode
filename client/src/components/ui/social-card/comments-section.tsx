@@ -40,7 +40,7 @@ export function CommentsSection({
   const reactionTypes = ['smile', 'heart', 'thumbsUp', 'thumbsDown', 'heartCrack'];
 
   const handleReaction = (commentId: string, reactionType: string) => {
-    console.log(`Reaction ${reactionType} for comment ${commentId}`);
+    console.log(`Clicking ${reactionType} for comment ${commentId}`);
     setShowReactionPopover(null);
     
     setCommentsState(prevComments => 
@@ -52,6 +52,7 @@ export function CommentsSection({
             // Reaction exists - toggle it
             if (updatedReactions[reactionType].hasUserReacted) {
               // Remove user reaction
+              console.log(`Removing ${reactionType} reaction from comment ${commentId}`);
               updatedReactions[reactionType] = {
                 count: Math.max(0, updatedReactions[reactionType].count - 1),
                 hasUserReacted: false
@@ -62,6 +63,7 @@ export function CommentsSection({
               }
             } else {
               // Add user reaction
+              console.log(`Adding ${reactionType} reaction to comment ${commentId}`);
               updatedReactions[reactionType] = {
                 count: updatedReactions[reactionType].count + 1,
                 hasUserReacted: true
@@ -69,6 +71,7 @@ export function CommentsSection({
             }
           } else {
             // New reaction
+            console.log(`Creating new ${reactionType} reaction for comment ${commentId}`);
             updatedReactions[reactionType] = {
               count: 1,
               hasUserReacted: true
@@ -163,7 +166,7 @@ export function CommentsSection({
       id: "1",
       author: {
         name: "Sarah Johnson",
-        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b7cf?w=24&h=24&fit=crop&crop=face"
+        avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=24&h=24&fit=crop&crop=face"
       },
       content: "This is absolutely brilliant! I've been struggling with this exact problem for weeks, and your approach is so elegant and practical. The way you broke down the complex concepts into digestible pieces really helped me understand the underlying principles. Thank you for taking the time to share this with the community! 🙌",
       timeAgo: "2h",
@@ -277,8 +280,7 @@ export function CommentsSection({
       likes: 9,
       isLiked: false,
       reactions: {
-        biceps: { count: 6, hasUserReacted: true },
-        heart: { count: 3, hasUserReacted: false }
+        heart: { count: 9, hasUserReacted: true }
       }
     },
     {
@@ -321,9 +323,24 @@ export function CommentsSection({
       content: "This tutorial came at the perfect time! I was just starting to research this topic for my thesis, and your explanations have given me a solid foundation to build upon. The resources you linked are also incredibly valuable. Thank you! 📖",
       timeAgo: "14h",
       likes: 7,
+      isLiked: false,
+            reactions: {
+        smile: { count: 4, hasUserReacted: false },
+        heart: { count: 3, hasUserReacted: false }
+      }
+    },
+    {
+      id: "8",
+      author: {
+        name: "Test User",
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=24&h=24&fit=crop&crop=face"
+      },
+      content: "Testing new reactions! This comment has no reactions yet.",
+      timeAgo: "1m",
+      likes: 0,
       isLiked: false
-          }
-    ];
+    }
+  ];
 
   // Initialize commentsState with sample data or provided comments
   React.useEffect(() => {
@@ -384,7 +401,7 @@ export function CommentsSection({
                   <button 
                     key={reactionType}
                     onClick={() => handleReaction(comment.id, reactionType)}
-                    className={`flex items-center gap-0.5 px-1.5 py-0.5 text-xs border rounded-full transition-colors ${
+                    className={`flex items-center gap-0.5 px-1.5 py-0.5 text-[0.7rem] border rounded-full transition-colors ${
                       reactionData.hasUserReacted 
                         ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30' 
                         : 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
