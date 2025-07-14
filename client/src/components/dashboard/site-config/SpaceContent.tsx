@@ -701,6 +701,17 @@ export function SpaceContent({
           </div>
         );
       
+      case 'logo':
+        return (
+          <div className="mb-6">
+            <div className="flex items-center justify-center p-4">
+              <div className="w-32 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-xl">LOGO</span>
+              </div>
+            </div>
+          </div>
+        );
+      
       case 'image':
         return (
           <div className="mb-6">
@@ -736,6 +747,187 @@ export function SpaceContent({
             <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
               Click Me
             </button>
+          </div>
+        );
+
+      case 'accordions':
+        return (
+          <div className="mb-6">
+            <div className="space-y-2">
+              <div className="border border-gray-200 dark:border-gray-700 rounded-lg">
+                <button className="w-full px-4 py-3 text-left bg-gray-50 dark:bg-gray-800 rounded-lg flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                  <span className="font-medium text-gray-900 dark:text-white">Accordion Item 1</span>
+                  <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div className="px-4 py-3 text-gray-600 dark:text-gray-400 text-sm border-t border-gray-200 dark:border-gray-700">
+                  This is the content for the first accordion item. You can add any content here.
+                </div>
+              </div>
+              <div className="border border-gray-200 dark:border-gray-700 rounded-lg">
+                <button className="w-full px-4 py-3 text-left bg-gray-50 dark:bg-gray-800 rounded-lg flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                  <span className="font-medium text-gray-900 dark:text-white">Accordion Item 2</span>
+                  <svg className="w-5 h-5 text-gray-500 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+              <div className="border border-gray-200 dark:border-gray-700 rounded-lg">
+                <button className="w-full px-4 py-3 text-left bg-gray-50 dark:bg-gray-800 rounded-lg flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                  <span className="font-medium text-gray-900 dark:text-white">Accordion Item 3</span>
+                  <svg className="w-5 h-5 text-gray-500 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'canvas':
+        return (
+          <div className="mb-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                Canvas Content
+              </h3>
+              <div className="prose prose-sm dark:prose-invert max-w-none">
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  This is a rich content canvas where you can add formatted text, images, videos, polls, and more using the BlockNote editor.
+                </p>
+                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 border-l-4 border-blue-500">
+                  <h4 className="font-medium text-gray-900 dark:text-white mb-2">Sample Rich Content</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Content created with the Canvas widget supports rich formatting, including:
+                  </p>
+                  <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-400 mt-2 space-y-1">
+                    <li>Bold and italic text</li>
+                    <li>Headers and lists</li>
+                    <li>Images and videos</li>
+                    <li>Interactive polls</li>
+                    <li>Code blocks and more</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'menu':
+        return (
+          <div className="mb-6">
+            <nav className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+              <ul className="flex space-x-6">
+                <li><a href="#" className="text-gray-900 dark:text-white hover:text-blue-600 transition-colors font-medium">Home</a></li>
+                <li><a href="#" className="text-gray-900 dark:text-white hover:text-blue-600 transition-colors font-medium">About</a></li>
+                <li><a href="#" className="text-gray-900 dark:text-white hover:text-blue-600 transition-colors font-medium">Services</a></li>
+                <li><a href="#" className="text-gray-900 dark:text-white hover:text-blue-600 transition-colors font-medium">Contact</a></li>
+              </ul>
+            </nav>
+          </div>
+        );
+
+      case 'hero-banner-advance':
+        return (
+          <div className="mb-6">
+            <div className="relative bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg overflow-hidden">
+              <div className="absolute inset-0 bg-black/20"></div>
+              <div className="relative p-12 text-center">
+                <h1 className="text-4xl font-bold mb-4">Advanced Hero Banner</h1>
+                <p className="text-xl opacity-90 mb-8 max-w-2xl mx-auto">
+                  Create stunning hero sections with advanced customization options, background media, and powerful call-to-action buttons.
+                </p>
+                <div className="flex justify-center gap-4">
+                  <button className="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                    Get Started
+                  </button>
+                  <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/10 transition-colors">
+                    Learn More
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'announcement-banner':
+        return (
+          <div className="mb-6">
+            <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 text-blue-600 dark:text-blue-400">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 15a1 1 0 110-2 1 1 0 010 2zm1-4h-2V7h2v6z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-blue-900 dark:text-blue-100 font-medium">
+                      Important announcement: New features are now available!
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 text-sm font-medium">
+                    Learn More
+                  </button>
+                  <button className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M18.3 5.71a.996.996 0 00-1.41 0L12 10.59 7.11 5.7A.996.996 0 105.7 7.11L10.59 12 5.7 16.89a.996.996 0 101.41 1.41L12 13.41l4.89 4.89a.996.996 0 101.41-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'html-script':
+        return (
+          <div className="mb-6">
+            <div className="bg-gray-900 text-green-400 rounded-lg p-4 font-mono text-sm">
+              <div className="mb-2 text-gray-400">// Custom HTML/JavaScript Widget</div>
+              <div>&lt;<span className="text-blue-400">div</span> <span className="text-yellow-400">class</span>=<span className="text-green-300">"custom-widget"</span>&gt;</div>
+              <div className="ml-4">&lt;<span className="text-blue-400">h3</span>&gt;Custom Script Output&lt;/<span className="text-blue-400">h3</span>&gt;</div>
+              <div className="ml-4">&lt;<span className="text-blue-400">p</span>&gt;This widget can execute custom HTML, CSS, and JavaScript code.&lt;/<span className="text-blue-400">p</span>&gt;</div>
+              <div>&lt;/<span className="text-blue-400">div</span>&gt;</div>
+              <div className="mt-4 p-3 bg-gray-800 rounded border border-yellow-500">
+                <div className="text-yellow-400 text-xs mb-1">⚠️ Security Notice</div>
+                <div className="text-gray-300 text-xs">Always use trusted code sources</div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'iframe':
+        return (
+          <div className="mb-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div className="bg-gray-100 dark:bg-gray-700 px-4 py-2 border-b border-gray-200 dark:border-gray-600">
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1">
+                    <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                    <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  </div>
+                  <div className="text-xs text-gray-600 dark:text-gray-400 font-mono">
+                    https://example.com
+                  </div>
+                </div>
+              </div>
+              <div className="h-64 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gray-300 dark:bg-gray-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm-1 16v-5.5a.5.5 0 00-.5-.5h-3a.5.5 0 00-.5.5V18H5V6h2v5.5a.5.5 0 00.5.5h3a.5.5 0 00.5-.5V6h2v12h-2z"/>
+                    </svg>
+                  </div>
+                  <p className="text-gray-600 dark:text-gray-400 font-semibold">Embedded Content</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-500">External website iframe</p>
+                </div>
+              </div>
+            </div>
           </div>
         );
 
@@ -859,7 +1051,14 @@ export function SpaceContent({
                               'Featured Events': 'featured-events', 
                               'Hero Banner': 'hero-banner',
                               'Event Calendar': 'calendar',
-                              'Calendar': 'calendar'
+                              'Calendar': 'calendar',
+                              // Basic Widgets - use their IDs directly
+                              'Title': 'title',
+                              'Logo': 'logo',
+                              'Image': 'image',
+                              'Video': 'video',
+                              'Button': 'button',
+                              'Accordions': 'accordions'
                             };
                             const sectionName = widgetToSectionMap[droppedWidget.widget.name] || droppedWidget.widget.name.toLowerCase().replace(/\s+/g, '-');
                             handleSectionSettings(sectionName);

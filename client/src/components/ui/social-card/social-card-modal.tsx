@@ -365,7 +365,7 @@ export function SocialCardModal({
                 stiffness: 300, 
                 damping: 30
               }}
-              className="absolute inset-y-0 right-0 w-[50%] min-w-[500px] bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-800 shadow-xl z-20"
+              className="absolute inset-y-0 right-0 w-[50%] min-w-[550px] bg-white dark:bg-zinc-900 border-l border-zinc-200 dark:border-zinc-800 shadow-xl z-20"
             >
               <InsightsSheet
                 isOpen={isAnalyticsOpen}

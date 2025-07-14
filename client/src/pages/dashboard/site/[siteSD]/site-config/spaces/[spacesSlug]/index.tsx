@@ -6,7 +6,7 @@ import { SpaceSettingsSidebar } from "@/components/layout/dashboard/secondary-si
 import { SpaceContent } from "@/components/dashboard/site-config/SpaceContent";
 import { SettingsSidebar } from "@/components/dashboard/site-config/SettingsSidebar";
 import { DashboardPageWrapper } from "@/components/dashboard/DashboardPageWrapper";
-import { widgetSections } from "@/components/dashboard/site-config/widgets";
+import { widgetSections, availableWidgets, type AvailableWidget } from "@/components/dashboard/site-config/widgets";
 
 
 
@@ -192,7 +192,22 @@ export default function SpaceSettingsPage() {
       // From dropped widgets
       'featured-events': widgetSections.custom.find(w => w.id === 'featured-events'),
       'hero-banner': { id: 'hero-banner', name: 'Hero Banner', icon: () => null },
-      'calendar': { id: 'calendar', name: 'Calendar', icon: () => null }
+      'calendar': { id: 'calendar', name: 'Calendar', icon: () => null },
+      // Basic Widgets - from availableWidgets
+      'title': availableWidgets.find((w: AvailableWidget) => w.id === 'title'),
+      'logo': availableWidgets.find((w: AvailableWidget) => w.id === 'logo'),
+      'image': availableWidgets.find((w: AvailableWidget) => w.id === 'image'),
+      'video': availableWidgets.find((w: AvailableWidget) => w.id === 'video'),
+      'button': availableWidgets.find((w: AvailableWidget) => w.id === 'button'),
+      'accordions': availableWidgets.find((w: AvailableWidget) => w.id === 'accordions'),
+      // Advanced Widgets - from availableWidgets
+      'canvas': availableWidgets.find((w: AvailableWidget) => w.id === 'canvas'),
+      'menu': availableWidgets.find((w: AvailableWidget) => w.id === 'menu'),
+      'hero-banner-advance': availableWidgets.find((w: AvailableWidget) => w.id === 'hero-banner-advance'),
+      'hero-banner-trending': availableWidgets.find((w: AvailableWidget) => w.id === 'hero-banner-trending'),
+      'announcement-banner': availableWidgets.find((w: AvailableWidget) => w.id === 'announcement-banner'),
+      'html-script': availableWidgets.find((w: AvailableWidget) => w.id === 'html-script'),
+      'iframe': availableWidgets.find((w: AvailableWidget) => w.id === 'iframe')
     };
     
     return sectionMap[sectionName] || null;

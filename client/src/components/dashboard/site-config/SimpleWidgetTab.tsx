@@ -15,6 +15,20 @@ import {
   EventsContainerSettings, 
   SiteSectionSettings 
 } from './widget-settings';
+import {
+  TitleWidgetSettings,
+  LogoWidgetSettings,
+  ImageWidgetSettings,
+  VideoWidgetSettings,
+  ButtonWidgetSettings,
+  AccordionsWidgetSettings,
+  CanvasWidgetSettings,
+  MenuWidgetSettings,
+  HeroBannerWidgetSettings,
+  AnnouncementBannerWidgetSettings,
+  HtmlScriptWidgetSettings,
+  IframeWidgetSettings
+} from './widget-settings';
 import { 
   MousePointer, 
   CheckCircle, 
@@ -325,6 +339,116 @@ export function SimpleWidgetTab(props: WidgetTabProps) {
               currentWidget?.id === 'site-footer') && (
               <SiteSectionSettings
                 sectionName={currentWidget?.name}
+                editingField={editingField}
+                onFieldClick={handleFieldClick}
+                onFieldBlur={handleFieldBlur}
+                onKeyDown={handleKeyDown}
+              />
+            )}
+
+            {/* Basic Widget Settings */}
+            {currentWidget?.id === 'title' && (
+              <TitleWidgetSettings
+                editingField={editingField}
+                onFieldClick={handleFieldClick}
+                onFieldBlur={handleFieldBlur}
+                onKeyDown={handleKeyDown}
+              />
+            )}
+
+            {currentWidget?.id === 'logo' && (
+              <LogoWidgetSettings
+                editingField={editingField}
+                onFieldClick={handleFieldClick}
+                onFieldBlur={handleFieldBlur}
+                onKeyDown={handleKeyDown}
+              />
+            )}
+
+            {currentWidget?.id === 'image' && (
+              <ImageWidgetSettings
+                editingField={editingField}
+                onFieldClick={handleFieldClick}
+                onFieldBlur={handleFieldBlur}
+                onKeyDown={handleKeyDown}
+              />
+            )}
+
+            {currentWidget?.id === 'video' && (
+              <VideoWidgetSettings
+                editingField={editingField}
+                onFieldClick={handleFieldClick}
+                onFieldBlur={handleFieldBlur}
+                onKeyDown={handleKeyDown}
+              />
+            )}
+
+            {currentWidget?.id === 'button' && (
+              <ButtonWidgetSettings
+                editingField={editingField}
+                onFieldClick={handleFieldClick}
+                onFieldBlur={handleFieldBlur}
+                onKeyDown={handleKeyDown}
+              />
+            )}
+
+            {currentWidget?.id === 'accordions' && (
+              <AccordionsWidgetSettings
+                editingField={editingField}
+                onFieldClick={handleFieldClick}
+                onFieldBlur={handleFieldBlur}
+                onKeyDown={handleKeyDown}
+              />
+            )}
+
+            {currentWidget?.id === 'canvas' && (
+              <CanvasWidgetSettings
+                editingField={editingField}
+                onFieldClick={handleFieldClick}
+                onFieldBlur={handleFieldBlur}
+                onKeyDown={handleKeyDown}
+              />
+            )}
+
+            {/* Advanced Widget Settings */}
+            {currentWidget?.id === 'menu' && (
+              <MenuWidgetSettings
+                editingField={editingField}
+                onFieldClick={handleFieldClick}
+                onFieldBlur={handleFieldBlur}
+                onKeyDown={handleKeyDown}
+              />
+            )}
+
+            {(currentWidget?.id === 'hero-banner-advance' || currentWidget?.id === 'hero-banner-trending') && (
+              <HeroBannerWidgetSettings
+                editingField={editingField}
+                onFieldClick={handleFieldClick}
+                onFieldBlur={handleFieldBlur}
+                onKeyDown={handleKeyDown}
+              />
+            )}
+
+            {currentWidget?.id === 'announcement-banner' && (
+              <AnnouncementBannerWidgetSettings
+                editingField={editingField}
+                onFieldClick={handleFieldClick}
+                onFieldBlur={handleFieldBlur}
+                onKeyDown={handleKeyDown}
+              />
+            )}
+
+            {currentWidget?.id === 'html-script' && (
+              <HtmlScriptWidgetSettings
+                editingField={editingField}
+                onFieldClick={handleFieldClick}
+                onFieldBlur={handleFieldBlur}
+                onKeyDown={handleKeyDown}
+              />
+            )}
+
+            {currentWidget?.id === 'iframe' && (
+              <IframeWidgetSettings
                 editingField={editingField}
                 onFieldClick={handleFieldClick}
                 onFieldBlur={handleFieldBlur}

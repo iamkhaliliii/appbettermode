@@ -46,7 +46,7 @@ export function PropertyRow({
   const isEditing = editingField === fieldName;
   const displayValue = value || "Empty";
   const isEmpty = !value;
-  const isDescription = fieldName === 'description' || fieldName === 'sectionSubtitle';
+  const isDescription = fieldName === 'description' || fieldName === 'sectionSubtitle' || fieldName.includes('description');
   const isSlug = fieldName === 'slug';
   const isCardStyle = fieldName === 'cardStyle';
 
@@ -207,10 +207,10 @@ export function PropertyRow({
               ) : (
                 <div
                   onClick={() => onFieldClick(fieldName)}
-                  className={`text-sm cursor-pointer flex items-start justify-end rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors w-full ${
+                  className={`text-sm cursor-pointer flex items-start rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors w-full ${
                     isEmpty ? 'text-gray-300 dark:text-gray-600' : 'text-gray-900 dark:text-gray-100'
                   } ${
-                    isDescription ? 'py-1 text-right whitespace-pre-wrap break-words' : 'h-6 items-center truncate text-right'
+                    isDescription ? 'py-1 text-left whitespace-pre-wrap break-words justify-start' : 'h-6 items-center truncate text-right justify-end'
                   }`}
                   title={!isDescription ? displayValue : undefined}
                 >
@@ -408,7 +408,6 @@ export function PropertyRow({
                 value={value || []}
                 onChange={onValueChange}
                 placeholder="Manage menu items"
-                defaultView="spaces"
               />
             </div>
           )}

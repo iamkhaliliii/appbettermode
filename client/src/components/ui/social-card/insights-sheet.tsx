@@ -735,178 +735,184 @@ export function InsightsSheet({
                             </div>
                           </div>
                           <div className="space-y-1">
-                            <div className="border border-zinc-200 dark:border-zinc-700 rounded">
+                            <div>
                               <div 
-                                className="flex items-center justify-between py-1 px-2 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                                className="flex items-center justify-between py-1.5 px-1 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded transition-colors"
                                 onClick={() => toggleExpanded('attendee-sarah')}
                               >
                                 <div className="flex items-center gap-2">
                                   <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=24&h=24&fit=crop&crop=face" alt="User" className="w-4 h-4 rounded-full" />
-                                  <span className="text-xs text-zinc-700 dark:text-zinc-300">Sarah Johnson</span>
+                                  <span className="text-xs font-medium text-zinc-800 dark:text-zinc-200">Sarah Johnson</span>
                                   <ChevronDown className={`w-3 h-3 text-zinc-400 transition-transform ${expandedItems['attendee-sarah'] ? 'rotate-180' : ''}`} />
                                 </div>
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-0.5">
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <Eye className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <Eye className="w-3 h-3 text-zinc-400" />
                                   </button>
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <Trash2 className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <Trash2 className="w-3 h-3 text-zinc-400" />
                                   </button>
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <MoreHorizontal className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <MoreHorizontal className="w-3 h-3 text-zinc-400" />
                                   </button>
                                 </div>
                               </div>
                               {expandedItems['attendee-sarah'] && (
-                                <div className="px-3 pb-2 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-25 dark:bg-zinc-900/25">
-                                  <div className="space-y-2 pt-2">
-                                    <div className="grid grid-cols-2 gap-2 text-xs">
-                                      <div className="flex items-center gap-1">
+                                <div className="ml-6 mt-1 p-2 bg-zinc-50/50 dark:bg-zinc-800/30 rounded">
+                                  <div className="space-y-2">
+                                    <div className="space-y-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Mail className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">sarah.j@company.com</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">sarah.j@company.com</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Phone className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">+1 234 567 8900</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">+1 234 567 8900</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <MapPin className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">San Francisco, CA</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">San Francisco, CA</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Calendar className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">RSVP: Going</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">RSVP: Going</span>
                                       </div>
                                     </div>
-                                    <div className="text-xs text-zinc-500">
-                                      <span className="font-medium">Note:</span> Product Manager at Tech Corp. Interested in AI/ML features.
+                                    <div className="pt-1.5 border-t border-zinc-200/50 dark:border-zinc-700/50">
+                                      <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                                        <span className="font-medium text-zinc-700 dark:text-zinc-300">Note:</span> Product Manager at Tech Corp. Interested in AI/ML features.
+                                      </p>
                                     </div>
                                   </div>
                                 </div>
                               )}
                             </div>
-                            <div className="border border-zinc-200 dark:border-zinc-700 rounded">
+                            <div>
                               <div 
-                                className="flex items-center justify-between py-1 px-2 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                                className="flex items-center justify-between py-1.5 px-1 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded transition-colors"
                                 onClick={() => toggleExpanded('attendee-mike')}
                               >
                                 <div className="flex items-center gap-2">
                                   <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=24&h=24&fit=crop&crop=face" alt="User" className="w-4 h-4 rounded-full" />
-                                  <span className="text-xs text-zinc-700 dark:text-zinc-300">Mike Chen</span>
+                                  <span className="text-xs font-medium text-zinc-800 dark:text-zinc-200">Mike Chen</span>
                                   <ChevronDown className={`w-3 h-3 text-zinc-400 transition-transform ${expandedItems['attendee-mike'] ? 'rotate-180' : ''}`} />
                                 </div>
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-0.5">
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <Eye className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <Eye className="w-3 h-3 text-zinc-400" />
                                   </button>
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <Trash2 className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <Trash2 className="w-3 h-3 text-zinc-400" />
                                   </button>
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <MoreHorizontal className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <MoreHorizontal className="w-3 h-3 text-zinc-400" />
                                   </button>
                                 </div>
                               </div>
                               {expandedItems['attendee-mike'] && (
-                                <div className="px-3 pb-2 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-25 dark:bg-zinc-900/25">
-                                  <div className="space-y-2 pt-2">
-                                    <div className="grid grid-cols-2 gap-2 text-xs">
-                                      <div className="flex items-center gap-1">
+                                <div className="ml-6 mt-1 p-2 bg-zinc-50/50 dark:bg-zinc-800/30 rounded">
+                                  <div className="space-y-2">
+                                    <div className="space-y-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Mail className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">mike.chen@startup.io</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">mike.chen@startup.io</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Phone className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">+1 555 123 4567</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">+1 555 123 4567</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <MapPin className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Austin, TX</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Austin, TX</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Calendar className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">RSVP: Maybe</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">RSVP: Maybe</span>
                                       </div>
                                     </div>
-                                    <div className="text-xs text-zinc-500">
-                                      <span className="font-medium">Note:</span> Senior Developer. Bringing 2 team members.
+                                    <div className="pt-1.5 border-t border-zinc-200/50 dark:border-zinc-700/50">
+                                      <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                                        <span className="font-medium text-zinc-700 dark:text-zinc-300">Note:</span> Senior Developer. Bringing 2 team members.
+                                      </p>
                                     </div>
                                   </div>
                                 </div>
                               )}
                             </div>
-                            <div className="border border-zinc-200 dark:border-zinc-700 rounded">
+                            <div>
                               <div 
-                                className="flex items-center justify-between py-1 px-2 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                                className="flex items-center justify-between py-1.5 px-1 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded transition-colors"
                                 onClick={() => toggleExpanded('attendee-emma')}
                               >
                                 <div className="flex items-center gap-2">
                                   <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=24&h=24&fit=crop&crop=face" alt="User" className="w-4 h-4 rounded-full" />
-                                  <span className="text-xs text-zinc-700 dark:text-zinc-300">Emma Wilson</span>
+                                  <span className="text-xs font-medium text-zinc-800 dark:text-zinc-200">Emma Wilson</span>
                                   <ChevronDown className={`w-3 h-3 text-zinc-400 transition-transform ${expandedItems['attendee-emma'] ? 'rotate-180' : ''}`} />
                                 </div>
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-0.5">
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <Eye className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <Eye className="w-3 h-3 text-zinc-400" />
                                   </button>
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <Trash2 className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <Trash2 className="w-3 h-3 text-zinc-400" />
                                   </button>
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <MoreHorizontal className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <MoreHorizontal className="w-3 h-3 text-zinc-400" />
                                   </button>
                                 </div>
                               </div>
                               {expandedItems['attendee-emma'] && (
-                                <div className="px-3 pb-2 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-25 dark:bg-zinc-900/25">
-                                  <div className="space-y-2 pt-2">
-                                    <div className="grid grid-cols-2 gap-2 text-xs">
-                                      <div className="flex items-center gap-1">
+                                <div className="ml-6 mt-1 p-2 bg-zinc-50/50 dark:bg-zinc-800/30 rounded">
+                                  <div className="space-y-2">
+                                    <div className="space-y-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Mail className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">emma.wilson@design.co</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">emma.wilson@design.co</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Phone className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">+1 678 901 2345</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">+1 678 901 2345</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <MapPin className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Seattle, WA</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Seattle, WA</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Calendar className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">RSVP: Going</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">RSVP: Going</span>
                                       </div>
                                     </div>
-                                    <div className="text-xs text-zinc-500">
-                                      <span className="font-medium">Note:</span> UX Designer. Excited about design system updates.
+                                    <div className="pt-1.5 border-t border-zinc-200/50 dark:border-zinc-700/50">
+                                      <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                                        <span className="font-medium text-zinc-700 dark:text-zinc-300">Note:</span> UX Designer. Excited about design system updates.
+                                      </p>
                                     </div>
                                   </div>
                                 </div>
@@ -1229,178 +1235,184 @@ export function InsightsSheet({
                             </div>
                           </div>
                           <div className="space-y-1">
-                            <div className="border border-zinc-200 dark:border-zinc-700 rounded">
+                            <div>
                               <div 
-                                className="flex items-center justify-between py-1 px-2 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                                className="flex items-center justify-between py-1.5 px-1 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded transition-colors"
                                 onClick={() => toggleExpanded('form-sarah')}
                               >
                                 <div className="flex items-center gap-2">
                                   <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=24&h=24&fit=crop&crop=face" alt="User" className="w-4 h-4 rounded-full" />
-                                  <span className="text-xs text-zinc-700 dark:text-zinc-300">Sarah Johnson</span>
+                                  <span className="text-xs font-medium text-zinc-800 dark:text-zinc-200">Sarah Johnson</span>
                                   <ChevronDown className={`w-3 h-3 text-zinc-400 transition-transform ${expandedItems['form-sarah'] ? 'rotate-180' : ''}`} />
                                 </div>
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-0.5">
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <Eye className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <Eye className="w-3 h-3 text-zinc-400" />
                                   </button>
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <Trash2 className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <Trash2 className="w-3 h-3 text-zinc-400" />
                                   </button>
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <MoreHorizontal className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <MoreHorizontal className="w-3 h-3 text-zinc-400" />
                                   </button>
                                 </div>
                               </div>
                               {expandedItems['form-sarah'] && (
-                                <div className="px-3 pb-2 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-25 dark:bg-zinc-900/25">
-                                  <div className="space-y-2 pt-2">
-                                    <div className="grid grid-cols-2 gap-2 text-xs">
-                                      <div className="flex items-center gap-1">
+                                <div className="ml-6 mt-1 p-2 bg-zinc-50/50 dark:bg-zinc-800/30 rounded">
+                                  <div className="space-y-2">
+                                    <div className="space-y-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Mail className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">sarah.j@company.com</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">sarah.j@company.com</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Calendar className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Submitted: 2h ago</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Submitted: 2h ago</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <FileText className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Form: Contact Form</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Form: Contact Form</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <User className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Status: Submitted</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Status: Submitted</span>
                                       </div>
                                     </div>
-                                    <div className="text-xs text-zinc-500">
-                                      <span className="font-medium">Message:</span> "I'm interested in learning more about your services and would like to schedule a demo."
+                                    <div className="pt-1.5 border-t border-zinc-200/50 dark:border-zinc-700/50">
+                                      <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                                        <span className="font-medium text-zinc-700 dark:text-zinc-300">Message:</span> "I'm interested in learning more about your services and would like to schedule a demo."
+                                      </p>
                                     </div>
                                   </div>
                                 </div>
                               )}
                             </div>
-                            <div className="border border-zinc-200 dark:border-zinc-700 rounded">
+                            <div>
                               <div 
-                                className="flex items-center justify-between py-1 px-2 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                                className="flex items-center justify-between py-1.5 px-1 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded transition-colors"
                                 onClick={() => toggleExpanded('form-mike')}
                               >
                                 <div className="flex items-center gap-2">
                                   <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=24&h=24&fit=crop&crop=face" alt="User" className="w-4 h-4 rounded-full" />
-                                  <span className="text-xs text-zinc-700 dark:text-zinc-300">Mike Chen</span>
+                                  <span className="text-xs font-medium text-zinc-800 dark:text-zinc-200">Mike Chen</span>
                                   <ChevronDown className={`w-3 h-3 text-zinc-400 transition-transform ${expandedItems['form-mike'] ? 'rotate-180' : ''}`} />
                                 </div>
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-0.5">
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <Eye className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <Eye className="w-3 h-3 text-zinc-400" />
                                   </button>
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <Trash2 className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <Trash2 className="w-3 h-3 text-zinc-400" />
                                   </button>
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <MoreHorizontal className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <MoreHorizontal className="w-3 h-3 text-zinc-400" />
                                   </button>
                                 </div>
                               </div>
                               {expandedItems['form-mike'] && (
-                                <div className="px-3 pb-2 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-25 dark:bg-zinc-900/25">
-                                  <div className="space-y-2 pt-2">
-                                    <div className="grid grid-cols-2 gap-2 text-xs">
-                                      <div className="flex items-center gap-1">
+                                <div className="ml-6 mt-1 p-2 bg-zinc-50/50 dark:bg-zinc-800/30 rounded">
+                                  <div className="space-y-2">
+                                    <div className="space-y-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Mail className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">mike.chen@startup.io</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">mike.chen@startup.io</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Calendar className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Submitted: 4h ago</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Submitted: 4h ago</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <FileText className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Form: Feedback Form</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Form: Feedback Form</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <User className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Status: Submitted</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Status: Submitted</span>
                                       </div>
                                     </div>
-                                    <div className="text-xs text-zinc-500">
-                                      <span className="font-medium">Message:</span> "Great product! Would love to see integration with third-party tools."
+                                    <div className="pt-1.5 border-t border-zinc-200/50 dark:border-zinc-700/50">
+                                      <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                                        <span className="font-medium text-zinc-700 dark:text-zinc-300">Message:</span> "Great product! Would love to see integration with third-party tools."
+                                      </p>
                                     </div>
                                   </div>
                                 </div>
                               )}
                             </div>
-                            <div className="border border-zinc-200 dark:border-zinc-700 rounded">
+                            <div>
                               <div 
-                                className="flex items-center justify-between py-1 px-2 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                                className="flex items-center justify-between py-1.5 px-1 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded transition-colors"
                                 onClick={() => toggleExpanded('form-emma')}
                               >
                                 <div className="flex items-center gap-2">
                                   <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=24&h=24&fit=crop&crop=face" alt="User" className="w-4 h-4 rounded-full" />
-                                  <span className="text-xs text-zinc-700 dark:text-zinc-300">Emma Wilson</span>
+                                  <span className="text-xs font-medium text-zinc-800 dark:text-zinc-200">Emma Wilson</span>
                                   <ChevronDown className={`w-3 h-3 text-zinc-400 transition-transform ${expandedItems['form-emma'] ? 'rotate-180' : ''}`} />
                                 </div>
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-0.5">
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <Eye className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <Eye className="w-3 h-3 text-zinc-400" />
                                   </button>
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <Trash2 className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <Trash2 className="w-3 h-3 text-zinc-400" />
                                   </button>
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <MoreHorizontal className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <MoreHorizontal className="w-3 h-3 text-zinc-400" />
                                   </button>
                                 </div>
                               </div>
                               {expandedItems['form-emma'] && (
-                                <div className="px-3 pb-2 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-25 dark:bg-zinc-900/25">
-                                  <div className="space-y-2 pt-2">
-                                    <div className="grid grid-cols-2 gap-2 text-xs">
-                                      <div className="flex items-center gap-1">
+                                <div className="ml-6 mt-1 p-2 bg-zinc-50/50 dark:bg-zinc-800/30 rounded">
+                                  <div className="space-y-2">
+                                    <div className="space-y-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Mail className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">emma.wilson@design.co</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">emma.wilson@design.co</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Calendar className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Submitted: 6h ago</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Submitted: 6h ago</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <FileText className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Form: Newsletter Signup</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Form: Newsletter Signup</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <User className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Status: Submitted</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Status: Submitted</span>
                                       </div>
                                     </div>
-                                    <div className="text-xs text-zinc-500">
-                                      <span className="font-medium">Interests:</span> Design Systems, UI/UX, Frontend Development
+                                    <div className="pt-1.5 border-t border-zinc-200/50 dark:border-zinc-700/50">
+                                      <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                                        <span className="font-medium text-zinc-700 dark:text-zinc-300">Interests:</span> Design Systems, UI/UX, Frontend Development
+                                      </p>
                                     </div>
                                   </div>
                                 </div>
@@ -1448,178 +1460,184 @@ export function InsightsSheet({
                             </div>
                           </div>
                           <div className="space-y-1">
-                            <div className="border border-zinc-200 dark:border-zinc-700 rounded">
+                            <div>
                               <div 
-                                className="flex items-center justify-between py-1 px-2 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                                className="flex items-center justify-between py-1.5 px-1 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded transition-colors"
                                 onClick={() => toggleExpanded('job-sarah')}
                               >
                                 <div className="flex items-center gap-2">
                                   <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=24&h=24&fit=crop&crop=face" alt="User" className="w-4 h-4 rounded-full" />
-                                  <span className="text-xs text-zinc-700 dark:text-zinc-300">Sarah Johnson</span>
+                                  <span className="text-xs font-medium text-zinc-800 dark:text-zinc-200">Sarah Johnson</span>
                                   <ChevronDown className={`w-3 h-3 text-zinc-400 transition-transform ${expandedItems['job-sarah'] ? 'rotate-180' : ''}`} />
                                 </div>
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-0.5">
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <Eye className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <Eye className="w-3 h-3 text-zinc-400" />
                                   </button>
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <Trash2 className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <Trash2 className="w-3 h-3 text-zinc-400" />
                                   </button>
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <MoreHorizontal className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <MoreHorizontal className="w-3 h-3 text-zinc-400" />
                                   </button>
                                 </div>
                               </div>
                               {expandedItems['job-sarah'] && (
-                                <div className="px-3 pb-2 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-25 dark:bg-zinc-900/25">
-                                  <div className="space-y-2 pt-2">
-                                    <div className="grid grid-cols-2 gap-2 text-xs">
-                                      <div className="flex items-center gap-1">
+                                <div className="ml-6 mt-1 p-2 bg-zinc-50/50 dark:bg-zinc-800/30 rounded">
+                                  <div className="space-y-2">
+                                    <div className="space-y-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Mail className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">sarah.j@company.com</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">sarah.j@company.com</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Calendar className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Applied: 1d ago</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Applied: 1d ago</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <FileText className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Resume: Attached</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Resume: Attached</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <User className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Status: Under Review</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Status: Under Review</span>
                                       </div>
                                     </div>
-                                    <div className="text-xs text-zinc-500">
-                                      <span className="font-medium">Experience:</span> 5+ years in Product Management. Led teams of 10+ people. Expert in Agile methodologies.
+                                    <div className="pt-1.5 border-t border-zinc-200/50 dark:border-zinc-700/50">
+                                      <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                                        <span className="font-medium text-zinc-700 dark:text-zinc-300">Experience:</span> 5+ years in Product Management. Led teams of 10+ people. Expert in Agile methodologies.
+                                      </p>
                                     </div>
                                   </div>
                                 </div>
                               )}
                             </div>
-                            <div className="border border-zinc-200 dark:border-zinc-700 rounded">
+                            <div>
                               <div 
-                                className="flex items-center justify-between py-1 px-2 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                                className="flex items-center justify-between py-1.5 px-1 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded transition-colors"
                                 onClick={() => toggleExpanded('job-mike')}
                               >
                                 <div className="flex items-center gap-2">
                                   <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=24&h=24&fit=crop&crop=face" alt="User" className="w-4 h-4 rounded-full" />
-                                  <span className="text-xs text-zinc-700 dark:text-zinc-300">Mike Chen</span>
+                                  <span className="text-xs font-medium text-zinc-800 dark:text-zinc-200">Mike Chen</span>
                                   <ChevronDown className={`w-3 h-3 text-zinc-400 transition-transform ${expandedItems['job-mike'] ? 'rotate-180' : ''}`} />
                                 </div>
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-0.5">
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <Eye className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <Eye className="w-3 h-3 text-zinc-400" />
                                   </button>
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <Trash2 className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <Trash2 className="w-3 h-3 text-zinc-400" />
                                   </button>
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <MoreHorizontal className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <MoreHorizontal className="w-3 h-3 text-zinc-400" />
                                   </button>
                                 </div>
                               </div>
                               {expandedItems['job-mike'] && (
-                                <div className="px-3 pb-2 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-25 dark:bg-zinc-900/25">
-                                  <div className="space-y-2 pt-2">
-                                    <div className="grid grid-cols-2 gap-2 text-xs">
-                                      <div className="flex items-center gap-1">
+                                <div className="ml-6 mt-1 p-2 bg-zinc-50/50 dark:bg-zinc-800/30 rounded">
+                                  <div className="space-y-2">
+                                    <div className="space-y-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Mail className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">mike.chen@startup.io</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">mike.chen@startup.io</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Calendar className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Applied: 2d ago</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Applied: 2d ago</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <FileText className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Resume: Attached</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Resume: Attached</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <User className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Status: Interview Scheduled</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Status: Interview Scheduled</span>
                                       </div>
                                     </div>
-                                    <div className="text-xs text-zinc-500">
-                                      <span className="font-medium">Experience:</span> Senior Full-Stack Developer. React, Node.js, AWS. 7+ years experience.
+                                    <div className="pt-1.5 border-t border-zinc-200/50 dark:border-zinc-700/50">
+                                      <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                                        <span className="font-medium text-zinc-700 dark:text-zinc-300">Experience:</span> Senior Full-Stack Developer. React, Node.js, AWS. 7+ years experience.
+                                      </p>
                                     </div>
                                   </div>
                                 </div>
                               )}
                             </div>
-                            <div className="border border-zinc-200 dark:border-zinc-700 rounded">
+                            <div>
                               <div 
-                                className="flex items-center justify-between py-1 px-2 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                                className="flex items-center justify-between py-1.5 px-1 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded transition-colors"
                                 onClick={() => toggleExpanded('job-emma')}
                               >
                                 <div className="flex items-center gap-2">
                                   <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=24&h=24&fit=crop&crop=face" alt="User" className="w-4 h-4 rounded-full" />
-                                  <span className="text-xs text-zinc-700 dark:text-zinc-300">Emma Wilson</span>
+                                  <span className="text-xs font-medium text-zinc-800 dark:text-zinc-200">Emma Wilson</span>
                                   <ChevronDown className={`w-3 h-3 text-zinc-400 transition-transform ${expandedItems['job-emma'] ? 'rotate-180' : ''}`} />
                                 </div>
-                                <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-0.5">
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <Eye className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <Eye className="w-3 h-3 text-zinc-400" />
                                   </button>
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <Trash2 className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <Trash2 className="w-3 h-3 text-zinc-400" />
                                   </button>
                                   <button 
-                                    className="p-0.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded"
+                                    className="p-1 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <MoreHorizontal className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                                    <MoreHorizontal className="w-3 h-3 text-zinc-400" />
                                   </button>
                                 </div>
                               </div>
                               {expandedItems['job-emma'] && (
-                                <div className="px-3 pb-2 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-25 dark:bg-zinc-900/25">
-                                  <div className="space-y-2 pt-2">
-                                    <div className="grid grid-cols-2 gap-2 text-xs">
-                                      <div className="flex items-center gap-1">
+                                <div className="ml-6 mt-1 p-2 bg-zinc-50/50 dark:bg-zinc-800/30 rounded">
+                                  <div className="space-y-2">
+                                    <div className="space-y-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Mail className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">emma.wilson@design.co</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">emma.wilson@design.co</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <Calendar className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Applied: 3d ago</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Applied: 3d ago</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <FileText className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Portfolio: Attached</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Portfolio: Attached</span>
                                       </div>
-                                      <div className="flex items-center gap-1">
+                                      <div className="flex items-center gap-1.5">
                                         <User className="w-3 h-3 text-zinc-400" />
-                                        <span className="text-zinc-500">Status: Final Review</span>
+                                        <span className="text-xs text-zinc-600 dark:text-zinc-400">Status: Final Review</span>
                                       </div>
                                     </div>
-                                    <div className="text-xs text-zinc-500">
-                                      <span className="font-medium">Experience:</span> Senior UX Designer. Specialized in design systems and user research. 6+ years experience.
+                                    <div className="pt-1.5 border-t border-zinc-200/50 dark:border-zinc-700/50">
+                                      <p className="text-xs text-zinc-600 dark:text-zinc-400">
+                                        <span className="font-medium text-zinc-700 dark:text-zinc-300">Experience:</span> Senior UX Designer. Specialized in design systems and user research. 6+ years experience.
+                                      </p>
                                     </div>
                                   </div>
                                 </div>

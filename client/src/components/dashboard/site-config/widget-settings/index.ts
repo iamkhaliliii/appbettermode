@@ -1,4 +1,20 @@
 export { FeaturedEventsSettings } from './FeaturedEventsSettings';
 export { EventCategoriesSettings } from './EventCategoriesSettings';
 export { EventsContainerSettings } from './EventsContainerSettings';
-export { SiteSectionSettings } from './SiteSectionSettings'; 
+export { SiteSectionSettings } from './SiteSectionSettings';
+
+// Basic Widget Settings
+export { TitleWidgetSettings } from './TitleWidgetSettings';
+export { LogoWidgetSettings } from './LogoWidgetSettings';
+export { ImageWidgetSettings } from './ImageWidgetSettings';
+export { VideoWidgetSettings } from './VideoWidgetSettings';
+export { ButtonWidgetSettings } from './ButtonWidgetSettings';
+export { AccordionsWidgetSettings } from './AccordionsWidgetSettings';
+
+// Advanced Widget Settings
+export { CanvasWidgetSettings } from './CanvasWidgetSettings';
+export { MenuWidgetSettings } from './MenuWidgetSettings';
+export { HeroBannerWidgetSettings } from './HeroBannerWidgetSettings';
+export { AnnouncementBannerWidgetSettings } from './AnnouncementBannerWidgetSettings';
+export { HtmlScriptWidgetSettings } from './HtmlScriptWidgetSettings';
+export { IframeWidgetSettings } from './IframeWidgetSettings'; 
