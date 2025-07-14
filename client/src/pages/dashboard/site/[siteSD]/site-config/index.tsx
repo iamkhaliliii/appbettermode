@@ -437,6 +437,18 @@ export default function SiteSpecificConfigPage() {
                     data={configTreeData}
                     onNodeClick={(node) => {
                       setSelectedConfigNode(node.id);
+                      
+                      // Handle navigation for different node types
+                      if (node.id === 'event' || node.id === 'discussion' || node.id === 'blog') {
+                        // Navigate to modules/content types
+                        setLocation(`/dashboard/site/${siteSD}/site-config/spaces/${node.id}`);
+                      } else if (node.id === 'feed' || node.id === 'explore' || node.id === 'members') {
+                        // Navigate to main pages
+                        setLocation(`/dashboard/site/${siteSD}/site-config/spaces/${node.id}`);
+                      } else if (['job-board', 'events', 'qa', 'ideas-wishlist', 'knowledge-base', 'changelog', 'discussions'].includes(node.id)) {
+                        // Navigate to specific spaces
+                        setLocation(`/dashboard/site/${siteSD}/site-config/spaces/${node.id}`);
+                      }
                     }}
                     onNodeExpand={(nodeId, expanded) => {
                       setExpandedIds(prev => {
