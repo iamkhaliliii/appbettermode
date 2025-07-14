@@ -13,6 +13,7 @@ export { DisplaySettingsTab } from './DisplaySettingsTab';
 export { SEOSettingsTab } from './SEOSettingsTab';
 export { MemberManagementTab } from './MemberManagementTab';
 export { CustomizeSettingsTab } from './CustomizeSettingsTab';
+export { CustomizePlusTab } from './CustomizePlusTab';
 export { WidgetSettingsTab } from './WidgetSettingsTab';
 export { DangerZoneSettingsTab } from './DangerZoneSettingsTab';
 export { WidgetModeWrapper } from './WidgetModeWrapper';

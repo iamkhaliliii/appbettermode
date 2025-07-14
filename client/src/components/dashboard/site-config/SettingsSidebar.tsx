@@ -4,6 +4,7 @@ import { Site } from "@/lib/api";
 import { useSiteData } from "@/lib/SiteDataContext";
 import { GeneralSettingsTab } from "./GeneralSettingsTab";
 import { SimpleWidgetTab } from "./SimpleWidgetTab";
+import { CustomizePlusTab } from "./CustomizePlusTab";
 import { SEOSettingsTab } from "./SEOSettingsTab";
 import { DisplaySettingsTab } from "./DisplaySettingsTab";
 import { DangerZoneSettingsTab } from "./DangerZoneSettingsTab";
@@ -169,6 +170,7 @@ export function SettingsSidebar({
       widget: currentIsWidgetSettingsMode 
         ? { title: 'Widget Settings', description: 'Configure the selected widget properties and behavior' }
         : { title: 'Customize', description: 'Select and configure which elements are interactive in your space preview' },
+      'customize-plus': { title: 'Advanced Layout Editor', description: 'Design your space layout with advanced widgets and content blocks using BlockNote editor' },
       seo: { title: 'SEO Settings', description: 'Optimize your space for search engines and social media' },
       display: { title: 'Content Layout', description: 'Customize how content is displayed and organized' },
       danger: { title: 'Danger Zone', description: 'Irreversible actions that affect your entire space' },
@@ -244,6 +246,21 @@ export function SettingsSidebar({
           initialCardStyle={currentCardStyle}
         />;
 
+      case 'customize-plus':
+        return <CustomizePlusTab 
+          initialContent={[]}
+          onContentSave={(content) => {
+            console.log('Saving advanced layout content:', content);
+            // Here you would typically save to your backend/state management
+          }}
+          onWidgetAdd={(widget) => {
+            console.log('Widget added in advanced mode:', widget);
+          }}
+          onWidgetEdit={(widgetId, settings) => {
+            console.log('Widget edited in advanced mode:', widgetId, settings);
+          }}
+        />;
+
       case 'seo':
         return <SEOSettingsTab />;
 
@@ -273,13 +290,15 @@ export function SettingsSidebar({
     currentSetSpaceBannerUrl, 
     currentIsLoading, 
     contentType,
-    currentIsWidgetSettingsMode
+    currentIsWidgetSettingsMode,
+    displaySpaceName,
+    spacesSlug
   ]);
 
   return (
     <div className="settings-sidebar w-80 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex flex-col" data-exclude-widget="true">
-      {/* Header with buttons - hide when in add widget mode */}
-      {!isAddWidgetMode && (
+      {/* Header with buttons - hide when in add widget mode or customize-plus tab */}
+      {!isAddWidgetMode && activeTab !== 'customize-plus' && (
         <div className="p-2 flex flex-col flex-shrink-0">
           <div className="flex items-center justify-end mb-2">
             <div className="flex items-center">
@@ -328,8 +347,8 @@ export function SettingsSidebar({
         </div>
       )}
 
-      <div className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent ${!currentIsWidgetSettingsMode && !isAddWidgetMode ? 'mt-4' : ''}`}>
-        <div className="px-2">
+      <div className={`flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent ${!currentIsWidgetSettingsMode && !isAddWidgetMode && activeTab !== 'customize-plus' ? 'mt-4' : ''}`}>
+        <div className={`${activeTab === 'customize-plus' ? 'h-full' : 'px-2'}`}>
           {renderTabContent()}
         </div>
       </div>

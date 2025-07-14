@@ -7,6 +7,8 @@ import { SpaceContent } from "@/components/dashboard/site-config/SpaceContent";
 import { SettingsSidebar } from "@/components/dashboard/site-config/SettingsSidebar";
 import { DashboardPageWrapper } from "@/components/dashboard/DashboardPageWrapper";
 import { widgetSections, availableWidgets, type AvailableWidget } from "@/components/dashboard/site-config/widgets";
+import { CustomizePlusTab } from "@/components/dashboard/site-config/CustomizePlusTab";
+import { cn } from "@/lib/utils";
 
 
 
@@ -249,45 +251,50 @@ export default function SpaceSettingsPage() {
         onOpenChange={setAddContentDialogOpen}
       />
 
-      <div className="flex relative bg-gray-50 dark:bg-gray-900 min-h-[calc(100vh-4rem)]">
-        {/* Settings Sidebar - Sliding from left */}
-        <div 
-          className={`absolute left-0 top-0 h-[calc(100vh-54px)] z-10 transform transition-transform duration-300 ease-in-out ${
-            sidebarVisible ? 'translate-x-0' : '-translate-x-full'
-          }`}
-        >
-          <SettingsSidebar 
-            siteSD={siteSD} 
-            spacesSlug={spacesSlug} 
-            activeTab={activeTab}
-            onClose={() => setSidebarVisible(false)}
-            spaceBanner={spaceBanner}
-            setSpaceBanner={setSpaceBanner}
-            spaceBannerUrl={spaceBannerUrl}
-            setSpaceBannerUrl={setSpaceBannerUrl}
-            hasChanges={hasChanges}
-            setHasChanges={setHasChanges}
-            isLoading={isLoading}
-            onSave={handleSave}
-            onDiscard={handleDiscard}
-            onLayoutChange={handleLayoutChange}
-            onCardSizeChange={handleCardSizeChange}
-            onCardStyleChange={handleCardStyleChange}
-            onAddWidgetModeChange={handleAddWidgetModeChange}
-            onWidgetSettingsModeChange={handleWidgetSettingsModeChange}
-            currentLayout={eventsLayout}
-            currentCardSize={cardSize}
-            currentCardStyle={cardStyle}
-            selectedWidget={selectedWidget}
-            isWidgetSettingsMode={isWidgetSettingsMode}
-          />
-        </div>
+      <div className={cn(
+        "flex relative min-h-[calc(100vh-4rem)]",
+        activeTab === 'customize-plus' ? "bg-gray-100 dark:bg-gray-950" : "bg-gray-50 dark:bg-gray-900"
+      )}>
+        {/* Settings Sidebar - Hidden when in customize-plus mode */}
+        {activeTab !== 'customize-plus' && (
+          <div 
+            className={`absolute left-0 top-0 h-[calc(100vh-54px)] z-10 transform transition-transform duration-300 ease-in-out ${
+              sidebarVisible ? 'translate-x-0' : '-translate-x-full'
+            }`}
+          >
+            <SettingsSidebar 
+              siteSD={siteSD} 
+              spacesSlug={spacesSlug} 
+              activeTab={activeTab}
+              onClose={() => setSidebarVisible(false)}
+              spaceBanner={spaceBanner}
+              setSpaceBanner={setSpaceBanner}
+              spaceBannerUrl={spaceBannerUrl}
+              setSpaceBannerUrl={setSpaceBannerUrl}
+              hasChanges={hasChanges}
+              setHasChanges={setHasChanges}
+              isLoading={isLoading}
+              onSave={handleSave}
+              onDiscard={handleDiscard}
+              onLayoutChange={handleLayoutChange}
+              onCardSizeChange={handleCardSizeChange}
+              onCardStyleChange={handleCardStyleChange}
+              onAddWidgetModeChange={handleAddWidgetModeChange}
+              onWidgetSettingsModeChange={handleWidgetSettingsModeChange}
+              currentLayout={eventsLayout}
+              currentCardSize={cardSize}
+              currentCardStyle={cardStyle}
+              selectedWidget={selectedWidget}
+              isWidgetSettingsMode={isWidgetSettingsMode}
+            />
+          </div>
+        )}
         
-        {/* Browser Preview - Full width when sidebar is hidden */}
-        <div className={`flex-1 p-4 flex flex-col transition-all duration-300 ease-in-out ${
-          sidebarVisible ? 'ml-80' : 'ml-0'
+        {/* Browser Preview - Full width when sidebar is hidden or in customize-plus mode */}
+        <div className={`flex-1 flex flex-col transition-all duration-300 ease-in-out ${
+          activeTab === 'customize-plus' ? 'ml-0 px-4 py-6' : (sidebarVisible ? 'ml-80 p-4' : 'ml-0 p-4')
         }`}>
-          <div className="flex-1">
+                    <div className="flex-1">
             <BrowserMockup
               userDropdownOpen={browserState.userDropdownOpen}
               setUserDropdownOpen={(value) => updateBrowserState('userDropdownOpen', value)}
@@ -300,6 +307,8 @@ export default function SpaceSettingsPage() {
               hasChanges={hasChanges}
               isLoading={isLoading}
               isWidgetMode={activeTab === 'widget' && sidebarVisible}
+              fullWidth={activeTab === 'customize-plus'}
+              disableScale={activeTab === 'customize-plus'}
               onSave={handleSave}
               onDiscard={handleDiscard}
             >
@@ -307,18 +316,65 @@ export default function SpaceSettingsPage() {
                 key={`space-content-${spacesSlug}`} 
                 className="w-full transition-opacity duration-300"
               >
-                <SpaceContent 
-                  siteSD={siteSD} 
-                  spaceSlug={spacesSlug} 
-                  spaceBanner={spaceBanner}
-                  spaceBannerUrl={spaceBannerUrl}
-                  isWidgetMode={activeTab === 'widget' && sidebarVisible}
-                  isAddWidgetMode={isAddWidgetMode}
-                  eventsLayout={eventsLayout}
-                  cardSize={cardSize}
-                  cardStyle={cardStyle}
-                  onSectionSettings={handleSectionSettings}
-                />
+                {activeTab === 'customize-plus' ? (
+                  // Advanced editor inside browser frame
+                  <div className="h-full bg-white dark:bg-gray-900">
+                    <div className="h-full flex flex-col">
+                      {/* Header inside browser */}
+                      <div className="bg-gray-50 dark:bg-gray-800 px-6 py-3 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-6 h-6 bg-purple-500 rounded-md"></div>
+                            <div>
+                              <h1 className="text-base font-semibold text-gray-900 dark:text-white">
+                                {displaySpaceName} - Advanced Editor
+                              </h1>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
+                                Use "/" to add widgets, polls, and content blocks directly
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-xs text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/20 px-3 py-1 rounded-full">
+                            Live Editor
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Advanced Content Editor - Full Height */}
+                      <div className="flex-1 overflow-hidden">
+                        <CustomizePlusTab 
+                          initialContent={[]}
+                          onContentSave={(content: any[]) => {
+                            console.log('Saving advanced layout content:', content);
+                            setHasChanges(false);
+                          }}
+                          onWidgetAdd={(widget: AvailableWidget) => {
+                            console.log('Widget added in advanced mode:', widget);
+                            setHasChanges(true);
+                          }}
+                          onWidgetEdit={(widgetId: string, settings: any) => {
+                            console.log('Widget edited in advanced mode:', widgetId, settings);
+                            setHasChanges(true);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  // Normal space content for other tabs
+                  <SpaceContent 
+                    siteSD={siteSD} 
+                    spaceSlug={spacesSlug} 
+                    spaceBanner={spaceBanner}
+                    spaceBannerUrl={spaceBannerUrl}
+                    isWidgetMode={activeTab === 'widget' && sidebarVisible}
+                    isAddWidgetMode={isAddWidgetMode}
+                    eventsLayout={eventsLayout}
+                    cardSize={cardSize}
+                    cardStyle={cardStyle}
+                    onSectionSettings={handleSectionSettings}
+                  />
+                )}
               </div>
             </BrowserMockup>
           </div>

@@ -1,3 +1,4 @@
+import React from "react";
 import { useLocation, useRoute } from "wouter";
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,6 +9,7 @@ import { SpaceContent } from "@/components/dashboard/site-config/SpaceContent";
 import { SiteContent } from "../../../../../components/dashboard/site-config/SiteContent";
 import { DashboardPageWrapper } from "@/components/dashboard/DashboardPageWrapper";
 import { TreeView, TreeNode } from "@/components/ui/tree-view";
+import { Switch } from "@/components/ui/primitives/switch";
 import { 
   Files, 
   AppWindow, 
@@ -35,20 +37,14 @@ import {
   Image,
   Palette,
   Shield,
-  Bell
+  Bell,
+  Puzzle,
+  Navigation,
+  PanelTopDashed,
+  Megaphone,
+  RectangleHorizontal
 } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/primitives/dialog";
-import { Button } from "@/components/ui/primitives/button";
-import { Input } from "@/components/ui/primitives/input";
-import { Label } from "@/components/ui/primitives/label";
-import MenuManagement from "@/components/dashboard/site-config/MenuManagement";
+
 
 // CSS to disable all links in the preview
 const disableLinksStyle = `
@@ -74,7 +70,12 @@ export default function SiteSpecificConfigPage() {
   const [selectedSpace, setSelectedSpace] = useState<string | null>(null);
   const [selectedConfigNode, setSelectedConfigNode] = useState<string | null>(null);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
+  const [navigationToggles, setNavigationToggles] = useState<Record<string, boolean>>({
+    header: true,
+    'left-sidebar': true,
+    'right-sidebar': false,
+    footer: false
+  });
   const isFeed = location.includes('/spaces/feed');
 
   // Function to get dynamic icon for expandable folders
@@ -83,14 +84,27 @@ export default function SiteSpecificConfigPage() {
   };
 
   // State to track expanded nodes
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(["pages", "my-spaces"]));
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(["pages", "my-spaces", "header", "left-sidebar"]));
+
+  // Handle navigation toggle changes
+  const handleNavigationToggle = (nodeId: string) => {
+    setNavigationToggles(prev => ({
+      ...prev,
+      [nodeId]: !prev[nodeId]
+    }));
+    
+    // Auto-expand the parent if toggling on
+    if (!navigationToggles[nodeId]) {
+      setExpandedIds(prev => new Set([...Array.from(prev), nodeId]));
+    }
+  };
 
   // Configuration tree data
   const configTreeData: TreeNode[] = [
     {
       id: "pages",
-      label: "Pages",
-      icon: <Files className="h-4 w-4" />,
+      label: "Spaces",
+      icon: <Files className="h-4 w-4 text-gray-400" />,
       children: [
         { 
           id: "feed", 
@@ -102,10 +116,20 @@ export default function SiteSpecificConfigPage() {
           ), 
           icon: <AppWindow className="h-4 w-4" />
         },
+        { 
+          id: "explore", 
+          label: "Explore", 
+          icon: <AppWindow className="h-4 w-4" />
+        },
+        { 
+          id: "members", 
+          label: "Members", 
+          icon: <AppWindow className="h-4 w-4" />
+        },
         {
           id: "my-spaces",
           label: "My Spaces",
-          icon: getDynamicIcon("my-spaces", <Folder className="h-4 w-4" />, <FolderOpen className="h-4 w-4" />),
+          icon: getDynamicIcon("my-spaces", <Folder className="h-4 w-4 text-gray-400" />, <FolderOpen className="h-4 w-4 text-gray-400" />),
           children: [
             { id: "job-board", label: "Job Board", icon: <AppWindow className="h-4 w-4" /> },
             { id: "events", label: "Events", icon: <AppWindow className="h-4 w-4" /> },
@@ -122,20 +146,227 @@ export default function SiteSpecificConfigPage() {
     {
       id: "navigation",
       label: "Navigation",
-      icon: <Dock className="h-4 w-4" />,
+      icon: <Dock className="h-4 w-4 text-gray-400" />,
       children: [
-        { id: "header", label: "Header", icon: <PanelTop className="h-4 w-4" /> },
-        { id: "left-sidebar", label: "LeftSidebar", icon: <PanelLeft className="h-4 w-4" /> },
-        { id: "right-sidebar", label: "RightSidebar", icon: <PanelRight className="h-4 w-4" /> },
-        { id: "footer", label: "Footer", icon: <PanelBottom className="h-4 w-4" /> },
+        { 
+          id: "header", 
+          label: (
+            <div className="flex items-center justify-between w-full">
+              <span>Header</span>
+              <div className="flex items-center gap-0">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Handle add action
+                  }}
+                  className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                  title="Add to header"
+                >
+                  <Plus className="h-3 w-3 text-gray-400" />
+                </button>
+                <Switch
+                  checked={navigationToggles.header}
+                  onCheckedChange={(checked) => {
+                    handleNavigationToggle("header");
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="scale-50"
+                />
+              </div>
+            </div>
+          ), 
+          icon: <PanelTop className="h-4 w-4" />,
+          children: navigationToggles.header ? [
+            { 
+              id: "site-header", 
+              label: (
+                <span style={{ color: '#C29EE7' }}>Site Header</span>
+              ), 
+              icon: (
+                <div className="p-1 rounded" style={{ backgroundColor: '#C29EE715' }}>
+                  <PanelTopDashed className="h-4 w-4" style={{ color: '#C29EE7' }} />
+                </div>
+              )
+            },
+          ] : undefined
+        },
+        { 
+          id: "left-sidebar", 
+          label: (
+            <div className="flex items-center justify-between w-full">
+              <span>LeftSidebar</span>
+              <div className="flex items-center gap-0">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Handle add action
+                  }}
+                  className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                  title="Add to left sidebar"
+                >
+                  <Plus className="h-3 w-3 text-gray-400" />
+                </button>
+                <Switch
+                  checked={navigationToggles["left-sidebar"]}
+                  onCheckedChange={(checked) => {
+                    handleNavigationToggle("left-sidebar");
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="scale-50"
+                />
+              </div>
+            </div>
+          ), 
+          icon: <PanelLeft className="h-4 w-4" />,
+          children: navigationToggles["left-sidebar"] ? [
+            { 
+              id: "menu", 
+              label: (
+                <span style={{ color: '#C29EE7' }}>Menu</span>
+              ), 
+              icon: (
+                <div className="p-1 rounded" style={{ backgroundColor: '#C29EE715' }}>
+                  <Menu className="h-4 w-4" style={{ color: '#C29EE7' }} />
+                </div>
+              )
+            },
+          ] : undefined
+        },
+        { 
+          id: "right-sidebar", 
+          label: (
+            <div className="flex items-center justify-between w-full">
+              <span>RightSidebar</span>
+              <div className="flex items-center gap-0">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Handle add action
+                  }}
+                  className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                  title="Add to right sidebar"
+                >
+                  <Plus className="h-3 w-3 text-gray-400" />
+                </button>
+                <Switch
+                  checked={navigationToggles["right-sidebar"]}
+                  onCheckedChange={(checked) => {
+                    handleNavigationToggle("right-sidebar");
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="scale-50"
+                />
+              </div>
+            </div>
+          ), 
+          icon: <PanelRight className="h-4 w-4" />,
+          children: navigationToggles["right-sidebar"] ? [
+            { 
+              id: "banner", 
+              label: (
+                <span style={{ color: '#C29EE7' }}>Banner</span>
+              ), 
+              icon: (
+                <div className="p-1 rounded" style={{ backgroundColor: '#C29EE715' }}>
+                  <RectangleHorizontal className="h-4 w-4" style={{ color: '#C29EE7' }} />
+                </div>
+              )
+            },
+            { 
+              id: "menu", 
+              label: (
+                <span style={{ color: '#C29EE7' }}>Menu</span>
+              ), 
+              icon: (
+                <div className="p-1 rounded" style={{ backgroundColor: '#C29EE715' }}>
+                  <Menu className="h-4 w-4" style={{ color: '#C29EE7' }} />
+                </div>
+              )
+            },
+          ] : undefined
+        },
+        { 
+          id: "footer", 
+          label: (
+            <div className="flex items-center justify-between w-full">
+              <span>Footer</span>
+                <div className="flex items-center gap-0">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    // Handle add action
+                  }}
+                  className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                  title="Add to footer"
+                >
+                  <Plus className="h-3 w-3 text-gray-400" />
+                </button>
+                <Switch
+                  checked={navigationToggles.footer}
+                  onCheckedChange={(checked) => {
+                    handleNavigationToggle("footer");
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="scale-50"
+                />
+              </div>
+            </div>
+          ), 
+          icon: <PanelBottom className="h-4 w-4" />,
+          children: navigationToggles.footer ? [
+            { 
+              id: "footer-block", 
+              label: (
+                <span style={{ color: '#C29EE7' }}>FooterBlock</span>
+              ), 
+              icon: (
+                <div className="p-1 rounded" style={{ backgroundColor: '#C29EE715' }}>
+                  <Dock className="h-4 w-4" style={{ color: '#C29EE7' }} />
+                </div>
+              )
+            },
+          ] : undefined
+        },
       ],
     },
     {
-      id: "menu",
-      label: "Menu Management",
-      icon: <SquareMenu className="h-4 w-4" />,
+      id: "modules",
+      label: "Modules",
+      icon: <Puzzle className="h-4 w-4 text-gray-400" />,
       children: [
-        { id: "global-menu", label: "Global menu", icon: <Menu className="h-4 w-4" /> },
+        { 
+          id: "event", 
+          label: (
+            <span style={{ color: '#D99C9C' }}>Event</span>
+          ), 
+          icon: (
+            <div className="p-1 rounded" style={{ backgroundColor: '#D99C9C15' }}>
+              <FileText className="h-4 w-4" style={{ color: '#D99C9C' }} />
+            </div>
+          )
+        },
+        { 
+          id: "discussion", 
+          label: (
+            <span style={{ color: '#D99C9C' }}>Discussion</span>
+          ), 
+          icon: (
+            <div className="p-1 rounded" style={{ backgroundColor: '#D99C9C15' }}>
+              <Users className="h-4 w-4" style={{ color: '#D99C9C' }} />
+            </div>
+          )
+        },
+        { 
+          id: "blog", 
+          label: (
+            <span style={{ color: '#D99C9C' }}>Blog</span>
+          ), 
+          icon: (
+            <div className="p-1 rounded" style={{ backgroundColor: '#D99C9C15' }}>
+              <Edit className="h-4 w-4" style={{ color: '#D99C9C' }} />
+            </div>
+          )
+        },
       ],
     },
   ];
@@ -201,120 +432,132 @@ export default function SiteSpecificConfigPage() {
                 <p className="text-sm text-muted-foreground">Navigate through pages and configuration sections</p>
               </div>
               <div className="p-2 h-[calc(100%-5rem)] overflow-y-auto">
-                <TreeView
-                  data={configTreeData}
-                  onNodeClick={(node) => {
-                    setSelectedConfigNode(node.id);
-                  }}
-                  onNodeExpand={(nodeId, expanded) => {
-                    setExpandedIds(prev => {
-                      const newSet = new Set(prev);
-                      if (expanded) {
-                        newSet.add(nodeId);
-                      } else {
-                        newSet.delete(nodeId);
-                      }
-                      return newSet;
-                    });
-                  }}
-                  onActionClick={(nodeId) => {
-                    if (nodeId === "menu") {
-                      setIsMenuModalOpen(true);
-                    } else {
+                <div className="[&_.tree-item]:group">
+                  <TreeView
+                    data={configTreeData}
+                    onNodeClick={(node) => {
+                      setSelectedConfigNode(node.id);
+                    }}
+                    onNodeExpand={(nodeId, expanded) => {
+                      setExpandedIds(prev => {
+                        const newSet = new Set(prev);
+                        if (expanded) {
+                          newSet.add(nodeId);
+                        } else {
+                          newSet.delete(nodeId);
+                        }
+                        return newSet;
+                      });
+                    }}
+                    onActionClick={(nodeId) => {
                       setActiveDropdown(activeDropdown === nodeId ? null : nodeId);
-                    }
-                  }}
-                  actionableNodes={["pages", "menu", "job-board", "events", "qa", "ideas-wishlist", "knowledge-base", "blog", "discussions", "changelog"]}
-                  activeDropdown={activeDropdown}
-                  getActionIcon={(nodeId) => {
-                    if (nodeId === "pages" || nodeId === "menu") {
-                      return <Plus className="h-3 w-3 text-muted-foreground" />;
-                    } else {
-                      return <MoreHorizontal className="h-3 w-3 text-muted-foreground" />;
-                    }
-                  }}
-                  renderDropdown={(nodeId) => {
-                    if (nodeId === "pages") {
-                      return (
-                        <div className="bg-background border border-border rounded-md shadow-lg py-1 min-w-[160px]">
-                          <button
-                            className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
-                            onClick={() => {
-                              setActiveDropdown(null);
-                            }}
-                          >
-                            <Folder className="h-4 w-4" />
-                            New Folder
-                          </button>
-                          <button
-                            className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
-                            onClick={() => {
-                              setActiveDropdown(null);
-                            }}
-                          >
-                            <FilePlus className="h-4 w-4" />
-                            New Page
-                          </button>
-                        </div>
-                      );
-                    } else if (["job-board", "events", "qa", "ideas-wishlist", "knowledge-base", "blog", "discussions", "changelog"].includes(nodeId)) {
-                      return (
-                        <div className="bg-background border border-border rounded-md shadow-lg py-1 min-w-[180px]">
-                          <button
-                            className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
-                            onClick={() => {
-                              setActiveDropdown(null);
-                            }}
-                          >
-                            <EyeOff className="h-4 w-4" />
-                            Hide
-                          </button>
-                          <button
-                            className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
-                            onClick={() => {
-                              setActiveDropdown(null);
-                            }}
-                          >
-                            <Edit className="h-4 w-4" />
-                            Rename
-                          </button>
-                          <button
-                            className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
-                            onClick={() => {
-                              setActiveDropdown(null);
-                            }}
-                          >
-                            <Settings className="h-4 w-4" />
-                            Config
-                          </button>
-                          <button
-                            className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
-                            onClick={() => {
-                              setActiveDropdown(null);
-                            }}
-                          >
-                            <Home className="h-4 w-4" />
-                            Set as Home Page
-                          </button>
-                          <button
-                            className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2 text-destructive"
-                            onClick={() => {
-                              setActiveDropdown(null);
-                            }}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                            Delete
-                          </button>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
-                  defaultExpandedIds={["pages", "my-spaces"]}
-                  selectedIds={selectedConfigNode ? [selectedConfigNode] : []}
-                  onSelectionChange={(ids) => setSelectedConfigNode(ids[0] || null)}
-                  className="border-none bg-transparent"
-                />
+                    }}
+                    actionableNodes={["pages", "modules", "job-board", "events", "qa", "ideas-wishlist", "knowledge-base", "blog", "discussions", "changelog"]}
+                    activeDropdown={activeDropdown}
+                    getActionIcon={(nodeId) => {
+                      if (nodeId === "pages" || nodeId === "modules") {
+                        return <Plus className="h-3 w-3 text-muted-foreground" />;
+                      } else {
+                        return <MoreHorizontal className="h-3 w-3 text-muted-foreground" />;
+                      }
+                    }}
+                    renderDropdown={(nodeId) => {
+                      if (nodeId === "pages") {
+                        return (
+                          <div className="bg-background border border-border rounded-md shadow-lg py-1 min-w-[160px]">
+                            <button
+                              className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
+                              onClick={() => {
+                                setActiveDropdown(null);
+                              }}
+                            >
+                              <Folder className="h-4 w-4" />
+                              New Folder
+                            </button>
+                            <button
+                              className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
+                              onClick={() => {
+                                setActiveDropdown(null);
+                              }}
+                            >
+                              <FilePlus className="h-4 w-4" />
+                              New Page
+                            </button>
+                          </div>
+                        );
+                      } else if (nodeId === "modules") {
+                        return (
+                          <div className="bg-background border border-border rounded-md shadow-lg py-1 min-w-[160px]">
+                            <button
+                              className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
+                              onClick={() => {
+                                setActiveDropdown(null);
+                              }}
+                            >
+                              <Puzzle className="h-4 w-4" />
+                              Add Module
+                            </button>
+                          </div>
+                        );
+                      } else if (["job-board", "events", "qa", "ideas-wishlist", "knowledge-base", "blog", "discussions", "changelog"].includes(nodeId)) {
+                        return (
+                          <div className="bg-background border border-border rounded-md shadow-lg py-1 min-w-[180px]">
+                            <button
+                              className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
+                              onClick={() => {
+                                setActiveDropdown(null);
+                              }}
+                            >
+                              <EyeOff className="h-4 w-4" />
+                              Hide
+                            </button>
+                            <button
+                              className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
+                              onClick={() => {
+                                setActiveDropdown(null);
+                              }}
+                            >
+                              <Edit className="h-4 w-4" />
+                              Rename
+                            </button>
+                            <button
+                              className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
+                              onClick={() => {
+                                setActiveDropdown(null);
+                              }}
+                            >
+                              <Settings className="h-4 w-4" />
+                              Config
+                            </button>
+                            <button
+                              className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2"
+                              onClick={() => {
+                                setActiveDropdown(null);
+                              }}
+                            >
+                              <Home className="h-4 w-4" />
+                              Set as Home Page
+                            </button>
+                            <button
+                              className="w-full px-3 py-1.5 text-left text-sm hover:bg-accent flex items-center gap-2 text-destructive"
+                              onClick={() => {
+                                setActiveDropdown(null);
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              Delete
+                            </button>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                    defaultExpandedIds={["pages", "my-spaces", "header", "left-sidebar"]}
+                    selectedIds={selectedConfigNode ? [selectedConfigNode] : []}
+                    onSelectionChange={(ids) => setSelectedConfigNode(ids[0] || null)}
+                    className="border-none bg-transparent"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -345,69 +588,6 @@ export default function SiteSpecificConfigPage() {
           </div>
         </div>
       </div>
-      
-            {/* Menu Management Modal */}
-      <Dialog open={isMenuModalOpen} onOpenChange={setIsMenuModalOpen}>
-        <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-hidden">
-          <MenuManagement
-            onSave={(menuStructure) => {
-              console.log('Menu saved:', menuStructure);
-              // TODO: Save menu structure to backend
-              setIsMenuModalOpen(false);
-            }}
-            onCancel={() => setIsMenuModalOpen(false)}
-            initialMenu={[
-              // Sample menu for demo
-              {
-                id: 'home',
-                type: 'page',
-                label: 'Home',
-                pageId: 'feed',
-                url: '/feed'
-              },
-              {
-                id: 'community',
-                type: 'folder',
-                label: 'Community',
-                isExpanded: true,
-                children: [
-                  {
-                    id: 'discussions',
-                    type: 'page',
-                    label: 'Discussions',
-                    pageId: 'discussions',
-                    url: '/discussions'
-                  },
-                  {
-                    id: 'events',
-                    type: 'page',
-                    label: 'Events',
-                    pageId: 'events',
-                    url: '/events'
-                  }
-                ]
-              },
-              {
-                id: 'external',
-                type: 'link',
-                label: 'Documentation',
-                url: 'https://docs.example.com'
-              }
-            ]}
-            availablePages={[
-              { id: 'feed', name: 'Feed', url: '/feed' },
-              { id: 'job-board', name: 'Job Board', url: '/jobs' },
-              { id: 'events', name: 'Events', url: '/events' },
-              { id: 'qa', name: 'Q&A', url: '/qa' },
-              { id: 'ideas-wishlist', name: 'Ideas & Wishlist', url: '/ideas' },
-              { id: 'knowledge-base', name: 'Knowledge Base', url: '/kb' },
-              { id: 'blog', name: 'Blog', url: '/blog' },
-              { id: 'discussions', name: 'Discussions', url: '/discussions' },
-              { id: 'changelog', name: 'Changelog', url: '/changelog' },
-            ]}
-          />
-        </DialogContent>
-      </Dialog>
     </DashboardPageWrapper>
   );
 } 

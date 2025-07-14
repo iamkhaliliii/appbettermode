@@ -3,6 +3,7 @@ import {
   Eye, 
   Layout, 
   AlignLeft, 
+  AlignRight,
   Palette, 
   TypeIcon as Type,
   Heading,
@@ -23,7 +24,17 @@ import {
   Monitor,
   Rss,
   FolderOpen,
-  Tag
+  Tag,
+  MessageSquare,
+  Image as ImageIcon,
+  Maximize,
+  Minimize,
+  Circle,
+  Bell,
+  Palette as ThemeIcon,
+  Globe,
+  Minus,
+  Square
 } from 'lucide-react';
 import { PropertyRow } from '../PropertyRow';
 
@@ -78,45 +89,19 @@ export function SiteSectionSettings({
     { id: '2', label: 'Resources', url: '/resources', type: 'custom' as const }
   ]);
 
-  // Layout options for Site Header with icons
-  const headerLayoutOptions = [
-    { 
-      value: 'preset1', 
-      label: 'Preset 1', 
-      description: 'Classic horizontal layout',
-      icon: Layout
-    },
-    { 
-      value: 'preset2', 
-      label: 'Preset 2', 
-      description: 'Centered logo with side menus',
-      icon: AlignCenter
-    },
-    { 
-      value: 'preset3', 
-      label: 'Preset 3', 
-      description: 'Minimal design with search focus',
-      icon: Search
-    },
-    { 
-      value: 'preset4', 
-      label: 'Preset 4', 
-      description: 'Split layout with actions',
-      icon: Split
-    },
-    { 
-      value: 'preset5', 
-      label: 'Preset 5', 
-      description: 'Compact mobile-first design',
-      icon: Smartphone
-    },
-    { 
-      value: 'preset6', 
-      label: 'Preset 6', 
-      description: 'Full-width branded header',
-      icon: Monitor
-    }
-  ];
+  // Site Header configuration state
+  const [headerShowLogo, setHeaderShowLogo] = useState(true);
+  const [headerLogoSize, setHeaderLogoSize] = useState('medium');
+  const [headerShowSearchBox, setHeaderShowSearchBox] = useState(true);
+  const [headerSearchBoxSize, setHeaderSearchBoxSize] = useState('medium');
+  const [headerSearchBoxAlignment, setHeaderSearchBoxAlignment] = useState('left');
+  const [headerShowActions, setHeaderShowActions] = useState(true);
+  const [headerShowNotifications, setHeaderShowNotifications] = useState(true);
+  const [headerShowMessages, setHeaderShowMessages] = useState(true);
+  const [headerShowThemeSwitch, setHeaderShowThemeSwitch] = useState(true);
+  const [headerShowLanguageSwitch, setHeaderShowLanguageSwitch] = useState(false);
+  const [headerShowNavigationMenu, setHeaderShowNavigationMenu] = useState(true);
+  const [headerEnableSubNavigation, setHeaderEnableSubNavigation] = useState(false);
 
   // Layout options for Site Footer with icons (3 presets)
   const footerLayoutOptions = [
@@ -184,41 +169,221 @@ export function SiteSectionSettings({
             </div>
           </div>
 
-          {/* Header Layout Selection - Box Style */}
-          <div>
-            <div className="grid grid-cols-4 gap-2 px-2">
-              {headerLayoutOptions.map((option) => {
-                const IconComponent = option.icon;
-                return (
-                  <button
-                    key={option.value}
-                    onClick={() => setHeaderLayout(option.value)}
-                    className={`flex flex-col items-center justify-center aspect-square p-2 rounded-lg border-2 transition-all ${
-                      headerLayout === option.value
-                        ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                        : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
-                    }`}
-                  >
-                    <IconComponent className={`w-4 h-4 mb-1 ${
-                      headerLayout === option.value 
-                        ? 'text-primary-600 dark:text-primary-400' 
-                        : 'text-gray-400 dark:text-gray-500'
-                    }`} />
-                    <span className={`text-[0.6rem] leading-tight ${
-                      headerLayout === option.value 
-                        ? 'text-primary-600 dark:text-primary-400 font-medium' 
-                        : 'text-gray-600 dark:text-gray-400'
-                    }`}>
-                      {option.label}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          {/* Header Configuration Options */}
 
           {/* Settings Content */}
           <div className="space-y-0 [&>*:last-child>div:first-child]:border-b-0">
+            {/* Logo Settings */}
+            <PropertyRow
+              label="Logo"
+              value={headerShowLogo}
+              fieldName="headerShowLogo"
+              type="checkbox"
+              onValueChange={(value) => setHeaderShowLogo(value)}
+              icon={ImageIcon}
+              editingField={editingField}
+              onFieldClick={onFieldClick}
+              onFieldBlur={onFieldBlur}
+              onKeyDown={onKeyDown}
+              description="Show logo in header"
+            />
+
+            {/* Logo Size - Conditional */}
+            {headerShowLogo && (
+              <PropertyRow
+                label="Logo size"
+                value={headerLogoSize}
+                fieldName="headerLogoSize"
+                type="select"
+                onValueChange={(value) => setHeaderLogoSize(value)}
+                options={[
+                  { value: 'small', label: 'Small', icon: Minimize },
+                  { value: 'medium', label: 'Medium', icon: Minus },
+                  { value: 'large', label: 'Large', icon: Maximize }
+                ]}
+                icon={Maximize}
+                editingField={editingField}
+                onFieldClick={onFieldClick}
+                onFieldBlur={onFieldBlur}
+                onKeyDown={onKeyDown}
+                description="Size of the logo"
+                isChild={true}
+              />
+            )}
+
+            {/* Search Box Settings */}
+            <PropertyRow
+              label="Search box"
+              value={headerShowSearchBox}
+              fieldName="headerShowSearchBox"
+              type="checkbox"
+              onValueChange={(value) => setHeaderShowSearchBox(value)}
+              icon={Search}
+              editingField={editingField}
+              onFieldClick={onFieldClick}
+              onFieldBlur={onFieldBlur}
+              onKeyDown={onKeyDown}
+              description="Show search box in header"
+            />
+
+                         {/* Search Box Size - Conditional */}
+             {headerShowSearchBox && (
+               <>
+                 <PropertyRow
+                   label="Size"
+                   value={headerSearchBoxSize}
+                   fieldName="headerSearchBoxSize"
+                   type="select"
+                   onValueChange={(value) => setHeaderSearchBoxSize(value)}
+                   options={[
+                     { value: 'full', label: 'Full', icon: Maximize },
+                     { value: 'medium', label: 'Medium', icon: Minus },
+                     { value: 'icon', label: 'Icon', icon: Circle }
+                   ]}
+                   icon={Maximize}
+                   editingField={editingField}
+                   onFieldClick={onFieldClick}
+                   onFieldBlur={onFieldBlur}
+                   onKeyDown={onKeyDown}
+                   description="Size of the search box"
+                   isChild={true}
+                 />
+
+                {/* Search Box Alignment - Only when medium */}
+                {headerSearchBoxSize === 'medium' && (
+                  <PropertyRow
+                    label="Alignment"
+                    value={headerSearchBoxAlignment}
+                    fieldName="headerSearchBoxAlignment"
+                    type="select"
+                    onValueChange={(value) => setHeaderSearchBoxAlignment(value)}
+                                         options={[
+                       { value: 'left', label: 'Left', icon: AlignLeft },
+                       { value: 'center', label: 'Center', icon: AlignCenter },
+                       { value: 'right', label: 'Right', icon: AlignRight }
+                     ]}
+                    icon={AlignCenter}
+                    editingField={editingField}
+                    onFieldClick={onFieldClick}
+                    onFieldBlur={onFieldBlur}
+                    onKeyDown={onKeyDown}
+                    description="Alignment of the search box"
+                    isChild={true}
+                  />
+                )}
+              </>
+            )}
+
+            {/* Actions Settings */}
+            <PropertyRow
+              label="Actions"
+              value={headerShowActions}
+              fieldName="headerShowActions"
+              type="checkbox"
+              onValueChange={(value) => setHeaderShowActions(value)}
+              icon={Settings}
+              editingField={editingField}
+              onFieldClick={onFieldClick}
+              onFieldBlur={onFieldBlur}
+              onKeyDown={onKeyDown}
+              description="Show action buttons in header"
+            />
+
+                         {/* Actions Sub-options - Conditional */}
+             {headerShowActions && (
+               <>
+                 <PropertyRow
+                   label="Notifications"
+                   value={headerShowNotifications}
+                   fieldName="headerShowNotifications"
+                   type="checkbox"
+                   onValueChange={(value) => setHeaderShowNotifications(value)}
+                   icon={Bell}
+                   editingField={editingField}
+                   onFieldClick={onFieldClick}
+                   onFieldBlur={onFieldBlur}
+                   onKeyDown={onKeyDown}
+                   description="Show notifications button"
+                   isChild={true}
+                 />
+
+                 <PropertyRow
+                   label="Messages"
+                   value={headerShowMessages}
+                   fieldName="headerShowMessages"
+                   type="checkbox"
+                   onValueChange={(value) => setHeaderShowMessages(value)}
+                   icon={MessageSquare}
+                   editingField={editingField}
+                   onFieldClick={onFieldClick}
+                   onFieldBlur={onFieldBlur}
+                   onKeyDown={onKeyDown}
+                   description="Show messages button"
+                   isChild={true}
+                 />
+
+                 <PropertyRow
+                   label="Theme switch"
+                   value={headerShowThemeSwitch}
+                   fieldName="headerShowThemeSwitch"
+                   type="checkbox"
+                   onValueChange={(value) => setHeaderShowThemeSwitch(value)}
+                   icon={ThemeIcon}
+                   editingField={editingField}
+                   onFieldClick={onFieldClick}
+                   onFieldBlur={onFieldBlur}
+                   onKeyDown={onKeyDown}
+                   description="Show theme switch button"
+                   isChild={true}
+                 />
+
+                 <PropertyRow
+                   label="Language switch"
+                   value={headerShowLanguageSwitch}
+                   fieldName="headerShowLanguageSwitch"
+                   type="checkbox"
+                   onValueChange={(value) => setHeaderShowLanguageSwitch(value)}
+                   icon={Globe}
+                   editingField={editingField}
+                   onFieldClick={onFieldClick}
+                   onFieldBlur={onFieldBlur}
+                   onKeyDown={onKeyDown}
+                   description="Show language switch button"
+                   isChild={true}
+                 />
+               </>
+             )}
+
+            {/* Navigation Menu Settings */}
+            <PropertyRow
+              label="Navigation Menu"
+              value={headerShowNavigationMenu}
+              fieldName="headerShowNavigationMenu"
+              type="checkbox"
+              onValueChange={(value) => setHeaderShowNavigationMenu(value)}
+              icon={Menu}
+              editingField={editingField}
+              onFieldClick={onFieldClick}
+              onFieldBlur={onFieldBlur}
+              onKeyDown={onKeyDown}
+              description="Show navigation menu in header"
+            />
+
+            {/* Enable Sub Navigation */}
+            <PropertyRow
+              label="Enable sub navigation"
+              value={headerEnableSubNavigation}
+              fieldName="headerEnableSubNavigation"
+              type="checkbox"
+              onValueChange={(value) => setHeaderEnableSubNavigation(value)}
+              icon={Menu}
+              editingField={editingField}
+              onFieldClick={onFieldClick}
+              onFieldBlur={onFieldBlur}
+              onKeyDown={onKeyDown}
+              description="Enable sub-navigation dropdowns"
+            />
+
             {/* Announcement Banner */}
             <PropertyRow
               label="Announcement Banner"
@@ -270,21 +435,6 @@ export function SiteSectionSettings({
                 />
               </>
             )}
-
-            {/* Menu Management using new menu type */}
-            <PropertyRow
-              label="Menu Items"
-              value={menuItems}
-              fieldName="menuItems"
-              type="menu"
-              onValueChange={(value) => setMenuItems(value)}
-              icon={Menu}
-              editingField={editingField}
-              onFieldClick={onFieldClick}
-              onFieldBlur={onFieldBlur}
-              onKeyDown={onKeyDown}
-              description="Manage header navigation menu items"
-            />
           </div>
         </>
       )}

@@ -16,6 +16,8 @@ interface BrowserMockupProps {
   hasChanges?: boolean;
   isLoading?: boolean;
   isWidgetMode?: boolean;
+  fullWidth?: boolean;
+  disableScale?: boolean;
   onSave?: () => void;
   onDiscard?: () => void;
 }
@@ -34,13 +36,18 @@ export function BrowserMockup({
   hasChanges,
   isLoading,
   isWidgetMode = false,
+  fullWidth = false,
+  disableScale = false,
   onSave,
   onDiscard,
 }: BrowserMockupProps) {
   const [activeTab, setActiveTab] = useState<'all-events' | 'single-event'>('all-events');
 
     return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 w-[calc(100vw-41.5rem)] h-[calc(100vh-100px)] shadow-2xl dark:shadow-gray-900/30 flex flex-col overflow-hidden"
+    <div className={cn(
+      "bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 h-[calc(100vh-100px)] shadow-2xl dark:shadow-gray-900/30 flex flex-col overflow-hidden",
+      fullWidth ? "w-full" : "w-[calc(100vw-41.5rem)]"
+    )}
       style={{
         boxShadow: '0px 32px 64px -12px rgba(16, 24, 40, 0.14)',
       }}>
@@ -211,10 +218,17 @@ export function BrowserMockup({
       {/* Browser content will be passed as children */}
       <div className="bg-white dark:bg-gray-900 flex-1 overflow-y-auto overflow-x-hidden min-h-0 scrollbar-thin scrollbar-thumb-gray-200/80 dark:scrollbar-thumb-gray-700 scrollbar-track-transparent">
         <div style={{
-          transform: 'scale(0.75)',
+          transform: 'scale(0.8)',
           transformOrigin: 'top left',
-          width: '135%',
-          height: '100%'
+          width: '125%',
+          height: '100%',
+
+          ...(disableScale ? {} : {
+            transform: 'scale(0.75)',
+            transformOrigin: 'top left',
+            width: '133.5%',
+            height: '100%'
+          })
         }}>
           {children}
         </div>
