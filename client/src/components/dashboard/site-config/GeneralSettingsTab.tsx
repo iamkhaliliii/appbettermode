@@ -33,10 +33,6 @@ interface GeneralSettingsTabProps {
   setSlug: (value: string) => void;
   spaceIconUrl: string;
   setSpaceIconUrl: (value: string) => void;
-  spaceBanner: boolean;
-  setSpaceBanner: (value: boolean) => void;
-  spaceBannerUrl: string;
-  setSpaceBannerUrl: (value: string) => void;
   visibility: string;
   setVisibility: (value: string) => void;
   inviteOnly: boolean;
@@ -67,10 +63,6 @@ export function GeneralSettingsTab({
   setSlug,
   spaceIconUrl,
   setSpaceIconUrl,
-  spaceBanner,
-  setSpaceBanner,
-  spaceBannerUrl,
-  setSpaceBannerUrl,
   visibility,
   setVisibility,
   inviteOnly,
@@ -239,37 +231,6 @@ export function GeneralSettingsTab({
         onKeyDown={handleKeyDown}
         isIconUpload={true}
       />
-
-      <PropertyRow
-        label="Space banner"
-        value={spaceBanner}
-        fieldName="spaceBanner"
-        type="checkbox"
-        onValueChange={setSpaceBanner}
-        icon={ImageIcon}
-        editingField={editingField}
-        onFieldClick={handleFieldClick}
-        onFieldBlur={handleFieldBlur}
-        onKeyDown={handleKeyDown}
-        description="Enable banner image for this space"
-      />
-
-      {spaceBanner && (
-        <PropertyRow
-          label="Upload banner"
-          value={spaceBannerUrl}
-          fieldName="spaceBannerUrl"
-          type="upload"
-          onValueChange={setSpaceBannerUrl}
-          placeholder="Upload banner"
-          icon={Image}
-          editingField={editingField}
-          onFieldClick={handleFieldClick}
-          onFieldBlur={handleFieldBlur}
-          onKeyDown={handleKeyDown}
-          isChild={true}
-        />
-      )}
 
       <PropertyRow
         label="Name"

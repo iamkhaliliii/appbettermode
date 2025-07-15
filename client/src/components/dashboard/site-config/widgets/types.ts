@@ -57,6 +57,7 @@ export interface WidgetTabProps {
   initialLayout?: string;
   initialCardSize?: string;
   initialCardStyle?: string;
+  onSpaceHeaderSettingsChange?: (settings: any) => void;
 }
 
 export interface WidgetCardProps {

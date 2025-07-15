@@ -77,6 +77,17 @@ export const widgetSections: WidgetSections = {
   ],
   main: [
     { 
+      id: 'space-header', 
+      name: 'Space Header', 
+      icon: PanelTop, 
+      description: 'Header section with space title and description',
+      status: 'active',
+      type: 'content',
+      locked: false,
+      category: 'Content Widgets',
+      settings: { visibility: true, customizable: true }
+    },
+    { 
       id: 'events-container', 
       name: 'Events content', 
       icon: Database, 
@@ -159,6 +170,16 @@ export const availableWidgets: AvailableWidget[] = [
 
   // Content Widgets
   {
+    id: 'space-header',
+    name: 'Space Header',
+    icon: PanelTop,
+    description: 'Header section with space title and description',
+    category: 'Content Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: false
+  },
+  {
     id: 'upcoming-events-content',
     name: 'Upcoming Events',
     icon: CalendarHeart,
@@ -173,6 +194,26 @@ export const availableWidgets: AvailableWidget[] = [
     name: 'Calendar',
     icon: CalendarDays,
     description: 'Interactive calendar view for events',
+    category: 'Content Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: false
+  },
+  {
+    id: 'members-list',
+    name: 'Members List',
+    icon: Users,
+    description: 'Display community members and user profiles',
+    category: 'Content Widgets',
+    gridSize: 'col-span-1 row-span-1',
+    size: '1×1',
+    locked: false
+  },
+  {
+    id: 'spaces-list',
+    name: 'Spaces List',
+    icon: Layers,
+    description: 'Show available spaces and categories',
     category: 'Content Widgets',
     gridSize: 'col-span-1 row-span-1',
     size: '1×1',

@@ -579,6 +579,14 @@ function SectionEditor({
               // CONTENT BLOCK GROUP
               organizedItems.push(
                 {
+                  title: "Space Header",
+                  subtext: "Header section with space title and description",
+                  onItemClick: createWidgetHandler("space-header"),
+                  aliases: ["header", "space", "title", "banner"],
+                  group: "Content Block",
+                  icon: <Heading1 />,
+                },
+                {
                   title: "Upcoming Events",
                   subtext: "Display upcoming events",
                   onItemClick: createWidgetHandler("upcoming-events"),

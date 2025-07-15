@@ -106,6 +106,8 @@ const getWidgetIcon = (widgetType: string) => {
     'users': Users,
     'people': Users,
     'members': Users,
+    'members-list': Users,
+    'members list': Users,
     'comments': MessageSquare,
     'discussion': MessageSquare,
     'chat': MessageSquare,
@@ -122,6 +124,8 @@ const getWidgetIcon = (widgetType: string) => {
     'dropdown': ChevronDown,
     'spaces': Layers,
     'layers': Layers,
+    'spaces-list': Layers,
+    'spaces list': Layers,
     'table': Table,
     'grid': Table,
     'data': Table,
@@ -212,7 +216,7 @@ export function MainContentArea({ children, isWidgetMode, onDragStateChange, onW
         {
           id: 'content',
           color: '#A095C4',
-          widgets: ['featured-content', 'recent-activity', 'trending-topics', 'featured-blog-posts', 'top-stories', 'recent-posts', 'blog-categories', 'upcoming-events', 'featured-events', 'event-calendar', 'event-categories']
+          widgets: ['featured-content', 'recent-activity', 'trending-topics', 'featured-blog-posts', 'top-stories', 'recent-posts', 'blog-categories', 'upcoming-events', 'featured-events', 'event-calendar', 'event-categories', 'members-list', 'spaces-list', 'members list', 'spaces list']
         },
         {
           id: 'general',

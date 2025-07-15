@@ -107,7 +107,7 @@ export function SpaceCmsContent({ siteSD, space, site, eventsLayout, cardSize, c
       case 'blog':
         return <BlogContent siteSD={siteSD} space={space} site={site} />;
       case 'event':
-        return <EventContent siteSD={siteSD} space={space} site={site} eventsLayout={eventsLayout} cardSize={cardSize} cardStyle={cardStyle} />;
+        return <EventContent siteSD={siteSD} space={space} site={site} eventsLayout={eventsLayout} cardSize={cardSize} cardStyle={cardStyle} hideSpaceHeader={true} />;
       case 'knowledge':
         return <KnowledgeContent siteSD={siteSD} space={space} site={site} />;
       case 'landing':

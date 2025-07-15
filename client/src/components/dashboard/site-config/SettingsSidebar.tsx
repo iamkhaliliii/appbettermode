@@ -30,6 +30,7 @@ interface SettingsSidebarProps {
   onCardStyleChange?: (cardStyle: string) => void;
   onAddWidgetModeChange?: (isAddWidgetMode: boolean) => void;
   onWidgetSettingsModeChange?: (isWidgetSettingsMode: boolean) => void;
+  onSpaceHeaderSettingsChange?: (settings: any) => void;
   selectedWidget?: any;
   isWidgetSettingsMode?: boolean;
   // Current values for widget tab
@@ -60,6 +61,7 @@ export function SettingsSidebar({
   onCardStyleChange,
   onAddWidgetModeChange,
   onWidgetSettingsModeChange,
+  onSpaceHeaderSettingsChange,
   selectedWidget,
   isWidgetSettingsMode,
   currentLayout = 'card',
@@ -206,10 +208,6 @@ export function SettingsSidebar({
             setSlug={(value) => updateInternalState('slug', value)}
             spaceIconUrl={internalState.spaceIconUrl}
             setSpaceIconUrl={(value) => updateInternalState('spaceIconUrl', value)}
-          spaceBanner={currentSpaceBanner}
-          setSpaceBanner={currentSetSpaceBanner}
-          spaceBannerUrl={currentSpaceBannerUrl}
-          setSpaceBannerUrl={currentSetSpaceBannerUrl}
             visibility={internalState.visibility}
             setVisibility={(value) => updateInternalState('visibility', value)}
             inviteOnly={internalState.inviteOnly}
@@ -239,6 +237,7 @@ export function SettingsSidebar({
           onLayoutChange={onLayoutChange} 
           onCardSizeChange={onCardSizeChange} 
           onCardStyleChange={onCardStyleChange}
+          onSpaceHeaderSettingsChange={onSpaceHeaderSettingsChange}
           selectedWidget={selectedWidget}
           isWidgetSettingsMode={currentIsWidgetSettingsMode}
           initialLayout={currentLayout}

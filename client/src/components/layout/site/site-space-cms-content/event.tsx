@@ -227,7 +227,7 @@ const MOCK_ENHANCED_EVENTS: EnhancedEvent[] = [
   }
 ];
 
-export function EventContent({ siteSD, space, site, eventsLayout, cardSize, cardStyle, isWidgetMode = false, onSectionSettings }: EventContentProps) {
+export function EventContent({ siteSD, space, site, eventsLayout, cardSize, cardStyle, isWidgetMode = false, onSectionSettings, hideSpaceHeader = false }: EventContentProps) {
   const [, setLocation] = useLocation();
   const [events, setEvents] = useState<EnhancedEvent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -236,6 +236,7 @@ export function EventContent({ siteSD, space, site, eventsLayout, cardSize, card
   
   // Widget visibility state
   const [widgetVisibility, setWidgetVisibility] = useState<Record<string, boolean>>({
+    spaceHeader: true,
     featuredEvents: true,
     eventsContainer: true,
     categories: true
@@ -504,23 +505,37 @@ export function EventContent({ siteSD, space, site, eventsLayout, cardSize, card
 
   return (
     <div className="events-content space-y-8">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div className="flex items-center">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mr-2">
-            Events
-          </h1>
-          {useMockData && (
-            <span className="text-xs px-2 py-1 bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 rounded-full">
-              Demo Data
-            </span>
-          )}
-        </div>
-        <Button variant="outline" onClick={fetchEventsData} disabled={isLoading}>
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Refresh
-        </Button>
-      </div>
+      {/* Space Header - Only render if not hidden */}
+      {!hideSpaceHeader && (
+        <GeneralWidgetPopover
+          widgetName="Space Header"
+          widgetType="main"
+          isHidden={!widgetVisibility.spaceHeader}
+          onSettings={() => handleWidgetSettings('spaceHeader')}
+          onToggleVisibility={() => toggleWidgetVisibility('spaceHeader')}
+          onDelete={() => handleWidgetDelete('spaceHeader')}
+          isWidgetMode={isWidgetMode}
+        >
+          <section className="space-header" data-section-name="Space Header">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mr-2">
+                  Events
+                </h1>
+                {useMockData && (
+                  <span className="text-xs px-2 py-1 bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 rounded-full">
+                    Demo Data
+                  </span>
+                )}
+              </div>
+              <Button variant="outline" onClick={fetchEventsData} disabled={isLoading}>
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Refresh
+              </Button>
+            </div>
+          </section>
+        </GeneralWidgetPopover>
+      )}
 
       {/* Featured Events Section */}
       {featuredEvents.length > 0 && (

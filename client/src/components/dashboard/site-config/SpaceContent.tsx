@@ -35,6 +35,7 @@ interface SpaceContentProps {
   eventsLayout?: string;
   cardSize?: string;
   cardStyle?: string;
+  spaceHeaderSettings?: any;
   onSectionSettings?: (sectionName: string) => void;
 }
 
@@ -59,8 +60,10 @@ export function SpaceContent({
   eventsLayout = 'card',
   cardSize = 'medium',
   cardStyle = 'modern',
+  spaceHeaderSettings,
   onSectionSettings
 }: SpaceContentProps) {
+  // console.log('🔄 SpaceContent: Received spaceHeaderSettings prop:', spaceHeaderSettings);
   // Get site data from context
   const { sites, cmsTypes } = useSiteData();
   
@@ -785,6 +788,298 @@ export function SpaceContent({
           </div>
         );
 
+      case 'members-list':
+        return (
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Community Members
+            </h3>
+            {/* Responsive Grid Layout */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                <div key={i} className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                      <span className="text-white font-medium text-sm">U{i}</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-medium text-gray-900 dark:text-white text-sm truncate">
+                        User {i}
+                      </h4>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        Member since Jan 2024
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex items-center gap-2 flex-wrap">
+                    <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded text-xs">
+                      Active
+                    </span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      {Math.floor(Math.random() * 100)} posts
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* Show More Button */}
+            <div className="mt-4 text-center">
+              <button className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium">
+                Show more members
+              </button>
+            </div>
+          </div>
+        );
+
+      case 'spaces-list':
+        return (
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Available Spaces
+            </h3>
+            {/* Responsive Grid Layout */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {[
+                { name: 'General Discussion', posts: 45, members: 128, color: 'bg-blue-500' },
+                { name: 'Events', posts: 23, members: 85, color: 'bg-purple-500' },
+                { name: 'Announcements', posts: 12, members: 156, color: 'bg-green-500' },
+                { name: 'Q&A', posts: 67, members: 94, color: 'bg-orange-500' },
+                { name: 'Resources', posts: 34, members: 112, color: 'bg-red-500' },
+                { name: 'Feedback', posts: 19, members: 73, color: 'bg-indigo-500' },
+                { name: 'Help & Support', posts: 28, members: 67, color: 'bg-teal-500' },
+                { name: 'Ideas & Suggestions', posts: 41, members: 89, color: 'bg-pink-500' }
+              ].map((space, i) => (
+                <div key={i} className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className={`w-10 h-10 ${space.color} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                      <span className="text-white font-medium text-sm">
+                        {space.name.charAt(0)}
+                      </span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-medium text-gray-900 dark:text-white text-sm truncate">
+                        {space.name}
+                      </h4>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        Community space
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-3">
+                    <span>{space.posts} posts</span>
+                    <span>{space.members} members</span>
+                  </div>
+                  <button className="w-full px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded text-xs font-medium hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
+                    Join Space
+                  </button>
+                </div>
+              ))}
+            </div>
+            {/* Show More Button */}
+            <div className="mt-4 text-center">
+              <button className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium">
+                Show more spaces
+              </button>
+            </div>
+          </div>
+        );
+
+      case 'space-header':
+        // Use settings to determine visibility and content
+        const settings = spaceHeaderSettings || {};
+        console.log('🔄 SpaceContent: Rendering space-header with settings:', settings);
+        const showIcon = settings.showIcon !== false;
+        const showTitle = settings.showTitle !== false;
+        const showDescription = settings.showDescription !== false;
+        const showStats = settings.showStats !== false;
+        const showActions = settings.showActions !== false;
+        const showJoin = settings.showJoin !== false;
+        const showMembers = settings.showMembers !== false;
+        const selectedStyle = settings.selectedStyle || 'simple';
+        const backgroundFile = settings.backgroundFile || '';
+        
+        // Style variations
+        const getHeaderStyle = () => {
+          switch (selectedStyle) {
+            case 'colorstyle':
+              return 'bg-blue-600 text-white rounded-lg p-6';
+            case 'imagestyle':
+              return backgroundFile 
+                ? `bg-cover bg-center bg-no-repeat text-white relative rounded-lg p-6`
+                : 'bg-blue-600 text-white rounded-lg p-6';
+            case 'videostyle':
+              return 'bg-gray-900 text-white relative overflow-hidden rounded-lg p-6';
+            case 'patternstyle':
+              return 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white relative rounded-lg p-6';
+            case 'gradientstyle':
+              return backgroundFile 
+                ? `text-white relative rounded-lg p-6`
+                : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg p-6';
+            case 'minimal':
+              return 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg p-6';
+            default: // simple
+              return 'text-gray-900 dark:text-white'; // No background, no padding
+          }
+        };
+        
+        const getTextColor = () => {
+          return selectedStyle === 'colorstyle' || selectedStyle === 'imagestyle' || selectedStyle === 'videostyle' || selectedStyle === 'gradientstyle'
+            ? 'text-white' 
+            : 'text-gray-900 dark:text-white';
+        };
+        
+        const getSubtextColor = () => {
+          return selectedStyle === 'colorstyle' || selectedStyle === 'imagestyle' || selectedStyle === 'videostyle' || selectedStyle === 'gradientstyle'
+            ? 'text-white/80' 
+            : 'text-gray-600 dark:text-gray-400';
+        };
+        
+        return (
+          <div className="mb-6">
+            <div className={`${getHeaderStyle()} transition-all duration-300 ease-in-out`} style={
+              selectedStyle === 'imagestyle' && backgroundFile 
+                ? { backgroundImage: `url(${backgroundFile})` }
+                : selectedStyle === 'gradientstyle' && backgroundFile 
+                  ? { background: backgroundFile }
+                  : {}
+            }>
+              {/* Background overlay for better text readability */}
+              {(selectedStyle === 'imagestyle' || selectedStyle === 'videostyle') && (
+                <div className="absolute inset-0 bg-black/30 rounded-lg transition-opacity duration-300 ease-in-out"></div>
+              )}
+              
+              {/* Video background */}
+              {selectedStyle === 'videostyle' && backgroundFile && (
+                <video 
+                  className="absolute inset-0 w-full h-full object-cover rounded-lg transition-opacity duration-300 ease-in-out"
+                  autoPlay 
+                  loop 
+                  muted 
+                  playsInline
+                >
+                  <source src={backgroundFile} type="video/mp4" />
+                </video>
+              )}
+              
+              {/* Pattern background */}
+              {selectedStyle === 'patternstyle' && (
+                <div className="absolute inset-0 opacity-10 transition-opacity duration-300 ease-in-out">
+                  <div className="w-full h-full bg-repeat transition-opacity duration-300 ease-in-out" style={{
+                    backgroundImage: `radial-gradient(circle at 25% 25%, #333 2px, transparent 2px)`,
+                    backgroundSize: '20px 20px'
+                  }}></div>
+                </div>
+              )}
+              
+              <div className="relative z-10 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  {showIcon && (
+                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center transition-all duration-300 ease-in-out ${
+                      selectedStyle === 'colorstyle' || selectedStyle === 'imagestyle' || selectedStyle === 'videostyle' || selectedStyle === 'gradientstyle'
+                        ? 'bg-white/20' 
+                        : selectedStyle === 'simple' 
+                          ? 'bg-gray-100 dark:bg-gray-800'
+                          : 'bg-gray-200 dark:bg-gray-700'
+                    }`}>
+                      <span className={`text-lg font-bold transition-colors duration-300 ease-in-out ${getTextColor()}`}>B</span>
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      {showTitle && (
+                        <h1 className={`text-2xl font-bold transition-colors duration-300 ease-in-out ${getTextColor()}`}>
+                          Bettermode community
+                        </h1>
+                      )}
+                      {/* User avatars - controlled by showMembers */}
+                      {showMembers && (
+                        <div className="flex items-center -space-x-1">
+                          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                            <span className="text-white text-xs font-semibold">A</span>
+                          </div>
+                          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-green-500 to-teal-600 border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                            <span className="text-white text-xs font-semibold">B</span>
+                          </div>
+                          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-red-600 border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                            <span className="text-white text-xs font-semibold">C</span>
+                          </div>
+                          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-pink-500 to-rose-600 border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                            <span className="text-white text-xs font-semibold">D</span>
+                          </div>
+                          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                            <span className="text-white text-xs font-semibold">E</span>
+                          </div>
+                          <div className="w-7 h-7 rounded-full bg-gray-700 border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                            <span className="text-white text-xs font-semibold">+5</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    {showDescription && (
+                      <p className={`text-sm mb-2 transition-colors duration-300 ease-in-out ${
+                        selectedStyle === 'colorstyle' || selectedStyle === 'imagestyle' || selectedStyle === 'videostyle' || selectedStyle === 'gradientstyle'
+                          ? 'text-white/80' 
+                          : 'text-gray-600 dark:text-gray-400'
+                      }`}>
+                        Welcome to the "Ask the Community" channel!
+                      </p>
+                    )}
+                    {showStats && (
+                      <div className={`flex items-center gap-4 text-xs transition-colors duration-300 ease-in-out ${
+                        selectedStyle === 'colorstyle' || selectedStyle === 'imagestyle' || selectedStyle === 'videostyle' || selectedStyle === 'gradientstyle'
+                          ? 'text-white/60' 
+                          : 'text-gray-500 dark:text-gray-400'
+                      }`}>
+                        <div className="flex items-center gap-1">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                          </svg>
+                          <span>4</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          <span>4</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span>created 3 months ago</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {showActions && (
+                  <div className="flex items-center gap-2">
+                    <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full font-medium text-sm transition-all duration-300 ease-in-out">
+                      Add Post
+                    </button>
+                    {showJoin && (
+                      <button className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-full font-medium text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 ease-in-out">
+                        Joined
+                      </button>
+                    )}
+                    <button className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 p-2 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 ease-in-out">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </button>
+                    <button className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 p-2 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 ease-in-out">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+              </div>
+
+            </div>
+          </div>
+        );
+
       case 'canvas':
         return (
           <div className="mb-6">
@@ -1038,7 +1333,15 @@ export function SpaceContent({
                     onDragOver={isDraggingWidget ? (e) => handleSectionDragOver(e as any, 'dropped-widgets') : undefined}
                   >
                     <div className="space-y-4">
-                      {droppedWidgets.map((droppedWidget, index) => (
+                      {droppedWidgets
+                        .filter(droppedWidget => {
+                          // Don't show space header widget if space banner is active
+                          if (droppedWidget.widget.id === 'space-header' && spaceBanner) {
+                            return false;
+                          }
+                          return true;
+                        })
+                        .map((droppedWidget, index) => (
                         <GeneralWidgetPopover
                           key={droppedWidget.id}
                           widgetName={droppedWidget.widget.name}
@@ -1052,6 +1355,9 @@ export function SpaceContent({
                               'Hero Banner': 'hero-banner',
                               'Event Calendar': 'calendar',
                               'Calendar': 'calendar',
+                              // Content Widgets
+                              'Members List': 'members-list',
+                              'Spaces List': 'spaces-list',
                               // Basic Widgets - use their IDs directly
                               'Title': 'title',
                               'Logo': 'logo',
@@ -1121,29 +1427,418 @@ export function SpaceContent({
                     >
                       {/* Space Header/Banner Section */}
                       {spaceBanner ? (
-                        <div 
-                          data-section-id="space-banner"
-                          onDragOver={isDraggingWidget ? (e) => handleSectionDragOver(e as any, 'space-banner') : undefined}
-                        >
-                          <SpaceBanner 
-                            show={spaceBanner} 
-                            bannerUrl={spaceBannerUrl} 
-                            spaceName={space.name} 
-                          />
-                        </div>
+                        isWidgetMode ? (
+                          <GeneralWidgetPopover 
+                            widgetName="Space Banner"
+                            widgetType="main"
+                            isSelected={!!selectedElement && selectedElement.closest('[data-section-id="space-banner"]') !== null}
+                            isHidden={!sectionVisibility.spaceBanner}
+                            onSettings={() => handleSectionSettings('spaceBanner')}
+                            onToggleVisibility={() => toggleSectionVisibility('spaceBanner')}
+                            onDelete={() => handleSectionDelete('spaceBanner')}
+                            isWidgetMode={isWidgetMode}
+                          >
+                            <div 
+                              data-section-id="space-banner"
+                              onDragOver={isDraggingWidget ? (e) => handleSectionDragOver(e as any, 'space-banner') : undefined}
+                            >
+                              <SpaceBanner 
+                                show={spaceBanner} 
+                                bannerUrl={spaceBannerUrl} 
+                                spaceName={space.name} 
+                              />
+                            </div>
+                          </GeneralWidgetPopover>
+                        ) : (
+                          <div 
+                            data-section-id="space-banner"
+                            onDragOver={isDraggingWidget ? (e) => handleSectionDragOver(e as any, 'space-banner') : undefined}
+                          >
+                            <SpaceBanner 
+                              show={spaceBanner} 
+                              bannerUrl={spaceBannerUrl} 
+                              spaceName={space.name} 
+                            />
+                          </div>
+                        )
                       ) : (
-                        <div 
-                          className="mb-6"
-                          data-section-id="space-header"
-                          onDragOver={isDraggingWidget ? (e) => handleSectionDragOver(e as any, 'space-header') : undefined}
-                        >
-                          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                            {space.name}
-                          </h1>
-                          {space.description && (
-                            <p className="text-gray-600 dark:text-gray-400">{space.description}</p>
-                          )}
-                        </div>
+                        // Only render default space header if no space header widget is dropped
+                        !droppedWidgets.some(w => w.widget.id === 'space-header') && (
+                          isWidgetMode ? (
+                            <GeneralWidgetPopover 
+                              widgetName="Space Header"
+                              widgetType="main"
+                              isSelected={!!selectedElement && selectedElement.closest('[data-section-id="space-header"]') !== null}
+                              isHidden={!sectionVisibility.spaceHeader}
+                              onSettings={() => handleSectionSettings('spaceHeader')}
+                              onToggleVisibility={() => toggleSectionVisibility('spaceHeader')}
+                              onDelete={() => handleSectionDelete('spaceHeader')}
+                              isWidgetMode={isWidgetMode}
+                            >
+                              <div 
+                                className="mb-6"
+                                data-section-id="space-header"
+                                onDragOver={isDraggingWidget ? (e) => handleSectionDragOver(e as any, 'space-header') : undefined}
+                              >
+                                {/* Render space header using the dynamic space-header widget */}
+                                {(() => {
+                            // Use settings to determine visibility and content
+                            const settings = spaceHeaderSettings || {};
+                            // console.log('🔄 SpaceContent: Rendering default space-header with settings:', settings);
+                            const showIcon = settings.showIcon !== false;
+                            const showTitle = settings.showTitle !== false;
+                            const showDescription = settings.showDescription !== false;
+                            const showStats = settings.showStats !== false;
+                            const showActions = settings.showActions !== false;
+                            const showJoin = settings.showJoin !== false;
+                            const showMembers = settings.showMembers !== false;
+                            const selectedStyle = settings.selectedStyle || 'simple';
+                            const backgroundFile = settings.backgroundFile || '';
+                            
+                            // Style variations
+                            const getHeaderStyle = () => {
+                              switch (selectedStyle) {
+                                case 'colorstyle':
+                                  return 'bg-blue-600 text-white rounded-lg p-6';
+                                case 'imagestyle':
+                                  return backgroundFile 
+                                    ? `bg-cover bg-center bg-no-repeat text-white relative rounded-lg p-6`
+                                    : 'bg-blue-600 text-white rounded-lg p-6';
+                                case 'videostyle':
+                                  return 'bg-gray-900 text-white relative overflow-hidden rounded-lg p-6';
+                                case 'patternstyle':
+                                  return 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white relative rounded-lg p-6';
+                                case 'gradientstyle':
+                                  return backgroundFile 
+                                    ? `text-white relative rounded-lg p-6`
+                                    : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg p-6';
+                                case 'minimal':
+                                  return 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg p-6';
+                                default: // simple
+                                  return 'text-gray-900 dark:text-white'; // No background, no padding
+                              }
+                            };
+                            
+                            const getTextColor = () => {
+                              return selectedStyle === 'colorstyle' || selectedStyle === 'imagestyle' || selectedStyle === 'videostyle' || selectedStyle === 'gradientstyle'
+                                ? 'text-white' 
+                                : 'text-gray-900 dark:text-white';
+                            };
+                            
+                            const getSubtextColor = () => {
+                              return selectedStyle === 'colorstyle' || selectedStyle === 'imagestyle' || selectedStyle === 'videostyle' || selectedStyle === 'gradientstyle'
+                                ? 'text-white/80' 
+                                : 'text-gray-600 dark:text-gray-400';
+                            };
+                            
+                            return (
+                                                          <div className={`${getHeaderStyle()} transition-all duration-300 ease-in-out`} style={
+                              selectedStyle === 'imagestyle' && backgroundFile 
+                                ? { backgroundImage: `url(${backgroundFile})` }
+                                : selectedStyle === 'gradientstyle' && backgroundFile 
+                                  ? { background: backgroundFile }
+                                  : {}
+                            }>
+                                {/* Background overlay for better text readability */}
+                                {(selectedStyle === 'imagestyle' || selectedStyle === 'videostyle') && (
+                                  <div className="absolute inset-0 bg-black/30 rounded-lg transition-opacity duration-300 ease-in-out"></div>
+                                )}
+                                
+                                {/* Video background */}
+                                {selectedStyle === 'videostyle' && backgroundFile && (
+                                  <video 
+                                    className="absolute inset-0 w-full h-full object-cover rounded-lg transition-opacity duration-300 ease-in-out"
+                                    autoPlay 
+                                    loop 
+                                    muted 
+                                    playsInline
+                                  >
+                                    <source src={backgroundFile} type="video/mp4" />
+                                  </video>
+                                )}
+                                
+                                {/* Pattern background */}
+                                {selectedStyle === 'patternstyle' && (
+                                  <div className="absolute inset-0 opacity-10 transition-opacity duration-300 ease-in-out">
+                                    <div className="w-full h-full bg-repeat transition-opacity duration-300 ease-in-out" style={{
+                                      backgroundImage: `radial-gradient(circle at 25% 25%, #333 2px, transparent 2px)`,
+                                      backgroundSize: '20px 20px'
+                                    }}></div>
+                                  </div>
+                                )}
+                                
+                                <div className="relative z-10 flex items-center justify-between">
+                                  <div className="flex items-center gap-3">
+                                    {showIcon && (
+                                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center transition-all duration-300 ease-in-out ${
+                                        selectedStyle === 'colorstyle' || selectedStyle === 'imagestyle' || selectedStyle === 'videostyle' || selectedStyle === 'gradientstyle'
+                                          ? 'bg-white/20' 
+                                          : selectedStyle === 'simple' 
+                                            ? 'bg-gray-100 dark:bg-gray-800'
+                                            : 'bg-gray-200 dark:bg-gray-700'
+                                      }`}>
+                                        <span className={`text-lg font-bold transition-colors duration-300 ease-in-out ${getTextColor()}`}>
+                                          {space.name?.charAt(0) || 'S'}
+                                        </span>
+                                      </div>
+                                    )}
+                                    <div className="flex-1">
+                                      <div className="flex items-center gap-2 mb-1">
+                                        {showTitle && (
+                                          <h1 className={`text-2xl font-bold transition-colors duration-300 ease-in-out ${getTextColor()}`}>
+                                            {space.name}
+                                          </h1>
+                                        )}
+                                        {/* User avatars - controlled by showMembers */}
+                                        {showMembers && (
+                                          <div className="flex items-center -space-x-1">
+                                            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                                              <span className="text-white text-xs font-semibold">A</span>
+                                            </div>
+                                            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-green-500 to-teal-600 border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                                              <span className="text-white text-xs font-semibold">B</span>
+                                            </div>
+                                            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-red-600 border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                                              <span className="text-white text-xs font-semibold">C</span>
+                                            </div>
+                                            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-pink-500 to-rose-600 border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                                              <span className="text-white text-xs font-semibold">D</span>
+                                            </div>
+                                            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                                              <span className="text-white text-xs font-semibold">E</span>
+                                            </div>
+                                            <div className="w-7 h-7 rounded-full bg-gray-700 border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                                              <span className="text-white text-xs font-semibold">+5</span>
+                                            </div>
+                                          </div>
+                                        )}
+                                      </div>
+                                      {showDescription && space.description && (
+                                        <p className={`text-sm mb-2 transition-colors duration-300 ease-in-out ${
+                                          selectedStyle === 'colorstyle' || selectedStyle === 'imagestyle' || selectedStyle === 'videostyle' || selectedStyle === 'gradientstyle'
+                                            ? 'text-white/80' 
+                                            : 'text-gray-600 dark:text-gray-400'
+                                        }`}>
+                                          {space.description}
+                                        </p>
+                                      )}
+                                      {showStats && (
+                                        <div className={`flex items-center gap-4 text-xs transition-colors duration-300 ease-in-out ${
+                                          selectedStyle === 'colorstyle' || selectedStyle === 'imagestyle' || selectedStyle === 'videostyle' || selectedStyle === 'gradientstyle'
+                                            ? 'text-white/60' 
+                                            : 'text-gray-500 dark:text-gray-400'
+                                        }`}>
+                                          <div className="flex items-center gap-1">
+                                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                            </svg>
+                                            <span>4</span>
+                                          </div>
+                                          <div className="flex items-center gap-1">
+                                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            <span>4</span>
+                                          </div>
+                                          <div className="flex items-center gap-1">
+                                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span>created 3 months ago</span>
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                  {showActions && (
+                                    <div className="flex items-center gap-2">
+                                      <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full font-medium text-sm transition-all duration-300 ease-in-out">
+                                        Add Post
+                                      </button>
+                                      {showJoin && (
+                                        <button className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-full font-medium text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 ease-in-out">
+                                          Joined
+                                        </button>
+                                      )}
+                                      <button className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 p-2 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 ease-in-out">
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                      </button>
+                                      <button className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 p-2 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 ease-in-out">
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                        </svg>
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+
+                              </div>
+                            );
+                          })()}
+                              </div>
+                            </GeneralWidgetPopover>
+                          ) : (
+                            <div 
+                              className="mb-6"
+                              data-section-id="space-header"
+                              onDragOver={isDraggingWidget ? (e) => handleSectionDragOver(e as any, 'space-header') : undefined}
+                            >
+                              {/* Render space header using the dynamic space-header widget */}
+                              {(() => {
+                              // Use settings to determine visibility and content
+                              const settings = spaceHeaderSettings || {};
+                              // console.log('🔄 SpaceContent: Rendering default space-header with settings:', settings);
+                              const showIcon = settings.showIcon !== false;
+                              const showTitle = settings.showTitle !== false;
+                              const showDescription = settings.showDescription !== false;
+                              const showStats = settings.showStats !== false;
+                              const showActions = settings.showActions !== false;
+                              const showJoin = settings.showJoin !== false;
+                              const showMembers = settings.showMembers !== false;
+                              const selectedStyle = settings.selectedStyle || 'simple';
+                              
+                              // Style variations
+                              const getHeaderStyle = () => {
+                                switch (selectedStyle) {
+                                  case 'colorstyle':
+                                  case 'gradient':
+                                    return 'bg-gradient-to-r from-blue-600 to-purple-600 text-white';
+                                  case 'minimal':
+                                    return 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white';
+                                  case 'banner':
+                                    return 'bg-gradient-to-r from-purple-600 to-pink-600 text-white';
+                                  default:
+                                    return 'bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white';
+                                }
+                              };
+                              
+                              const getTextColor = () => {
+                                return selectedStyle === 'colorstyle' || selectedStyle === 'gradient' || selectedStyle === 'banner' 
+                                  ? 'text-white' 
+                                  : 'text-gray-900 dark:text-white';
+                              };
+                              
+                              const getSubtextColor = () => {
+                                return selectedStyle === 'colorstyle' || selectedStyle === 'gradient' || selectedStyle === 'banner' 
+                                  ? 'text-white/80' 
+                                  : 'text-gray-600 dark:text-gray-400';
+                              };
+                              
+                              return (
+                                <div className={`rounded-lg p-6 ${getHeaderStyle()}`}>
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                      {showIcon && (
+                                        <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                                          selectedStyle === 'colorstyle' || selectedStyle === 'gradient' || selectedStyle === 'banner' 
+                                            ? 'bg-white/20' 
+                                            : 'bg-gray-200 dark:bg-gray-700'
+                                        }`}>
+                                          <span className={`text-lg font-bold ${getTextColor()}`}>
+                                            {space.name?.charAt(0) || 'S'}
+                                          </span>
+                                        </div>
+                                      )}
+                                      <div className="flex-1">
+                                        <div className="flex items-center gap-2 mb-1">
+                                          {showTitle && (
+                                            <h1 className={`text-2xl font-bold ${getTextColor()}`}>
+                                              {space.name}
+                                            </h1>
+                                          )}
+                                          {/* User avatars - controlled by showMembers */}
+                                          {showMembers && (
+                                            <div className="flex items-center -space-x-1">
+                                              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                                                <span className="text-white text-xs font-semibold">A</span>
+                                              </div>
+                                              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-green-500 to-teal-600 border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                                                <span className="text-white text-xs font-semibold">B</span>
+                                              </div>
+                                              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-red-600 border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                                                <span className="text-white text-xs font-semibold">C</span>
+                                              </div>
+                                              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-pink-500 to-rose-600 border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                                                <span className="text-white text-xs font-semibold">D</span>
+                                              </div>
+                                              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                                                <span className="text-white text-xs font-semibold">E</span>
+                                              </div>
+                                              <div className="w-7 h-7 rounded-full bg-gray-700 border-2 border-white dark:border-gray-800 flex items-center justify-center">
+                                                <span className="text-white text-xs font-semibold">+5</span>
+                                              </div>
+                                            </div>
+                                          )}
+                                        </div>
+                                        {showDescription && space.description && (
+                                          <p className={`text-sm mb-2 ${
+                                            selectedStyle === 'colorstyle' || selectedStyle === 'gradient' || selectedStyle === 'banner' 
+                                              ? 'text-white/80' 
+                                              : 'text-gray-600 dark:text-gray-400'
+                                          }`}>
+                                            {space.description}
+                                          </p>
+                                        )}
+                                        {showStats && (
+                                          <div className={`flex items-center gap-4 text-xs ${
+                                            selectedStyle === 'colorstyle' || selectedStyle === 'gradient' || selectedStyle === 'banner' 
+                                              ? 'text-white/60' 
+                                              : 'text-gray-500 dark:text-gray-400'
+                                          }`}>
+                                            <div className="flex items-center gap-1">
+                                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                              </svg>
+                                              <span>4</span>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                              </svg>
+                                              <span>4</span>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                              </svg>
+                                              <span>created 3 months ago</span>
+                                            </div>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                    {showActions && (
+                                      <div className="flex items-center gap-2">
+                                        <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full font-medium text-sm transition-all duration-300 ease-in-out">
+                                          Add Post
+                                        </button>
+                                        {showJoin && (
+                                          <button className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-full font-medium text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 ease-in-out">
+                                            Joined
+                                          </button>
+                                        )}
+                                        <button className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 p-2 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 ease-in-out">
+                                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                          </svg>
+                                        </button>
+                                        <button className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 p-2 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 ease-in-out">
+                                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                          </svg>
+                                        </button>
+                                      </div>
+                                    )}
+                                  </div>
+
+                                </div>
+                              );
+                            })()}
+                            </div>
+                          )
+                        )
                       )}
                       
                       {/* Main Content */}
@@ -1160,6 +1855,7 @@ export function SpaceContent({
                           cardStyle={cardStyle}
                           isWidgetMode={isWidgetMode}
                           onSectionSettings={onSectionSettings}
+                          hideSpaceHeader={true}
                         />
                       </div>
                     </motion.div>

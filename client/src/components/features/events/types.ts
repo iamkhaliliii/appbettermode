@@ -55,4 +55,5 @@ export interface EventContentProps {
   cardStyle?: string;
   isWidgetMode?: boolean;
   onSectionSettings?: (sectionName: string) => void;
+  hideSpaceHeader?: boolean;
 } 

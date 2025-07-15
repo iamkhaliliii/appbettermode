@@ -12,7 +12,8 @@ import {
 import { 
   FeaturedEventsSettings, 
   EventCategoriesSettings, 
-  EventsContainerSettings, 
+  EventsContainerSettings,
+  SpaceHeaderSettings,
   SiteSectionSettings 
 } from './widget-settings';
 import {
@@ -27,7 +28,9 @@ import {
   HeroBannerWidgetSettings,
   AnnouncementBannerWidgetSettings,
   HtmlScriptWidgetSettings,
-  IframeWidgetSettings
+  IframeWidgetSettings,
+  MembersListWidgetSettings,
+  SpacesListWidgetSettings
 } from './widget-settings';
 import { 
   MousePointer, 
@@ -74,7 +77,8 @@ export function SimpleWidgetTab(props: WidgetTabProps) {
     isWidgetSettingsMode,
     initialLayout = 'card',
     initialCardSize = 'medium',
-    initialCardStyle = 'modern'
+    initialCardStyle = 'modern',
+    onSpaceHeaderSettingsChange
   } = props;
 
   // Debug logs - reduced to prevent spam
@@ -311,6 +315,17 @@ export function SimpleWidgetTab(props: WidgetTabProps) {
               />
             )}
 
+            {/* Space Header Settings (Main Widget) */}
+            {currentWidget?.id === 'space-header' && (
+              <SpaceHeaderSettings
+                editingField={editingField}
+                onFieldClick={handleFieldClick}
+                onFieldBlur={handleFieldBlur}
+                onKeyDown={handleKeyDown}
+                onSettingsChange={onSpaceHeaderSettingsChange}
+              />
+            )}
+
             {/* Events Content Settings (Main Widget) */}
             {currentWidget?.id === 'events-container' && (
               <EventsContainerSettings
@@ -449,6 +464,25 @@ export function SimpleWidgetTab(props: WidgetTabProps) {
 
             {currentWidget?.id === 'iframe' && (
               <IframeWidgetSettings
+                editingField={editingField}
+                onFieldClick={handleFieldClick}
+                onFieldBlur={handleFieldBlur}
+                onKeyDown={handleKeyDown}
+              />
+            )}
+
+            {/* Content Widget Settings */}
+            {currentWidget?.id === 'members-list' && (
+              <MembersListWidgetSettings
+                editingField={editingField}
+                onFieldClick={handleFieldClick}
+                onFieldBlur={handleFieldBlur}
+                onKeyDown={handleKeyDown}
+              />
+            )}
+
+            {currentWidget?.id === 'spaces-list' && (
+              <SpacesListWidgetSettings
                 editingField={editingField}
                 onFieldClick={handleFieldClick}
                 onFieldBlur={handleFieldBlur}

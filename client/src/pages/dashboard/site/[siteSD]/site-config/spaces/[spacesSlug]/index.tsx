@@ -86,6 +86,9 @@ export default function SpaceSettingsPage() {
     responsiveDropdownOpen: false
   });
   
+  // Space header settings state for live preview
+  const [spaceHeaderSettings, setSpaceHeaderSettings] = useState<any>(null);
+  
   // Memoized values
   const displaySpaceName = useMemo(() => {
     return spacesSlug
@@ -127,6 +130,12 @@ export default function SpaceSettingsPage() {
   const handleCardSizeChange = useCallback((size: string) => {
     setCardSize(size);
     console.log('Card size changed to:', size);
+  }, []);
+  
+  // Space header settings handler
+  const handleSpaceHeaderSettingsChange = useCallback((settings: any) => {
+    setSpaceHeaderSettings(settings);
+    setHasChanges(true);
   }, []);
 
   // Card style change handler
@@ -189,6 +198,7 @@ export default function SpaceSettingsPage() {
       'footer': widgetSections.base.find(w => w.id === 'site-footer'),
       // From EventContent GeneralWidgetPopover components
       'featuredEvents': widgetSections.custom.find(w => w.id === 'featured-events'),
+      'spaceHeader': widgetSections.main.find(w => w.id === 'space-header'),
       'eventsContainer': widgetSections.main.find(w => w.id === 'events-container'),
       'categories': widgetSections.custom.find(w => w.id === 'categories'),
       // From dropped widgets
@@ -202,6 +212,10 @@ export default function SpaceSettingsPage() {
       'video': availableWidgets.find((w: AvailableWidget) => w.id === 'video'),
       'button': availableWidgets.find((w: AvailableWidget) => w.id === 'button'),
       'accordions': availableWidgets.find((w: AvailableWidget) => w.id === 'accordions'),
+      // Content Widgets - from availableWidgets
+      'space-header': availableWidgets.find((w: AvailableWidget) => w.id === 'space-header'),
+      'members-list': availableWidgets.find((w: AvailableWidget) => w.id === 'members-list'),
+      'spaces-list': availableWidgets.find((w: AvailableWidget) => w.id === 'spaces-list'),
       // Advanced Widgets - from availableWidgets
       'canvas': availableWidgets.find((w: AvailableWidget) => w.id === 'canvas'),
       'menu': availableWidgets.find((w: AvailableWidget) => w.id === 'menu'),
@@ -217,10 +231,7 @@ export default function SpaceSettingsPage() {
 
   // Handle section settings click from mockup
   const handleSectionSettings = useCallback((sectionName: string) => {
-    // Reduced debug logging to prevent spam
-    // console.log('handleSectionSettings called with:', sectionName);
     const widget = getWidgetForSection(sectionName);
-    // console.log('Mapped widget:', widget);
     if (widget) {
       handleWidgetClick(widget);
     } else {
@@ -281,6 +292,7 @@ export default function SpaceSettingsPage() {
               onCardStyleChange={handleCardStyleChange}
               onAddWidgetModeChange={handleAddWidgetModeChange}
               onWidgetSettingsModeChange={handleWidgetSettingsModeChange}
+              onSpaceHeaderSettingsChange={handleSpaceHeaderSettingsChange}
               currentLayout={eventsLayout}
               currentCardSize={cardSize}
               currentCardStyle={cardStyle}
@@ -372,6 +384,7 @@ export default function SpaceSettingsPage() {
                     eventsLayout={eventsLayout}
                     cardSize={cardSize}
                     cardStyle={cardStyle}
+                    spaceHeaderSettings={spaceHeaderSettings}
                     onSectionSettings={handleSectionSettings}
                   />
                 )}
